@@ -28,7 +28,6 @@
 
   <context:annotation-config />
 
-  <context:component-scan base-package="nl.surfnet.coin.api" />
 
 <context:property-placeholder location="classpath:coin-api.properties" />
 

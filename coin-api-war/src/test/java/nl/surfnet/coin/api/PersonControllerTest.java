@@ -13,8 +13,9 @@ import static org.junit.Assert.assertNull;
 public class PersonControllerTest {
 
     @Autowired PersonController p;
+
     @Test
-    public void getGroups() {
-        assertNull(p.getGroups("foo", "bar"));
+    public void getPerson() {
+        assertNull(p.getPerson("foo", "bar"));
     }
 }

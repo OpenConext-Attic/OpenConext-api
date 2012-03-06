@@ -15,10 +15,10 @@ public class PersonController {
 
     Logger LOG = LoggerFactory.getLogger(PersonController.class);
 
-    @RequestMapping(value="/social/groups/{personId}/{requestor}", method=GET)
-    public String getGroups(@PathVariable("personId") String personId, @PathVariable("requestor") String requestor) {
+    @RequestMapping(value = "/social/people/{userId}/{groupId}")
+    public String getPerson(@PathVariable("userId") String userId, @PathVariable("groupId") String groupId) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Got getGroups-request, for personId '{}', by personId '{}'", personId, requestor);
+            LOG.debug("Got getGroups-request, for userId '{}', groupId '{}'", userId, groupId);
         }
         return null;
     }
