@@ -1,7 +1,0 @@
-{"gadgets":[
-  {
-    "errors":["org.apache.http.conn.ConnectTimeoutException: Connect to localhost/localhost/127.0.0.1 timed out"],
-    "moduleId":2147483647,
-    "url":"http://localhost/notrunning.xml"
-  }
-]}

@@ -26,6 +26,6 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:property-placeholder location="classpath:coin-portal.properties, classpath:coin-shindig.properties" />
+	<context:property-placeholder location="classpath:coin-api.properties" />
 
 </beans>

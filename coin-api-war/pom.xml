@@ -308,24 +308,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- For CoinProxyServlet -->
-    <dependency>
-      <groupId>com.googlecode.gwt-proxy-servlet</groupId>
-      <artifactId>proxy</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
-    <!-- RSS parsing -->
-    <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome</artifactId>
-      <version>${rome.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome-fetcher</artifactId>
-      <version>${rome.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
