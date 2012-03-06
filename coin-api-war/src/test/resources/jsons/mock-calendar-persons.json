@@ -1,0 +1,2 @@
+{ "entry":[{ "name":{ "formatted":"Tester1", "givenName":"Hans", "familyName":"Zandbelt" }, "id":"tester1", "displayName":"Hans Zandbelt", "nickname":"Hans Zandbelt", "emails":[ "Hans.Zandbelt@surfnet.nl" ], "organizations":{ "name":"surfnet.nl" }, "account":{ "username":"hansz", "userId":"hansz" } } ,
+{ "name":{ "formatted":"Pietje Puk", "givenName":"Pietje", "familyName":"Puvk" }, "id":"Okke", "displayName":"Pietje Puck", "nickname":"PP", "emails":[ "oharsta@zilverline.com" ], "organizations":{ "name":"surfnet.nl" }, "account":{ "username":"hansz", "userId":"hansz" } } ] }

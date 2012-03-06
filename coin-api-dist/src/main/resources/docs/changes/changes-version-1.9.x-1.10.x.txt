@@ -1,0 +1,4 @@
+###### Configuration changes #########
+# Current Version: 1.10.x            #
+# Previous Version: 1.9.x            #
+######################################

@@ -1,0 +1,6 @@
+###### Configuration changes #########
+# Current Version: 1.6.x             #
+# Previous Version: 1.5.x            #
+######################################
+
+* Add property 'gadgetDefinitionProxy' to proxy https gadget definitions over http to GModules

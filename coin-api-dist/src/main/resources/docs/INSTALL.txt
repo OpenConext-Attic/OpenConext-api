@@ -1,0 +1,131 @@
+Copyright (C) 2010 SURFnet BV
+All rights reserved.
+
+RELEASE INFORMATION
+
+Project:           COIN-Portal
+Date:              2010-11-04
+
+Content:
+
+    1.  Unpack tarball
+
+    2.  Prepare Tomcat
+        2.1 Stop Tomcat
+        2.2 Undeploy a previous version
+        2.3 Copy / edit property files
+        2.4 Copy / edit log4j.xml file
+
+    3.  Prepare database
+
+    4.  Deploy war file
+
+    5.  Start tomcat
+
+
+1. UNPACK TARBALL
+=================
+
+Unpack the provided tarball on the server that you want to deploy
+the application on. e.g. extract the tarball in /tmp
+
+
+2. PREPARE TOMCAT
+=================
+
+This installation document only provides documentation for the Tomcat 
+application server.
+
+If you already have deployed a previous version of the COIN Portal application
+you must follow step 2.2 to undeploy the previous version
+
+2.1 Stop Tomcat
+
+Stop the tomcat application server
+
+2.2 Undeploy a previous version (optional)
+
+Navigate to the '<<CATALINA_HOME>>/wars/'
+(e.g. /opt/tomcat/wars/)
+delete the 'coin-portal-war-<<VERION>>.war' file. 
+(e.g. coin-portal-war-0.1-SNAPSHOT.war)
+
+Navigate to '<<CATALINA_HOME>>/work/portal.{dev,test,acc}.surfconext.nl/
+Delete the entire coin directory listed there.
+
+2.3 Copy / edit property files
+
+Out-of-the-box the tarball comes with a number of different property files. 
+A number of property files are delivered:
+- coin-portal.properties
+- coin-portal.properties.acc
+- coin-portal.properties.prod
+- coin-portal.properties.test
+
+For different environments different property files are delivered. Pick the 
+appropriate property file for your environment from the following directory:
+<<EXTRACTED_TARBALL_PATH>>/tomcat/conf/classpath_properties
+
+Copy the chosen property file to <<CATALINA_HOME>>/conf/classpath_properties/coin-portal.properties
+
+Edit the property file values according to your environment.
+
+2.4 Copy / edit the log4j.xml file
+
+The COIN portal application uses log4j for logging.
+Copy the logj4.xml file from 
+<<EXTRACTED_TARBALL_PATH>>/tomcat/conf/classpath_properties
+to
+<<CATALINA_HOME>>/conf/classpath_properties
+(e.g. /opt/tomcat/conf/classpath_properties)
+
+If necessary modify the log4j to see more or less logging according to your
+needs.
+
+
+3. PREPARE DATABASE
+===================
+
+coin-portal uses a mysql database with the innodb engine. 
+
+If this is the first time that you install the coin-portal, you have to 
+create a database for the coin-portal. For security reasons also create
+a database user for the coin-portal.
+
+The database must be called: coin-portal
+
+The database create script can be found here:
+<EXTRACTED_TARBALL_PATH>>/db/coin-portal-create-script.sql
+
+Next, you should insert some initial data into the coin-portal database if the environment is not production.
+the insert script can be found here:
+<EXTRACTED_TARBALL_PATH>>/db/coin-portal-insert-script.sql
+
+To keep the database scheme up to date you need to run the update
+script which can be found here:
+<EXTRACTED_TARBALL_PATH>>/db/coin-portal-updates/update-version-x.x.x-y.y.y.sql
+
+The x.x.x is the current version and the y.y.y is the new version. For each update script there is also a rollback script:
+<EXTRACTED_TARBALL_PATH>>/db/coin-portal-updates/rollback-version-y.y.y-x.x.x.sql
+
+
+4. DEPLOY WAR FILE
+==================
+
+Copy the provided context descriptor from 
+<<EXTRACTED_TARBALL_PATH>>/tomcat/conf/context
+to 
+<<CATALINA_HOME>>/conf/Catalina/<<GUI-VIRTUAL-HOST-DIRECTORY>>
+(e.g. /opt/tomcat/conf/Catalina/gui.dev.coin.surf.net)
+
+Now, copy the coin-portal war located at
+<<EXTRACTED_TARBALL_PATH>>/tomcat/webapps
+to
+<<CATALINA_HOME>>/wars/
+(e.g. /opt/tomcat/wars/)
+
+
+5. START TOMCAT
+===============
+
+Start tomcat again.

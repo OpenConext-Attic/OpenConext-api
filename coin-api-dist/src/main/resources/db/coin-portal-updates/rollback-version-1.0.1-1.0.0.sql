@@ -1,0 +1,1 @@
+ALTER TABLE `gadgetdefinition` DROP `custom_gadget`;

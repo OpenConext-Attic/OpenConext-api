@@ -1,0 +1,6 @@
+###### Configuration changes #########
+# Current Version: 1.11.x            #
+# Previous Version: 1.10.x           #
+######################################
+
+* New property 'profilePageUrl' in coin-portal.properties for link to the profile page (e.g. https://profile.surfconext.nl)

@@ -1,0 +1,28 @@
+<div class="feed">    <p>
+        Page
+            <b>edited</b> by
+                    <a href="https://wiki.surfnetlabs.nl/display/~surfnet.paulvd">Paul van Dijk</a>
+            </p>
+            <div style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px;">
+         <h6><a name="Gettingstarted-SURFconextMakeCollaborationEasy"></a>SURFconext - Make Collaboration Easy</h6>
+
+
+<h6><a name="Gettingstarted-WelcometoSURFconext"></a>Welcome to SURFconext</h6>
+
+<p>SURFconext is a flexible and dynamic collaboration  infrastructure for higher education and research in The Netherlands and  was built by SURFnet. It lets you access and personalize your online  collaboration environment based on the SURFfederatie, SURFteams and  key collaboration tools from different vendors. Once you have accessed the SURFconext  portal with your institutional account, you will be able to add any of the  gadgets offered and start collaborate with your colleagues.</p>
+
+<h6><a name="Gettingstarted-SURFconextin5steps"></a>SURFconext in 5 steps</h6>
+
+<ol>
+  <li><a href="/display/conextsupport/Logon" title="Logon">Logon</a> with your own institutional account</li>
+  <li>Create your collaboration <a href="/display/conextsupport/Tabs" title="Tabs">Tabs</a></li>
+  <li>Choose your favorite collaboration <a href="/display/conextsupport/Gadgets" title="Gadgets">Gadgets</a></li>
+  <li>Create a <a href="/display/conextsupport/Assign+a+Team+to+a+Tab" title="Assign a Team to a Tab">Team</a></li>
+  <li><a href="/display/conextsupport/Share" title="Share">Share</a> a tab with your team members and start collaborate</li>
+</ol>
+
+    </div>
+        <div style="padding: 10px 0;">
+       <a href="https://wiki.surfnetlabs.nl/display/conextsupport/Getting+started">View Online</a>
+           </div>
+</div>

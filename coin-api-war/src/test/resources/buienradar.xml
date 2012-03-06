@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?><Module>
+<ModulePrefs title="__MSG_title__"
+             title_url="http://www.jprmedia.nl"
+             author="JPRmedia"
+             author_email="info@jprmedia.eu"
+             author_location="The Netherlands"
+             author_photo="http://www.jprmedia.net/company/silhouette.jpg"
+             author_quote="The Gadget and Widget company."
+             author_link="http://www.jprmedia.eu"
+             category="news"
+             description="__MSG_description__"
+             screenshot="__MSG_screen__"
+             thumbnail="__MSG_thumb__"
+             height="300"
+             width="300">
+<Locale messages="http://buienradar.jprmedia.net/lang/ALL_ALL.xml" />
+<Require feature="dynamic-height" />
+<Require feature="setprefs" />
+<Require feature="com.google.gadgets.analytics" />
+<Require feature="minimessage" />
+</ModulePrefs>
+
+<UserPref name="meetstation" datatype="hidden" default_value="6260" />
+<UserPref name="show_actueel" datatype="hidden" default_value="true" />
+<UserPref name="show_vooruitzichten" datatype="hidden" default_value="true" />
+<UserPref name="da_aid" datatype="hidden" />
+
+<Content type="html" view="home,profile">
+<![CDATA[
+
+<style type="text/css">
+<!--
+body,td,div,h1,h2,h3,span,p,th,select,option,input,textarea{font-family:arial,sans-serif;font-size:8pt}h1{color:#FFF;margin:0px
+0px 3px 0px;padding:0px
+0px 0px 0px;width:100%;display:block;height:14px}h2{color:#555;font-size:14pt;margin:5px
+0px 0px 0px}img{border:none}a{text-decoration:underline;cursor:pointer}#loading{width:100%;text-align:center}#actueel
+table{margin:0px
+0px 3px 0px;width:100%;border-collapse:collapse}#actueel
+th{padding:0px;vertical-align:top;text-align:right}#actueel
+td{padding:0px
+3px 0px 0px;vertical-align:top;text-align:left}#actueel
+img{float:left}#stationcont{position:relative;z-index:10;text-decoration:none}.weerstationDropdown{margin:0px
+2px 0px 0px;background-repeat:no-repeat;background-position:0px -25px;display:block;height:12px;width:12px;cursor:pointer;float:left}strong.stationnaam{float:left}#stationcont
+#weerstatcont{float:left;clear:left;position:relative}.stationconthover
+#weerstations{display:block}.stationcont
+#weerstations{display:none}#weerstations{position:absolute;left:0px;top:0px;background-color:#FFF;border:solid 1px #000;padding:0px;overflow-x:hidden;overflow-y:auto;height:expression(this.scrollHeight > 256 ? "256px" : "auto" );max-height:256px;z-index:15;margin:0;padding:0;clear:both}.weerstationOut,.weerstationOver{cursor:pointer;padding:1px
+3px 1px 3px;white-space:nowrap;width:100%}.weerstationOut{color:#000}.weerstationOver{color:#FFF}.weerstationRadar{width:256px;height:256px}#vooruitzichten
+table{margin:3px
+0px 0px 0px;width:100%;border-collapse:collapse}#vooruitzichten
+td{padding:1px;text-align:center}#vooruitzichten
+th{padding:0px;text-align:left}.vooruitzichtenWolk{width:37px;height:37px}#meetstations
+table{margin:3px
+0px 0px 0px;width:100%;border-collapse:collapse}#meetstations
+th{padding:0px;vertical-align:top;text-align:left}#meetstations
+td{padding:0px;vertical-align:midle;text-align:left}#meetstationslijst{overflow-x:hidden;overflow-y:auto;height:expression(this.scrollHeight > 610 ? "610px" : "auto" );max-height:610px}.canvas{width:100%}.canvas-right,.canvas-left{width:50%;vertical-align:top;padding:2px}#buienradar{text-align:right;padding:0px
+0px 5px 0px}#buienradar
+img{width:550px;height:513px}#text{padding:0px
+0px 5px 0px}#logo{width:100%;text-align:left}#logo
+img{border:none;margin:0px
+0px 5px 0px}#ads{padding:5px;text-align:center}.showdiv,.hidediv{padding:0;background-repeat:no-repeat;display:block;height:12px;width:12px;cursor:pointer;float:right;margin:1px
+3px 0px 0px;line-height:1px;text-decoration:none}.showdiv{background-position:0px -12px}.showdiv:hover{background-position:-12px -12px}.hidediv{background-position:0px 0px}.hidediv:hover{background-position:-12px 0px}#rodebalk{font-family:arial,verdana;background-color:#DA0000;padding:1px
+5px;margin:0
+0 3px 0}#rodebalk,#rodebalk a,#rodebalk
+p{color:#FFF;font-size:12px;font-weight:bold}#rodebalk
+p{margin:0;padding:0}-->
+</style>
+
+<script language="Javascript" type="text/javascript">
+var rodebalkurl="";
+var json;var xmlfeed="__MSG_urlfeed__";var urlgadget="__MSG_urlgadget__";var sprite=getUrl("__MSG_urlsprite__");var header=getUrl("__MSG_urlheader__");var ga=new _IG_GA("UA-10879317-3");ga.reportPageview('/buienradar-gadget');var prefs=new _IG_Prefs(__MODULE_ID__);function elId(id){return document.getElementById(id);}
+function getUrl(url){if(1)
+{var params={};return gadgets.io.getProxyUrl(url,params);}
+else
+return url;}
+function openLink(url,rodebalk){if(rodebalk)
+{ga.reportPageview('/buienradar-gadget/extern/rodebalk');target="_blank";}
+else
+{ga.reportPageview('/buienradar-gadget/extern/buienradar');target="_blank";}
+window.open(url,target);}
+function GetXmlFeed(view){elId('loading').style.display='';elId('content').style.display='none';var params={};params[gadgets.io.RequestParameters.CONTENT_TYPE]=gadgets.io.ContentType.DOM;params[gadgets.io.RequestParameters.REFRESH_INTERVAL]=300;gadgets.io.makeRequest(xmlfeed,function(response){XmlToJson(response);ShowContent(view);},params);}
+function ShowContent(view){elId('loading').style.display='none';elId('content').style.display='';if(view=='home')
+{ShowActueel();ShowVooruitzichten(true);gadgets.window.adjustHeight();}
+else
+{ShowVooruitzichten(false);ShowMeetstations();ShowBuienradar();ShowVerwachtingTekst();gadgets.window.adjustHeight();}}
+var timer=null;function cancelTimer(){if(timer)
+{clearTimeout(timer);timer=null;}}
+function hideList(){cancelTimer();timer=setTimeout("timerHideList()",200);}
+function timerHideList(){timer=null
+elId('stationcont').className="stationcont";}
+function showList(el){cancelTimer();if(elId('stationcont').className!="stationconthover")
+elId('stationcont').className="stationconthover";}
+function ShowActueel(){weerstations=json.actueel_weer.weerstations;meetstationPrefs=prefs.getString('meetstation');html=new Array();for(i=0;i<weerstations.length;i++)
+{if(weerstations[i].stationcode==meetstationPrefs)meetstationSelected=meetstationPrefs;}
+if(meetstationSelected==null)meetstationSelected=weerstations[0].stationcode;if(prefs.getBool('show_actueel'))
+{html.push('<h1 style="background-image:url('+header+')">');html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideActueel(false)\' class="hidediv" title="__MSG_inklappen__">&nbsp;</a>');html.push('&nbsp;__MSG_actueel__');html.push('</h1>');html.push('<table>');for(i=0;i<weerstations.length;i++)
+{if(meetstationSelected==weerstations[i].stationcode)
+{html.push('<tr>');html.push('<td>');html.push('<div id="stationcont" class="stationcont" onmouseout="hideList();">');html.push('<div class="weerstationDropdown" style="background-image:url('+sprite+')" onmouseover="showList();" />&nbsp;</div>');html.push('<strong class="stationnaam">'+weerstations[i].stationnaam.replace('Meetstation ','')+'</strong>');html.push('<div id="weerstatcont"><div id="weerstations" onmouseover="showList();" >');for(j=0;j<weerstations.length;j++)
+{html.push('<div class="weerstationOut" onClick="ChangeMeetstation(\''+weerstations[j].stationcode+'\')" onMouseOver="this.className=\'weerstationOver\';this.style.backgroundImage=\'url('+header+')\'" onMouseOut="this.className=\'weerstationOut\';this.style.backgroundImage=\'none\'">')
+html.push(weerstations[j].stationnaam.replace('Meetstation ',''));html.push('</div>');}
+html.push('</div></div>');html.push('</div>');html.push('<br />');html.push('<img src="'+getUrl(weerstations[i].icoon)+'" />');html.push('<h2>'+weerstations[i].temperatuurGC+'&deg;C</h2>');html.push('<br />');html.push(json.actueel_weer.verwachting_samenvatting);html.push('</td>');}}
+html.push('<th rowspan="3">');html.push('<a onclick=\'openLink("http://www.buienradar.nl/")\'>');html.push('<img class="weerstationRadar" src="http://gratisweerdata.buienradar.nl/radar.php?type=256x256" />');html.push('</a>');html.push('</th>');html.push('</tr>');html.push('</table>');}
+else
+{html.push('<h1 style="background-image:url('+header+')">');html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideActueel(true)\' class="showdiv" title="__MSG_uitklappen__">&nbsp;</a>');html.push('&nbsp;__MSG_actueel__');html.push('</h1>');}
+elId('actueel').innerHTML=html.join('');}
+function ShowHideActueel(show){prefs.set('show_actueel',show);ShowContent('home');}
+function ChangeMeetstation(stationcode){prefs.set('meetstation',stationcode);ShowContent('home');}
+function ShowVooruitzichten(showhide){dagen=json.verwachting_meerdaags.dagen;html=new Array();if(prefs.getBool('show_vooruitzichten')){html.push('<h1 style="background-image:url('+header+')">');if(showhide)
+{html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideVooruitzichten(false)\' class="hidediv" title="__MSG_inklappen__">&nbsp;</a>');}
+html.push('&nbsp;__MSG_vooruitzichten__');html.push('</h1>');html.push('<table>');html.push('<tr>');html.push('<th>&nbsp;</th>');for(i=0;i<dagen.length;i++)html.push('<td><b>'+dagen[i].dagweek+'</b></td>');html.push('</tr>');html.push('<tr>');html.push('<th>&nbsp;</th>');for(i=0;i<dagen.length;i++)html.push('<td><a onclick=\'openLink("http://www.buienradar.nl/tekst.aspx?tekst=verwachting")\'><img class="vooruitzichtenWolk" src="'+getUrl(dagen[i].icoon)+'" /></a></td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_zonkans__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].kanszon+'%</td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_neerslag__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].kansregen+'%</td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_minmax__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].mintemp+'/'+dagen[i].maxtemp+'&deg;C</td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_wind__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].windrichting+' '+dagen[i].windkracht+'</td>');html.push('</tr>');html.push('</table>');}else{html.push('<h1 style="background-image:url('+header+')">');if(showhide)
+{html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideVooruitzichten(true)\' class="showdiv" title="__MSG_uitklappen__">&nbsp;</a>');}
+html.push('&nbsp;__MSG_vooruitzichten__');html.push('</h1>');}
+elId('vooruitzichten').innerHTML=html.join('');}
+function ShowHideVooruitzichten(show){prefs.set('show_vooruitzichten',show);ShowContent('home');}
+function ShowMeetstations(){weerstations=json.actueel_weer.weerstations;html=new Array();html.push('<h1 style="background-image:url('+header+')">');html.push('&nbsp;Actueel');html.push('</h1>');html.push('<div id="meetstationslijst">');html.push('<table>');html.push('<tr>');html.push('<th>&nbsp;</th>');html.push('<th>&nbsp;</th>');html.push('<th>Temp. (&deg;C)</th>');html.push('<th>Vocht (%)</th>');html.push('<th>Wind (bft)</th>');html.push('</tr>');for(i=0;i<weerstations.length;i++)
+{html.push('<tr onmouseover="BgColor(this,\'#E8EEF7\')" onmouseout="BgColor(this,\'#FFFFFF\')">');html.push('<td>');html.push('<a onclick=\'openLink("http://www.buienradar.nl/station.aspx?stationnr='+weerstations[i].stationcode+'")\'>');html.push('<b>'+weerstations[i].stationnaam.replace('Meetstation ','')+'</b>');html.push('</a>');html.push('</td>');html.push('<td><img src="'+getUrl(weerstations[i].icoon)+'" /></td>');html.push('<td>'+weerstations[i].temperatuurGC+'</td>');html.push('<td>'+weerstations[i].luchtvochtigheid+'</td>');html.push('<td>'+weerstations[i].windrichting+' '+weerstations[i].windsnelheidBF+'</td>');html.push('</tr>');}
+html.push('</table>');html.push('</div>');elId('meetstations').innerHTML=html.join('');}
+function ShowBuienradar(){date=new Date();year=date.getYear();month=(date.getMonth()<10)?'0'+date.getMonth():date.getMonth();days=(date.getDate()<10)?'0'+date.getDate():date.getDate();hours=(date.getHours()<10)?'0'+date.getHours():date.getHours();minutes=(date.getMinutes()<10)?'0'+date.getMinutes():date.getMinutes();datestr=year+month+days+hours+minutes;html=new Array();html.push('<a onclick=\'openLink("http://www.buienradar.nl/")\'>');html.push('<img src="http://www.buienradar.nl/images.aspx?jaar=-3&bliksem=1&voor=&soort=verwachting1x1&tijdid='+datestr+'" />');html.push('</a>');elId('buienradar').innerHTML=html.join('');}
+function ShowVerwachtingTekst(){elId('text').innerHTML=json.actueel_weer.verwachting_tekst;}
+function XmlToJson(xml){xml=xml.data;xml_actueel_weer=xml.getElementsByTagName('actueel_weer').item(0);xml_actueel_weer_weerstations=xml_actueel_weer.getElementsByTagName('weerstations').item(0).getElementsByTagName('weerstation');xml_actueel_weer_buienindex=xml_actueel_weer.getElementsByTagName('buienindex').item(0);xml_actueel_weer_buienradar=xml_actueel_weer.getElementsByTagName('buienradar').item(0);xml_verwachting_vandaag=xml.getElementsByTagName('verwachting_vandaag').item(0);xml_verwachting_meerdaags=xml.getElementsByTagName('verwachting_meerdaags').item(0);json=new Object();json.actueel_weer=new Object();json.actueel_weer.buien=GetXmlValue(xml_actueel_weer_buienindex,'waardepercentage');json.actueel_weer.icoon=GetXmlValue(xml_actueel_weer_buienradar,'icoonactueel');json.actueel_weer.zonopkomst=GetXmlValue(xml_actueel_weer_buienradar,'zonopkomst');json.actueel_weer.zononder=GetXmlValue(xml_actueel_weer_buienradar,'zononder');json.actueel_weer.verwachting_titel=GetXmlValue(xml_verwachting_vandaag,'titel');json.actueel_weer.verwachting_samenvatting=GetXmlValue(xml_verwachting_vandaag,'samenvatting');json.actueel_weer.verwachting_tekst=GetXmlValue(xml_verwachting_vandaag,'tekst');json.actueel_weer.weerstations=new Array();for(i=0;i<xml_actueel_weer_weerstations.length;i++){xml_weerstation=xml_actueel_weer_weerstations.item(i);weerstation=new Object();weerstation.stationcode=GetXmlValue(xml_weerstation,'stationcode');weerstation.stationnaam=GetXmlValue(xml_weerstation,'stationnaam');weerstation.lat=GetXmlValue(xml_weerstation,'lat');weerstation.lon=GetXmlValue(xml_weerstation,'lon');weerstation.datum=GetXmlValue(xml_weerstation,'datum');weerstation.luchtvochtigheid=GetXmlValue(xml_weerstation,'luchtvochtigheid');weerstation.temperatuurGC=GetXmlValue(xml_weerstation,'temperatuurGC');weerstation.windsnelheidMS=GetXmlValue(xml_weerstation,'windsnelheidMS');weerstation.windsnelheidBF=GetXmlValue(xml_weerstation,'windsnelheidBF');weerstation.windrichtingGR=GetXmlValue(xml_weerstation,'windrichtingGR');weerstation.windrichting=GetXmlValue(xml_weerstation,'windrichting');weerstation.icoon=GetXmlValue(xml_weerstation,'icoonactueel');json.actueel_weer.weerstations.push(weerstation);}
+json.verwachting_meerdaags=new Object();json.verwachting_meerdaags.tekst_middellang=GetXmlValue(xml_verwachting_meerdaags,'tekst_middellang');json.verwachting_meerdaags.tekst_lang=GetXmlValue(xml_verwachting_meerdaags,'tekst_lang');json.verwachting_meerdaags.dagen=new Array();for(j=1;j<=5;j++){xml_verwachting_dag=xml_verwachting_meerdaags.getElementsByTagName('dag-plus'+j).item(0);dag=new Object();dag.datum=GetXmlValue(xml_verwachting_dag,'datum');dag.dagweek=GetXmlValue(xml_verwachting_dag,'dagweek');dag.kanszon=GetXmlValue(xml_verwachting_dag,'kanszon');dag.kansregen=GetXmlValue(xml_verwachting_dag,'kansregen');dag.minmmregen=GetXmlValue(xml_verwachting_dag,'minmmregen');dag.maxmmregen=GetXmlValue(xml_verwachting_dag,'maxmmregen');dag.mintemp=GetXmlValue(xml_verwachting_dag,'mintemp');dag.maxtemp=GetXmlValue(xml_verwachting_dag,'maxtemp');dag.windrichting=GetXmlValue(xml_verwachting_dag,'windrichting');dag.windkracht=GetXmlValue(xml_verwachting_dag,'windkracht');dag.icoon=GetXmlValue(xml_verwachting_dag,'icoon');json.verwachting_meerdaags.dagen.push(dag);}
+return json;}
+function GetXmlValue(xml,node){try{return xml.getElementsByTagName(node).item(0).firstChild.nodeValue;}catch(e){return'';}}
+function BgColor(el,color){el.style.backgroundColor=color;}
+window.onload = function() { GetXmlFeed('home'); };
+</script>
+
+<div id="loading">__MSG_geduld__</div>
+<div id="content" style="display:none">
+  <div id="actueel"></div>
+  <div id="vooruitzichten"></div>
+</div>
+<script type='text/javascript'>
+<!--
+var da_p;
+var da_g="buienradar";
+var da_c;
+var da_l;
+var da_u="jprmedia";
+var da_a;
+var da_ad;
+var da_aid;
+var da_link;
+var da_t;
+var da_gatype="ga";
+var da_ga;
+var da_gacode="UA-10879317-4";
+var da_mm;
+var da_msg;
+function da_load() {
+  da_p=new gadgets.Prefs();
+  da_c=da_p.getCountry().toUpperCase();
+  da_l=da_p.getLang();
+  if(da_gatype=='ga')
+    da_ga=new _IG_GA(da_gacode);
+  var params = {};
+  params[gadgets.io.RequestParameters.REFRESH_INTERVAL]=60*60;
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+  var url="http://jprads.jprmedia.net/directfeed.php?g="+da_g+"&c="+da_c+"&l="+da_l;
+  gadgets.io.makeRequest(url, da_resp, params);
+}
+function da_resp(r) {
+  if(r.data)
+  {
+    if(r.data.active)
+    {
+      da_ad=r.data.adname;
+      if(r.data.aid!=da_p.getString('da_aid'))
+      {
+        da_mm = new gadgets.MiniMessage();
+        var div = document.createElement("div");
+        div.style.font="9px arial,sans-serif";
+        div.style.fontWeight="normal";
+        div.style.padding="1px 0 1px 0";
+        div.style.backgroundColor=r.data.bgcolor;
+        div.innerHTML = r.data.ad;
+        da_msg=da_mm.createStaticMessage(div,da_exit);
+        da_msg.style.color=r.data.color;
+        da_msg.style.backgroundColor=r.data.bgcolor;
+        da_msg.style.margin="0 0 3px 0";
+        da_msg.style.padding="0 0 0 2px";
+            da_msg.style.borderBottom="1px solid #DDDDDD";
+        da_u=r.data.u;
+        da_aid=r.data.aid;
+        da_link=r.data.link;
+        da_t=r.data.target;
+        da_toga("/"+da_u+"/"+da_g+"/"+da_ad+"/Adview/"+da_c+"/"+da_l);
+        if(gadgets.window)
+          setTimeout("gadgets.window.adjustHeight()",200);
+      }
+      else
+      {
+        if(gadgets.window)
+            gadgets.window.adjustHeight();
+      }
+    }
+    else
+    {
+      da_ad="no_campagne";
+    }
+
+  }
+  if(da_ad)
+    da_toga("/"+da_u+"/"+da_g+"/"+da_ad+"/Pageview/"+da_c+"/"+da_l);
+  else
+    da_toga("/"+da_u+"/"+da_g+"/no_campagne/Pageview/"+da_c+"/"+da_l);
+}
+
+function da_toga(text) {
+  if(da_gatype=='ga')
+  {
+    da_ga.reportPageview(text);
+  }
+  else
+  {
+    _IG_Analytics(da_gacode,text);
+  }
+}
+function da_oUrl() {
+  window.open(da_link,da_t);
+  da_toga("/"+da_u+"/"+da_g+"/"+da_ad+"/Link/"+da_c+"/"+da_l);
+}
+function da_toJPRads() {
+  window.open("http://jprads.jprmedia.net","_blank");
+  da_toga("/"+da_u+"/"+da_g+"/"+da_ad+"/JPRads/"+da_c+"/"+da_l);
+}
+function da_exit() {
+  if(da_msg && da_mm)
+  {
+    da_msg.style.display="none";
+    da_mm.dismissMessage(da_msg);
+  }
+  da_p.set('da_aid',da_aid);
+  if(gadgets.window)
+      gadgets.window.adjustHeight();
+  da_toga("/"+da_u+"/"+da_g+"/"+da_ad+"/Exit/"+da_c+"/"+da_l);
+}
+gadgets.util.registerOnLoadHandler(function(){
+  setTimeout("da_load()",1000);
+});//-->
+</script>
+
+]]>
+</Content>
+
+<Content type="html" view="canvas">
+<![CDATA[
+
+
+<style type="text/css">
+<!--
+body,td,div,h1,h2,h3,span,p,th,select,option,input,textarea{font-family:arial,sans-serif;font-size:8pt}h1{color:#FFF;margin:0px
+0px 3px 0px;padding:0px
+0px 0px 0px;width:100%;display:block;height:14px}h2{color:#555;font-size:14pt;margin:5px
+0px 0px 0px}img{border:none}a{text-decoration:underline;cursor:pointer}#loading{width:100%;text-align:center}#actueel
+table{margin:0px
+0px 3px 0px;width:100%;border-collapse:collapse}#actueel
+th{padding:0px;vertical-align:top;text-align:right}#actueel
+td{padding:0px
+3px 0px 0px;vertical-align:top;text-align:left}#actueel
+img{float:left}#stationcont{position:relative;z-index:10;text-decoration:none}.weerstationDropdown{margin:0px
+2px 0px 0px;background-repeat:no-repeat;background-position:0px -25px;display:block;height:12px;width:12px;cursor:pointer;float:left}strong.stationnaam{float:left}#stationcont
+#weerstatcont{float:left;clear:left;position:relative}.stationconthover
+#weerstations{display:block}.stationcont
+#weerstations{display:none}#weerstations{position:absolute;left:0px;top:0px;background-color:#FFF;border:solid 1px #000;padding:0px;overflow-x:hidden;overflow-y:auto;height:expression(this.scrollHeight > 256 ? "256px" : "auto" );max-height:256px;z-index:15;margin:0;padding:0;clear:both}.weerstationOut,.weerstationOver{cursor:pointer;padding:1px
+3px 1px 3px;white-space:nowrap;width:100%}.weerstationOut{color:#000}.weerstationOver{color:#FFF}.weerstationRadar{width:256px;height:256px}#vooruitzichten
+table{margin:3px
+0px 0px 0px;width:100%;border-collapse:collapse}#vooruitzichten
+td{padding:1px;text-align:center}#vooruitzichten
+th{padding:0px;text-align:left}.vooruitzichtenWolk{width:37px;height:37px}#meetstations
+table{margin:3px
+0px 0px 0px;width:100%;border-collapse:collapse}#meetstations
+th{padding:0px;vertical-align:top;text-align:left}#meetstations
+td{padding:0px;vertical-align:midle;text-align:left}#meetstationslijst{overflow-x:hidden;overflow-y:auto;height:expression(this.scrollHeight > 610 ? "610px" : "auto" );max-height:610px}.canvas{width:100%}.canvas-right,.canvas-left{width:50%;vertical-align:top;padding:2px}#buienradar{text-align:right;padding:0px
+0px 5px 0px}#buienradar
+img{width:550px;height:513px}#text{padding:0px
+0px 5px 0px}#logo{width:100%;text-align:left}#logo
+img{border:none;margin:0px
+0px 5px 0px}#ads{padding:5px;text-align:center}.showdiv,.hidediv{padding:0;background-repeat:no-repeat;display:block;height:12px;width:12px;cursor:pointer;float:right;margin:1px
+3px 0px 0px;line-height:1px;text-decoration:none}.showdiv{background-position:0px -12px}.showdiv:hover{background-position:-12px -12px}.hidediv{background-position:0px 0px}.hidediv:hover{background-position:-12px 0px}#rodebalk{font-family:arial,verdana;background-color:#DA0000;padding:1px
+5px;margin:0
+0 3px 0}#rodebalk,#rodebalk a,#rodebalk
+p{color:#FFF;font-size:12px;font-weight:bold}#rodebalk
+p{margin:0;padding:0}-->
+</style>
+
+<script language="Javascript" type="text/javascript">
+var json;var xmlfeed="__MSG_urlfeed__";var urlgadget="__MSG_urlgadget__";var sprite=getUrl("__MSG_urlsprite__");var header=getUrl("__MSG_urlheader__");var ga=new _IG_GA("UA-10879317-3");ga.reportPageview('/buienradar-gadget');var prefs=new _IG_Prefs(__MODULE_ID__);function elId(id){return document.getElementById(id);}
+function getUrl(url){if(1)
+{var params={};return gadgets.io.getProxyUrl(url,params);}
+else
+return url;}
+function openLink(url,rodebalk){if(rodebalk)
+{ga.reportPageview('/buienradar-gadget/extern/rodebalk');target="_blank";}
+else
+{ga.reportPageview('/buienradar-gadget/extern/buienradar');target="_blank";}
+window.open(url,target);}
+function GetXmlFeed(view){elId('loading').style.display='';elId('content').style.display='none';var params={};params[gadgets.io.RequestParameters.CONTENT_TYPE]=gadgets.io.ContentType.DOM;params[gadgets.io.RequestParameters.REFRESH_INTERVAL]=300;gadgets.io.makeRequest(xmlfeed,function(response){XmlToJson(response);ShowContent(view);},params);}
+function ShowContent(view){elId('loading').style.display='none';elId('content').style.display='';if(view=='home')
+{ShowActueel();ShowVooruitzichten(true);gadgets.window.adjustHeight();}
+else
+{ShowVooruitzichten(false);ShowMeetstations();ShowBuienradar();ShowVerwachtingTekst();gadgets.window.adjustHeight();}}
+var timer=null;function cancelTimer(){if(timer)
+{clearTimeout(timer);timer=null;}}
+function hideList(){cancelTimer();timer=setTimeout("timerHideList()",200);}
+function timerHideList(){timer=null
+elId('stationcont').className="stationcont";}
+function showList(el){cancelTimer();if(elId('stationcont').className!="stationconthover")
+elId('stationcont').className="stationconthover";}
+function ShowActueel(){weerstations=json.actueel_weer.weerstations;meetstationPrefs=prefs.getString('meetstation');html=new Array();for(i=0;i<weerstations.length;i++)
+{if(weerstations[i].stationcode==meetstationPrefs)meetstationSelected=meetstationPrefs;}
+if(meetstationSelected==null)meetstationSelected=weerstations[0].stationcode;if(prefs.getBool('show_actueel'))
+{html.push('<h1 style="background-image:url('+header+')">');html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideActueel(false)\' class="hidediv" title="__MSG_inklappen__">&nbsp;</a>');html.push('&nbsp;__MSG_actueel__');html.push('</h1>');html.push('<table>');for(i=0;i<weerstations.length;i++)
+{if(meetstationSelected==weerstations[i].stationcode)
+{html.push('<tr>');html.push('<td>');html.push('<div id="stationcont" class="stationcont" onmouseout="hideList();">');html.push('<div class="weerstationDropdown" style="background-image:url('+sprite+')" onmouseover="showList();" />&nbsp;</div>');html.push('<strong class="stationnaam">'+weerstations[i].stationnaam.replace('Meetstation ','')+'</strong>');html.push('<div id="weerstatcont"><div id="weerstations" onmouseover="showList();" >');for(j=0;j<weerstations.length;j++)
+{html.push('<div class="weerstationOut" onClick="ChangeMeetstation(\''+weerstations[j].stationcode+'\')" onMouseOver="this.className=\'weerstationOver\';this.style.backgroundImage=\'url('+header+')\'" onMouseOut="this.className=\'weerstationOut\';this.style.backgroundImage=\'none\'">')
+html.push(weerstations[j].stationnaam.replace('Meetstation ',''));html.push('</div>');}
+html.push('</div></div>');html.push('</div>');html.push('<br />');html.push('<img src="'+getUrl(weerstations[i].icoon)+'" />');html.push('<h2>'+weerstations[i].temperatuurGC+'&deg;C</h2>');html.push('<br />');html.push(json.actueel_weer.verwachting_samenvatting);html.push('</td>');}}
+html.push('<th rowspan="3">');html.push('<a onclick=\'openLink("http://www.buienradar.nl/")\'>');html.push('<img class="weerstationRadar" src="http://gratisweerdata.buienradar.nl/radar.php?type=256x256" />');html.push('</a>');html.push('</th>');html.push('</tr>');html.push('</table>');}
+else
+{html.push('<h1 style="background-image:url('+header+')">');html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideActueel(true)\' class="showdiv" title="__MSG_uitklappen__">&nbsp;</a>');html.push('&nbsp;__MSG_actueel__');html.push('</h1>');}
+elId('actueel').innerHTML=html.join('');}
+function ShowHideActueel(show){prefs.set('show_actueel',show);ShowContent('home');}
+function ChangeMeetstation(stationcode){prefs.set('meetstation',stationcode);ShowContent('home');}
+function ShowVooruitzichten(showhide){dagen=json.verwachting_meerdaags.dagen;html=new Array();if(prefs.getBool('show_vooruitzichten')){html.push('<h1 style="background-image:url('+header+')">');if(showhide)
+{html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideVooruitzichten(false)\' class="hidediv" title="__MSG_inklappen__">&nbsp;</a>');}
+html.push('&nbsp;__MSG_vooruitzichten__');html.push('</h1>');html.push('<table>');html.push('<tr>');html.push('<th>&nbsp;</th>');for(i=0;i<dagen.length;i++)html.push('<td><b>'+dagen[i].dagweek+'</b></td>');html.push('</tr>');html.push('<tr>');html.push('<th>&nbsp;</th>');for(i=0;i<dagen.length;i++)html.push('<td><a onclick=\'openLink("http://www.buienradar.nl/tekst.aspx?tekst=verwachting")\'><img class="vooruitzichtenWolk" src="'+getUrl(dagen[i].icoon)+'" /></a></td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_zonkans__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].kanszon+'%</td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_neerslag__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].kansregen+'%</td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_minmax__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].mintemp+'/'+dagen[i].maxtemp+'&deg;C</td>');html.push('</tr>');html.push('<tr>');html.push('<th>__MSG_wind__</th>');for(i=0;i<dagen.length;i++)html.push('<td>'+dagen[i].windrichting+' '+dagen[i].windkracht+'</td>');html.push('</tr>');html.push('</table>');}else{html.push('<h1 style="background-image:url('+header+')">');if(showhide)
+{html.push('<a style="background-image:url('+sprite+')" onClick=\'ShowHideVooruitzichten(true)\' class="showdiv" title="__MSG_uitklappen__">&nbsp;</a>');}
+html.push('&nbsp;__MSG_vooruitzichten__');html.push('</h1>');}
+elId('vooruitzichten').innerHTML=html.join('');}
+function ShowHideVooruitzichten(show){prefs.set('show_vooruitzichten',show);ShowContent('home');}
+function ShowMeetstations(){weerstations=json.actueel_weer.weerstations;html=new Array();html.push('<h1 style="background-image:url('+header+')">');html.push('&nbsp;Actueel');html.push('</h1>');html.push('<div id="meetstationslijst">');html.push('<table>');html.push('<tr>');html.push('<th>&nbsp;</th>');html.push('<th>&nbsp;</th>');html.push('<th>Temp. (&deg;C)</th>');html.push('<th>Vocht (%)</th>');html.push('<th>Wind (bft)</th>');html.push('</tr>');for(i=0;i<weerstations.length;i++)
+{html.push('<tr onmouseover="BgColor(this,\'#E8EEF7\')" onmouseout="BgColor(this,\'#FFFFFF\')">');html.push('<td>');html.push('<a onclick=\'openLink("http://www.buienradar.nl/station.aspx?stationnr='+weerstations[i].stationcode+'")\'>');html.push('<b>'+weerstations[i].stationnaam.replace('Meetstation ','')+'</b>');html.push('</a>');html.push('</td>');html.push('<td><img src="'+getUrl(weerstations[i].icoon)+'" /></td>');html.push('<td>'+weerstations[i].temperatuurGC+'</td>');html.push('<td>'+weerstations[i].luchtvochtigheid+'</td>');html.push('<td>'+weerstations[i].windrichting+' '+weerstations[i].windsnelheidBF+'</td>');html.push('</tr>');}
+html.push('</table>');html.push('</div>');elId('meetstations').innerHTML=html.join('');}
+function ShowBuienradar(){date=new Date();year=date.getYear();month=(date.getMonth()<10)?'0'+date.getMonth():date.getMonth();days=(date.getDate()<10)?'0'+date.getDate():date.getDate();hours=(date.getHours()<10)?'0'+date.getHours():date.getHours();minutes=(date.getMinutes()<10)?'0'+date.getMinutes():date.getMinutes();datestr=year+month+days+hours+minutes;html=new Array();html.push('<a onclick=\'openLink("http://www.buienradar.nl/")\'>');html.push('<img src="http://www.buienradar.nl/images.aspx?jaar=-3&bliksem=1&voor=&soort=verwachting1x1&tijdid='+datestr+'" />');html.push('</a>');elId('buienradar').innerHTML=html.join('');}
+function ShowVerwachtingTekst(){elId('text').innerHTML=json.actueel_weer.verwachting_tekst;}
+function XmlToJson(xml){xml=xml.data;xml_actueel_weer=xml.getElementsByTagName('actueel_weer').item(0);xml_actueel_weer_weerstations=xml_actueel_weer.getElementsByTagName('weerstations').item(0).getElementsByTagName('weerstation');xml_actueel_weer_buienindex=xml_actueel_weer.getElementsByTagName('buienindex').item(0);xml_actueel_weer_buienradar=xml_actueel_weer.getElementsByTagName('buienradar').item(0);xml_verwachting_vandaag=xml.getElementsByTagName('verwachting_vandaag').item(0);xml_verwachting_meerdaags=xml.getElementsByTagName('verwachting_meerdaags').item(0);json=new Object();json.actueel_weer=new Object();json.actueel_weer.buien=GetXmlValue(xml_actueel_weer_buienindex,'waardepercentage');json.actueel_weer.icoon=GetXmlValue(xml_actueel_weer_buienradar,'icoonactueel');json.actueel_weer.zonopkomst=GetXmlValue(xml_actueel_weer_buienradar,'zonopkomst');json.actueel_weer.zononder=GetXmlValue(xml_actueel_weer_buienradar,'zononder');json.actueel_weer.verwachting_titel=GetXmlValue(xml_verwachting_vandaag,'titel');json.actueel_weer.verwachting_samenvatting=GetXmlValue(xml_verwachting_vandaag,'samenvatting');json.actueel_weer.verwachting_tekst=GetXmlValue(xml_verwachting_vandaag,'tekst');json.actueel_weer.weerstations=new Array();for(i=0;i<xml_actueel_weer_weerstations.length;i++){xml_weerstation=xml_actueel_weer_weerstations.item(i);weerstation=new Object();weerstation.stationcode=GetXmlValue(xml_weerstation,'stationcode');weerstation.stationnaam=GetXmlValue(xml_weerstation,'stationnaam');weerstation.lat=GetXmlValue(xml_weerstation,'lat');weerstation.lon=GetXmlValue(xml_weerstation,'lon');weerstation.datum=GetXmlValue(xml_weerstation,'datum');weerstation.luchtvochtigheid=GetXmlValue(xml_weerstation,'luchtvochtigheid');weerstation.temperatuurGC=GetXmlValue(xml_weerstation,'temperatuurGC');weerstation.windsnelheidMS=GetXmlValue(xml_weerstation,'windsnelheidMS');weerstation.windsnelheidBF=GetXmlValue(xml_weerstation,'windsnelheidBF');weerstation.windrichtingGR=GetXmlValue(xml_weerstation,'windrichtingGR');weerstation.windrichting=GetXmlValue(xml_weerstation,'windrichting');weerstation.icoon=GetXmlValue(xml_weerstation,'icoonactueel');json.actueel_weer.weerstations.push(weerstation);}
+json.verwachting_meerdaags=new Object();json.verwachting_meerdaags.tekst_middellang=GetXmlValue(xml_verwachting_meerdaags,'tekst_middellang');json.verwachting_meerdaags.tekst_lang=GetXmlValue(xml_verwachting_meerdaags,'tekst_lang');json.verwachting_meerdaags.dagen=new Array();for(j=1;j<=5;j++){xml_verwachting_dag=xml_verwachting_meerdaags.getElementsByTagName('dag-plus'+j).item(0);dag=new Object();dag.datum=GetXmlValue(xml_verwachting_dag,'datum');dag.dagweek=GetXmlValue(xml_verwachting_dag,'dagweek');dag.kanszon=GetXmlValue(xml_verwachting_dag,'kanszon');dag.kansregen=GetXmlValue(xml_verwachting_dag,'kansregen');dag.minmmregen=GetXmlValue(xml_verwachting_dag,'minmmregen');dag.maxmmregen=GetXmlValue(xml_verwachting_dag,'maxmmregen');dag.mintemp=GetXmlValue(xml_verwachting_dag,'mintemp');dag.maxtemp=GetXmlValue(xml_verwachting_dag,'maxtemp');dag.windrichting=GetXmlValue(xml_verwachting_dag,'windrichting');dag.windkracht=GetXmlValue(xml_verwachting_dag,'windkracht');dag.icoon=GetXmlValue(xml_verwachting_dag,'icoon');json.verwachting_meerdaags.dagen.push(dag);}
+return json;}
+function GetXmlValue(xml,node){try{return xml.getElementsByTagName(node).item(0).firstChild.nodeValue;}catch(e){return'';}}
+function BgColor(el,color){el.style.backgroundColor=color;}  window.onload = function() { GetXmlFeed('canvas'); };
+</script>
+
+<div id="loading">__MSG_geduld__</div>
+<div id="content" style="display:none">
+  <table class="canvas">
+    <tr>
+      <td class="canvas-right">
+        <div id="logo"><a href="http://www.buienradar.nl/" target="_blank"><img src="http://buienradar.jprmedia.net/buienradar_img_logo.jpg" /></a></div>
+        <div id="text"></div>
+        <div id="meetstations"></div>
+      </td>
+      <td class="canvas-left">
+        <div id="buienradar"></div>
+        <div id="ads">
+          <script type="text/javascript"><!--
+          google_ad_client = "pub-0594820331240968";
+          /* 468x60, gemaakt 27-1-09 */
+          google_ad_slot = "6624884460";
+          google_ad_width = 468;
+          google_ad_height = 60;
+          //-->
+          </script>
+          <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+          </script>
+        </div>
+        <div id="vooruitzichten"></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+]]>
+</Content>
+
+</Module>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

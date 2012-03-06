@@ -1,0 +1,93 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+####################################################################
+##
+## The following properties are the responsibility of the owners
+## of the machine. The developers do not know the values.
+##
+####################################################################
+
+coin-db-url=jdbc:mysql://db.dev.surfconext.nl:3306/portal
+coin-db-username=portalrw
+coin-db-password=???????
+
+coin-mailserver=s01.dev.coin.surf.net
+coin-mailserver-port=25
+
+metadataUrl=https://os.dev.surfconext.nl/gadgets/metadata
+
+gadgetServerBase=https://os.dev.surfconext.nl/gadgets/
+targetServerBase=https://portal.dev.surfconext.nl/coin/
+
+# The base url where GModule can fetch gadget definitions that are served over https
+# Must be served by coin over http (not https)
+gadgetDefinitionProxy=http://portal.dev.surfconext.nl/coin/gadgetdefinition/
+
+# The url to retrieve the metadata for the registered idps. Used to retrieve the entityIDs.
+idpMetadataUrl=https://engine.dev.surfconext.nl/authentication/proxy/idps-metadata?sp-entity-id=https://portal.dev.surfconext.nl/shibboleth
+
+# If set to true, a user can add any gadget (s)he finds on the internet
+allowCustomGadgets=true
+
+# Comma separated list of URLs for RSS or Atom feeds that are shown on the landingpage
+landingPageRssFeeds=https://wiki.surfnetlabs.nl/createrssfeed.action?types=page&spaces=conextsupport&title=SURFconext+demo+portal+support&labelString=frontpage&excludedSpaceKeys%3D&sort=modified&maxResults=10&timeSpan=600&showContent=true&confirm=Create+RSS+Feed&showDiff=false&os_authType=basic?os_username=myname&os_password=mypassword
+
+# Location of the profile page
+profilePageUrl=https://profile.dev.surfconext.nl/
+
+# Oauth properties
+oauth-key=https://portal.dev.surfconext.nl/coin
+oauth-secret=mysecret
+
+# The url for all Service Providers to retrieve social data
+coin-container-url=https://os.dev.surfconext.nl
+
+####################################################################
+##
+## The following properties are the responsibility of the developers
+##
+####################################################################
+
+hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+hibernate.hbm2ddl.auto=none
+hibernate.format_sql=false
+hibernate.show_sql=false
+
+coin-db-driver=com.mysql.jdbc.Driver
+
+# Settings that will be passed to the shindig-container js:
+shindigDebug=0
+shindigNocache=0
+
+# The Shindig container that should be used: default or coin:
+containerName=coindev
+
+# Use the MockLoginInterceptor when you want to mock Shibboleth:
+loginInterceptor=nl.surfnet.coin.portal.interceptor.LoginInterceptor
+mockLogin=not.used
+mockName=not.used
+mock-user-status=not.used
+
+# Mail address that receives error notifications, leave blank if no mails should be sent
+coin-errormail-to=
+
+# Text fields introduction page
+text-field-introduction=intro-component-introduction
+text-field-getting-started=intro-component-getting-started
