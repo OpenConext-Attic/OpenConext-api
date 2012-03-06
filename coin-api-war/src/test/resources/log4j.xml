@@ -22,8 +22,8 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-		<param name="Threshold" value="WARN" />
-		<param name="Target" value="System.err" />
+		<param name="Threshold" value="DEBUG" />
+		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<!-- The default pattern: Date Priority [Category] Message\n -->
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c] %m%n" />
@@ -32,7 +32,7 @@
 	<category name="org.hibernate">
 		<priority value="WARN" />
 	</category>
-	<category name="org.hibernate">
+	<category name="org.springframework">
 		<priority value="WARN" />
 	</category>
 	<category name="org.apache">
@@ -42,7 +42,7 @@
 		<priority value="WARN" />
 	</category>
 	<root>
-		<priority value="INFO" />
+		<priority value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
 	</root>
 </log4j:configuration>

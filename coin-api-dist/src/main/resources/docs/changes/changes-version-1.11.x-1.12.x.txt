@@ -1,6 +1,0 @@
-###### Configuration changes #########
-# Current Version: 1.12.x            #
-# Previous Version: 1.11.x           #
-######################################
-
-Run update-version-1.7.0-1.12.0.sql script on database portal

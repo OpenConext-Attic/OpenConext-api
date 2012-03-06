@@ -27,7 +27,7 @@
   <groupId>org.surfnet.coin</groupId>
   <artifactId>coin-api-war</artifactId>
   <packaging>war</packaging>
-  <name>coin-api</name>
+  <name>coin-api-war</name>
   <properties>
     <jetty.version>6.1.26</jetty.version>
     <servlet.version>2.4</servlet.version>

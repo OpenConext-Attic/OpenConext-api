@@ -1,7 +1,0 @@
-###### Configuration changes #########
-# Current Version: 1.15.x            #
-# Previous Version: 1.13.x           #
-######################################
-
-Portal properties have changed. Oauth Key / Secret configuration has been added to the portal configuration.
-The portal no longer uses the engine-internal interface but uses Shindig to retrieve social data.

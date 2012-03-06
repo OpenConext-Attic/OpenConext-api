@@ -1,7 +1,0 @@
-###### Configuration changes #########
-# Current Version: 1.5.x             #
-# Previous Version: 1.4.x            #  
-######################################
-
-* Add database table (text_content)
-* Add properties for cms landingpage (text-field-introduction, text-field-getting-started)
