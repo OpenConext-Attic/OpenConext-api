@@ -40,7 +40,7 @@
     <repositories>
         <repository>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
             <releases>
                 <enabled>true</enabled>
@@ -84,6 +84,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
+        <module>coin-api-client</module>
         <module>coin-api-war</module>
         <module>coin-api-dist</module>
     </modules>
