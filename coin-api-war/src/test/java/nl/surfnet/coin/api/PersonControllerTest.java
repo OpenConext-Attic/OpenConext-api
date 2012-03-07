@@ -6,16 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:coin-api-properties-context.xml", "classpath:coin-api-context.xml"})
+@ContextConfiguration(locations = {
+    "classpath:coin-api-properties-context.xml",
+    "classpath:coin-api-context.xml" })
 public class PersonControllerTest {
 
-    @Autowired PersonController p;
+  @Autowired
+  PersonController p;
 
-    @Test
-    public void getPerson() {
-        assertNull(p.getPerson("foo", "bar"));
-    }
+  @Test
+  public void getPerson() {
+    String person = p.getPerson("foo", "bar");
+    assertEquals("hallo",person);
+  }
 }

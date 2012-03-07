@@ -1,28 +1,22 @@
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+<!-- ~ Licensed to the Apache Software Foundation (ASF) under one ~ or more 
+  contributor license agreements. See the NOTICE file ~ distributed with this 
+  work for additional information ~ regarding copyright ownership. The ASF 
+  licenses this file ~ to you under the Apache License, Version 2.0 (the ~ 
+  "License"); you may not use this file except in compliance ~ with the License. 
+  You may obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 
+  ~ ~ Unless required by applicable law or agreed to in writing, ~ software 
+  distributed under the License is distributed on an ~ "AS IS" BASIS, WITHOUT 
+  WARRANTIES OR CONDITIONS OF ANY ~ KIND, either express or implied. See the 
+  License for the ~ specific language governing permissions and limitations 
+  ~ under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.surfnet.coin</groupId>
     <artifactId>coin-api-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.surfnet.coin</groupId>
   <artifactId>coin-api-war</artifactId>
@@ -36,16 +30,17 @@
     <hibernate-annotations.version>3.4.0.GA</hibernate-annotations.version>
     <hibernate-validator.version>4.0.2.GA</hibernate-validator.version>
     <mysql.version>5.1.10</mysql.version>
+    <selenium.version>2.13.0</selenium.version>
+    <selenium.test.url>http://localhost:8090/coin-api</selenium.test.url>
     <httpclient.version>4.1</httpclient.version>
-    <shindig.version>2.16.0-COIN</shindig.version>
     <commons-io.version>1.4</commons-io.version>
     <coin-test.version>1.2</coin-test.version>
     <coin-shared.version>1.16.2</coin-shared.version>
     <coin-opensocial.version>1.16.0</coin-opensocial.version>
-    <rome.version>1.0</rome.version>
+    <jetty.port>8090</jetty.port>
   </properties>
   <profiles>
-  	<profile>
+    <profile>
       <activation>
         <property>
           <name>jmeter</name>
@@ -56,25 +51,28 @@
       <build>
         <plugins>
           <plugin>
-          	<groupId>org.apache.maven.plugins</groupId>
-          	<artifactId>maven-antrun-plugin</artifactId>
-          	<version>1.6</version>
-              <dependencies>
-                <dependency>
-                  <groupId>org.programmerplanet</groupId>
-                  <artifactId>JMeterTask</artifactId>
-                  <version>1.0.9</version>
-                  <scope>runtime</scope>
-                </dependency>	
-              </dependencies>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.6</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.programmerplanet</groupId>
+                <artifactId>JMeterTask</artifactId>
+                <version>1.0.9</version>
+                <scope>runtime</scope>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <id>jmeter</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
-                    <taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
-                    <jmeter jmeterhome="/opt/jakarta-jmeter-2.4" testplan="${basedir}/src/test/resources/jmeter/functional-test.jmx" resultlog="/tmp/jmeter/results-functional-test.jtl">
+                    <taskdef name="jmeter"
+                      classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
+                    <jmeter jmeterhome="/opt/jakarta-jmeter-2.4"
+                      testplan="${basedir}/src/test/resources/jmeter/functional-test.jmx"
+                      resultlog="/tmp/jmeter/results-functional-test.jtl">
                       <property name="request.threads" value="1" />
                       <property name="request.loop" value="1" />
                     </jmeter>
@@ -88,7 +86,149 @@
           </plugin>
         </plugins>
       </build>
-  	</profile>
+    </profile>
+    <profile>
+      <id>selenium</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.10</version>
+            <executions>
+              <execution>
+                <id>default-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>**/*Test*.java</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>selenium-test</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>none</exclude>
+                  </excludes>
+                  <includes>
+                    <include>**/*TestSelenium.java</include>
+                  </includes>
+                  <systemProperties>
+                    <property>
+                      <name>selenium.test.url</name>
+                      <value>${selenium.test.url}</value>
+                    </property>
+                  </systemProperties>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>${jetty.version}</version>
+            <configuration>
+              <webAppConfig>
+                <contextPath>/${project.name}</contextPath>
+              </webAppConfig>
+              <connectors>
+                <connector
+                  implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                  <port>${jetty.port}</port>
+                  <maxIdleTime>60000</maxIdleTime>
+                </connector>
+              </connectors>
+              <daemon>true</daemon>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
+              <stopKey>foo</stopKey>
+              <stopPort>9966</stopPort>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-jetty</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-jetty</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>integration</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.10</version>
+            <configuration>
+              <excludes>
+                <exclude>none</exclude>
+              </excludes>
+              <includes>
+                <include>**/*TestIntegration.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>${jetty.version}</version>
+            <configuration>
+              <webAppConfig>
+                <contextPath>/${project.name}</contextPath>
+              </webAppConfig>
+              <connectors>
+                <connector
+                  implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                  <port>${jetty.port}</port>
+                  <maxIdleTime>60000</maxIdleTime>
+                </connector>
+              </connectors>
+              <daemon>true</daemon>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
+              <stopKey>foo</stopKey>
+              <stopPort>9966</stopPort>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-jetty</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-jetty</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
   <build>
     <plugins>
@@ -115,26 +255,43 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/src/test/integration</source>
+                <source>${basedir}/src/test/selenium</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
           <webAppConfig>
-            <contextPath>/coin</contextPath>
+            <contextPath>/${project.name}</contextPath>
             <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
-            <defaultsDescriptor>${basedir}/src/main/resources/jettywebdefault.xml</defaultsDescriptor>
+            <!-- defaultsDescriptor>${basedir}/src/main/resources/jettywebdefault.xml</defaultsDescriptor -->
           </webAppConfig>
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-              <port>8090</port>
+              <port>${jetty.port}</port>
               <host>0.0.0.0</host>
             </connector>
           </connectors>
-          <!-- systemProperties> <systemProperty> <name>log4j.configuration</name> 
-            <value>file:src/test/resources/log4j.xml</value> </systemProperty> </systemProperties -->
           <scanIntervalSeconds>3</scanIntervalSeconds>
           <useTestClasspath>true</useTestClasspath>
-          <!-- jettyEnvXml>${basedir}/src/test/resources/jetty-env.xml</jettyEnvXml -->
         </configuration>
       </plugin>
       <plugin>
@@ -143,6 +300,17 @@
         <version>2.8</version>
         <configuration>
           <ajdtVersion>none</ajdtVersion>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.10</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*TestSelenium.java</exclude>
+            <exclude>**/*TestIntegration.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -166,7 +334,7 @@
     </plugins>
   </build>
   <dependencies>
-     <dependency>
+    <dependency>
       <groupId>org.surfnet.coin</groupId>
       <artifactId>coin-shared</artifactId>
       <version>${coin-shared.version}</version>
@@ -253,6 +421,26 @@
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.5.8</version>
     </dependency>
+    <!-- Begin Selenium -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-firefox-driver</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-support</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.icegreen</groupId>
+      <artifactId>greenmail</artifactId>
+      <version>1.3.1b</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- End Selenium -->
     <!-- test local -->
     <dependency>
       <groupId>org.surfnet.coin</groupId>
@@ -290,7 +478,7 @@
       <version>2.5.2</version>
       <!--<scope>test</scope> -->
     </dependency>
-   <dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>${spring.version}</version>
