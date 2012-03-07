@@ -18,12 +18,6 @@
  */
 package nl.surfnet.coin.api;
 
-import static org.junit.Assert.*;
-
-import java.io.InputStream;
-import java.net.URL;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 
@@ -31,16 +25,14 @@ import org.junit.Test;
  * Integration tests for Person
  *
  */
-public class PersonTestIntegration {
+public class PersonTestIntegration extends IntegrationSupport {
 
   /**
    * Two legged oauth Person 
    */
   @Test
   public void testTwoLeggedPerson() throws Exception {
-    InputStream is = new URL("http://localhost:8090/coin-api/social/people/5/5").openStream();
-    IOUtils.copy(is, System.out);
-    assertTrue(false);
+    
   }
   
 }

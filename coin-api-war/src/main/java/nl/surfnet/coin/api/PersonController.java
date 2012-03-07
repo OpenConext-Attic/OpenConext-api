@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class PersonController {
 
-    private static Logger LOG = LoggerFactory.getLogger(PersonController.class);
+  private static Logger LOG = LoggerFactory.getLogger(PersonController.class);
 
-    @RequestMapping(value = "/social/people/{userId}/{groupId}")
-    @ResponseBody
-    public String getPerson(@PathVariable("userId") String userId, @PathVariable("groupId") String groupId) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Got getGroups-request, for userId '{}', groupId '{}'", userId, groupId);
-        }
-        return "hallo";
+  @RequestMapping(value = "/social/people/{userId}/{groupId}")
+  @ResponseBody
+  public String getPerson(@PathVariable("userId") String userId,
+      @PathVariable("groupId") String groupId) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Got getPerson-request, for userId '{}', groupId '{}'", userId,
+          groupId);
     }
+    return "hallo";
+  }
 }

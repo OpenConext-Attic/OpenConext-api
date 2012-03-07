@@ -18,18 +18,17 @@
  */
 package nl.surfnet.coin.api;
 
-import org.junit.Test;
-import org.openqa.selenium.By;
 
 /**
- * Test Person related queries with selenium
  * 
+ *
  */
-public class PersonTestSelenium extends SeleniumSupport {
+public class IntegrationSupport {
+  
+  public static final String URL_UNDER_TEST = withEndingSlash(System
+      .getProperty("integration.test.url", "http://localhost:8090/coin-api-war"));
 
-  @Test
-  public void testGetPersonThreeLegged() throws Exception {
-    getWebDriver().get(URL_UNDER_TEST + "social/people/5/5");
-    
+  private static String withEndingSlash(String path) {
+    return path.endsWith("/") ? path : path + "/";
   }
 }

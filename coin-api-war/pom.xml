@@ -1,18 +1,10 @@
-<!--
-  Copyright 2012 SURFnet bv, The Netherlands
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
+<!-- Copyright 2012 SURFnet bv, The Netherlands Licensed under the Apache 
+  License, Version 2.0 (the "License"); you may not use this file except in 
+  compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+  Unless required by applicable law or agreed to in writing, software distributed 
+  under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+  OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+  the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -27,7 +19,7 @@
   <packaging>war</packaging>
   <name>coin-api-war</name>
   <properties>
-    <jetty.version><!--org.mortbay.jetty:jetty-maven-plugin:-->8.0.4.v20111024</jetty.version>
+    <jetty.version>8.0.4.v20111024</jetty.version>
     <servlet.version>2.4</servlet.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <hibernate.version>3.3.2.GA</hibernate.version>
@@ -41,10 +33,23 @@
     <coin-test.version>1.2</coin-test.version>
     <coin-shared.version>2.1.0-SNAPSHOT</coin-shared.version>
     <coin-opensocial.version>2.1.0-SNAPSHOT</coin-opensocial.version>
+    <scribe.version>1.3.0</scribe.version>
     <jetty.port>8090</jetty.port>
+    <selenium.test.url>http://localhost:8090/coin-api-war</selenium.test.url>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.surfnet.coin</groupId>
+      <artifactId>coin-api-client</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scribe</groupId>
+      <artifactId>scribe</artifactId>
+      <version>${scribe.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.surfnet.coin</groupId>
       <artifactId>coin-shared</artifactId>
@@ -63,6 +68,11 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
       <version>${spring.version}</version>
     </dependency>
     <dependency>
@@ -119,7 +129,7 @@
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate-validator.version}</version>
     </dependency>
-    <!-- The next two slf4j dependencies are the ones we want to use. Other
+    <!-- The next two slf4j dependencies are the ones we want to use. Other 
       will be excluded. -->
     <!-- Shouldn't they be "provided"? -->
     <dependency>
@@ -152,35 +162,6 @@
       <scope>test</scope>
     </dependency>
     <!-- End Selenium -->
-    <!-- test local -->
-<!--
-    <dependency>
-      <groupId>org.surfnet.coin</groupId>
-      <artifactId>coin-test</artifactId>
-      <version>${coin-test.version}</version>
-      <scope>test</scope>
-    </dependency>
--->
-<!--
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-management</artifactId>
-      <version>${jetty.version}</version>
-      <scope>test</scope>
-    </dependency>
--->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -217,6 +198,19 @@
       <artifactId>jsp-api</artifactId>
       <version>2.0</version>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -269,27 +263,18 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
           <webAppConfig>
             <contextPath>/${project.name}</contextPath>
             <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
-            <!-- defaultsDescriptor>${basedir}/src/main/resources/jettywebdefault.xml</defaultsDescriptor -->
           </webAppConfig>
           <connectors>
-            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+            <connector
+              implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
               <port>${jetty.port}</port>
-              <host>0.0.0.0</host>
+              <maxIdleTime>60000</maxIdleTime>
             </connector>
           </connectors>
-          <scanIntervalSeconds>3</scanIntervalSeconds>
-          <useTestClasspath>true</useTestClasspath>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.8</version>
-        <configuration>
-          <ajdtVersion>none</ajdtVersion>
         </configuration>
       </plugin>
       <plugin>
@@ -421,8 +406,10 @@
             <artifactId>jetty-maven-plugin</artifactId>
             <version>${jetty.version}</version>
             <configuration>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
               <webAppConfig>
                 <contextPath>/${project.name}</contextPath>
+                <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
               </webAppConfig>
               <connectors>
                 <connector
@@ -459,28 +446,56 @@
     <profile>
       <id>integration</id>
       <build>
-
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <version>2.10</version>
-            <configuration>
-              <excludes>
-                <exclude>none</exclude>
-              </excludes>
-              <includes>
-                <include>**/*TestIntegration.java</include>
-              </includes>
-            </configuration>
+            <executions>
+              <execution>
+                <id>default-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>**/*Test*.java</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>integration-test</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>none</exclude>
+                  </excludes>
+                  <includes>
+                    <include>**/*TestIntegration.java</include>
+                  </includes>
+                  <systemProperties>
+                    <property>
+                      <name>integration.test.url</name>
+                      <value>${selenium.test.url}</value>
+                    </property>
+                  </systemProperties>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <version>${jetty.version}</version>
             <configuration>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
               <webAppConfig>
                 <contextPath>/${project.name}</contextPath>
+                <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
               </webAppConfig>
               <connectors>
                 <connector
