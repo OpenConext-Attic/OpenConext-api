@@ -21,6 +21,6 @@ public class PersonControllerTest {
   @Test
   public void getPerson() {
     String person = p.getPerson("foo", "bar");
-    assertEquals("hallo",person);
+    assertEquals("people in bar",person);
   }
 }
