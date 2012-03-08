@@ -20,12 +20,22 @@ package nl.surfnet.coin.api.client;
 
 import nl.surfnet.coin.api.client.domain.Person;
 
+import java.util.List;
+
 /**
  * Implementation of 
  * 
  */
 public class OpenConextOAuthClientImpl implements OpenConextOAuthClient{
 
-   
-  
+
+    @Override
+    public Person getPerson(String userId, String onBehalfOf) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<Person> getPeople(String groupId, String onBehalfOf) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
