@@ -1,7 +1,0 @@
-   Apache Rave Incubator
-   Copyright 2011 The Apache Software Foundation
-
-   Portions of this software were developed at SURFnet, as part of the SURFworks project.
-   This project was made possible by the support of the SURF, the higher education and research 
-   partnership organisation for Information and Communications Technology (ICT) in The Netherlands. 
-   For more information about SURF, please visit www.surf.nl.
