@@ -63,6 +63,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.1</version>
             </plugin>
+            <!--
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
@@ -71,6 +72,7 @@
                     <licenseLocation>/home/bamboo/clover.license</licenseLocation>
                 </configuration>
             </plugin>
+            -->
         </plugins>
         <extensions>
             <extension>
