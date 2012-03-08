@@ -1,5 +1,6 @@
 package nl.surfnet.coin.api;
 
+import nl.surfnet.coin.api.client.domain.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,14 @@ public class PersonControllerTest {
   @Autowired
   PersonController p;
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void getPersonInGroupNotSupported() {
+    p.getPerson("foo", "bar", "loggedInUser");
+  }
+
   @Test
   public void getPerson() {
-    String person = p.getPerson("foo", "bar");
-    assertEquals("people in bar",person);
+      final Person person = p.getPerson("foo", "@self", "loggedInUser");
+      assertEquals("foo", person.getName());
   }
 }

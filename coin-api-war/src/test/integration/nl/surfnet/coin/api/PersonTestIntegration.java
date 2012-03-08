@@ -32,7 +32,6 @@ public class PersonTestIntegration extends IntegrationSupport {
    */
   @Test
   public void testTwoLeggedPerson() throws Exception {
-    
   }
   
 }
