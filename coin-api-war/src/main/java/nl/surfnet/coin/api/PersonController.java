@@ -38,7 +38,7 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @RequestMapping(value = "/social/people/{userId}/{groupId}")
+    @RequestMapping(value = "/rest/people/{userId}/{groupId}")
     @ResponseBody
     public Person getPerson(
             @PathVariable("userId") String userId,

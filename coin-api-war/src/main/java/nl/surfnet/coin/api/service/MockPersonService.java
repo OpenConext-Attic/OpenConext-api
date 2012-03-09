@@ -48,6 +48,6 @@ public class MockPersonService implements PersonService {
             person.setId("mock-id");
             person.setName("mock-name");
         }
-        return null;
+        return person;
     }
 }
