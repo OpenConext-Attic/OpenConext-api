@@ -16,17 +16,38 @@
 
 package nl.surfnet.coin.api.service;
 
+import org.json.JSONArray;
 import nl.surfnet.coin.api.client.domain.Person;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 public class MockPersonService implements PersonService {
 
+    private final static String JSON_BASE_PATH = "json/";
+    
     @Override
     public Person getPerson(String userId, String loggedInUser) {
+        final ClassPathResource pathResource = new ClassPathResource(JSON_BASE_PATH + userId + ".json");
+        final JSONObject jsonObject;
         final Person person = new Person();
-        person.setId(userId);
-        person.setName(userId);
-        return person;
+        if (pathResource.exists()) {
+            try {
+                final String json = new Scanner(pathResource.getInputStream()).useDelimiter("\\A").next();
+                return Person.fromJSON(json);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            person.setId("mock-id");
+            person.setName("mock-name");
+        }
+        return null;
     }
 }

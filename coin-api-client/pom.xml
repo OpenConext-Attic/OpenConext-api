@@ -26,32 +26,33 @@
   <artifactId>coin-api-client</artifactId>
   <name>coin-api-client</name>
 
-  <properties>
-    <scribe.version>1.3.0</scribe.version>
-  </properties>
-
   <dependencies>
-  <dependency>
-      <groupId>org.scribe</groupId>
-      <artifactId>scribe</artifactId>
-      <version>${scribe.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.surfnet.coin</groupId>
-      <artifactId>coin-master-test-dependencies</artifactId>
-      <type>pom</type>
-    </dependency>
-
+	  <dependency>
+		  <groupId>org.scribe</groupId>
+		  <artifactId>scribe</artifactId>
+		  <version>${scribe.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-api</artifactId>
+		  <scope>provided</scope>
+		</dependency>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-log4j12</artifactId>
+		  <scope>provided</scope>
+		</dependency>
+		<dependency>
+		  <groupId>org.surfnet.coin</groupId>
+		  <artifactId>coin-master-test-dependencies</artifactId>
+		  <type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<!-- TODO: move version to parent/master when it's clear we need it here. -->
+			<version>20090211</version>
+		</dependency>
   </dependencies>
 
 </project>

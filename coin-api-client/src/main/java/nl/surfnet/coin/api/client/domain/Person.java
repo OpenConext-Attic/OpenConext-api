@@ -15,6 +15,9 @@
  */
 package nl.surfnet.coin.api.client.domain;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Person representation
  *
@@ -38,5 +41,13 @@ public class Person {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public static Person fromJSON(String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+        final Person p = new Person();
+        p.setId(o.getString("id"));
+        p.setName(o.getString("name"));
+        return p;
     }
 }
