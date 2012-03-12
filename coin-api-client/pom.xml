@@ -20,7 +20,6 @@
     <groupId>org.surfnet.coin</groupId>
     <artifactId>coin-api-parent</artifactId>
     <version>2.1.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>org.surfnet.coin</groupId>
   <artifactId>coin-api-client</artifactId>
@@ -50,8 +49,6 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<!-- TODO: move version to parent/master when it's clear we need it here. -->
-			<version>20090211</version>
 		</dependency>
   </dependencies>
 

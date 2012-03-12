@@ -14,13 +14,14 @@
   limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-    <groupId>org.surfnet.coin</groupId>
-      <artifactId>coin-master</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
+        <groupId>org.surfnet.coin</groupId>
+        <artifactId>coin-master</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.surfnet.coin</groupId>
@@ -40,6 +41,13 @@
             <name>COIN Repository</name>
             <url>http://bamboo-dev.coin.surfnetlabs.nl</url>
         </repository>
+
+        <!-- for security-oauth -->
+        <repository>
+            <id>spring-milestone</id>
+            <name>Spring Framework Maven Milestone Repository</name>
+            <url>http://maven.springframework.org/milestone</url>
+        </repository>
     </repositories>
 
     <modules>
@@ -49,7 +57,22 @@
     </modules>
 
     <properties>
-      <scribe.version>1.3.0</scribe.version>
+        <spring.version>3.1.0.RELEASE</spring.version>
+        <scribe.version>1.3.0</scribe.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.security.oauth</groupId>
+                <artifactId>spring-security-oauth2</artifactId>
+                <version>1.0.0.M6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>20090211</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

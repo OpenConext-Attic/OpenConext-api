@@ -26,7 +26,7 @@ package nl.surfnet.coin.api;
 public class IntegrationSupport {
   
   public static final String URL_UNDER_TEST = withEndingSlash(System
-      .getProperty("integration.test.url", "http://localhost:8090/coin-api-war"));
+      .getProperty("integration.test.url", "http://localhost:8095/coin-api"));
 
   private static String withEndingSlash(String path) {
     return path.endsWith("/") ? path : path + "/";
