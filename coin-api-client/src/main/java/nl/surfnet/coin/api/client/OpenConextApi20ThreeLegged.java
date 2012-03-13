@@ -17,23 +17,31 @@
 package nl.surfnet.coin.api.client;
 
 import org.scribe.builder.api.DefaultApi20;
+import org.scribe.extractors.AccessTokenExtractor;
+import org.scribe.extractors.JsonTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
 
 public class OpenConextApi20ThreeLegged extends DefaultApi20 {
-    private static final String BASE_URL = "http://localhost:8095/";
+  private static final String BASE_URL = "http://localhost:8095/";
 
-    @Override
-    public String getAccessTokenEndpoint() {
-        return BASE_URL + "oauth/token?grant_type=authorization_code";
-    }
+  @Override
+  public String getAccessTokenEndpoint() {
+    return BASE_URL + "oauth/token?grant_type=authorization_code";
+  }
 
-    @Override
-    public String getAuthorizationUrl(OAuthConfig config) {
-        return String.format(BASE_URL + "oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
-    }
+  @Override
+  public String getAuthorizationUrl(OAuthConfig config) {
+    return String.format(BASE_URL + "oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
+  }
 
-    public Verb getAccessTokenVerb() {
-        return Verb.POST;
-    }
+  public Verb getAccessTokenVerb() {
+    return Verb.POST;
+  }
+
+  @Override
+  public AccessTokenExtractor getAccessTokenExtractor() {
+    // OpenConext (Spring Security OAuth2) sends JSON.
+    return new JsonTokenExtractor();
+  }
 }

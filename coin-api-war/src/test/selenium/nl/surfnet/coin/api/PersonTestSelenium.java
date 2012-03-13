@@ -21,6 +21,7 @@ package nl.surfnet.coin.api;
 import nl.surfnet.coin.api.client.OpenConextApi20ThreeLegged;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
+
 import org.eclipse.jetty.server.*;
 import org.junit.After;
 import org.junit.Before;
@@ -29,105 +30,98 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.*;
 import org.scribe.model.Response;
 import org.scribe.oauth.OAuthService;
-import org.springframework.core.io.ByteArrayResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.lang.System;
 import java.lang.Thread;
-import java.net.URLDecoder;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test Person related queries with selenium
- * 
  */
 public class PersonTestSelenium extends SeleniumSupport {
-    private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/test";
-    private final String OAUTH_SECRET = "mysecret";
 
-    // private final String OAUTH_CALLBACK_URL =
-    // "http://localhost:8080/java-oauth-example/home.shtml";
-    // private final String SURFCONEXT_BASE_URL = "https://os.test.surfconext.nl/";
-    private final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
+  private Logger LOG = LoggerFactory.getLogger(PersonTestSelenium.class);
 
-    private final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
-    private MockHtppServer server;
+  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/test";
+  private final String OAUTH_SECRET = "mysecret";
 
+  private final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-    @Test
-    public void completeFlow() throws Exception {
+  private final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
 
-        OAuthService service = new ServiceBuilder()
-                .provider(OpenConextApi20ThreeLegged.class)
-                .apiKey(OAUTH_KEY)
-                .apiSecret(OAUTH_SECRET)
-                .callback("http://localhost:8083/")
-                .build();
-        String authUrl = service.getAuthorizationUrl(null);
-        System.out.println("Auth url: " + authUrl);
+  private final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
+  private MockHtppServer server;
 
 
-        getWebDriver().get(authUrl);
-        // log in...
-        getWebDriver().findElementByName("j_username").sendKeys("bob");
-        getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
-        getWebDriver().findElementByName("submit").click();
-        // TODO: follow redirect to redirect_url...
-        while (verifier == null) {
-            Thread.sleep(10L);
-        }
-        System.out.println("Verifier is not null anymore: " + verifier);
-        Token aToken = service.getAccessToken(null, verifier);
+  @Test
+  public void completeFlow() throws Exception {
 
-        OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL
-                + "rest/people/" + USER_ID + "/@self");
+    OAuthService service = new ServiceBuilder()
+        .provider(OpenConextApi20ThreeLegged.class)
+        .apiKey(OAUTH_KEY)
+        .apiSecret(OAUTH_SECRET)
+        .callback(OAUTH_CALLBACK_URL)
+        .build();
+    String authUrl = service.getAuthorizationUrl(null);
+    LOG.debug("Auth url: {}", authUrl);
 
-        service.signRequest(aToken, request);
-        Response response = request.send();
 
-        System.out.println("Response: " + response.getBody());
-        
-        
-        
-        // scribe client: authorization URL (/oauth/authorize?client_id=....&redirect_url=http://local:9999/...)
+    getWebDriver().get(authUrl);
+    // log in...
+    getWebDriver().findElementByName("j_username").sendKeys("bob");
+    getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
+    getWebDriver().findElementByName("submit").click();
 
-        // start http server (local:9999)
-
-        // selenium: conversation with authorization url + redirect to local:9999/?request_token=2345678
-
-        // scribe: use access token: getPerson
-
+    // Wait for authorizationCode to be sent to the mock http server
+    while (authorizationCode == null) {
+      Thread.sleep(10L);
     }
 
-    private Verifier verifier;
+    LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
+    Token aToken = service.getAccessToken(null, authorizationCode);
 
-    @After
-    public void stopServer() {
-        System.out.println("Stopping server...");
-        server.stopServer();
-    }
-    @Before
-    public void startServer() {
-        System.out.println("Starting server...");
-        server = new MockHtppServer(8083) {
-            protected MockHandler createHandler(Server server) {
-                return new MockHandler(server) {
+    OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL + "rest/people/" + USER_ID + "/@self");
 
-                    @Override
-                    public void  handle(String target, Request baseRequest, HttpServletRequest request,
-                                        HttpServletResponse response) throws IOException,
-                            ServletException {
+    service.signRequest(aToken, request);
+    Response response = request.send();
+    assertTrue(response.getBody().contains("mock-name"));
+    LOG.debug("Response: {}", response.getBody());
+  }
 
-                        System.out.println(request.toString());
-                        verifier = new Verifier(request.getParameter("code"));
-//                        userId = URLDecoder.decode(userId, "UTF-8");
-                        response.setStatus(200);
-                    }
-                };
-            }
+  private Verifier authorizationCode;
+
+  @After
+  public void stopServer() {
+    LOG.debug("Stopping server...");
+    server.stopServer();
+  }
+
+  @Before
+  public void startServer() {
+    LOG.debug("Starting server for catching authorization code...");
+    server = new MockHtppServer(8083) {
+      protected MockHandler createHandler(Server server) {
+        return new MockHandler(server) {
+
+          @Override
+          public void handle(String target, Request baseRequest, HttpServletRequest request,
+                             HttpServletResponse response) throws IOException,
+              ServletException {
+            LOG.debug("Request to mock http server: {}", request);
+            authorizationCode = new Verifier(request.getParameter("code"));
+            response.setStatus(200);
+          }
         };
-        server.startServer();
-    }
+      }
+    };
+    server.startServer();
+  }
 }
