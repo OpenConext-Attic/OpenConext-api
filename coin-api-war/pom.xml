@@ -35,26 +35,22 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.surfnet.coin</groupId>
+            <artifactId>coin-test</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.surfnet.coin</groupId>
             <artifactId>coin-api-client</artifactId>
-            <version>${project.version}</version>
+            <version>2.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.scribe</groupId>
             <artifactId>scribe</artifactId>
             <version>${scribe.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.surfnet.coin</groupId>
-            <artifactId>coin-shared</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.surfnet.coin</groupId>
-            <artifactId>coin-opensocial</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -103,12 +99,10 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.5.8</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
         </dependency>
         <!-- Begin Selenium -->
         <dependency>
@@ -176,6 +170,17 @@
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/integration</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/selenium</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -251,55 +256,6 @@
     </build>
 
     <profiles>
-        <!--
-        <profile>
-            <activation>
-                <property>
-                    <name>jmeter</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <id>jmeter</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.6</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.programmerplanet</groupId>
-                                <artifactId>JMeterTask</artifactId>
-                                <version>1.0.9</version>
-                                <scope>runtime</scope>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>jmeter</id>
-                                <phase>install</phase>
-                                <configuration>
-                                    <tasks>
-                                        <taskdef name="jmeter"
-                                                 classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask"/>
-                                        <jmeter jmeterhome="/opt/jakarta-jmeter-2.4"
-                                                testplan="${basedir}/src/test/resources/jmeter/functional-test.jmx"
-                                                resultlog="/tmp/jmeter/results-functional-test.jtl">
-                                            <property name="request.threads" value="1"/>
-                                            <property name="request.loop" value="1"/>
-                                        </jmeter>
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        -->
         <profile>
             <id>selenium</id>
             <build>
@@ -351,7 +307,7 @@
                         <configuration>
                             <scanIntervalSeconds>0</scanIntervalSeconds>
                             <webAppConfig>
-                                <contextPath>/${project.name}</contextPath>
+                                <contextPath>/</contextPath>
                                 <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
                             </webAppConfig>
                             <connectors>

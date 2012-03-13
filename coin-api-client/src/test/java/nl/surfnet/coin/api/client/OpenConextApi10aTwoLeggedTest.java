@@ -37,7 +37,7 @@ public class OpenConextApi10aTwoLeggedTest {
     // private final String OAUTH_CALLBACK_URL =
     // "http://localhost:8080/java-oauth-example/home.shtml";
     // private final String SURFCONEXT_BASE_URL = "https://os.test.surfconext.nl/";
-    private final String SURFCONEXT_BASE_URL = "http://localhost:8083/";
+    private final String SURFCONEXT_BASE_URL = "http://localhost:8099/";
 
     private final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
 
@@ -45,14 +45,16 @@ public class OpenConextApi10aTwoLeggedTest {
     @Test
     public void testTwoLeggedOauth() throws Exception {
         OAuthService service = new ServiceBuilder()
-                .provider(OpenConextApi10aTwoLegged.class).apiKey(OAUTH_KEY)
-                .apiSecret(OAUTH_SECRET).build();
+                .provider(OpenConextApi20ThreeLegged.class)
+                .apiKey(OAUTH_KEY)
+                .apiSecret(OAUTH_SECRET)
+                .build();
 
         // for 3-legged you would need to request the authorization token
         // OpenGeo is a two-legged OAuth server, so the token is empty
         Token token = new Token("", "");
         OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL
-                + "social/rest/people/" + USER_ID + "/@self");
+                + "rest/people/" + USER_ID + "/@self");
 
         service.signRequest(token, request);
         Response response = request.send();
