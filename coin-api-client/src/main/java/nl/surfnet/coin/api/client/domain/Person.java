@@ -1,53 +1,174 @@
 /*
- * Copyright 2012 SURFnet bv, The Netherlands
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package nl.surfnet.coin.api.client.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Set;
 
 /**
  * Person representation
- *
+ * 
  */
 public class Person {
 
+  private String nickname;
+  private Set<Email> emails;
   private String id;
-  private String name;
+  private Name name;
+  private Set<String> tags;
+  private Set<Account> accounts;
+  private String displayName;
+  private String voot_membership_role;
+  private Set<Organization> organizations;
 
-    public String getId() {
-        return id;
-    }
+  /**
+   * @return the nickName
+   */
+  public String getNickname() {
+    return nickname;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  /**
+   * @param nickName
+   *          the nickName to set
+   */
+  public void setNickname(String nickName) {
+    this.nickname = nickName;
+  }
 
-    public String getName() {
-        return name;
-    }
+  /**
+   * @return the emails
+   */
+  public Set<Email> getEmails() {
+    return emails;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public static Person fromJSON(String json) throws JSONException {
-        JSONObject o = new JSONObject(json);
-        final Person p = new Person();
-        p.setId(o.getString("id"));
-        p.setName(o.getString("name"));
-        return p;
-    }
+  /**
+   * @param emails
+   *          the emails to set
+   */
+  public void setEmails(Set<Email> emails) {
+    this.emails = emails;
+  }
+
+  /**
+   * @return the id
+   */
+  public String getId() {
+    return id;
+  }
+
+  /**
+   * @param id
+   *          the id to set
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  /**
+   * @return the name
+   */
+  public Name getName() {
+    return name;
+  }
+
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(Name name) {
+    this.name = name;
+  }
+
+  /**
+   * @return the tags
+   */
+  public Set<String> getTags() {
+    return tags;
+  }
+
+  /**
+   * @param tags
+   *          the tags to set
+   */
+  public void setTags(Set<String> tags) {
+    this.tags = tags;
+  }
+
+  /**
+   * @return the accounts
+   */
+  public Set<Account> getAccounts() {
+    return accounts;
+  }
+
+  /**
+   * @param accounts
+   *          the accounts to set
+   */
+  public void setAccounts(Set<Account> accounts) {
+    this.accounts = accounts;
+  }
+
+  /**
+   * @return the displayName
+   */
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  /**
+   * @param displayName
+   *          the displayName to set
+   */
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
+  /**
+   * @return the voot_membership_role
+   */
+  public String getVoot_membership_role() {
+    return voot_membership_role;
+  }
+
+  /**
+   * @param voot_membership_role
+   *          the voot_membership_role to set
+   */
+  public void setVoot_membership_role(String voot_membership_role) {
+    this.voot_membership_role = voot_membership_role;
+  }
+
+  /**
+   * @return the organizations
+   */
+  public Set<Organization> getOrganizations() {
+    return organizations;
+  }
+
+  /**
+   * @param organizations
+   *          the organizations to set
+   */
+  public void setOrganizations(Set<Organization> organizations) {
+    this.organizations = organizations;
+  }
+
 }

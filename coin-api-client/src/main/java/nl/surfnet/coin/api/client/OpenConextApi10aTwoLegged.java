@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 package nl.surfnet.coin.api.client;
+
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
 
 /**
+ * Two legged Api. The key and secret are provided out-of-band and no request
+ * token (and/ or access token) is needed. Hence the empty returns.
  * 
- *
  */
 public class OpenConextApi10aTwoLegged extends DefaultApi10a {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.scribe.builder.api.DefaultApi10a#getRequestTokenEndpoint()
    */
   @Override
@@ -31,16 +35,22 @@ public class OpenConextApi10aTwoLegged extends DefaultApi10a {
     return "";
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.scribe.builder.api.DefaultApi10a#getAccessTokenEndpoint()
    */
   @Override
   public String getAccessTokenEndpoint() {
-   return "";
+    return "";
   }
 
-  /* (non-Javadoc)
-   * @see org.scribe.builder.api.DefaultApi10a#getAuthorizationUrl(org.scribe.model.Token)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.scribe.builder.api.DefaultApi10a#getAuthorizationUrl(org.scribe.model
+   * .Token)
    */
   @Override
   public String getAuthorizationUrl(Token requestToken) {
