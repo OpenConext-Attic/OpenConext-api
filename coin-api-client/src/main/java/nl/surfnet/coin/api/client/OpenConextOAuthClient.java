@@ -95,7 +95,7 @@ public interface OpenConextOAuthClient {
    *          make the request
    * @return an {@link java.util.ArrayList} containing {@link Person}'s
    */
-  List<Person> getPeople(String groupId, String onBehalfOf);
+  List<Person> getGroupMembers(String groupId, String onBehalfOf);
 
   /**
    * Get Persons' Groups

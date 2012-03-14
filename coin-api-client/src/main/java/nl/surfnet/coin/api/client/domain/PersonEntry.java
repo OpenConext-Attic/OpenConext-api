@@ -18,11 +18,15 @@
  */
 package nl.surfnet.coin.api.client.domain;
 
+import java.util.List;
+
 /**
  * 
  *
  */
-public class PersonEntry {
+@SuppressWarnings("serial")
+public class PersonEntry extends AbstractEntry {
+
   private Person entry;
 
   /**
@@ -33,11 +37,11 @@ public class PersonEntry {
   }
 
   /**
-   * @param entry the entry to set
+   * @param entry
+   *          the entry to set
    */
   public void setEntry(Person entry) {
     this.entry = entry;
   }
 
-  
 }

@@ -25,21 +25,27 @@ import java.util.List;
  *
  */
 @SuppressWarnings("serial")
-public class GroupEntry extends AbstractEntry {
-  private List<Group> entry;
+public class GroupMembersEntry extends AbstractEntry {
+
+  private List<Person> entry;
 
   /**
    * @return the entry
    */
-  public List<Group> getEntry() {
+  public List<Person> getEntry() {
     return entry;
   }
 
   /**
-   * @param entry
-   *          the entry to set
+   * @param entry the entry to set
    */
-  public void setEntry(List<Group> entry) {
+  public void setEntry(List<Person> entry) {
     this.entry = entry;
   }
+
+  
+  public boolean isEmpty() {
+    return entry != null && !entry.isEmpty();
+  }
+  
 }

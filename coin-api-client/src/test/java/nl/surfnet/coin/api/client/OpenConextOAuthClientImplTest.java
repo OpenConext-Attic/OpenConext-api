@@ -18,8 +18,11 @@
  */
 package nl.surfnet.coin.api.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 
@@ -35,6 +38,7 @@ import org.springframework.core.io.ClassPathResource;
 public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
 
   private static final String USER_ID = "urn:collab:person:test.surfguest.nl:mnice";
+  private static final String GROUP_ID = "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:managementvo";
   private OpenConextOAuthClientImpl client;
 
   @Before
@@ -59,7 +63,8 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
   public void testGetPerson() {
     super.setResponseResource(new ClassPathResource("single-person.json"));
     Person person = this.client.getPerson(USER_ID, USER_ID);
-    assertEquals("mnice@surfguest.nl", person.getEmails().iterator().next().getValue());
+    assertEquals("mnice@surfguest.nl", person.getEmails().iterator().next()
+        .getValue());
   }
 
   /**
@@ -69,7 +74,9 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetPeople() {
-    //TODO
+    super.setResponseResource(new ClassPathResource("multiple-persons.json"));
+    List<Person> persons = this.client.getGroupMembers(GROUP_ID, USER_ID);
+    assertEquals(22, persons.size());
   }
 
   /**
@@ -79,7 +86,9 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetGroups() {
-    //TODO
+    super.setResponseResource(new ClassPathResource("multiple-groups.json"));
+    List<Group> groups = this.client.getGroups(USER_ID, USER_ID);
+    assertEquals(17, groups.size());
   }
 
 }

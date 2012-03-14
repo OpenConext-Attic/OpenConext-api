@@ -20,6 +20,7 @@ package nl.surfnet.coin.api.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
@@ -28,6 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.GroupEntry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 
@@ -40,6 +43,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.springframework.util.StringUtils;
 
 /**
  * Implementation of OpenConextOAuthClient
@@ -144,9 +148,15 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
    * , java.lang.String)
    */
   @Override
-  public List<Person> getPeople(String groupId, String onBehalfOf) {
-    // TODO Auto-generated method stub
-    return null;
+  public List<Person> getGroupMembers(String groupId, String onBehalfOf) {
+    if (!StringUtils.hasText(onBehalfOf)) {
+      throw new IllegalArgumentException("For retrieving group members the onBehalfOf may not be empty");
+    }
+    OAuthRequest request = new OAuthRequest(Verb.GET,
+        environment.getEndpointBaseUrl() + "social/rest/people/" + onBehalfOf
+            + "/" + groupId);
+    GroupMembersEntry entry = (GroupMembersEntry) execute(onBehalfOf, request, GroupMembersEntry.class);
+    return entry.getEntry();
   }
 
   /*
@@ -158,11 +168,13 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
    */
   @Override
   public List<Group> getGroups(String userId, String onBehalfOf) {
-    // TODO Auto-generated method stub
-    return null;
+    OAuthRequest request = new OAuthRequest(Verb.GET,
+        environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
+    GroupEntry entry = (GroupEntry) execute(onBehalfOf, request, GroupEntry.class);
+    return entry.getEntry();
   }
   
-  private Object execute(String onBehalfOf, OAuthRequest request, Class parseType) {
+  private Object execute(String onBehalfOf, OAuthRequest request, Class<? extends Serializable> parseType) {
     Token token;
     OAuthService service;
     if (onBehalfOf == null) {

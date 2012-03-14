@@ -18,6 +18,7 @@
  */
 package nl.surfnet.coin.api.client.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -25,21 +26,53 @@ import java.util.List;
  *
  */
 @SuppressWarnings("serial")
-public class GroupEntry extends AbstractEntry {
-  private List<Group> entry;
+public abstract class AbstractEntry implements Serializable {
+  private int startIndex;
+  private int totalResults;
+  private int itemsPerPage;
 
   /**
-   * @return the entry
+   * @return the startIndex
    */
-  public List<Group> getEntry() {
-    return entry;
+  public int getStartIndex() {
+    return startIndex;
   }
 
   /**
-   * @param entry
-   *          the entry to set
+   * @param startIndex
+   *          the startIndex to set
    */
-  public void setEntry(List<Group> entry) {
-    this.entry = entry;
+  public void setStartIndex(int startIndex) {
+    this.startIndex = startIndex;
+  }
+
+  /**
+   * @return the totalResults
+   */
+  public int getTotalResults() {
+    return totalResults;
+  }
+
+  /**
+   * @param totalResults
+   *          the totalResults to set
+   */
+  public void setTotalResults(int totalResults) {
+    this.totalResults = totalResults;
+  }
+
+  /**
+   * @return the itemsPerPage
+   */
+  public int getItemsPerPage() {
+    return itemsPerPage;
+  }
+
+  /**
+   * @param itemsPerPage
+   *          the itemsPerPage to set
+   */
+  public void setItemsPerPage(int itemsPerPage) {
+    this.itemsPerPage = itemsPerPage;
   }
 }
