@@ -17,7 +17,10 @@
 package nl.surfnet.coin.api.service;
 
 import org.json.JSONArray;
+
+import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
@@ -28,26 +31,44 @@ import java.util.Scanner;
 
 public class MockPersonService implements PersonService {
 
-    private final static String JSON_BASE_PATH = "json/";
-    
-    @Override
-    public Person getPerson(String userId, String loggedInUser) {
-        final ClassPathResource pathResource = new ClassPathResource(JSON_BASE_PATH + userId + ".json");
-        final JSONObject jsonObject;
-        final Person person = new Person();
-        if (pathResource.exists()) {
-            try {
-                final String json = new Scanner(pathResource.getInputStream()).useDelimiter("\\A").next();
-                return Person.fromJSON(json);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            person.setId("mock-id");
-            person.setName("mock-name");
-        }
-        return person;
+  private final static String JSON_BASE_PATH = "json/";
+
+  @Override
+  public Person getPerson(String userId, String loggedInUser) {
+    final ClassPathResource pathResource = new ClassPathResource(JSON_BASE_PATH + userId + ".json");
+    final JSONObject jsonObject;
+    final Person person = new Person();
+    if (pathResource.exists()) {
+      try {
+        final String json = new Scanner(pathResource.getInputStream()).useDelimiter("\\A").next();
+        return personFromJSON(json);
+      } catch (JSONException e) {
+        throw new RuntimeException(e);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      // A hardcoded mock as last resort for now.
+      person.setId("mock-id");
+      final Name name = new Name();
+      name.setFamilyName("mock-familyName");
+      name.setGivenName("mock-givenName");
+      name.setFormatted("mock-formatted");
     }
+    return person;
+  }
+
+  // TODO: Move or implement in another way.
+  public static Person personFromJSON(String json) throws JSONException {
+    JSONObject o = new JSONObject(json);
+    final Person p = new Person();
+    p.setId(o.getString("id"));
+    final Name name = new Name();
+    final JSONObject nameObj = o.getJSONObject("name");
+    name.setFamilyName(nameObj.getString("familyName"));
+    name.setGivenName(nameObj.getString("givenName"));
+    name.setFormatted(nameObj.getString("formatted"));
+    p.setName(name);
+    return p;
+  }
 }

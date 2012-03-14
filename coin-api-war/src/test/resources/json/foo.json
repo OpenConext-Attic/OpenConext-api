@@ -1,1 +1,6 @@
-{"id":"foo", "name": "bar"}
+{"id":"foo", "name":{
+  "givenName":"given",
+  "familyName":"family name bar",
+  "formatted":"formatted name"
+}
+}

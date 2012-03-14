@@ -26,7 +26,7 @@ public class MockPersonServiceTest {
     PersonService s = new MockPersonService();
     @Test
     public void getPerson() {
-        final Person person = s.getPerson("foo", "bar");
-        assertEquals("bar", person.getName());
+        final Person person = s.getPerson("foo", "some logged in user");
+        assertEquals("family name bar", person.getName().getFamilyName());
     }
 }
