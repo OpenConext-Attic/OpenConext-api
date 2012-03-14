@@ -50,7 +50,7 @@ public class PersonTestSelenium extends SeleniumSupport {
 
   private Logger LOG = LoggerFactory.getLogger(PersonTestSelenium.class);
 
-  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/test";
+  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private final String OAUTH_SECRET = "mysecret";
 
   private final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
@@ -92,8 +92,8 @@ public class PersonTestSelenium extends SeleniumSupport {
 
     service.signRequest(aToken, request);
     Response response = request.send();
-    assertTrue(response.getBody().contains("mock-name"));
     LOG.debug("Response: {}", response.getBody());
+    assertTrue(response.getBody().contains("mock-id"));
   }
 
   private Verifier authorizationCode;

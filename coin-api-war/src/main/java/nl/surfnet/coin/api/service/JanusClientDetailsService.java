@@ -39,6 +39,7 @@ public class JanusClientDetailsService implements ClientDetailsService {
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
     final BaseClientDetails clientDetails = new BaseClientDetails();
     clientDetails.setClientSecret(janus.getOauthSecretByClientId(clientId));
+    clientDetails.setClientId(clientId);
     return clientDetails;
   }
 }

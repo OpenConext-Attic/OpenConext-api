@@ -16,8 +16,16 @@
 
 package nl.surfnet.coin.janus;
 
+/**
+ * Interface to Janus.
+ */
 public interface Janus {
 
+  /**
+   * Get a client's oauth secret by his client_id.
+   * @param clientId the client_id
+   * @return the secret
+   */
   String getOauthSecretByClientId(String clientId);
 
 }

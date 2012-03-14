@@ -17,9 +17,7 @@
 package nl.surfnet.coin.janus;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -28,16 +26,20 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * REST client implementation for Janus.
+ */
 public class JanusRestClient implements Janus {
 
   Logger LOG = LoggerFactory.getLogger(JanusRestClient.class);
+
+  private static final String KEY_CONSUMER_SECRET = "coin:oauth:consumer_secret";
 
   @Autowired
   RestTemplate restTemplate;
@@ -51,26 +53,46 @@ public class JanusRestClient implements Janus {
   @Value("${janus.secret}")
   private String secret;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getOauthSecretByClientId(String clientId) {
     Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("spentityid", clientId);
-    parameters.put("keys", ""); // TODO: filter strictly
+    parameters.put("entityid", clientId);
+    parameters.put("keys", KEY_CONSUMER_SECRET);
 
-    URI signedUri = null;
+    URI signedUri;
     try {
-      signedUri = sign("getSpList", parameters);
-      return restTemplate.getForObject(signedUri, String.class);
+      signedUri = sign("getMetadata", parameters);
+      
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Signed Janus-request is: {}", signedUri);
+      }
 
-    } catch (NoSuchAlgorithmException e) {
-      LOG.error("While doing Janus-request", e);
+      final Map<String, String>restResponse = restTemplate.getForObject(signedUri, Map.class);
+      
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Janus-request returned: {}", restResponse.toString());
+      }
+
+      return restResponse.get(KEY_CONSUMER_SECRET);
+
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);
     }
     return null;
   }
 
-  public URI sign(String method, Map<String, String> parameters) throws NoSuchAlgorithmException, IOException {
+  /**
+   * Sign the given method call.
+   * @param method the name of the method to call
+   * @param parameters additional parameters that need to be passed to Janus
+   * @return URI with parameters janus_sig and janus_key
+   * @throws NoSuchAlgorithmException
+   * @throws IOException
+   */
+  public URI sign(String method, Map<String, String> parameters) throws IOException {
     Map<String, String> keys = new TreeMap<String, String>();
     keys.put("janus_key", user);
     keys.put("method", method);
@@ -85,15 +107,19 @@ public class JanusRestClient implements Janus {
       toSign.append(key);
       toSign.append(keys.get(key));
     }
-    //   System.out.println(toSign);
-    //do8He2KKd6m1   janus_key   engineblock   keys   method   getSpList   rest  1   userid   engineblock
-    MessageDigest digest = MessageDigest.getInstance("SHA-512");
+
+    MessageDigest digest = null;
+    try {
+      digest = MessageDigest.getInstance("SHA-512");
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
     digest.reset();
     byte[] input = digest.digest(toSign.toString().getBytes("UTF-8"));
     char[] value = Hex.encodeHex(input);
     String janus_sig = new String(value);
     keys.put("janus_sig", janus_sig);
-    // System.out.println(janus_sig);
+
     StringBuilder url = new StringBuilder();
     keySet = keys.keySet();
     for (String key : keySet) {

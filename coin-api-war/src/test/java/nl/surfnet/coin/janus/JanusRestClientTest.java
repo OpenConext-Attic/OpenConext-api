@@ -17,12 +17,15 @@
 package nl.surfnet.coin.janus;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +33,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:JanusRestClientTest-context.xml")
@@ -53,10 +60,14 @@ public class JanusRestClientTest {
   @Test
   public void getOauthSecretByClientId() {
     ArgumentCaptor<URI> captor = ArgumentCaptor.forClass(URI.class);
-    janusRestClient.getOauthSecretByClientId("foo");
-    verify(restTemplate).getForObject(captor.capture(), eq(String.class));
-    assertTrue("Query string should contain correct spentityid (the client id)", captor.getValue().getQuery().contains("spentityid=foo"));
-    assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains("method=getSpList"));
+    final HashMap<String, String> map = new HashMap<String, String>();
+    map.put("coin:oauth:consumer_secret", "hissecret");
+    when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(map);
+    String result = janusRestClient.getOauthSecretByClientId("foo");
+    assertEquals("hissecret", result);
+    verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
+    assertTrue("Query string should contain correct spentityid (the client id)", captor.getValue().getQuery().contains("entityid=foo"));
+    assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains("method=getMetadata"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 }
