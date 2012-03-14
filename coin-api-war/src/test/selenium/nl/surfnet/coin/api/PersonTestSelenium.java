@@ -82,7 +82,7 @@ public class PersonTestSelenium extends SeleniumSupport {
 
     // Wait for authorizationCode to be sent to the mock http server
     while (authorizationCode == null) {
-      Thread.sleep(10L);
+      Thread.sleep(100L);
     }
 
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);

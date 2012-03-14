@@ -24,15 +24,14 @@ import org.junit.Before;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 /**
- * 
+ *
  *
  */
 public class SeleniumSupport {
 
   private static FirefoxDriver driver;
 
-  public static final String URL_UNDER_TEST = withEndingSlash(System
-      .getProperty("selenium.test.url", "http://localhost:8095/coin-api"));
+  public static final String URL_UNDER_TEST = withEndingSlash(System.getProperty("selenium.test.url", "http://localhost:8095/coin-api"));
 
   private static String withEndingSlash(String path) {
     return path.endsWith("/") ? path : path + "/";

@@ -44,8 +44,8 @@
         </dependency>
         <dependency>
             <groupId>org.surfnet.coin</groupId>
-            <artifactId>coin-api-client</artifactId>
-            <version>2.1.0-SNAPSHOT</version>
+          <artifactId>coin-api-client</artifactId>
+          <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scribe</groupId>
@@ -63,6 +63,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
