@@ -110,8 +110,6 @@
     </property>
   </bean>
 
-  <bean id="mockPersonService" class="${personServiceClass}"/>
-
   <bean id="localeResolver"
         class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
     <!-- Set the default Locale to English -->

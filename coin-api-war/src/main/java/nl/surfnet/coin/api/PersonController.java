@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api;
 
 import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.service.MockService;
 import nl.surfnet.coin.api.service.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +29,13 @@ import org.springframework.web.bind.annotation.*;
  * Controller for the person REST interface..
  */
 @Controller
-
 public class PersonController {
 
     private static Logger LOG = LoggerFactory.getLogger(PersonController.class);
 
     private static final String GROUP_ID_SELF = "@self";
 
-    @Autowired
-    private PersonService personService;
+    private MockService mockService = new MockService();
 
     @RequestMapping(value = "/rest/people/{userId}/{groupId}")
     @ResponseBody
@@ -49,7 +48,7 @@ public class PersonController {
             LOG.debug("Got getPerson-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] {userId, groupId, onBehalfOf});
         }
         if (GROUP_ID_SELF.equals(groupId)) {
-            return personService.getPerson(userId, onBehalfOf);
+            return mockService.getPerson(userId, onBehalfOf);
         } else {
             throw new UnsupportedOperationException("Not supported: person query other than @self.");
         }

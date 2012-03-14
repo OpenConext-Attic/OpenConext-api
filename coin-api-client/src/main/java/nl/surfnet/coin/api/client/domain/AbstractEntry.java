@@ -75,4 +75,7 @@ public abstract class AbstractEntry implements Serializable {
   public void setItemsPerPage(int itemsPerPage) {
     this.itemsPerPage = itemsPerPage;
   }
+  
+  public abstract Object getResult();
+  
 }

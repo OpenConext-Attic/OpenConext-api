@@ -42,4 +42,12 @@ public class GroupEntry extends AbstractEntry {
   public void setEntry(List<Group> entry) {
     this.entry = entry;
   }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getResult()
+   */
+  @Override
+  public Object getResult() {
+    return getEntry();
+  }
 }

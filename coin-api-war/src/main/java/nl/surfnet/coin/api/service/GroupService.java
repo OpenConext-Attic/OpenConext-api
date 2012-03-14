@@ -16,40 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package nl.surfnet.coin.api.client.domain;
+package nl.surfnet.coin.api.service;
 
 import java.util.List;
 
+import nl.surfnet.coin.api.client.domain.Group;
+
 /**
- * 
+ *  GroupService responsible for retrieving groups
  *
  */
-@SuppressWarnings("serial")
-public class PersonEntry extends AbstractEntry {
-
-  private Person entry;
+public interface GroupService {
 
   /**
-   * @return the entry
+   * Get Persons' Groups
+   * 
+   * @param userId
+   *          the unique identifier
+   * @param onBehalfOf
+   *          the unique identifier of the user that is going to make the
+   *          request
+   * @return {@link List} containing the {@link Group}s
    */
-  public Person getEntry() {
-    return entry;
-  }
-
-  /**
-   * @param entry
-   *          the entry to set
-   */
-  public void setEntry(Person entry) {
-    this.entry = entry;
-  }
-
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getResult()
-   */
-  @Override
-  public Object getResult() {
-    return getEntry();
-  }
-
+  List<Group> getGroups(String userId, String onBehalfOf);
+  
 }

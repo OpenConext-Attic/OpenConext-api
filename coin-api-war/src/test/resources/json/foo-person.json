@@ -1,0 +1,33 @@
+{
+    "entry": {
+        "nickname": "Mister Foo",
+        "emails": [
+            {
+                "value": "mFoo@surfguest.nl",
+                "type": "email"
+            }
+        ],
+        "voot_membership_role":"admin",
+        "id": "urn:collab:person:test.surfguest.nl:mfoo",
+        "name": {
+            "formatted": "Mister Foo",
+            "familyName": "Foo",
+            "givenName": "Mister"
+        },
+        "tags": [
+            "guest"
+        ],
+        "accounts": [
+            {
+                "username": "mFoo",
+                "userId": "mFoo"
+            }
+        ],
+        "organizations": [
+            {
+                "name": "test.surfguest.nl"
+            }
+        ],
+        "displayName": "Mister Foo"
+    }
+}

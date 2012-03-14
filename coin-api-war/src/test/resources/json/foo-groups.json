@@ -1,0 +1,25 @@
+{
+    "startIndex": 0,
+    "totalResults": 2,
+    "entry": [
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:etc:sysadmingroup",
+                "type": "groupId"
+            },
+            "title": "sysadmingroup",
+            "description": "Super users",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:demo_sprint_5",
+                "type": "groupId"
+            },
+            "title": "demo sprint 5",
+            "description": "demo sprint 5",
+            "voot_membership_role": "admin"
+        }
+    ],
+    "itemsPerPage": 2
+}

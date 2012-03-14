@@ -52,9 +52,9 @@ import org.springframework.util.StringUtils;
 public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
   private static final String REQUEST_TOKEN = "REQUEST_TOKEN";
-  private ObjectMapper objectMapper = new ObjectMapper();
   private OAuthEnvironment environment;
   private OAuthRepository repository;
+  private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   public OpenConextOAuthClientImpl(OAuthEnvironment environment,
       OAuthRepository repository) {
@@ -135,8 +135,8 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     OAuthRequest request = new OAuthRequest(Verb.GET,
         environment.getEndpointBaseUrl() + "social/rest/people/" + userId
             + "/@self");
-    PersonEntry entry = (PersonEntry) execute(onBehalfOf, request, PersonEntry.class);
-    return entry.getEntry();
+    InputStream in = execute(onBehalfOf, request);
+    return parser.parsePerson(in);
   }
 
 
@@ -155,8 +155,8 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     OAuthRequest request = new OAuthRequest(Verb.GET,
         environment.getEndpointBaseUrl() + "social/rest/people/" + onBehalfOf
             + "/" + groupId);
-    GroupMembersEntry entry = (GroupMembersEntry) execute(onBehalfOf, request, GroupMembersEntry.class);
-    return entry.getEntry();
+    InputStream in = execute(onBehalfOf, request);
+    return parser.parseTeamMembers(in);
   }
 
   /*
@@ -170,11 +170,11 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   public List<Group> getGroups(String userId, String onBehalfOf) {
     OAuthRequest request = new OAuthRequest(Verb.GET,
         environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
-    GroupEntry entry = (GroupEntry) execute(onBehalfOf, request, GroupEntry.class);
-    return entry.getEntry();
+     InputStream in = execute(onBehalfOf, request);
+    return parser.parseGroups(in);
   }
   
-  private Object execute(String onBehalfOf, OAuthRequest request, Class<? extends Serializable> parseType) {
+  private InputStream execute(String onBehalfOf, OAuthRequest request) {
     Token token;
     OAuthService service;
     if (onBehalfOf == null) {
@@ -192,14 +192,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     }
     service.signRequest(token, request);
     Response oAuthResponse = request.send();
-    InputStream stream = oAuthResponse.getStream();
-    Object entry;
-    try {
-      entry = objectMapper.readValue(stream, parseType);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-    return entry;
+   return oAuthResponse.getStream();
   }
 
   

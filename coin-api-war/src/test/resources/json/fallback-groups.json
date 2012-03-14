@@ -1,0 +1,158 @@
+{
+    "startIndex": 0,
+    "totalResults": 17,
+    "entry": [
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:etc:sysadmingroup",
+                "type": "groupId"
+            },
+            "title": "sysadmingroup",
+            "description": "Super users",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:demo_sprint_5",
+                "type": "groupId"
+            },
+            "title": "demo sprint 5",
+            "description": "demo sprint 5",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:femke_1234",
+                "type": "groupId"
+            },
+            "title": "Femke 1234",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:managementvo",
+                "type": "groupId"
+            },
+            "title": "managementvo",
+            "description": "Team voor de SURFconext management VO",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:okke_test_team",
+                "type": "groupId"
+            },
+            "title": "Okke Test Team",
+            "description": "Okke test Tea",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:private",
+                "type": "groupId"
+            },
+            "title": "private",
+            "description": "private team okke",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:private2",
+                "type": "groupId"
+            },
+            "title": "private2",
+            "description": "private2 okke",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:surfstervo",
+                "type": "groupId"
+            },
+            "title": "surfstervo",
+            "description": "SURFster VO voor Google Apps",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:test_counting",
+                "type": "groupId"
+            },
+            "title": "test counting",
+            "description": "test counting",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:test_counting_3",
+                "type": "groupId"
+            },
+            "title": "test counting 3",
+            "description": "test counrintg 3",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:test_counting2",
+                "type": "groupId"
+            },
+            "title": "test counting2",
+            "description": "dfasdfasdf",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:test_team",
+                "type": "groupId"
+            },
+            "title": "Test team",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:testsp",
+                "type": "groupId"
+            },
+            "title": "testsp",
+            "description": "Group to test Virtual Organization",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:votest1group",
+                "type": "groupId"
+            },
+            "title": "votest1group",
+            "description": "Group containing the VO members",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:[test_with_blocks]",
+                "type": "groupId"
+            },
+            "title": "[test with blocks]",
+            "description": "Delete me in time",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:vo:scn-devs:devs_to_the_recue",
+                "type": "groupId"
+            },
+            "title": "Devs to the recue",
+            "description": "Niet verplicht hoor ;)",
+            "voot_membership_role": "admin"
+        },
+        {
+            "id": {
+                "groupId": "urn:collab:group:test.surfteams.nl:vo:scn-devs:members",
+                "type": "groupId"
+            },
+            "title": "members",
+            "description": "Members for stem VO scn-devs",
+            "voot_membership_role": "admin"
+        }
+    ],
+    "itemsPerPage": 17
+}

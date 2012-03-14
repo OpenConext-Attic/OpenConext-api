@@ -23,12 +23,27 @@ import java.util.List;
 
 public interface PersonService {
 
-    /**
-     * Get the Person
-     *
-     * @param userId the unique identifier
-     * @param loggedInUser {@link String} the unique identifier for the logged in user who performs the request
-     * @return the {@link org.opensocial.models.Person}
-     */
-    Person getPerson(String userId, String loggedInUser);
+  /**
+   * Get the OpenSocial Person. Note that the onBehalfOf can be null.
+   * 
+   * @param userId
+   *          the unique identifier
+   * @param onBehalfOf
+   *          the unique identifier of the user that is going to make the
+   *          request
+   * @return the {@link org.opensocial.models.Person}
+   */
+  Person getPerson(String userId, String onBehalfOf);
+
+  /**
+   * Get the group members of the given group. Note that the onBehalfOf can be null.
+   * 
+   * @param groupId
+   *          {@link String} the unique identifier for the group
+   * @param onBehalfOf
+   *          {@link String} the unique identifier of the user that is going to
+   *          make the request
+   * @return an {@link java.util.ArrayList} containing {@link Person}'s
+   */
+  List<Person> getGroupMembers(String groupId, String onBehalfOf);
 }

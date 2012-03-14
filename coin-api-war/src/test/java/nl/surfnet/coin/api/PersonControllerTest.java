@@ -45,6 +45,6 @@ public class PersonControllerTest {
         p.setId("id");
         when(personService.getPerson("foo", "loggedInUser")).thenReturn(p);
         Person personReturned = pc.getPerson("foo", "@self", "loggedInUser");
-        assertEquals("id", personReturned.getId());
+        assertEquals("urn:collab:person:test.surfguest.nl:mfoo", personReturned.getId());
     }
 }

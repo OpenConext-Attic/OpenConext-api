@@ -1,0 +1,100 @@
+{
+    "startIndex": 0,
+    "totalResults":3,
+    "entry": [
+        {
+            "nickname": "Jan Arts",
+            "emails": [
+                {
+                    "value": "Jan.Arts@surfnet.nl",
+                    "type": "email"
+                }
+            ],
+            "voot_membership_role": "member",
+            "id": "urn:collab:person:surfnet.nl:arts",
+            "name": {
+                "formatted": "Jan Arts",
+                "familyName": "Arts",
+                "givenName": "Jan"
+            },
+            "tags": [
+                "member"
+            ],
+            "accounts": [
+                {
+                    "username": "arts",
+                    "userId": "arts"
+                }
+            ],
+            "organizations": [
+                {
+                    "name": "surfnet.nl"
+                }
+            ],
+            "displayName": "Jan Arts"
+        },
+        {
+            "nickname": "Geert van der Ploeg",
+            "emails": [
+                {
+                    "value": "gvanderploeg@iprofs.nl",
+                    "type": "email"
+                }
+            ],
+            "voot_membership_role": "manager",
+            "id": "urn:collab:person:test.surfguest.nl:gvanderploeg",
+            "name": {
+                "formatted": "Geert van der Ploeg",
+                "familyName": "van der Ploeg",
+                "givenName": "Geert"
+            },
+            "tags": [
+                "guest"
+            ],
+            "accounts": [
+                {
+                    "username": "gvanderploeg",
+                    "userId": "gvanderploeg"
+                }
+            ],
+            "organizations": [
+                {
+                    "name": "test.surfguest.nl"
+                }
+            ],
+            "displayName": "Geert van der Ploeg"
+        },
+        {
+            "nickname": "Okke Harsta",
+            "emails": [
+                {
+                    "value": "oharsta@zilverline.com",
+                    "type": "email"
+                }
+            ],
+            "voot_membership_role": "admin",
+            "id": "urn:collab:person:surfguest.nl:oharsta",
+            "name": {
+                "formatted": "Okke Harsta",
+                "familyName": "Harsta",
+                "givenName": "Okke"
+            },
+            "tags": [
+                "guest"
+            ],
+            "accounts": [
+                {
+                    "username": "oharsta",
+                    "userId": "oharsta"
+                }
+            ],
+            "organizations": [
+                {
+                    "name": "surfguest.nl"
+                }
+            ],
+            "displayName": "Okke Harsta"
+        }
+    ],
+    "itemsPerPage": 3
+}

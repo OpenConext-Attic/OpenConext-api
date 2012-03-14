@@ -37,7 +37,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class JanusRestClient implements Janus {
 
-  Logger LOG = LoggerFactory.getLogger(JanusRestClient.class);
+  private static  Logger LOG = LoggerFactory.getLogger(JanusRestClient.class);
 
   private static final String KEY_CONSUMER_SECRET = "coin:oauth:consumer_secret";
 
@@ -92,7 +92,7 @@ public class JanusRestClient implements Janus {
    * @throws NoSuchAlgorithmException
    * @throws IOException
    */
-  public URI sign(String method, Map<String, String> parameters) throws IOException {
+  private URI sign(String method, Map<String, String> parameters) throws IOException {
     Map<String, String> keys = new TreeMap<String, String>();
     keys.put("janus_key", user);
     keys.put("method", method);
