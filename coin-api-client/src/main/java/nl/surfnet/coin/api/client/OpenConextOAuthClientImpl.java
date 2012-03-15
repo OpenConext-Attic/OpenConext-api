@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,8 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.client.domain.Group;
@@ -43,6 +46,8 @@ import nl.surfnet.coin.api.client.domain.Person;
  */
 public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
+  private static final Logger LOG = LoggerFactory.getLogger(OpenConextOAuthClientImpl.class);
+  
   private static final String REQUEST_TOKEN = "REQUEST_TOKEN";
   private OAuthEnvironment environment;
   private OAuthRepository repository;
@@ -79,6 +84,9 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   public void redirectToAuthorizationUrl(OAuthVersion version,
       HttpServletRequest request, HttpServletResponse response) {
     String authUrl = doGetAuthorizationUrl(version, request);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Redirecting to authorization URL: {}", authUrl);
+    }
     try {
       response.sendRedirect(authUrl);
     } catch (IOException e) {
@@ -158,6 +166,9 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
         environment.getEndpointBaseUrl() + "social/rest/people/" + userId
             + "/@self");
     InputStream in = execute(onBehalfOf, request);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("getPerson got (plain text json): {}", new Scanner(in).useDelimiter("\\A").next());
+    }
     return parser.parsePerson(in).getEntry();
   }
 

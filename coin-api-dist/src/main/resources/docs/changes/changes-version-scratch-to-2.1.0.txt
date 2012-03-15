@@ -1,0 +1,8 @@
+Create directories:
+ mkdir /opt/tomcat/webapps/api.<env>.surfconext.nl
+ chown tomcat:tomcat /opt/tomcat/webapps/api.<env>.surfconext.nl
+
+ mkdir /opt/tomcat/conf/Catalina/api.<env>.surfconext.nl
+
+add host to server.xml:
+<Host name="api.<env>.surfconext.nl" appBase="webapps/api.<env>.surfconext.nl"/>
