@@ -166,9 +166,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
         environment.getEndpointBaseUrl() + "social/rest/people/" + userId
             + "/@self");
     InputStream in = execute(onBehalfOf, request);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("getPerson got (plain text json): {}", new Scanner(in).useDelimiter("\\A").next());
-    }
     return parser.parsePerson(in).getEntry();
   }
 
