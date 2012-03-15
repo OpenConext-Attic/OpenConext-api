@@ -24,6 +24,15 @@ public class Name {
   private String familyName;
   private String givenName;
 
+  public Name() {
+  }
+
+  public Name(String formatted, String familyName, String givenName) {
+    this.formatted = formatted;
+    this.familyName = familyName;
+    this.givenName = givenName;
+  }
+
   /**
    * @return the formatted
    */

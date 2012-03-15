@@ -24,7 +24,11 @@ package nl.surfnet.coin.api.client.domain;
  */
 public class Email {
 private String value;
-  private String type;
+  private Type type;
+
+  public enum Type {
+    email
+  }
 
   /**
    * @return the value
@@ -44,7 +48,7 @@ private String value;
   /**
    * @return the type
    */
-  public String getType() {
+  public Type getType() {
     return type;
   }
 
@@ -52,7 +56,7 @@ private String value;
    * @param type
    *          the type to set
    */
-  public void setType(String type) {
+  public void setType(Type type) {
     this.type = type;
   }
 }
