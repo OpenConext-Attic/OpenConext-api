@@ -1,6 +1,7 @@
 package nl.surfnet.coin.api;
 
 import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.PersonService;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +44,10 @@ public class PersonControllerTest {
     public void getPerson() {
         Person p = new Person();
         p.setId("id");
-        when(personService.getPerson("foo", "loggedInUser")).thenReturn(p);
-        Person personReturned = pc.getPerson("foo", "@self", "loggedInUser");
+        PersonEntry entry = new PersonEntry();
+        entry.setEntry(p);
+        when(personService.getPerson("foo", "loggedInUser")).thenReturn(entry);
+        Person personReturned = pc.getPerson("foo", "@self", "loggedInUser").getEntry();
         assertEquals("urn:collab:person:test.surfguest.nl:mfoo", personReturned.getId());
     }
 }

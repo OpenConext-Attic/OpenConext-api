@@ -17,9 +17,9 @@
 package nl.surfnet.coin.api.service;
 
 
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
-
-import java.util.List;
+import nl.surfnet.coin.api.client.domain.PersonEntry;
 
 public interface PersonService {
 
@@ -33,7 +33,7 @@ public interface PersonService {
    *          request
    * @return the {@link org.opensocial.models.Person}
    */
-  Person getPerson(String userId, String onBehalfOf);
+  PersonEntry getPerson(String userId, String onBehalfOf);
 
   /**
    * Get the group members of the given group. Note that the onBehalfOf can be null.
@@ -45,5 +45,5 @@ public interface PersonService {
    *          make the request
    * @return an {@link java.util.ArrayList} containing {@link Person}'s
    */
-  List<Person> getGroupMembers(String groupId, String onBehalfOf);
+  GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf);
 }

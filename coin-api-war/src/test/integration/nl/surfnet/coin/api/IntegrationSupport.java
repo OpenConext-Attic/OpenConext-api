@@ -18,15 +18,19 @@
  */
 package nl.surfnet.coin.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Base class for integration tests
  * 
- *
  */
 public class IntegrationSupport {
-  
+
+  protected Logger LOG = LoggerFactory.getLogger(IntegrationSupport.class);
+
   public static final String URL_UNDER_TEST = withEndingSlash(System
-      .getProperty("integration.test.url", "http://localhost:8095/coin-api"));
+      .getProperty("integration.test.url", "http://localhost:8095"));
 
   private static String withEndingSlash(String path) {
     return path.endsWith("/") ? path : path + "/";

@@ -48,12 +48,6 @@ public class GroupMembersEntry extends AbstractEntry {
     return entry != null && !entry.isEmpty();
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getResult()
-   */
-  @Override
-  public Object getResult() {
-    return getEntry();
-  }
+ 
   
 }

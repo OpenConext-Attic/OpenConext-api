@@ -36,29 +36,28 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 @SuppressWarnings("unchecked")
 public class OpenConextJsonParser {
-  
+
   private ObjectMapper objectMapper = new ObjectMapper();
-  
-  public List<Person> parseTeamMembers(InputStream in) {
-    return (List<Person>) parse(in, GroupMembersEntry.class);
+
+  public GroupMembersEntry parseTeamMembers(InputStream in) {
+    return (GroupMembersEntry) parse(in, GroupMembersEntry.class);
   }
-  
-  public Person parsePerson(InputStream in) {
-    return (Person) parse(in,PersonEntry.class);
+
+  public PersonEntry parsePerson(InputStream in) {
+    return (PersonEntry) parse(in, PersonEntry.class);
   }
-  
-  public List<Group> parseGroups(InputStream in) {
-    return (List<Group>) parse(in,GroupEntry.class);
+
+  public GroupEntry parseGroups(InputStream in) {
+    return (GroupEntry) parse(in, GroupEntry.class);
   }
-  
+
   private Object parse(InputStream in, Class<? extends AbstractEntry> entry) {
     AbstractEntry result;
     try {
-      result = objectMapper.readValue(in, entry);
+      return objectMapper.readValue(in, entry);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return result.getResult();
   }
-  
+
 }

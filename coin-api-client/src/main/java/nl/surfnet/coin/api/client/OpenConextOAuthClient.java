@@ -31,7 +31,7 @@ import nl.surfnet.coin.api.client.domain.Person;
  * 
  */
 public interface OpenConextOAuthClient {
-  
+
   /**
    * Is it possible to make OpenSocial requests for this user (as onBehalfOf).
    * In principle clients need to make this check every time they want to make a
@@ -49,21 +49,32 @@ public interface OpenConextOAuthClient {
    * token yet for an user can redirect to the authorization URL. Note that the
    * Response will be used to actually redirect to.
    * 
-   * @param version the OAuth protocol version to use
+   * @param version
+   *          the OAuth protocol version to use
    * @param request
    *          the HTTP request for obtaining the request token
    * @param response
    *          the HTTP response for redirecting to the authorization url
    */
-  void redirectToAuthorizationUrl(OAuthVersion version, HttpServletRequest request,
-      HttpServletResponse response);
+  void redirectToAuthorizationUrl(OAuthVersion version,
+      HttpServletRequest request, HttpServletResponse response);
+
+  /**
+   * Get the authorization url
+   * 
+   * @param version
+   *          the oauth version
+   * @return the authorization url
+   */
+  String getAuthorizationUrl(OAuthVersion version);
 
   /**
    * Clients who have requested a redirect to the authorization URL will be
    * notified on the registered callback URL. For extracting the oauth access
    * token they will need to 'forward' the call back request to this method.
    * 
-   * @param version the OAuth protocol version to use
+   * @param version
+   *          the OAuth protocol version to use
    * @param request
    *          the HTTP request for obtaining the request token
    */

@@ -34,6 +34,7 @@ import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
@@ -86,10 +87,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   @Override
   public void redirectToAuthorizationUrl(OAuthVersion version,
       HttpServletRequest request, HttpServletResponse response) {
-    OAuthService service = getService(version, OAuthProtocol.threelegged);
-    Token requestToken = service.getRequestToken();
-    String authUrl = service.getAuthorizationUrl(requestToken);
-    request.getSession().setAttribute(REQUEST_TOKEN, requestToken);
+    String authUrl = doGetAuthorizationUrl(version, request);
     try {
       response.sendRedirect(authUrl);
     } catch (IOException e) {
@@ -97,6 +95,34 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
           + authUrl, e);
     }
 
+  }
+
+  private String doGetAuthorizationUrl(OAuthVersion version,
+      HttpServletRequest request) {
+    OAuthService service = getService(version, OAuthProtocol.threelegged);
+    Token requestToken;
+    if (OAuthVersion.v10a.equals(version)) {
+      requestToken = service.getRequestToken();
+      if (request != null) {
+        request.getSession().setAttribute(REQUEST_TOKEN, requestToken);
+      }
+    } else {
+      requestToken = null;
+    }
+    String authUrl = service.getAuthorizationUrl(requestToken);
+    return authUrl;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getAuthorizationUrl(nl
+   * .surfnet.coin.api.client.OAuthVersion)
+   */
+  @Override
+  public String getAuthorizationUrl(OAuthVersion version) {
+    return doGetAuthorizationUrl(version, null);
   }
 
   /*
@@ -108,7 +134,14 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
    */
   @Override
   public void oauthCallback(OAuthVersion version, HttpServletRequest request) {
-    String oAuthVerifier = request.getParameter("oauth_verifier");
+    String oAuthVerifier;
+    Token requestToken = null;
+    if (OAuthVersion.v10a.equals(version)) {
+      oAuthVerifier = request.getParameter("oauth_verifier");
+      requestToken = (Token) request.getSession().getAttribute(REQUEST_TOKEN);
+    } else {
+      oAuthVerifier = request.getParameter("code");
+    }
     Verifier verifier = new Verifier(oAuthVerifier);
     String userId = request.getParameter("user_id");
     try {
@@ -117,8 +150,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
       throw new RuntimeException(e);
     }
     OAuthService service = getService(version, OAuthProtocol.threelegged);
-    Token requestToken = (Token) request.getSession().getAttribute(
-        REQUEST_TOKEN);
     Token accessToken = service.getAccessToken(requestToken, verifier);
     repository.storeToken(accessToken, userId, version);
   }
@@ -136,9 +167,8 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
         environment.getEndpointBaseUrl() + "social/rest/people/" + userId
             + "/@self");
     InputStream in = execute(onBehalfOf, request);
-    return parser.parsePerson(in);
+    return parser.parsePerson(in).getEntry();
   }
-
 
   /*
    * (non-Javadoc)
@@ -150,13 +180,14 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   @Override
   public List<Person> getGroupMembers(String groupId, String onBehalfOf) {
     if (!StringUtils.hasText(onBehalfOf)) {
-      throw new IllegalArgumentException("For retrieving group members the onBehalfOf may not be empty");
+      throw new IllegalArgumentException(
+          "For retrieving group members the onBehalfOf may not be empty");
     }
     OAuthRequest request = new OAuthRequest(Verb.GET,
         environment.getEndpointBaseUrl() + "social/rest/people/" + onBehalfOf
             + "/" + groupId);
     InputStream in = execute(onBehalfOf, request);
-    return parser.parseTeamMembers(in);
+    return parser.parseTeamMembers(in).getEntry();
   }
 
   /*
@@ -170,10 +201,10 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   public List<Group> getGroups(String userId, String onBehalfOf) {
     OAuthRequest request = new OAuthRequest(Verb.GET,
         environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
-     InputStream in = execute(onBehalfOf, request);
-    return parser.parseGroups(in);
+    InputStream in = execute(onBehalfOf, request);
+    return parser.parseGroups(in).getEntry();
   }
-  
+
   private InputStream execute(String onBehalfOf, OAuthRequest request) {
     Token token;
     OAuthService service;
@@ -192,10 +223,9 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     }
     service.signRequest(token, request);
     Response oAuthResponse = request.send();
-   return oAuthResponse.getStream();
+    return oAuthResponse.getStream();
   }
 
-  
   private OAuthService getService(OAuthVersion version, OAuthProtocol protocol) {
     String baseUrl = environment.getEndpointBaseUrl();
     Api api = version.equals(OAuthVersion.v10a) ? (protocol

@@ -88,12 +88,12 @@ public class PersonTestSelenium extends SeleniumSupport {
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
     Token aToken = service.getAccessToken(null, authorizationCode);
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL + "rest/people/" + USER_ID + "/@self");
+    OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL + "social/rest/people/" + USER_ID + "/@self");
 
     service.signRequest(aToken, request);
     Response response = request.send();
     LOG.debug("Response: {}", response.getBody());
-    assertTrue(response.getBody().contains("mock-id"));
+    assertTrue(response.getBody().contains("mnice@surfguest.nl"));
   }
 
   private Verifier authorizationCode;

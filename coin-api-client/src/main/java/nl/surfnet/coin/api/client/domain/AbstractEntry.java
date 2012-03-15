@@ -76,6 +76,6 @@ public abstract class AbstractEntry implements Serializable {
     this.itemsPerPage = itemsPerPage;
   }
   
-  public abstract Object getResult();
+ 
   
 }

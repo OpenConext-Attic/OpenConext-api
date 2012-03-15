@@ -20,8 +20,11 @@ import org.json.JSONArray;
 
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.GroupEntry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.client.domain.PersonEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +41,7 @@ public class MockService implements PersonService, GroupService {
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   @Override
-  public Person getPerson(String userId, String loggedInUser) {
+  public PersonEntry getPerson(String userId, String loggedInUser) {
     ClassPathResource pathResource = new ClassPathResource(String.format(
         JSON_PATH, userId, "person"));
     if (!pathResource.exists()) {
@@ -61,7 +64,7 @@ public class MockService implements PersonService, GroupService {
    * java.lang.String)
    */
   @Override
-  public List<Person> getGroupMembers(String groupId, String onBehalfOf) {
+  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf) {
     ClassPathResource pathResource = new ClassPathResource(String.format(
         JSON_PATH, groupId, "teammembers"));
     if (!pathResource.exists()) {
@@ -82,7 +85,7 @@ public class MockService implements PersonService, GroupService {
    * java.lang.String)
    */
   @Override
-  public List<Group> getGroups(String userId, String onBehalfOf) {
+  public GroupEntry getGroups(String userId, String onBehalfOf) {
     ClassPathResource pathResource = new ClassPathResource(String.format(
         JSON_PATH, userId, "groups"));
     if (!pathResource.exists()) {

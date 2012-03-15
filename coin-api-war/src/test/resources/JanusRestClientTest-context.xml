@@ -19,7 +19,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
   
-  <context:property-placeholder location="classpath:coin-api.properties" />
+  <context:property-placeholder location="classpath:coin-api-test.properties" />
   
   <bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
 

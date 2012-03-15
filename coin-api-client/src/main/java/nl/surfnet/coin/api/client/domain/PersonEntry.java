@@ -43,13 +43,6 @@ public class PersonEntry extends AbstractEntry {
   public void setEntry(Person entry) {
     this.entry = entry;
   }
-
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getResult()
-   */
-  @Override
-  public Object getResult() {
-    return getEntry();
-  }
+  
 
 }

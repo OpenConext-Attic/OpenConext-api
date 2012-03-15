@@ -66,6 +66,19 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
     assertEquals("mnice@surfguest.nl", person.getEmails().iterator().next()
         .getValue());
   }
+  
+  /**
+   * Test method for
+   * {@link nl.surfnet.coin.api.client.OpenConextOAuthClientImpl#getPerson(java.lang.String, java.lang.String)}
+   * .
+   */
+  @Test
+  public void testGetPersonServerOutput() {
+    super.setResponseResource(new ClassPathResource("single-person-server-output.json"));
+    Person person = this.client.getPerson(USER_ID, null);
+    assertEquals("mFoo@surfguest.nl", person.getEmails().iterator().next()
+        .getValue());
+  }
 
   /**
    * Test method for

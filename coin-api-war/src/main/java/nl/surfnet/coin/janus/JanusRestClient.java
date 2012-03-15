@@ -42,7 +42,7 @@ public class JanusRestClient implements Janus {
   private static final String KEY_CONSUMER_SECRET = "coin:oauth:consumer_secret";
 
   @Autowired
-  RestTemplate restTemplate;
+  private RestTemplate restTemplate;
 
   @Value("${janus.uri}")
   private URI janusUri;
@@ -129,5 +129,33 @@ public class JanusRestClient implements Janus {
       url.append(String.format("%s=%s", key, keys.get(key)));
     }
     return URI.create(janusUri + "?" + url.toString());
+  }
+
+  /**
+   * @param restTemplate the restTemplate to set
+   */
+  public void setRestTemplate(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
+
+  /**
+   * @param janusUri the janusUri to set
+   */
+  public void setJanusUri(URI janusUri) {
+    this.janusUri = janusUri;
+  }
+
+  /**
+   * @param user the user to set
+   */
+  public void setUser(String user) {
+    this.user = user;
+  }
+
+  /**
+   * @param secret the secret to set
+   */
+  public void setSecret(String secret) {
+    this.secret = secret;
   }
 }

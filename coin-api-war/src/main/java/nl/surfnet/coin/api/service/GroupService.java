@@ -21,6 +21,7 @@ package nl.surfnet.coin.api.service;
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.GroupEntry;
 
 /**
  *  GroupService responsible for retrieving groups
@@ -38,6 +39,6 @@ public interface GroupService {
    *          request
    * @return {@link List} containing the {@link Group}s
    */
-  List<Group> getGroups(String userId, String onBehalfOf);
+  GroupEntry getGroups(String userId, String onBehalfOf);
   
 }
