@@ -4,3 +4,5 @@ All rights reserved.
 RELEASE INFORMATION
 
 Install this application according to the general COIN deployment procedure.
+
+Mind the version specific installation notes in changes/changes-version-*-to-*.txt

@@ -1,3 +1,6 @@
+Directions below are initial steps to prepare the environment for this application.
+
+
 Create directories:
  mkdir /opt/tomcat/webapps/api.<env>.surfconext.nl
  chown tomcat:tomcat /opt/tomcat/webapps/api.<env>.surfconext.nl
@@ -6,3 +9,44 @@ Create directories:
 
 add host to server.xml:
 <Host name="api.<env>.surfconext.nl" appBase="webapps/api.<env>.surfconext.nl"/>
+
+Add apache2 configuration (replace "dev" with appropriate env):
+~~~
+<VirtualHost *:443>
+    # General setup for the virtual host, inherited from global configuration
+    DocumentRoot "/var/www/html/default"
+    ServerName api.dev.surfconext.nl:443
+
+    # Use separate log files for the SSL virtual host; note that LogLevel
+    # is not inherited from httpd.conf.
+    ErrorLog logs/api_ssl_error_log
+    TransferLog logs/api_ssl_access_log
+    LogLevel warn
+
+    SSLEngine             on
+    SSLProtocol           -ALL +SSLv3 +TLSv1
+    SSLCipherSuite        ALL:!aNULL:!ADH:!eNULL:!LOW:!EXP:!RC4-MD5:RC4+RSA:+HIGH:+MEDIU
+    SSLCertificateFile    /etc/httpd/keys/star.dev.surfconext.nl.pem
+    SSLCertificateKeyFile /etc/httpd/keys/star.dev.surfconext.nl.key
+    SSLCACertificateFile  /etc/httpd/keys/star.dev.surfconext.nl_cabundle.pem
+
+    RewriteEngine On
+    RewriteRule ^/$ /api/$1 [L,R=permanent]
+
+    <Files ~ "\.(shtml?)$">
+        SSLOptions +StdEnvVars
+    </Files>
+
+    SetEnvIf User-Agent ".*MSIE.*" \
+             nokeepalive ssl-unclean-shutdown \
+             downgrade-1.0 force-response-1.0
+
+    CustomLog logs/ssl_request_log \
+              "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+
+    # Proxy requests through to Tomcat using AJP
+    ProxyPass / ajp://localhost:8009/
+
+</VirtualHost>
+~~~
