@@ -15,6 +15,7 @@
  */
 package nl.surfnet.coin.api.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +26,8 @@ import java.util.Scanner;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
 import org.scribe.model.OAuthRequest;
@@ -46,8 +49,9 @@ import nl.surfnet.coin.api.client.domain.Person;
  */
 public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OpenConextOAuthClientImpl.class);
-  
+  private static final Logger LOG = LoggerFactory
+      .getLogger(OpenConextOAuthClientImpl.class);
+
   private static final String REQUEST_TOKEN = "REQUEST_TOKEN";
   private OAuthEnvironment environment;
   private OAuthRepository repository;
@@ -222,7 +226,23 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     }
     service.signRequest(token, request);
     Response oAuthResponse = request.send();
-    return oAuthResponse.getStream();
+    InputStream stream = oAuthResponse.getStream();
+    if (LOG.isDebugEnabled()) {
+      stream = logInputStream(stream);
+    }
+    return stream;
+  }
+
+  private InputStream logInputStream(InputStream stream) {
+    String json;
+    try {
+      json = IOUtils.toString(stream);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    LOG.debug(json);
+    stream = IOUtils.toInputStream(json);
+    return stream;
   }
 
   private OAuthService getService(OAuthVersion version, OAuthProtocol protocol) {

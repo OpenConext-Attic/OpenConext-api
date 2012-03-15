@@ -55,4 +55,5 @@ public class PersonController {
             throw new UnsupportedOperationException("Not supported: person query other than @self.");
         }
     }
+
 }
