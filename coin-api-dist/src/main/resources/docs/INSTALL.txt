@@ -3,4 +3,4 @@ All rights reserved.
 
 RELEASE INFORMATION
 
-TODO.
+Install this application according to the general COIN deployment procedure.

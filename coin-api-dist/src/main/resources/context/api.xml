@@ -13,5 +13,5 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<Context path="/coin" docBase="/opt/tomcat/wars/coin-portal-war-@VERSION@.war" debug="0">
+<Context path="/api" docBase="/opt/tomcat/wars/coin-api-war-@VERSION@.war" debug="0">
 </Context>
