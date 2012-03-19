@@ -32,9 +32,11 @@
   <description>Coin API Parent</description>
 
   <scm>
-    <connection>scm:svn:https://svn.surfnet.nl/svn/coin-os/coin-api/trunk</connection>
+    <connection>scm:git:git@github.com:OpenConext/OpenConext-api.git</connection>
+    <url>scm:git:git@github.com:OpenConext/OpenConext-api.git</url>
+    <developerConnection>scm:git:git@github.com:OpenConext/OpenConext-api.git</developerConnection>
   </scm>
-
+  
   <repositories>
     <repository>
       <id>coin-repo</id>
