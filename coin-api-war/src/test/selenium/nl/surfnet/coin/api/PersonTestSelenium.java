@@ -18,6 +18,7 @@
  */
 package nl.surfnet.coin.api;
 
+import nl.surfnet.coin.api.client.OpenConextApi20Implicit;
 import nl.surfnet.coin.api.client.OpenConextApi20ThreeLegged;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
@@ -60,9 +61,36 @@ public class PersonTestSelenium extends SeleniumSupport {
   private final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
   private MockHtppServer server;
 
+  private Verifier authorizationCode;
+
+  @Before
+  public void startServer() {
+    LOG.debug("Starting server for catching authorization code...");
+    server = new MockHtppServer(8083) {
+      protected MockHandler createHandler(Server server) {
+        return new MockHandler(server) {
+          @Override
+          public void handle(String target, Request baseRequest, HttpServletRequest request,
+                             HttpServletResponse response) throws IOException,
+              ServletException {
+            LOG.debug("Request to mock http server: {}", request);
+            authorizationCode = new Verifier(request.getParameter("code"));
+            response.setStatus(200);
+          }
+        };
+      }
+    };
+    server.startServer();
+  }
+
+  @After
+  public void stopServer() {
+    LOG.debug("Stopping server...");
+    server.stopServer();
+  }
 
   @Test
-  public void completeFlow() throws Exception {
+  public void authorizationCodeGrant() throws Exception {
 
     OAuthService service = new ServiceBuilder()
         .provider(OpenConextApi20ThreeLegged.class)
@@ -96,32 +124,4 @@ public class PersonTestSelenium extends SeleniumSupport {
     assertTrue(response.getBody().contains("mnice@surfguest.nl"));
   }
 
-  private Verifier authorizationCode;
-
-  @After
-  public void stopServer() {
-    LOG.debug("Stopping server...");
-    server.stopServer();
-  }
-
-  @Before
-  public void startServer() {
-    LOG.debug("Starting server for catching authorization code...");
-    server = new MockHtppServer(8083) {
-      protected MockHandler createHandler(Server server) {
-        return new MockHandler(server) {
-
-          @Override
-          public void handle(String target, Request baseRequest, HttpServletRequest request,
-                             HttpServletResponse response) throws IOException,
-              ServletException {
-            LOG.debug("Request to mock http server: {}", request);
-            authorizationCode = new Verifier(request.getParameter("code"));
-            response.setStatus(200);
-          }
-        };
-      }
-    };
-    server.startServer();
-  }
 }

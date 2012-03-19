@@ -68,6 +68,7 @@
       client-details-service-ref="clientDetailsService"
       token-services-ref="tokenServices">
     <oauth:authorization-code/>
+    <oauth:implicit />
   </oauth:authorization-server>
 
   <bean id="approvalHandler" class="nl.surfnet.coin.api.ConextUserApprovalHandler"/>
