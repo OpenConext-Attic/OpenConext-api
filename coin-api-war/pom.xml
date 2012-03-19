@@ -123,6 +123,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -208,7 +209,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="coin-portal-version" value="${project.version}" />
+                                <property name="coin-api-version" value="${project.version}" />
                                 <ant target="build" inheritRefs="true" />
                             </tasks>
                         </configuration>
