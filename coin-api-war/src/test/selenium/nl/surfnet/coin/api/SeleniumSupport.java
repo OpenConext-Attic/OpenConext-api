@@ -60,4 +60,11 @@ public class SeleniumSupport {
   protected FirefoxDriver getWebDriver() {
     return driver;
   }
+
+  protected void loginEndUser() {
+    // log in...
+    getWebDriver().findElementByName("j_username").sendKeys("bob");
+    getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
+    getWebDriver().findElementByName("submit").click();
+  }
 }

@@ -22,17 +22,17 @@ import org.scribe.extractors.JsonTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
 
-public class OpenConextApi20ThreeLegged extends DefaultApi20 {
+public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
   private static final String BASE_URL = "http://localhost:8095/";
 
   @Override
   public String getAccessTokenEndpoint() {
-    return BASE_URL + "oauth/token?grant_type=authorization_code";
+    return BASE_URL + "oauth2/token?grant_type=authorization_code";
   }
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(BASE_URL + "oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
+    return String.format(BASE_URL + "oauth2/authorize?response_type=code&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
   }
 
   public Verb getAccessTokenVerb() {

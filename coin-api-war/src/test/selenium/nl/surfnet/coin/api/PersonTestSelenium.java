@@ -18,8 +18,7 @@
  */
 package nl.surfnet.coin.api;
 
-import nl.surfnet.coin.api.client.OpenConextApi20Implicit;
-import nl.surfnet.coin.api.client.OpenConextApi20ThreeLegged;
+import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
 
@@ -39,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.lang.System;
 import java.lang.Thread;
 
 import static org.junit.Assert.assertTrue;
@@ -93,7 +91,7 @@ public class PersonTestSelenium extends SeleniumSupport {
   public void authorizationCodeGrant() throws Exception {
 
     OAuthService service = new ServiceBuilder()
-        .provider(OpenConextApi20ThreeLegged.class)
+        .provider(OpenConextApi20AuthorizationCode.class)
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
         .callback(OAUTH_CALLBACK_URL)
@@ -103,10 +101,8 @@ public class PersonTestSelenium extends SeleniumSupport {
 
 
     getWebDriver().get(authUrl);
-    // log in...
-    getWebDriver().findElementByName("j_username").sendKeys("bob");
-    getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
-    getWebDriver().findElementByName("submit").click();
+
+    loginEndUser();
 
     // Wait for authorizationCode to be sent to the mock http server
     while (authorizationCode == null) {
