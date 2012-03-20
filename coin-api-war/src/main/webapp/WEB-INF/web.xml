@@ -33,7 +33,7 @@
     <filter-name>corsHeaderFilter</filter-name>
     <filter-class>nl.surfnet.coin.api.filter.ResponseHeaderAddingFilter</filter-class>
     <init-param>
-      <param-name>header</param-name>
+      <param-name>name</param-name>
       <param-value>Access-Control-Allow-Origin</param-value>
     </init-param>
     <init-param>
