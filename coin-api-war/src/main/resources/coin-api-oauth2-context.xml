@@ -67,7 +67,6 @@
       token-services-ref="tokenServices">
     <oauth2:authorization-code/>
     <oauth2:implicit/>
-    <oauth2:client-credentials />
   </oauth2:authorization-server>
 
 
