@@ -37,7 +37,6 @@
 
   <security:http auto-config="true" authentication-manager-ref="authenticationManager">
     <security:intercept-url pattern="/social/rest/**" access="ROLE_USER"/>
-    <security:intercept-url pattern="/oauth/authorize" access="ROLE_USER"/>
     <security:custom-filter ref="oauth2ProviderFilter" after="EXCEPTION_TRANSLATION_FILTER"/>
   </security:http>
 
@@ -62,6 +61,8 @@
 
 
   <oauth2:authorization-server
+      token-endpoint-url="/oauth2/token"
+      authorization-endpoint-url="/oauth2/authorize"
       user-approval-handler-ref="approvalHandler"
       client-details-service-ref="clientDetailsService"
       token-services-ref="tokenServices">
@@ -70,7 +71,7 @@
   </oauth2:authorization-server>
 
 
-  <oauth2:resource-server id="oauth2ProviderFilter" token-services-ref="tokenServices"/>
+  <oauth2:resource-server id="oauth2ProviderFilter" token-services-ref="tokenServices" />
 
   <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.RandomValueTokenServices">
     <property name="tokenStore" ref="tokenStore"/>
