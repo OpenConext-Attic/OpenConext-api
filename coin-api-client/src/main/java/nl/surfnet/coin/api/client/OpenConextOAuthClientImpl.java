@@ -42,7 +42,6 @@ import nl.surfnet.coin.api.client.domain.Person;
 
 /**
  * Implementation of OpenConextOAuthClient
- * 
  */
 public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
@@ -55,7 +54,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   public OpenConextOAuthClientImpl(OAuthEnvironment environment,
-      OAuthRepository repository) {
+                                   OAuthRepository repository) {
     super();
     this.environment = environment;
     this.repository = repository;
@@ -83,7 +82,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
    */
   @Override
   public void redirectToAuthorizationUrl(OAuthVersion version,
-      HttpServletRequest request, HttpServletResponse response) {
+                                         HttpServletRequest request, HttpServletResponse response) {
     String authUrl = doGetAuthorizationUrl(version, request);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Redirecting to authorization URL: {}", authUrl);
@@ -98,7 +97,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   }
 
   private String doGetAuthorizationUrl(OAuthVersion version,
-      HttpServletRequest request) {
+                                       HttpServletRequest request) {
     OAuthService service = getService(version, OAuthProtocol.threelegged);
     Token requestToken;
     if (OAuthVersion.v10a.equals(version)) {
@@ -244,10 +243,14 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
   private OAuthService getService(OAuthVersion version, OAuthProtocol protocol) {
     String baseUrl = environment.getEndpointBaseUrl();
-    Api api = version.equals(OAuthVersion.v10a) ? (protocol
-        .equals(OAuthProtocol.twolegged) ? new OpenConextApi10aTwoLegged()
-        : new OpenConextApi10aThreeLegged(baseUrl))
-        : new OpenConextApi20ThreeLeggedDeletme(baseUrl);
+    Api api;
+
+    if (version.equals(OAuthVersion.v10a)) {
+      api = protocol.equals(OAuthProtocol.twolegged) ? new OpenConextApi10aTwoLegged() : new OpenConextApi10aThreeLegged(baseUrl);
+    } else {
+      api = new OpenConextApi20AuthorizationCode(baseUrl);
+    }
+
     OAuthService service = new ServiceBuilder().provider(api)
         .apiKey(environment.getOauthKey())
         .apiSecret(environment.getOauthSecret())
