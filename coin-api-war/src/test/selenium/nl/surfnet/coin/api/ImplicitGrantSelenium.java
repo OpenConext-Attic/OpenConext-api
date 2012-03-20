@@ -105,11 +105,8 @@ public class ImplicitGrantSelenium extends SeleniumSupport {
     LOG.debug("Auth url: {}", authUrl);
 
     getWebDriver().get(authUrl);
-    // log in...
-    getWebDriver().findElementByName("j_username").sendKeys("bob");
-    getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
-    getWebDriver().findElementByName("submit").click();
-    // Wait for authorizationCode to be sent to the mock http server
+
+    loginEndUser();
 
 
     URI uri = URI.create(getWebDriver().getCurrentUrl());

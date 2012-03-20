@@ -35,6 +35,6 @@ public class OpenConextApi20Implicit extends DefaultApi20 {
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(BASE_URL + "oauth/authorize?response_type=token&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
+    return String.format(BASE_URL + "oauth2/authorize?response_type=token&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
   }
 }
