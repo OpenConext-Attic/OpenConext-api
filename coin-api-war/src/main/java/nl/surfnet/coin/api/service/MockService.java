@@ -42,8 +42,17 @@ public class MockService implements PersonService, GroupService {
 
   @Override
   public PersonEntry getPerson(String userId, String loggedInUser) {
+
+    /*
+      Strip all characters that might cause problems in filenames.
+      e.g.:
+      urn:collab:person:test.surfguest.nl:foo becomes:
+      urn_collab_person_test.surfguest.nl_foo
+     */
+    String userIdStripped = userId.replace("[^0-9a-zA-Z_.-]", "_");
+
     ClassPathResource pathResource = new ClassPathResource(String.format(
-        JSON_PATH, userId, "person"));
+        JSON_PATH, userIdStripped, "person"));
     if (!pathResource.exists()) {
       pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
           "person"));
