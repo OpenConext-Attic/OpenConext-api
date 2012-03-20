@@ -33,7 +33,7 @@ import nl.surfnet.coin.api.client.domain.Person;
 
 import static org.junit.Assert.assertEquals;
 
-public class CorsHeaderTestIntegration extends ImplicitGrantSelenium {
+public class CorsHeaderTestSelenium extends ImplicitGrantSelenium {
 
   @Before
   public void login() throws Exception {
