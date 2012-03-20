@@ -1,0 +1,33 @@
+{
+    "entry": {
+        "nickname": "Java master",
+        "emails": [
+            {
+                "value": "geert.vanderploeg@flex.surfnet.nl",
+                "type": "email"
+            }
+        ],
+        "voot_membership_role":"admin",
+        "id": "urn:collab:person:test.surfguest.nl:gvanderploeg",
+        "name": {
+            "formatted": "Geert van der Ploeg",
+            "familyName": "van der Ploeg",
+            "givenName": "Geert"
+        },
+        "tags": [
+            "guest"
+        ],
+        "accounts": [
+            {
+                "username": "gvanderploeg",
+                "userId": "gvanderploeg"
+            }
+        ],
+        "organizations": [
+            {
+                "name": "test.surfguest.nl"
+            }
+        ],
+        "displayName": "Geert van der Ploeg"
+    }
+}
