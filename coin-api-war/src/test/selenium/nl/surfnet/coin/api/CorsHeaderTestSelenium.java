@@ -38,11 +38,12 @@ public class CorsHeaderTestSelenium extends ImplicitGrantSelenium {
   @Before
   public void login() throws Exception {
     super.implicitGrant();
+
   }
 
   @Test
   public void corsHeader() throws Exception {
-
+  // TODO: test for existence of Cors-header. But how? WebDriver does not expose http headers.
+    // Should be an integration test then, using HttpClient and client-credentials profile?
   }
-
 }
