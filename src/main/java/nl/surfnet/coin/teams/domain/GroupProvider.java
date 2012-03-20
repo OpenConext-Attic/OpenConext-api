@@ -16,6 +16,9 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Domain object for a Group provider
  */
@@ -25,12 +28,14 @@ public class GroupProvider {
   private String identifier;
   private String name;
   private GroupProviderType groupProviderType;
+  private Map<String, Object> allowedOptions;
 
   public GroupProvider(Long id, String identifier, String name, String groupProviderType) {
     this.id = id;
     this.identifier = identifier;
     this.name = name;
     this.groupProviderType = GroupProviderType.fromString(groupProviderType);
+    this.allowedOptions = new HashMap<String, Object>();
   }
 
   /**
@@ -59,6 +64,22 @@ public class GroupProvider {
    */
   public GroupProviderType getGroupProviderType() {
     return groupProviderType;
+  }
+
+  /**
+   * @return a Map<String, Object> with possible configuration options for the Group provider
+   */
+  public Map<String, Object> getAllowedOptions() {
+    return allowedOptions;
+  }
+
+  /**
+   * Sets a Map<String,Object> with possible configuration options for the Group provider.
+   *
+   * @param allowedOptions allowed options for a Group provider
+   */
+  public void setAllowedOptions(Map<String, Object> allowedOptions) {
+    this.allowedOptions = allowedOptions;
   }
 
   @Override

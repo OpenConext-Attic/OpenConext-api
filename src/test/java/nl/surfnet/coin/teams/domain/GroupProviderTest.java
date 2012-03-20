@@ -16,6 +16,10 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -33,15 +37,22 @@ public class GroupProviderTest {
     assertNull(groupProvider.getIdentifier());
     assertNull(groupProvider.getName());
     assertNull(groupProvider.getGroupProviderType());
+    assertEquals(Collections.emptyMap(), groupProvider.getAllowedOptions());
   }
 
   @Test
   public void filledIn() {
+    Map<String,Object> allowedOptions = new HashMap<String,Object>();
+    allowedOptions.put("foo", "bar");
+
     GroupProvider groupProvider = new GroupProvider(5L, "grouper", "SURFteams grouper",
         "EngineBlock_Group_Provider_Grouper");
+    groupProvider.setAllowedOptions(allowedOptions);
+
     assertEquals(Long.valueOf(5L), groupProvider.getId());
     assertEquals("grouper", groupProvider.getIdentifier());
     assertEquals("SURFteams grouper", groupProvider.getName());
     assertEquals(GroupProviderType.GROUPER, groupProvider.getGroupProviderType());
+    assertEquals(allowedOptions, groupProvider.getAllowedOptions());
   }
 }
