@@ -29,6 +29,8 @@ import nl.surfnet.coin.api.client.domain.PersonEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -37,17 +39,28 @@ import java.util.Scanner;
 
 public class MockService implements PersonService, GroupService {
 
+  private Logger LOG = LoggerFactory.getLogger(MockService.class);
+
   private final static String JSON_PATH = "json/%s-%s.json";
   private final static String FALLBACK = "fallback";
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   @Override
   public PersonEntry getPerson(String userId, String loggedInUser) {
-    ClassPathResource pathResource = new ClassPathResource(String.format(
-        JSON_PATH, userId, "person"));
+
+    /*
+      Strip all characters that might cause problems in filenames.
+      e.g.:
+      urn:collab:person:test.surfguest.nl:foo becomes:
+      urn_collab_person_test.surfguest.nl_foo
+     */
+    String userIdStripped = userId.replaceAll("[^0-9a-zA-Z_.-]", "_");
+
+    final String filename = String.format(JSON_PATH, userIdStripped, "person");
+    LOG.debug("filename: {}", filename);
+    ClassPathResource pathResource = new ClassPathResource(filename);
     if (!pathResource.exists()) {
-      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
-          "person"));
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "person"));
     }
     try {
       return parser.parsePerson(pathResource.getInputStream());

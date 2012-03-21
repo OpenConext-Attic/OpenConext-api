@@ -37,6 +37,12 @@ public class MockServiceTest {
   }
 
   @Test
+  public void getPersonSpecialChars() {
+    Person person = service.getPerson("spec-ial:cha_rs*in^file.name", "some logged in user").getEntry();
+    assertEquals("myspecialcharsfamilyname", person.getName().getFamilyName());
+  }
+
+  @Test
   public void getGroupMembers() {
     List<Person> groupMembers = service.getGroupMembers("foo",
         "some logged in user").getEntry();
