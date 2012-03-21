@@ -38,6 +38,7 @@ public class GroupProviderTest {
     assertNull(groupProvider.getName());
     assertNull(groupProvider.getGroupProviderType());
     assertEquals(Collections.emptyMap(), groupProvider.getAllowedOptions());
+    assertNull(groupProvider.getAllowedOptionAsString("foo"));
   }
 
   @Test
@@ -54,5 +55,6 @@ public class GroupProviderTest {
     assertEquals("SURFteams grouper", groupProvider.getName());
     assertEquals(GroupProviderType.GROUPER, groupProvider.getGroupProviderType());
     assertEquals(allowedOptions, groupProvider.getAllowedOptions());
+    assertEquals("bar", groupProvider.getAllowedOptionAsString("foo"));
   }
 }

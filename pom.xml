@@ -31,10 +31,17 @@
   <description>External group provider interface.</description>
 
   <properties>
+    <coin-api-client.version>2.2.0-SNAPSHOT</coin-api-client.version>
     <coin-master.test-dependencies.version>2.1.1</coin-master.test-dependencies.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.surfnet.coin</groupId>
+      <artifactId>coin-api-client</artifactId>
+      <version>${coin-api-client.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.surfnet.coin</groupId>
       <artifactId>coin-master-test-dependencies</artifactId>
@@ -49,6 +56,13 @@
       <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

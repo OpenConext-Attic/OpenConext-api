@@ -82,6 +82,16 @@ public class GroupProvider {
     this.allowedOptions = allowedOptions;
   }
 
+  /**
+   * Convenience method for allowed options
+   *
+   * @param key of the allowed option
+   * @return String value of an allowed option. Can be {@literal null}
+   */
+  public String getAllowedOptionAsString(String key) {
+    return (String) this.allowedOptions.get(key);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
