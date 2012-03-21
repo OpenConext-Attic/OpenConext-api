@@ -17,18 +17,18 @@ package nl.surfnet.coin.api.client;
 
 import java.io.InputStream;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 /**
- * 
+ * Parser for VOOT based json objects
  *
  */
-@SuppressWarnings("unchecked")
 public class OpenConextJsonParser {
 
   private ObjectMapper objectMapper = new ObjectMapper();
@@ -43,6 +43,10 @@ public class OpenConextJsonParser {
 
   public GroupEntry parseGroups(InputStream in) {
     return (GroupEntry) parse(in, GroupEntry.class);
+  }
+
+  public Group20Entry parseGroups20(InputStream in) {
+    return (Group20Entry) parse(in, Group20Entry.class);
   }
 
   private Object parse(InputStream in, Class<? extends AbstractEntry> entry) {

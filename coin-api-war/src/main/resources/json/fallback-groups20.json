@@ -1,0 +1,19 @@
+{
+    "startIndex": 0,
+    "totalResults": 2,
+    "entry": [
+        {
+            "id": "urn:collab:group:test.surfteams.nl:etc:probe",
+            "title": "probe",
+            "description": "Super users",
+            "voot_membership_role": "member"
+        },
+        {
+            "id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:demo3",
+            "title": "demo sprint 3",
+            "description": "demo sprint 3",
+            "voot_membership_role": "admin"
+        }
+    ],
+    "itemsPerPage": 2
+}

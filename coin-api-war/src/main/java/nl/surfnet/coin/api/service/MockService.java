@@ -20,6 +20,7 @@ import org.json.JSONArray;
 
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Name;
@@ -94,6 +95,24 @@ public class MockService implements PersonService, GroupService {
     }
     try {
       return parser.parseGroups(pathResource.getInputStream());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.service.GroupService#getGroups20(java.lang.String, java.lang.String)
+   */
+  @Override
+  public Group20Entry getGroups20(String userId, String onBehalfOf) {
+    ClassPathResource pathResource = new ClassPathResource(String.format(
+        JSON_PATH, userId, "groups20"));
+    if (!pathResource.exists()) {
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
+          "groups20"));
+    }
+    try {
+      return parser.parseGroups20(pathResource.getInputStream());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

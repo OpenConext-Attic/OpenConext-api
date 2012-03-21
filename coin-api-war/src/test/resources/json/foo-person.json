@@ -7,7 +7,7 @@
                 "type": "email"
             }
         ],
-        "voot_membership_role":"admin",
+        "voot_membership_role":"member",
         "id": "urn:collab:person:test.surfguest.nl:mfoo",
         "name": {
             "formatted": "Mister Foo",
