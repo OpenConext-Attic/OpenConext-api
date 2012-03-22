@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
 
 /**
@@ -119,5 +120,17 @@ public interface OpenConextOAuthClient {
    * @return {@link List} containing the {@link Group}s
    */
   List<Group> getGroups(String userId, String onBehalfOf);
+
+  /**
+   * Get Persons' Groups
+   * 
+   * @param userId
+   *          the unique identifier
+   * @param onBehalfOf
+   *          the unique identifier of the user that is going to make the
+   *          request
+   * @return {@link List} containing the {@link Group}s
+   */
+  List<Group20> getGroups20(String userId, String onBehalfOf);
 
 }

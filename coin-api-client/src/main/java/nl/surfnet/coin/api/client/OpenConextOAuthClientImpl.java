@@ -24,6 +24,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
+
 import org.apache.commons.io.IOUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
@@ -36,9 +40,6 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-
-import nl.surfnet.coin.api.client.domain.Group;
-import nl.surfnet.coin.api.client.domain.Person;
 
 /**
  * Implementation of OpenConextOAuthClient
@@ -204,6 +205,21 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return parser.parseGroups(in).getEntry();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getGroups(java.lang.String
+   * , java.lang.String)
+   */
+  @Override
+  public List<Group20> getGroups20(String userId, String onBehalfOf) {
+    OAuthRequest request = new OAuthRequest(Verb.GET,
+        environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
+    InputStream in = execute(onBehalfOf, request);
+    return parser.parseGroups20(in).getEntry();
+  }
+  
   private InputStream execute(String onBehalfOf, OAuthRequest request) {
     Token token;
     OAuthService service;

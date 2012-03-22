@@ -99,7 +99,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetGroups() {
-    super.setResponseResource(new ClassPathResource("multiple-groups.json"));
+    super.setResponseResource(new ClassPathResource("multiple-groups20.json"));
     List<Group> groups = this.client.getGroups(USER_ID, USER_ID);
     assertEquals(17, groups.size());
   }

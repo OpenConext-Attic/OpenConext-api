@@ -1,6 +1,6 @@
 {
     "startIndex": 0,
-    "totalResults": 3,
+    "totalResults": 2,
     "entry": [
         {
             "id": "urn:collab:group:test.surfteams.nl:etc:sysadmingroup",
@@ -13,12 +13,7 @@
             "title": "demo sprint 5",
             "description": "demo sprint 5",
             "voot_membership_role": "admin"
-        },
-        {
-            "id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:femke_1234",
-            "title": "Femke 1234",
-            "voot_membership_role": "admin"
         }
     ],
-    "itemsPerPage": 3
+    "itemsPerPage": 2
 }

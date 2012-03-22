@@ -16,13 +16,15 @@
 
 package nl.surfnet.coin.api.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class MockServiceTest {
 
@@ -55,6 +57,13 @@ public class MockServiceTest {
   }
 
   @Test
+  public void getGroups20() {
+    List<Group20> groups = service.getGroups20("foo", "some logged in user")
+        .getEntry();
+    assertEquals(2, groups.size());
+  }
+
+  @Test
   public void getPersonFallback() {
     Person person = service.getPerson("qwerty", "some logged in user")
         .getEntry();
@@ -73,6 +82,13 @@ public class MockServiceTest {
     List<Group> groups = service.getGroups("qwerty", "some logged in user")
         .getEntry();
     assertEquals(17, groups.size());
+  }
+
+  @Test
+  public void getGroups20Fallback() {
+    List<Group20> groups = service.getGroups20("qwerty", "some logged in user")
+        .getEntry();
+    assertEquals(2, groups.size());
   }
 
 }
