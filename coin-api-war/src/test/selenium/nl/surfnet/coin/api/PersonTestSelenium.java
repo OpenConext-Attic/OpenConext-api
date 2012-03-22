@@ -19,6 +19,8 @@
 package nl.surfnet.coin.api;
 
 import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
+import nl.surfnet.coin.api.client.OpenConextOAuthClient;
+import nl.surfnet.coin.api.client.OpenConextOAuthClientImpl;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
 
@@ -40,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.Thread;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -71,6 +74,10 @@ public class PersonTestSelenium extends SeleniumSupport {
           public void handle(String target, Request baseRequest, HttpServletRequest request,
                              HttpServletResponse response) throws IOException,
               ServletException {
+            if (request.getRequestURI().contains("favicon")) {
+              LOG.debug("ignoring favicon-request.");
+              return;
+            }
             LOG.debug("Request to mock http server: {}", request);
             authorizationCode = new Verifier(request.getParameter("code"));
             response.setStatus(200);
@@ -89,9 +96,8 @@ public class PersonTestSelenium extends SeleniumSupport {
 
   @Test
   public void authorizationCodeGrant() throws Exception {
-
     OAuthService service = new ServiceBuilder()
-        .provider(OpenConextApi20AuthorizationCode.class)
+        .provider(new OpenConextApi20AuthorizationCode(SURFCONEXT_BASE_URL))
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
         .callback(OAUTH_CALLBACK_URL)
@@ -112,7 +118,12 @@ public class PersonTestSelenium extends SeleniumSupport {
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
     Token aToken = service.getAccessToken(null, authorizationCode);
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL + "social/rest/people/" + USER_ID + "/@self");
+    final String restUrl = SURFCONEXT_BASE_URL + "social/rest/people/" + USER_ID + "/@self";
+
+    // Verify that a normal request (without access token) fails now.
+    getWebDriver().get(restUrl);
+    assertFalse(getWebDriver().getPageSource().contains("mnice@surfguest.nl"));
+    OAuthRequest request = new OAuthRequest(Verb.GET, restUrl);
 
     service.signRequest(aToken, request);
     Response response = request.send();

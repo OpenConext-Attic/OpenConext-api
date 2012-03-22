@@ -24,7 +24,10 @@ import org.scribe.model.Verb;
 
 public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
 
-  private final String baseUrl;
+  private String baseUrl = "http://localhost:8095/";
+
+  public OpenConextApi20AuthorizationCode() {
+  }
 
   public OpenConextApi20AuthorizationCode(String baseUrl) {
     this.baseUrl = baseUrl;
