@@ -48,5 +48,5 @@ public interface GroupProviderService {
    * @param userId unique identifier of the user
    * @return List of GroupProvider's, can be empty
    */
-  List<GroupProvider> getGroupProviders(String userId);
+  List<GroupProvider> getOAuthGroupProviders(String userId);
 }

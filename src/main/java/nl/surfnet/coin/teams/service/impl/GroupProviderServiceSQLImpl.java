@@ -29,6 +29,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.domain.GroupProviderPreconditionTypes;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 
@@ -37,13 +38,20 @@ import nl.surfnet.coin.teams.service.GroupProviderService;
  */
 public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
+  private static final String SELECT_GROUP_PROVIDER_BY_IDENTIFIER =
+      "SELECT gp.id, gp.identifier, gp.name, gp.classname FROM group_provider AS gp WHERE gp.identifier ";
+
   // Cannot autowire because OpenConext-teams already has a JdbcTemplate defined for Grouper
+  // or change autowire by name instead of type
   private final JdbcTemplate jdbcTemplate;
 
   public GroupProviderServiceSQLImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<GroupProviderUserOauth> getGroupProviderUserOauths(String userId) {
     List<GroupProviderUserOauth> gpUserOauths;
@@ -72,24 +80,47 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     return gpUserOauths;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public GroupProvider getGroupProviderByStringIdentifier(String identifier) {
-    Object[] args = new Object[1];
-    args[0] = identifier;
+    Object[] args = {identifier};
     try {
       return this.jdbcTemplate.queryForObject(
-          "SELECT gp.id, gp.identifier, gp.name, gp.classname " +
-          "FROM group_provider AS gp " +
-          "WHERE gp.identifier = ?", args, new RowMapper<GroupProvider>() {
+          SELECT_GROUP_PROVIDER_BY_IDENTIFIER +'=' +'?', args, new RowMapper<GroupProvider>() {
         @Override
         public GroupProvider mapRow(ResultSet rs, int rowNum) throws SQLException {
-          Long id = rs.getLong("id");
-          String identifier = rs.getString("identifier");
-          String name = rs.getString("name");
-          String gpClassName = rs.getString("classname");
-          GroupProvider gp = new GroupProvider(id, identifier, name, gpClassName);
-          gp.setAllowedOptions(getAllowedOptions(gp));
-          return gp;
+          return mapRowToGroupProvider(rs);
+        }
+      });
+    } catch (EmptyResultDataAccessException e) {
+      return null;
+    }
+  }
+
+  private GroupProvider mapRowToGroupProvider(ResultSet rs) throws SQLException {
+    Long id = rs.getLong("id");
+    String identifier = rs.getString("identifier");
+    String name = rs.getString("name");
+    String gpClassName = rs.getString("classname");
+    GroupProvider gp = new GroupProvider(id, identifier, name, gpClassName);
+    gp.setAllowedOptions(getAllowedOptions(gp));
+    gp.setUserIdPrecondition(getUserIdPreCondition(id));
+    return gp;
+  }
+
+  private String getUserIdPreCondition(Long id) {
+    Object[] args = {id, GroupProviderPreconditionTypes.USER_ID_REGEX.getStringValue()};
+    try {
+      return this.jdbcTemplate.queryForObject(
+          "SELECT gppo.value    AS option_value " +
+              "FROM group_provider_precondition gpp " +
+              "LEFT JOIN group_provider_precondition_option gppo ON gpp.id = gppo.group_provider_precondition_id " +
+              "WHERE gpp.group_provider_id = ? AND gpp.className = ?;", args, new RowMapper<String>() {
+        @Override
+        public String mapRow(ResultSet resultSet, int i) throws SQLException {
+          return resultSet.getString("option_value");
         }
       });
     } catch (EmptyResultDataAccessException e) {
@@ -99,37 +130,28 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
 
   @Override
-  public List<GroupProvider> getGroupProviders(String userId) {
+  public List<GroupProvider> getOAuthGroupProviders(String userId) {
     List<GroupProvider> groupProviders;
 
-    Object[] args = new Object[1];
-    args[0] = userId;
+    Object[] args = {userId};
 
     try {
+      // We now select the group providers that already have an oauth access token for this user.
+      // Later this should change into "get all OAuth group providers the user has potentially
+      // access to".
       groupProviders = this.jdbcTemplate.query(
-          "SELECT gp.id, gp.identifier, gp.name, gp.classname " +
-              "FROM group_provider AS gp " +
-              "WHERE gp.identifier = " +
-              "    (SELECT gp_user_oauth.`provider_id` " +
+          SELECT_GROUP_PROVIDER_BY_IDENTIFIER +
+              " IN (SELECT gp_user_oauth.`provider_id` " +
               "     FROM group_provider_user_oauth as gp_user_oauth " +
               "     WHERE gp_user_oauth.`user_id` = ?);", args, new RowMapper<GroupProvider>() {
         @Override
         public GroupProvider mapRow(ResultSet rs, int rowNum) throws SQLException {
-          Long id = rs.getLong("id");
-          String identifier = rs.getString("identifier");
-          String name = rs.getString("name");
-          String gpClassName = rs.getString("classname");
-          return new GroupProvider(id, identifier, name, gpClassName);
+          return mapRowToGroupProvider(rs);
         }
       });
     } catch (EmptyResultDataAccessException e) {
       groupProviders = new ArrayList<GroupProvider>();
     }
-
-    for (GroupProvider groupProvider : groupProviders) {
-      groupProvider.setAllowedOptions(getAllowedOptions(groupProvider));
-    }
-
     return groupProviders;
   }
 

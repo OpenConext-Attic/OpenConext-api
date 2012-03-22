@@ -23,12 +23,16 @@ import java.util.Map;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test class for {@link GroupProvider}
  */
 public class GroupProviderTest {
+
+  private static final String ALLOWED_OPTION_KEY = "foo";
 
   @Test
   public void emptyGroupProvider() {
@@ -38,23 +42,53 @@ public class GroupProviderTest {
     assertNull(groupProvider.getName());
     assertNull(groupProvider.getGroupProviderType());
     assertEquals(Collections.emptyMap(), groupProvider.getAllowedOptions());
-    assertNull(groupProvider.getAllowedOptionAsString("foo"));
+    assertNull(groupProvider.getAllowedOptionAsString(ALLOWED_OPTION_KEY));
+    assertNull(groupProvider.getUserIdPrecondition());
   }
 
   @Test
   public void filledIn() {
-    Map<String,Object> allowedOptions = new HashMap<String,Object>();
-    allowedOptions.put("foo", "bar");
-
-    GroupProvider groupProvider = new GroupProvider(5L, "grouper", "SURFteams grouper",
-        "EngineBlock_Group_Provider_Grouper");
-    groupProvider.setAllowedOptions(allowedOptions);
+    GroupProvider groupProvider = populateGroupProvider();
 
     assertEquals(Long.valueOf(5L), groupProvider.getId());
     assertEquals("grouper", groupProvider.getIdentifier());
     assertEquals("SURFteams grouper", groupProvider.getName());
     assertEquals(GroupProviderType.GROUPER, groupProvider.getGroupProviderType());
-    assertEquals(allowedOptions, groupProvider.getAllowedOptions());
-    assertEquals("bar", groupProvider.getAllowedOptionAsString("foo"));
+    assertEquals("bar", groupProvider.getAllowedOptionAsString(ALLOWED_OPTION_KEY));
+    assertNull(groupProvider.getUserIdPrecondition());
+
+    groupProvider.setUserIdPrecondition("|(.+)|");
+    assertEquals("(.+)", groupProvider.getUserIdPrecondition());
+  }
+
+  @Test
+  public void meantForUser_nothingConfigured() {
+    GroupProvider groupProvider = populateGroupProvider();
+    groupProvider.setUserIdPrecondition(null);
+    assertTrue(groupProvider.isMeantForUser("urn:collab:person:nl.surfguest:guestuser"));
+  }
+
+  @Test
+  public void meantForUser_matchesPrecondition() {
+    GroupProvider groupProvider = populateGroupProvider();
+    groupProvider.setUserIdPrecondition("urn:collab:person:nl.surfguest:(.+)");
+    assertTrue(groupProvider.isMeantForUser("urn:collab:person:nl.surfguest:guestuser"));
+  }
+
+  @Test
+  public void meantForUser_doesNotMatchPrecondition() {
+    GroupProvider groupProvider = populateGroupProvider();
+    groupProvider.setUserIdPrecondition("urn:collab:person:nl.surfnet:(.+)");
+    assertFalse(groupProvider.isMeantForUser("urn:collab:person:nl.surfguest:guestuser"));
+  }
+
+  private GroupProvider populateGroupProvider() {
+    Map<String, Object> allowedOptions = new HashMap<String, Object>();
+    allowedOptions.put(ALLOWED_OPTION_KEY, "bar");
+
+    GroupProvider groupProvider = new GroupProvider(5L, "grouper", "SURFteams grouper",
+        "EngineBlock_Group_Provider_Grouper");
+    groupProvider.setAllowedOptions(allowedOptions);
+    return groupProvider;
   }
 }

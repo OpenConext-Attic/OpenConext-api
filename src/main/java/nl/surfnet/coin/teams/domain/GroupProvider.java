@@ -19,6 +19,10 @@ package nl.surfnet.coin.teams.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
+import nl.surfnet.coin.teams.util.PHPRegexConverter;
+
 /**
  * Domain object for a Group provider
  */
@@ -29,6 +33,7 @@ public class GroupProvider {
   private String name;
   private GroupProviderType groupProviderType;
   private Map<String, Object> allowedOptions;
+  private String userIdPrecondition;
 
   public GroupProvider(Long id, String identifier, String name, String groupProviderType) {
     this.id = id;
@@ -92,6 +97,27 @@ public class GroupProvider {
     return (String) this.allowedOptions.get(key);
   }
 
+  /**
+   * Regex pattern a user id must match in order to use this GroupProvider. If {@literal null}, then all users can use
+   * this Group Provider.
+   *
+   * @return regex pattern or {@link null}
+   */
+  public String getUserIdPrecondition() {
+    return userIdPrecondition;
+  }
+
+  /**
+   * @param userIdPrecondition regex pattern the user id must match.
+   */
+  public void setUserIdPrecondition(String userIdPrecondition) {
+    this.userIdPrecondition = PHPRegexConverter.convertPHPRegexPattern(userIdPrecondition);
+  }
+
+  public boolean isMeantForUser(String userId) {
+    return (!StringUtils.hasText(this.userIdPrecondition)) || userId.matches(this.userIdPrecondition);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -122,6 +148,7 @@ public class GroupProvider {
     sb.append("{id=").append(id);
     sb.append(", identifier='").append(identifier).append('\'');
     sb.append(", name='").append(name).append('\'');
+    sb.append(", userIdPrecondition").append(userIdPrecondition).append('\'');
     sb.append(", groupProviderType=").append(groupProviderType);
     sb.append('}');
     return sb.toString();

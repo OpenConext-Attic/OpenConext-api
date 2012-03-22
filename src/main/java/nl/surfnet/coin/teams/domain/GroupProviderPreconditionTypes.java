@@ -17,27 +17,27 @@
 package nl.surfnet.coin.teams.domain;
 
 /**
- * Enum with the supported types of Group providers
+ * Enum with the types of Group provider preconditions
  * <p/>
  * Needed for conversion of PHP class names from Engine block
  */
-public enum GroupProviderType {
-  GROUPER("EngineBlock_Group_Provider_Grouper"),
-  OAUTH_THREELEGGED("EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged");
+public enum GroupProviderPreconditionTypes {
+  ACCESS_TOKEN_EXISTS("EngineBlock_Group_Provider_Precondition_OpenSocial_Oauth_AccessTokenExists"),
+  USER_ID_REGEX("EngineBlock_Group_Provider_Precondition_UserId_PregMatch");
 
-  private final String groupProviderType;
+  private String groupProviderPreconditionType;
 
-  GroupProviderType(String groupProviderType) {
-    this.groupProviderType = groupProviderType;
+  GroupProviderPreconditionTypes(String groupProviderPreconditionType) {
+    this.groupProviderPreconditionType = groupProviderPreconditionType;
   }
 
   public String getStringValue() {
-    return groupProviderType;
+    return groupProviderPreconditionType;
   }
 
-  public static GroupProviderType fromString(String typeAsString) {
+  public static GroupProviderPreconditionTypes fromString(String typeAsString) {
     if (typeAsString != null) {
-      for (GroupProviderType type : GroupProviderType.values()) {
+      for (GroupProviderPreconditionTypes type : GroupProviderPreconditionTypes.values()) {
         if (typeAsString.equalsIgnoreCase(type.getStringValue())) {
           return type;
         }
@@ -45,4 +45,5 @@ public enum GroupProviderType {
     }
     return null;
   }
+
 }
