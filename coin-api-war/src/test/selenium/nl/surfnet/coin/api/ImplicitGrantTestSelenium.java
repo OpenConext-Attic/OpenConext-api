@@ -28,15 +28,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import junit.framework.Assert;
 import nl.surfnet.coin.api.client.OpenConextApi20Implicit;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
@@ -47,9 +42,9 @@ import static junit.framework.Assert.assertTrue;
 /**
  * Test Person related queries with selenium
  */
-public class ImplicitGrantSelenium extends SeleniumSupport {
+public class ImplicitGrantTestSelenium extends SeleniumSupport {
 
-  private Logger LOG = LoggerFactory.getLogger(ImplicitGrantSelenium.class);
+  private Logger LOG = LoggerFactory.getLogger(ImplicitGrantTestSelenium.class);
 
   private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private final String OAUTH_SECRET = "mysecret";
