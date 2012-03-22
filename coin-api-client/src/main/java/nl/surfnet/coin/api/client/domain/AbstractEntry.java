@@ -19,7 +19,6 @@
 package nl.surfnet.coin.api.client.domain;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 
@@ -30,6 +29,9 @@ public abstract class AbstractEntry implements Serializable {
   private int startIndex;
   private int totalResults;
   private int itemsPerPage;
+  private boolean filtered;
+  private int updatedSince;
+  private boolean sorted;
 
   /**
    * @return the startIndex
@@ -75,7 +77,46 @@ public abstract class AbstractEntry implements Serializable {
   public void setItemsPerPage(int itemsPerPage) {
     this.itemsPerPage = itemsPerPage;
   }
-  
- 
-  
+
+  /**
+   * @return boolean if the result set is filtered
+   */
+  public boolean isFiltered() {
+    return filtered;
+  }
+
+  /**
+   * @param filtered boolean if the result set is filtered
+   */
+  public void setFiltered(boolean filtered) {
+    this.filtered = filtered;
+  }
+
+  /**
+   * @return updated since
+   */
+  public int getUpdatedSince() {
+    return updatedSince;
+  }
+
+  /**
+   * @param updatedSince int to indicate when it was updated
+   */
+  public void setUpdatedSince(int updatedSince) {
+    this.updatedSince = updatedSince;
+  }
+
+  /**
+   * @return boolean to indicate if the result set is sorted
+   */
+  public boolean isSorted() {
+    return sorted;
+  }
+
+  /**
+   * @param sorted boolean to indicate if the result set is sorted
+   */
+  public void setSorted(boolean sorted) {
+    this.sorted = sorted;
+  }
 }
