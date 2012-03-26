@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.api.service;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.BaseClientDetails;
@@ -40,6 +42,7 @@ public class JanusClientDetailsService implements ClientDetailsService {
     final BaseClientDetails clientDetails = new BaseClientDetails();
     clientDetails.setClientSecret(janus.getOauthSecretByClientId(clientId));
     clientDetails.setClientId(clientId);
+    clientDetails.setScope(Arrays.asList("read"));
     return clientDetails;
   }
 }

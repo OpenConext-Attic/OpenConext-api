@@ -43,13 +43,13 @@ import static junit.framework.Assert.assertTrue;
 /**
  * Test Person related queries with selenium
  */
-public class ImplicitGrantSelenium extends SeleniumSupport {
+public class ImplicitGrantTestSelenium extends SeleniumSupport {
 
-  private Logger LOG = LoggerFactory.getLogger(ImplicitGrantSelenium.class);
+  private Logger LOG = LoggerFactory.getLogger(ImplicitGrantTestSelenium.class);
 
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
-
+  private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
   private MockHtppServer server;
@@ -90,7 +90,8 @@ public class ImplicitGrantSelenium extends SeleniumSupport {
   @Test
   public void implicitGrant() throws Exception {
 
-    getWebDriver().get("http://localhost:8095/social/rest/people/foo/@self");
+    final String restUrl = getApiBaseUrl() + "social/rest/people/foo/@self";
+    getWebDriver().get(restUrl);
     LOG.debug("Page source before authentication: " + getWebDriver().getPageSource());
     assertFalse("Result of getPerson-call should fail because of missing authentication", getWebDriver().getPageSource().contains("Mister Foo"));
 
@@ -99,7 +100,8 @@ public class ImplicitGrantSelenium extends SeleniumSupport {
         .provider(OpenConextApi20Implicit.class)
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
-        .callback(OAUTH_CALLBACK_URL)
+        .callback(restUrl)
+        .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
@@ -108,17 +110,15 @@ public class ImplicitGrantSelenium extends SeleniumSupport {
 
     loginEndUser();
 
+    // Authorize on user consent page
+    giveUserConsentIfNeeded();
 
     URI uri = URI.create(getWebDriver().getCurrentUrl());
     callbackRequestFragment = uri.getFragment();
     LOG.debug("URL is: " + uri.toString());
     assertTrue("redirect URL fragment should contain access token", callbackRequestFragment.contains("access_token="));
 
-
-    // verify that a call to getPerson succeeds now.
-    getWebDriver().get("http://localhost:8095/social/rest/people/foo/@self");
-    LOG.debug("Page source: " + getWebDriver().getPageSource());
-    assertTrue("getPerson should succeed now, after authentication", getWebDriver().getPageSource().contains("Mister Foo"));
+    // Further tests are actually part of the coin-api-client... The server has issued an access_token so it works.
   }
 
 

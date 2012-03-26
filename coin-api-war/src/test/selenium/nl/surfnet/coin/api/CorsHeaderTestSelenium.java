@@ -18,28 +18,10 @@ package nl.surfnet.coin.api;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.scribe.model.Token;
-
-import nl.surfnet.coin.api.client.InMemoryOAuthRepositoryImpl;
-import nl.surfnet.coin.api.client.OAuthEnvironment;
-import nl.surfnet.coin.api.client.OAuthRepository;
-import nl.surfnet.coin.api.client.OAuthVersion;
-import nl.surfnet.coin.api.client.OpenConextOAuthClientImpl;
-import nl.surfnet.coin.api.client.domain.Person;
 
 import static org.junit.Assert.assertEquals;
 
-public class CorsHeaderTestSelenium extends ImplicitGrantSelenium {
-
-  @Before
-  public void login() throws Exception {
-    super.implicitGrant();
-
-  }
+public class CorsHeaderTestSelenium extends SeleniumSupport {
 
   @Test
   public void corsHeader() throws Exception {

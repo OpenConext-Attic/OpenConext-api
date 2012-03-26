@@ -24,7 +24,10 @@ import org.scribe.model.Verb;
 
 public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
 
-  private final String baseUrl;
+  private String baseUrl = "http://localhost:8095/";
+
+  public OpenConextApi20AuthorizationCode() {
+  }
 
   public OpenConextApi20AuthorizationCode(String baseUrl) {
     this.baseUrl = baseUrl;
@@ -37,7 +40,12 @@ public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(baseUrl + "oauth2/authorize?response_type=code&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
+    StringBuilder url = new StringBuilder(String.format(baseUrl + "oauth2/authorize?response_type=code&client_id=%s", config.getApiKey()));
+    if (config.hasScope()) {
+      url.append("&scope=").append(config.getScope());
+    }
+    url.append("&redirect_uri=").append(config.getCallback());
+    return url.toString();
   }
 
   public Verb getAccessTokenVerb() {

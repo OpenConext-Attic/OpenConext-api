@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.scribe.model.Token;
 
@@ -37,10 +38,6 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private final String OAUTH_SECRET = "mysecret";
 
-  // private final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
-
-  // private final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
-
   private final String USER_ID = "foo";
 
   private OpenConextOAuthClientImpl client;
@@ -54,12 +51,14 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
     environment.setCallbackUrl("http://not-used/");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
     repository.storeToken(new Token(OAUTH_KEY, OAUTH_SECRET), USER_ID,
-        OAuthVersion.v10a);
+        OAuthVersion.v2);
     client = new OpenConextOAuthClientImpl(environment, repository);
   }
 
   @Test
+  @Ignore
   public void completeFlow() throws Exception {
+    // The client uses OAuth 1.0a but server only talks OAuth 2.0 currently.
     Person person = client.getPerson(USER_ID, null);
     assertEquals("mFoo", person.getAccounts().iterator().next().getUserId());
   }

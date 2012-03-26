@@ -19,48 +19,96 @@ package nl.surfnet.coin.api;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  *
  */
 public class SeleniumSupport {
+  
+  private final static Logger LOG = LoggerFactory.getLogger(SeleniumSupport.class);
 
-  private static FirefoxDriver driver;
+  private static WebDriver driver;
 
   private static String withEndingSlash(String path) {
     return path.endsWith("/") ? path : path + "/";
+  }
+  
+  protected String getApiBaseUrl() {
+    return System.getProperty("selenium.test.url", "http://localhost:8095/");
   }
 
   @Before
   public void initializeOnce() {
     if (driver == null) {
-      SeleniumSupport.driver = new FirefoxDriver();
-      SeleniumSupport.driver.manage().timeouts()
-          .implicitlyWait(3, TimeUnit.SECONDS);
-      Runtime.getRuntime().addShutdownHook(new Thread() {
-        @Override
-        public void run() {
-          if (driver != null) {
-            driver.quit();
-          }
-        }
-      });
+      if ("firefox".equals(System.getProperty("selenium.webdriver", "firefox"))) {
+        initFirefoxDriver();
+      } else {
+        initHtmlUnitDriver();
+      }
     }
+  }
+
+  private void initHtmlUnitDriver() {
+    SeleniumSupport.driver = new HtmlUnitDriver();
+    SeleniumSupport.driver.manage().timeouts()
+        .implicitlyWait(3, TimeUnit.SECONDS);
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        if (driver != null) {
+          driver.quit();
+        }
+      }
+    });
+  }
+
+  private void initFirefoxDriver() {
+    SeleniumSupport.driver = new FirefoxDriver();
+    SeleniumSupport.driver.manage().timeouts()
+        .implicitlyWait(3, TimeUnit.SECONDS);
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        if (driver != null) {
+          driver.quit();
+        }
+      }
+    });
   }
 
   /**
    * @return the webDriver
    */
-  protected FirefoxDriver getWebDriver() {
+  protected WebDriver getWebDriver() {
     return driver;
   }
 
   protected void loginEndUser() {
     // log in...
-    getWebDriver().findElementByName("j_username").sendKeys("bob");
-    getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
-    getWebDriver().findElementByName("submit").click();
+    getWebDriver().findElement(By.name("j_username")).sendKeys("bob");
+    getWebDriver().findElement(By.name("j_password")).sendKeys("bobspassword");
+    getWebDriver().findElement(By.name("submit")).click();
   }
+
+  protected void giveUserConsentIfNeeded() {
+    WebElement authorizeButton = null;
+    try {
+      authorizeButton = getWebDriver().findElement(By.name("authorize"));
+    } catch (RuntimeException e) {
+
+    }
+    if (authorizeButton != null) {
+      LOG.debug("Clicking 'authorize'-button on user consent form");
+      authorizeButton.click();
+    }
+  }
+
 }

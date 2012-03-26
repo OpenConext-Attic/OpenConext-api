@@ -27,10 +27,39 @@
     <properties>
         <jetty.version>8.0.4.v20111024</jetty.version>
         <selenium.version>2.20.0</selenium.version>
-        <selenium.test.url>http://localhost:8095/coin-api</selenium.test.url>
+        <selenium.test.url>http://localhost:8095/</selenium.test.url>
         <jetty.port>8095</jetty.port>
+
+      <!-- default webdriver for selenium tests. To be overridden on a per profile base -->
+      <selenium.webdriver>firefox</selenium.webdriver>
     </properties>
 
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- transitive dependencies of spring-security-taglibs. These depend on 3.0.6. -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -41,6 +70,11 @@
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
         </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-taglibs</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
         <dependency>
             <groupId>org.surfnet.coin</groupId>
           <artifactId>coin-api-client</artifactId>
@@ -93,12 +127,18 @@
             <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
-            <version>${selenium.version}</version>
-            <scope>test</scope>
-        </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-support</artifactId>
+        <version>${selenium.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-htmlunit-driver</artifactId>
+        <version>${selenium.version}</version>
+        <scope>test</scope>
+      </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
@@ -126,7 +166,11 @@
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+      </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -254,6 +298,10 @@
                                         <property>
                                             <name>selenium.test.url</name>
                                             <value>${selenium.test.url}</value>
+                                        </property>
+                                        <property>
+                                          <name>selenium.webdriver</name>
+                                          <value>${selenium.webdriver}</value>
                                         </property>
                                     </systemProperties>
                                 </configuration>
@@ -386,7 +434,15 @@
                 </plugins>
             </build>
         </profile>
-
+        <profile>
+          <id>selenium-headless</id>
+          <activation>
+            <activeByDefault>false</activeByDefault>
+          </activation>
+          <properties>
+            <selenium.webdriver>htmlunit</selenium.webdriver>
+          </properties>
+        </profile>
     </profiles>
 
 </project>

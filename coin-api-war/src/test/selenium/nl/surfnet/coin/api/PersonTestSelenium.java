@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,6 +41,7 @@ import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -55,12 +56,18 @@ public class PersonTestSelenium extends SeleniumSupport {
 
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-  private static final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
-
   private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
+
+  private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
+
   private MockHtppServer server;
 
   private Verifier authorizationCode;
+
+  @Before
+  public void clearCookies() {
+    getWebDriver().manage().deleteAllCookies();
+  }
 
   @Before
   public void startServer() {
@@ -72,6 +79,10 @@ public class PersonTestSelenium extends SeleniumSupport {
           public void handle(String target, Request baseRequest, HttpServletRequest request,
                              HttpServletResponse response) throws IOException,
               ServletException {
+            if (request.getRequestURI().contains("favicon")) {
+              LOG.debug("ignoring favicon-request.");
+              return;
+            }
             LOG.debug("Request to mock http server: {}", request);
             authorizationCode = new Verifier(request.getParameter("code"));
             response.setStatus(200);
@@ -90,11 +101,11 @@ public class PersonTestSelenium extends SeleniumSupport {
 
   @Test
   public void authorizationCodeGrant() throws Exception {
-
     OAuthService service = new ServiceBuilder()
-        .provider(OpenConextApi20AuthorizationCode.class)
+        .provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
+        .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
         .callback(OAUTH_CALLBACK_URL)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
@@ -103,7 +114,11 @@ public class PersonTestSelenium extends SeleniumSupport {
 
     getWebDriver().get(authUrl);
 
+    // Login end user
     loginEndUser();
+
+    // Authorize on user consent page
+    giveUserConsentIfNeeded();
 
     // Wait for authorizationCode to be sent to the mock http server
     while (authorizationCode == null) {
@@ -113,8 +128,14 @@ public class PersonTestSelenium extends SeleniumSupport {
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
     Token aToken = service.getAccessToken(null, authorizationCode);
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, SURFCONEXT_BASE_URL + "social/rest/people/" + USER_ID + "/@self");
+    final String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID + "/@self";
 
+    // Verify that a normal request (without access token) fails now.
+    getWebDriver().manage().deleteAllCookies();
+    getWebDriver().get(restUrl);
+    assertFalse(getWebDriver().getPageSource().contains("mnice@surfguest.nl"));
+    OAuthRequest request = new OAuthRequest(Verb.GET, restUrl);
+    
     service.signRequest(aToken, request);
     Response response = request.send();
     LOG.debug("Response: {}", response.getBody());

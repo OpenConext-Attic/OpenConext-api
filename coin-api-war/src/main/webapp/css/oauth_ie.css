@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api;
+hr {margin:0 0 5px 0; }
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.provider.AuthorizationRequest;
-import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
+ul.nav li.active a {
+  position:relative; /* Ensure background image lines us at the bottom */
+}
 
-public class ConextUserApprovalHandler implements UserApprovalHandler {
-
-    public boolean isApproved(AuthorizationRequest authorizationRequest, Authentication userAuthentication) {
-        // TODO: implement proper approval
-        return true;
-    }
-
+input {
+  /*padding-top: 7px;*/ /* Vertically center text in input field */
 }
