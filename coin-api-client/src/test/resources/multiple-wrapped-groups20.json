@@ -1,0 +1,28 @@
+{"result":{
+  "totalResults":1,
+  "startIndex":0,
+  "itemsPerPage":99,
+  "filtered":false,
+  "updatedSince":0,
+  "sorted":false,
+  "entry":[
+    {
+      "id":"urn:collab:group:test.surfteams.nl:etc:sysadmingroup",
+      "title":"sysadmingroup",
+      "description":"Super users",
+      "voot_membership_role":"admin"
+    },
+    {
+      "id":"urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:demo_sprint_5",
+      "title":"demo sprint 5",
+      "description":"demo sprint 5",
+      "voot_membership_role":"admin"
+    },
+    {
+      "id":"urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:femke_1234",
+      "title":"Femke 1234",
+      "voot_membership_role":"admin"
+    }
+
+  ]
+}}

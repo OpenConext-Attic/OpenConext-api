@@ -16,45 +16,22 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.io.Serializable;
+
 /**
- * 
- *
+ * A wrapper object around an {@link AbstractEntry}
  */
-public class Email {
-private String value;
-  private Type type;
 
-  public enum Type {
-    email
+public class ResultWrapper<T extends AbstractEntry> implements Serializable {
+
+  private T result;
+
+  public T getResult() {
+    return result;
   }
 
-  /**
-   * @return the value
-   */
-  public String getValue() {
-    return value;
+  public void setResult(T result) {
+    this.result = result;
   }
 
-  /**
-   * @param value
-   *          the value to set
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  /**
-   * @return the type
-   */
-  public Type getType() {
-    return type;
-  }
-
-  /**
-   * @param type
-   *          the type to set
-   */
-  public void setType(Type type) {
-    this.type = type;
-  }
 }

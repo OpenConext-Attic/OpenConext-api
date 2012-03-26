@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package nl.surfnet.coin.api.client;
 
 import java.io.InputStream;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
-
-import org.codehaus.jackson.map.ObjectMapper;
+import nl.surfnet.coin.api.client.domain.ResultWrapper;
 
 /**
  * Parser for VOOT based json objects
@@ -47,6 +50,14 @@ public class OpenConextJsonParser {
 
   public Group20Entry parseGroups20(InputStream in) {
     return (Group20Entry) parse(in, Group20Entry.class);
+  }
+
+  public ResultWrapper<Group20Entry> parseGroup20ResultWrapper(InputStream in) {
+    try{
+      return objectMapper.readValue(in, new TypeReference<ResultWrapper<Group20Entry>>() {});
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private Object parse(InputStream in, Class<? extends AbstractEntry> entry) {

@@ -1,25 +1,22 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Copyright 2012 SURFnet bv, The Netherlands
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package nl.surfnet.coin.api.client.domain;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 
@@ -30,6 +27,9 @@ public abstract class AbstractEntry implements Serializable {
   private int startIndex;
   private int totalResults;
   private int itemsPerPage;
+  private boolean filtered;
+  private int updatedSince;
+  private boolean sorted;
 
   /**
    * @return the startIndex
@@ -75,7 +75,46 @@ public abstract class AbstractEntry implements Serializable {
   public void setItemsPerPage(int itemsPerPage) {
     this.itemsPerPage = itemsPerPage;
   }
-  
- 
-  
+
+  /**
+   * @return boolean if the result set is filtered
+   */
+  public boolean isFiltered() {
+    return filtered;
+  }
+
+  /**
+   * @param filtered boolean if the result set is filtered
+   */
+  public void setFiltered(boolean filtered) {
+    this.filtered = filtered;
+  }
+
+  /**
+   * @return updated since
+   */
+  public int getUpdatedSince() {
+    return updatedSince;
+  }
+
+  /**
+   * @param updatedSince int to indicate when it was updated
+   */
+  public void setUpdatedSince(int updatedSince) {
+    this.updatedSince = updatedSince;
+  }
+
+  /**
+   * @return boolean to indicate if the result set is sorted
+   */
+  public boolean isSorted() {
+    return sorted;
+  }
+
+  /**
+   * @param sorted boolean to indicate if the result set is sorted
+   */
+  public void setSorted(boolean sorted) {
+    this.sorted = sorted;
+  }
 }
