@@ -21,13 +21,18 @@ package nl.surfnet.coin.api;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  *
  */
 public class SeleniumSupport {
+  
+  private final static Logger LOG = LoggerFactory.getLogger(SeleniumSupport.class);
 
   private static FirefoxDriver driver;
 
@@ -67,4 +72,13 @@ public class SeleniumSupport {
     getWebDriver().findElementByName("j_password").sendKeys("bobspassword");
     getWebDriver().findElementByName("submit").click();
   }
+
+  protected void giveUserConsentIfNeeded() {
+    final WebElement authorizeButton = getWebDriver().findElementByName("authorize");
+    if (authorizeButton != null) {
+      LOG.debug("Clicking 'authorize'-button on user consent form");
+      authorizeButton.click();
+    }
+  }
+
 }

@@ -48,7 +48,7 @@ public class ImplicitGrantTestSelenium extends SeleniumSupport {
 
   private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private final String OAUTH_SECRET = "mysecret";
-
+  private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
   private final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
   private MockHtppServer server;
@@ -100,6 +100,7 @@ public class ImplicitGrantTestSelenium extends SeleniumSupport {
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
         .callback(restUrl)
+        .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
@@ -108,6 +109,8 @@ public class ImplicitGrantTestSelenium extends SeleniumSupport {
 
     loginEndUser();
 
+    // Authorize on user consent page
+    giveUserConsentIfNeeded();
 
     URI uri = URI.create(getWebDriver().getCurrentUrl());
     callbackRequestFragment = uri.getFragment();

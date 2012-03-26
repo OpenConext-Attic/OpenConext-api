@@ -21,8 +21,15 @@ import org.scribe.model.OAuthConfig;
 
 public class OpenConextApi20Implicit extends DefaultApi20 {
 
-  private static final String BASE_URL = "http://localhost:8095/";
+  private String baseUrl = "http://localhost:8095/";
 
+
+  public OpenConextApi20Implicit() {
+  }
+
+  public OpenConextApi20Implicit(String baseUrl) {
+    this.baseUrl = baseUrl;
+  }
 
   /**
    * Throws an IllegalStateException as this method call is not applicable with OAuth 2.0 implicit grant.
@@ -35,6 +42,11 @@ public class OpenConextApi20Implicit extends DefaultApi20 {
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(BASE_URL + "oauth2/authorize?response_type=token&client_id=%s&redirect_uri=%s", config.getApiKey(), config.getCallback());
+    StringBuilder url = new StringBuilder(String.format(baseUrl + "oauth2/authorize?response_type=token&client_id=%s", config.getApiKey()));
+    if (config.hasScope()) {
+      url.append("&scope=").append(config.getScope());
+    }
+    url.append("&redirect_uri=").append(config.getCallback());
+    return url.toString();
   }
 }

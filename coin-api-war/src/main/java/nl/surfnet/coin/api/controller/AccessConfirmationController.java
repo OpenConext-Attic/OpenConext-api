@@ -18,20 +18,14 @@ package nl.surfnet.coin.api.controller;
 
 import java.util.TreeMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth.provider.ConsumerDetails;
-import org.springframework.security.oauth.provider.ConsumerDetailsService;
-import org.springframework.security.oauth.provider.token.OAuthProviderToken;
-import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -41,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Dave Syer
  */
 @Controller
+@SessionAttributes(types = AuthorizationRequest.class)
 public class AccessConfirmationController {
 
   private ClientDetailsService clientDetailsService;
@@ -53,7 +48,13 @@ public class AccessConfirmationController {
     model.put("client", client);
     return new ModelAndView("access_confirmation", model);
   }
-
+/*
+  @RequestMapping("/oauth/confirm_access1")
+  public ModelAndView getAccessConfirmation2() throws Exception {
+    TreeMap<String, Object> model = new TreeMap<String, Object>();
+    return new ModelAndView("access_confirmation", model);
+  }
+*/
   @Autowired
   public void setClientDetailsService(ClientDetailsService clientDetailsService) {
     this.clientDetailsService = clientDetailsService;

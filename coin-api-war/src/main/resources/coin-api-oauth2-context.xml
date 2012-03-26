@@ -68,6 +68,9 @@
     <constructor-arg ref="clientDetailsService"/>
   </bean>
 
+
+
+
   <bean id="oauthAccessDeniedHandler"
         class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler"/>
 
