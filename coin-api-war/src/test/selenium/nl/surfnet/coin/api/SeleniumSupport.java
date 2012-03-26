@@ -70,7 +70,12 @@ public class SeleniumSupport {
   }
 
   protected void giveUserConsentIfNeeded() {
-    final WebElement authorizeButton = getWebDriver().findElementByName("authorize");
+    WebElement authorizeButton = null;
+    try {
+      authorizeButton = getWebDriver().findElementByName("authorize");
+    } catch (RuntimeException e) {
+
+    }
     if (authorizeButton != null) {
       LOG.debug("Clicking 'authorize'-button on user consent form");
       authorizeButton.click();
