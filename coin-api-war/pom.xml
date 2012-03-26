@@ -27,8 +27,11 @@
     <properties>
         <jetty.version>8.0.4.v20111024</jetty.version>
         <selenium.version>2.20.0</selenium.version>
-        <selenium.test.url>http://localhost:8095/coin-api</selenium.test.url>
+        <selenium.test.url>http://localhost:8095/</selenium.test.url>
         <jetty.port>8095</jetty.port>
+
+      <!-- default webdriver for selenium tests. To be overridden on a per profile base -->
+      <selenium.webdriver>firefox</selenium.webdriver>
     </properties>
 
   <dependencyManagement>
@@ -296,6 +299,10 @@
                                             <name>selenium.test.url</name>
                                             <value>${selenium.test.url}</value>
                                         </property>
+                                        <property>
+                                          <name>selenium.webdriver</name>
+                                          <value>${selenium.webdriver}</value>
+                                        </property>
                                     </systemProperties>
                                 </configuration>
                             </execution>
@@ -427,7 +434,15 @@
                 </plugins>
             </build>
         </profile>
-
+        <profile>
+          <id>selenium-headless</id>
+          <activation>
+            <activeByDefault>false</activeByDefault>
+          </activation>
+          <properties>
+            <selenium.webdriver>htmlunit</selenium.webdriver>
+          </properties>
+        </profile>
     </profiles>
 
 </project>

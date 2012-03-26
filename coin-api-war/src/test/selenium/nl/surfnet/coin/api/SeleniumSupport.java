@@ -40,12 +40,19 @@ public class SeleniumSupport {
   private static String withEndingSlash(String path) {
     return path.endsWith("/") ? path : path + "/";
   }
+  
+  protected String getApiBaseUrl() {
+    return System.getProperty("selenium.test.url", "test-url-sys-property-not-defined");
+  }
 
   @Before
   public void initializeOnce() {
     if (driver == null) {
-      // choose between HtmlUnit and Firefox
-      initHtmlUnitDriver();
+      if ("firefox".equals(System.getProperty("selenium.webdriver", "firefox"))) {
+        initFirefoxDriver();
+      } else {
+        initHtmlUnitDriver();
+      }
     }
   }
 

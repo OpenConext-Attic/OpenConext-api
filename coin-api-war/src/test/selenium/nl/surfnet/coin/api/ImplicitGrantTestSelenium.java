@@ -90,7 +90,7 @@ public class ImplicitGrantTestSelenium extends SeleniumSupport {
   @Test
   public void implicitGrant() throws Exception {
 
-    final String restUrl = "http://localhost:8095/social/rest/people/foo/@self";
+    final String restUrl = getApiBaseUrl() + "social/rest/people/foo/@self";
     getWebDriver().get(restUrl);
     LOG.debug("Page source before authentication: " + getWebDriver().getPageSource());
     assertFalse("Result of getPerson-call should fail because of missing authentication", getWebDriver().getPageSource().contains("Mister Foo"));

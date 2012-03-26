@@ -56,8 +56,6 @@ public class PersonTestSelenium extends SeleniumSupport {
 
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-  private static final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
-
   private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
 
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
@@ -104,7 +102,7 @@ public class PersonTestSelenium extends SeleniumSupport {
   @Test
   public void authorizationCodeGrant() throws Exception {
     OAuthService service = new ServiceBuilder()
-        .provider(new OpenConextApi20AuthorizationCode(SURFCONEXT_BASE_URL))
+        .provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
@@ -130,7 +128,7 @@ public class PersonTestSelenium extends SeleniumSupport {
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
     Token aToken = service.getAccessToken(null, authorizationCode);
 
-    final String restUrl = SURFCONEXT_BASE_URL + "social/rest/people/" + USER_ID + "/@self";
+    final String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID + "/@self";
 
     // Verify that a normal request (without access token) fails now.
     getWebDriver().manage().deleteAllCookies();
