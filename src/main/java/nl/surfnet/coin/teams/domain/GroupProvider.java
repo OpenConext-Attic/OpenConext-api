@@ -35,10 +35,10 @@ public class GroupProvider {
   private String name;
   private GroupProviderType groupProviderType;
   private Map<String, Object> allowedOptions;
-  private List<IdConverter> groupIdDecorators = new ArrayList<IdConverter>();
-  private List<IdConverter> groupIdFilters = new ArrayList<IdConverter>();
-  private List<IdConverter> personIdDecorators = new ArrayList<IdConverter>();
-  private List<IdConverter> personIdFilters = new ArrayList<IdConverter>();
+  private List<ConversionRule> groupIdDecorators = new ArrayList<ConversionRule>();
+  private List<ConversionRule> groupIdFilters = new ArrayList<ConversionRule>();
+  private List<ConversionRule> personIdDecorators = new ArrayList<ConversionRule>();
+  private List<ConversionRule> personIdFilters = new ArrayList<ConversionRule>();
   private String userIdPrecondition;
 
   public GroupProvider(Long id, String identifier, String name, String groupProviderType) {
@@ -123,108 +123,108 @@ public class GroupProvider {
   /**
    * Gets (outgoing) conversion rules to convert an urn:collab:groups:nl.myuniversity:group1 into group1
    *
-   * @return List of {@link IdConverter}'s
+   * @return List of {@link ConversionRule}'s
    */
-  public List<IdConverter> getGroupIdDecorators() {
+  public List<ConversionRule> getGroupIdDecorators() {
     return groupIdDecorators;
   }
 
   /**
    * Sets (outgoing) conversion rules to convert an urn:collab:groups:nl.myuniversity:group1 into group1
    *
-   * @param groupIdDecorators List of {@link IdConverter}'s
+   * @param groupIdDecorators List of {@link ConversionRule}'s
    */
-  public void setGroupIdDecorators(List<IdConverter> groupIdDecorators) {
+  public void setGroupIdDecorators(List<ConversionRule> groupIdDecorators) {
     this.groupIdDecorators = groupIdDecorators;
   }
 
   /**
    * Adds a single (outgoing) group id conversion rule
    *
-   * @param groupIdDecorator {@link IdConverter}
+   * @param groupIdDecorator {@link ConversionRule}
    */
-  public void addGroupIdDecorator(IdConverter groupIdDecorator) {
+  public void addGroupIdDecorator(ConversionRule groupIdDecorator) {
     this.groupIdDecorators.add(groupIdDecorator);
   }
 
   /**
    * Gets (incoming) conversion rules to convert group1 into urn:collab:groups:nl.myuniversity:group1
    *
-   * @return List of {@link IdConverter}'s
+   * @return List of {@link ConversionRule}'s
    */
-  public List<IdConverter> getGroupIdFilters() {
+  public List<ConversionRule> getGroupIdFilters() {
     return groupIdFilters;
   }
 
   /**
    * Sets (incoming) conversion rules to convert group1 into urn:collab:groups:nl.myuniversity:group1
    *
-   * @param groupIdFilters List of {@link IdConverter}'s
+   * @param groupIdFilters List of {@link ConversionRule}'s
    */
-  public void setGroupIdFilters(List<IdConverter> groupIdFilters) {
+  public void setGroupIdFilters(List<ConversionRule> groupIdFilters) {
     this.groupIdFilters = groupIdFilters;
   }
 
   /**
    * Adds single (incoming) group id conversion rule
    *
-   * @param groupIdFilter {@link IdConverter}
+   * @param groupIdFilter {@link ConversionRule}
    */
-  public void addGroupIdFilter(IdConverter groupIdFilter) {
+  public void addGroupIdFilter(ConversionRule groupIdFilter) {
     this.groupIdFilters.add(groupIdFilter);
   }
 
   /**
    * Gets (outgoing) conversion rules to convert an urn:collab:person:nl.myuniversity:s123456 into s123456
    *
-   * @return List of {@link IdConverter}'s
+   * @return List of {@link ConversionRule}'s
    */
-  public List<IdConverter> getPersonIdDecorators() {
+  public List<ConversionRule> getPersonIdDecorators() {
     return personIdDecorators;
   }
 
   /**
    * Sets (outgoing) conversion rules to convert an urn:collab:person:nl.myuniversity:s123456 into s123456
    *
-   * @param personIdDecorators List of {@link IdConverter}'s
+   * @param personIdDecorators List of {@link ConversionRule}'s
    */
-  public void setPersonIdDecorators(List<IdConverter> personIdDecorators) {
+  public void setPersonIdDecorators(List<ConversionRule> personIdDecorators) {
     this.personIdDecorators = personIdDecorators;
   }
 
   /**
    * Adds single (outgoing) person id conversion rule
    *
-   * @param personIdDecorator {@link IdConverter}
+   * @param personIdDecorator {@link ConversionRule}
    */
-  public void addPersonIdDecorator(IdConverter personIdDecorator) {
+  public void addPersonIdDecorator(ConversionRule personIdDecorator) {
     this.personIdDecorators.add(personIdDecorator);
   }
 
   /**
    * Gets (incoming) conversion rules to convert s123456 into urn:collab:person:nl.myuniversity:s123456
    *
-   * @return List of {@link IdConverter}'s
+   * @return List of {@link ConversionRule}'s
    */
-  public List<IdConverter> getPersonIdFilters() {
+  public List<ConversionRule> getPersonIdFilters() {
     return personIdFilters;
   }
 
   /**
    * Sets (incoming) conversion rules to convert s123456 into urn:collab:person:nl.myuniversity:s123456
    *
-   * @param personIdFilters List of {@link IdConverter}'s
+   * @param personIdFilters List of {@link ConversionRule}'s
    */
-  public void setPersonIdFilters(List<IdConverter> personIdFilters) {
+  public void setPersonIdFilters(List<ConversionRule> personIdFilters) {
     this.personIdFilters = personIdFilters;
   }
 
   /**
    * Adds single (incoming) person id filter
    *
-   * @param personIdFilter {@link IdConverter}
+   * @param personIdFilter {@link ConversionRule}
    */
-  public void addPersonIdFilter(IdConverter personIdFilter) {
+  public void addPersonIdFilter(ConversionRule personIdFilter) {
     this.personIdFilters.add(personIdFilter);
   }
 

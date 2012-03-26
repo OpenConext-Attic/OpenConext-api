@@ -24,7 +24,7 @@ import nl.surfnet.coin.teams.util.PHPRegexConverter;
  * Institutions provide the person id "s123456", for SURFconext we need to convert that into
  * urn:collab:person:nl.myuniversity:s123456 (and the other way around).
  */
-public class IdConverter {
+public class ConversionRule {
 
   private String propertyName;
   private String searchPattern;

@@ -28,10 +28,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import nl.surfnet.coin.teams.domain.ConversionRule;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderPreconditionTypes;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
-import nl.surfnet.coin.teams.domain.IdConverter;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 
 /**
@@ -110,6 +110,8 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     gp.setUserIdPrecondition(getUserIdPreCondition(id));
     gp.setPersonIdDecorators(getPersonIdDecorators(gp));
     gp.setGroupIdDecorators(getGroupIdDecorators(gp));
+    gp.setPersonIdFilters(getPersonIdFilters(gp));
+    gp.setGroupIdFilters(getGroupIdFilters(gp));
     return gp;
   }
 
@@ -181,18 +183,15 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     return options;
   }
 
-  private List<IdConverter> getPersonIdDecorators(GroupProvider groupProvider) {
-    final String providerClassName = "EngineBlock_Group_Provider_Decorator_UserIdReplace";
-    return getDecorators(groupProvider, providerClassName);
-
+  private List<ConversionRule> getPersonIdDecorators(GroupProvider groupProvider) {
+    return getDecorators(groupProvider, "EngineBlock_Group_Provider_Decorator_UserIdReplace");
   }
 
-  private List<IdConverter> getGroupIdDecorators(GroupProvider groupProvider) {
-    final String providerClassName = "EngineBlock_Group_Provider_Decorator_GroupIdReplace";
-    return getDecorators(groupProvider, providerClassName);
+  private List<ConversionRule> getGroupIdDecorators(GroupProvider groupProvider) {
+    return getDecorators(groupProvider, "EngineBlock_Group_Provider_Decorator_GroupIdReplace");
   }
 
-  private List<IdConverter> getDecorators(GroupProvider groupProvider, String providerClassName) {
+  private List<ConversionRule> getDecorators(GroupProvider groupProvider, String providerClassName) {
     Object[] args = {groupProvider.getId(), providerClassName};
 
     try {
@@ -207,14 +206,43 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
           args);
       return getIdConverters(sqlRowSet);
     } catch (EmptyResultDataAccessException e) {
-      return new ArrayList<IdConverter>();
+      return new ArrayList<ConversionRule>();
+    }
+  }
+
+  private List<ConversionRule> getPersonIdFilters(GroupProvider groupProvider) {
+    return getFilters(groupProvider, "groupMember");
+  }
+
+  private List<ConversionRule> getGroupIdFilters(GroupProvider groupProvider) {
+    return getFilters(groupProvider, "group");
+  }
+
+  private List<ConversionRule> getFilters(GroupProvider groupProvider, String filterType) {
+    Object[] args = {groupProvider.getId(), filterType};
+    try{
+      final SqlRowSet sqlRowSet = this.jdbcTemplate.queryForRowSet(
+          "SELECT gpf.id AS id," +
+              " gpf.type      AS type," +
+              " gpf.classname AS className," +
+              " gpfo.name     AS option_name," +
+              " gpfo.value    AS option_value" +
+              " FROM group_provider_filter gpf" +
+              " LEFT JOIN group_provider_filter_option gpfo ON gpf.id = gpfo.group_provider_filter_id" +
+              " WHERE gpf.group_provider_id = ?" +
+              " AND gpf.type = ?" +
+              " ORDER BY gpf.id;",
+          args);
+      return getIdConverters(sqlRowSet);
+    } catch (EmptyResultDataAccessException e) {
+      return new ArrayList<ConversionRule>();
     }
   }
 
 
-  private List<IdConverter> getIdConverters(SqlRowSet sqlRowSet) {
-    Map<Integer, IdConverter> idConverterMap = new HashMap<Integer, IdConverter>();
-    IdConverter converter;
+  private List<ConversionRule> getIdConverters(SqlRowSet sqlRowSet) {
+    Map<Integer, ConversionRule> idConverterMap = new HashMap<Integer, ConversionRule>();
+    ConversionRule converter;
     Integer ruleId;
 
     final String id = "id";
@@ -230,7 +258,7 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
       if (idConverterMap.containsKey(ruleId)) {
         converter = idConverterMap.get(ruleId);
       } else {
-        converter = new IdConverter();
+        converter = new ConversionRule();
         converter.setPropertyName(id);
       }
 
@@ -247,6 +275,6 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
       }
       idConverterMap.put(ruleId, converter);
     }
-    return new ArrayList<IdConverter>(idConverterMap.values());
+    return new ArrayList<ConversionRule>(idConverterMap.values());
   }
 }
