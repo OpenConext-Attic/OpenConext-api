@@ -48,13 +48,7 @@ public class AccessConfirmationController {
     model.put("client", client);
     return new ModelAndView("access_confirmation", model);
   }
-/*
-  @RequestMapping("/oauth/confirm_access1")
-  public ModelAndView getAccessConfirmation2() throws Exception {
-    TreeMap<String, Object> model = new TreeMap<String, Object>();
-    return new ModelAndView("access_confirmation", model);
-  }
-*/
+
   @Autowired
   public void setClientDetailsService(ClientDetailsService clientDetailsService) {
     this.clientDetailsService = clientDetailsService;

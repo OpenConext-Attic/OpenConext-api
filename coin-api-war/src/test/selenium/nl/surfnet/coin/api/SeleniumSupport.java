@@ -42,7 +42,7 @@ public class SeleniumSupport {
   }
   
   protected String getApiBaseUrl() {
-    return System.getProperty("selenium.test.url", "test-url-sys-property-not-defined");
+    return System.getProperty("selenium.test.url", "http://localhost:8095/");
   }
 
   @Before

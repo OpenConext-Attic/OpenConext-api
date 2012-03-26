@@ -18,48 +18,77 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en-US">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-  <title>Sparklr</title>
-  <link type="text/css" rel="stylesheet" href="<c:url value="/style.css"/>"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>OAuth Authorization</title>
+  <link type="text/css" rel="stylesheet" href="<c:url value="/css/oauth.css"/>"/>
+  <link href="/css/oauth.css" rel="stylesheet" type="text/css" />
+  <!--[if lt IE 8 ]><link href="<c:url value="/css/oauth_ie.css"/>" rel="stylesheet" type="text/css" media="screen" /><![endif]-->
 </head>
+<body class="index">
+<div id="wrapper">
+  <div id="header"><img class="app-icon" src="${client.clientId}"/> <strong><c:out value="${client.clientId}" default="No Title"/></strong> is trying to access your information</div>
+  <div id="main">
+    <ul class="nav">
+      <li class="active"><a href="#">EN</a></li>
+    </ul>
 
-<body>
-
-  <h1>Sparklr</h1>
-
-  <div id="content">
+    <h1>Do you want to grant access to <c:out value="${client.clientId}" default="No Title"/>?</h1>
 
     <% if (session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) != null && !(session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) instanceof UnapprovedClientAuthenticationException)) { %>
-      <div class="error">
-        <h2>Woops!</h2>
+    <div class="error">
+      <h2>Woops!</h2>
 
-        <p>Access could not be granted. (<%= ((AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION)).getMessage() %>)</p>
-      </div>
+      <p>Access could not be granted. (<%= ((AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION)).getMessage() %>)</p>
+    </div>
     <% } %>
     <c:remove scope="session" var="SPRING_SECURITY_LAST_EXCEPTION"/>
 
     <authz:authorize ifAllGranted="ROLE_USER">
-      <h2>Please Confirm</h2>
 
-      <p>You hereby authorize "<c:out value="${client.clientId}"/>" to access your protected resources.</p>
-
-      <form id="confirmationForm" name="confirmationForm" action="<%=request.getContextPath()%>/oauth/authorize" method="post">
-        <input name="user_oauth_approval" value="true" type="hidden"/>
-        <label><input name="authorize" value="Authorize" type="submit"></label>
-      </form>
-      <form id="denialForm" name="denialForm" action="<%=request.getContextPath()%>/oauth/authorize" method="post">
-        <input name="user_oauth_approval" value="false" type="hidden"/>
-        <label><input name="deny" value="Deny" type="submit"></label>
-      </form>
-    </authz:authorize>
+    <p>The application below is trying to access your group information. This application will be able to access your groups and information about your group members.</p>
+    <div class="main-top"></div>
+    <div class="main">
+      <span class="category top"><strong>You are logged in as:</strong></span>
+      <div class="column-container">
+        <div class="column first-column">
+          <dl>
+            <dt>Display Name:</dt>
+            <dd><c:out value="${header.displayName}" default="No Display Name provided" /></dd>
+            <dt>User ID:</dt>
+            <dd class="last user-id" id="UserId">${client.clientId}</dd>
+          </dl>
+        </div>
+        <div class="column">
+          <dl>
+            <dt>Home Organization:</dt>
+            <dd class="last"><c:out value="${header.schacHomeOrganization}" default="No Home Organization provided" /></dd>
+          </dl>
+        </div>
+      </div>
+      <span class="category"><strong>Application Details:</strong></span>
+      <img class="app-thumb" src="${appThumbnail}" align="right" alt="application thumbnail" />
+      <span class="description"><c:out value="${appDesc}" default="This application has no description."/></span>
+      <div class="form">
+        <form name="authZFormDeny" action="<%=request.getContextPath()%>/oauth/authorize" method="POST">
+          <input name="user_oauth_approval" value="false" type="hidden"/>
+          <input type="submit" name="Authorize" value="Deny Access" />
+        </form>
+        <form name="authZFormGrant" action="<%=request.getContextPath()%>/oauth/authorize" method="POST">
+          <input name="user_oauth_approval" value="true" type="hidden"/>
+          <input type="submit" name="Authorize" value="Grant Access" />
+        </form>
+      </div>
+    </div>
+    <div class="main-bottom"></div>
+    <div class="bottom">
+      <p>This service is made possible by <a href='http://www.surfnet.nl/'>SURFnet</a>.</p>
+    </div>
   </div>
+  </authz:authorize>
 
-  <div id="footer">Sample application for <a href="http://github.com/SpringSource/spring-security-oauth" target="_blank">Spring Security OAuth</a></div>
-
-
+</div>
 </body>
 </html>
