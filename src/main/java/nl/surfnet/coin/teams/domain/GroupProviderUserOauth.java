@@ -17,29 +17,34 @@
 package nl.surfnet.coin.teams.domain;
 
 /**
-User's key and secret for a Group provider
+ * User's key and secret for a Group provider
  */
 public class GroupProviderUserOauth {
+  private String personId;
   private String provider;
   private String oAuthToken;
   private String oAuthSecret;
 
-  public GroupProviderUserOauth(String provider, String oAuthToken, String oAuthSecret) {
-
+  public GroupProviderUserOauth(String personId, String provider, String oAuthToken, String oAuthSecret) {
+    this.personId = personId;
     this.oAuthSecret = oAuthSecret;
     this.oAuthToken = oAuthToken;
     this.provider = provider;
+  }
+
+  public String getPersonId() {
+    return personId;
   }
 
   public String getProvider() {
     return provider;
   }
 
-  public String getoAuthToken() {
+  public String getOAuthToken() {
     return oAuthToken;
   }
 
-  public String getoAuthSecret() {
+  public String getOAuthSecret() {
     return oAuthSecret;
   }
 }

@@ -30,7 +30,7 @@ import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.REQUEST_S
 /**
  * Util class to return an {@link OAuthService} for 3-legged OAuth 1.0a group providers
  */
-public class GroupProviderThreeLeggedOAuth10aService {
+public class GroupProviderServiceThreeLeggedOAuth10a {
 
   private final GroupProvider groupProvider;
   private final Api oAuthApi;
@@ -42,7 +42,7 @@ public class GroupProviderThreeLeggedOAuth10aService {
    * @param oAuthApi      an {@link Api} implementation,
    *                      probably {@link nl.surfnet.coin.teams.domain.ThreeLeggedOauth10aGroupProviderApi}
    */
-  public GroupProviderThreeLeggedOAuth10aService(GroupProvider groupProvider,
+  public GroupProviderServiceThreeLeggedOAuth10a(GroupProvider groupProvider,
                                                  Api oAuthApi) {
     this.groupProvider = groupProvider;
     this.oAuthApi = oAuthApi;

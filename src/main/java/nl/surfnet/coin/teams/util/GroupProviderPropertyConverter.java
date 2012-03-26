@@ -26,77 +26,84 @@ import nl.surfnet.coin.teams.domain.GroupProvider;
  * <p/>
  * SURFconext uses "urn:collab:(group|person):myuniversity.nl:myId", the institutions use only "myId"
  */
-public class GroupProviderIdConverter {
+public class GroupProviderPropertyConverter {
 
-  private static final String PROPERTY_ID = "id";
+  public static final String PROPERTY_ID = "id";
+  public static final String PROPERTY_NAME = "name";
+  public static final String PROPERTY_DESCRIPTION = "description";
 
 
   /**
    * Converts a SURFconext person id (urn:collab:person:myuniversity.nl:myId) to external form the
    * group provider knows (myId)
    *
-   * @param groupProvider {@link GroupProvider}
+   *
    * @param input         person identifier used within the SURFconext platform
+   * @param groupProvider {@link nl.surfnet.coin.teams.domain.GroupProvider}
    * @return person identifier used at the external group provider
    */
-  public static String convertToExternalPersonId(GroupProvider groupProvider, String input) {
-    final List<ConversionRule> converters = groupProvider.getPersonIdDecorators();
+  public static String convertToExternalPersonId(String input, GroupProvider groupProvider) {
+    final List<ConversionRule> converters = groupProvider.getPersonDecorators();
 
-    return convertProperty(input, PROPERTY_ID, converters);
+    return convertProperty(PROPERTY_ID, input, converters);
   }
 
   /**
    * Converts an external person id provided by the group provider (myId) into a person id used by the
    * SURFconext platform (urn:collab:person:myuniversity.nl:myId)
    *
-   * @param groupProvider {@link GroupProvider}
+   *
    * @param input         person identifier used by the group provider
+   * @param groupProvider {@link nl.surfnet.coin.teams.domain.GroupProvider}
    * @return person identifier used within the SURFconext platform
    */
-  public static String convertToSurfConextPersonId(GroupProvider groupProvider, String input) {
-    final List<ConversionRule> converters = groupProvider.getPersonIdFilters();
+  public static String convertToSurfConextPersonId(String input, GroupProvider groupProvider) {
+    final List<ConversionRule> converters = groupProvider.getPersonFilters();
 
-    return convertProperty(input, PROPERTY_ID, converters);
+    return convertProperty(PROPERTY_ID, input, converters);
   }
 
   /**
    * Converts a SURFconext group id (urn:collab:group:myuniversity.nl:myGroupId) to external form the
    * group provider knows (myGroupId)
    *
-   * @param groupProvider {@link GroupProvider}
+   *
    * @param input         group identifier used within the SURFconext platform
+   * @param groupProvider {@link nl.surfnet.coin.teams.domain.GroupProvider}
    * @return group identifier used at the external group provider
    */
-  public static String convertToExternalGroupId(GroupProvider groupProvider, String input) {
-    final List<ConversionRule> converters = groupProvider.getGroupIdDecorators();
+  public static String convertToExternalGroupId(String input, GroupProvider groupProvider) {
+    final List<ConversionRule> converters = groupProvider.getGroupDecorators();
 
-    return convertProperty(input, PROPERTY_ID, converters);
+    return convertProperty(PROPERTY_ID, input, converters);
   }
 
   /**
    * Converts an external group id provided by the group provider (myGroupId) into a group id used by the
    * SURFconext platform (urn:collab:group:myuniversity.nl:myGroupId)
    *
-   * @param groupProvider {@link GroupProvider}
+   *
    * @param input         group identifier used by the group provider
+   * @param groupProvider {@link nl.surfnet.coin.teams.domain.GroupProvider}
    * @return group identifier used within the SURFconext platform
    */
-  public static String convertToSurfConextGroupId(GroupProvider groupProvider, String input) {
-    final List<ConversionRule> converters = groupProvider.getGroupIdFilters();
+  public static String convertToSurfConextGroupId(String input, GroupProvider groupProvider) {
+    final List<ConversionRule> converters = groupProvider.getGroupFilters();
 
-    return convertProperty(input, PROPERTY_ID, converters);
+    return convertProperty(PROPERTY_ID, input, converters);
   }
 
   /**
    * Converts input if there are conversion rules for the given property name
    *
-   * @param input        String to modify
-   * @param propertyName String that represents a property as in {@link ConversionRule#getPropertyName()}
-   * @param converters   list of {@link ConversionRule}'s
+   * @param propertyName  name of a property that will be converted
+   * @param propertyValue value of a property
+   * @param converters    list of {@link nl.surfnet.coin.teams.domain.ConversionRule}'s
    * @return converted String, can be the same as the input if no rule applies
    */
-  private static String convertProperty(String input, String propertyName, List<ConversionRule> converters) {
-    String s = input;
+  public static String convertProperty(String propertyName, String propertyValue,
+                                       List<ConversionRule> converters) {
+    String s = propertyValue;
     for (ConversionRule converter : converters) {
       if (propertyName.equals(converter.getPropertyName())) {
         s = s.replaceAll(converter.getSearchPattern(), converter.getReplaceWith());

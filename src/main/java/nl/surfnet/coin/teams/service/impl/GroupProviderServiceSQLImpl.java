@@ -62,15 +62,16 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
     try {
       gpUserOauths = this.jdbcTemplate.query(
-          "SELECT gp_user_oauth.`provider_id`, gp_user_oauth.`oauth_token`, gp_user_oauth.`oauth_secret` " +
+          "SELECT gp_user_oauth.`user_id`, gp_user_oauth.`provider_id`, gp_user_oauth.`oauth_token`, gp_user_oauth.`oauth_secret` " +
               "FROM group_provider_user_oauth as gp_user_oauth " +
               "WHERE gp_user_oauth.`user_id` = ?", args, new RowMapper<GroupProviderUserOauth>() {
         @Override
         public GroupProviderUserOauth mapRow(ResultSet rs, int rowNum) throws SQLException {
+          String userId = rs.getString("user_id");
           String providerId = rs.getString("provider_id");
           String token = rs.getString("oauth_token");
           String secret = rs.getString("oauth_secret");
-          return new GroupProviderUserOauth(providerId, token, secret);
+          return new GroupProviderUserOauth(userId, providerId, token, secret);
         }
       });
 
@@ -108,10 +109,10 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     GroupProvider gp = new GroupProvider(id, identifier, name, gpClassName);
     gp.setAllowedOptions(getAllowedOptions(gp));
     gp.setUserIdPrecondition(getUserIdPreCondition(id));
-    gp.setPersonIdDecorators(getPersonIdDecorators(gp));
-    gp.setGroupIdDecorators(getGroupIdDecorators(gp));
-    gp.setPersonIdFilters(getPersonIdFilters(gp));
-    gp.setGroupIdFilters(getGroupIdFilters(gp));
+    gp.setPersonDecorators(getPersonIdDecorators(gp));
+    gp.setGroupDecorators(getGroupIdDecorators(gp));
+    gp.setPersonFilters(getPersonIdFilters(gp));
+    gp.setGroupFilters(getGroupIdFilters(gp));
     return gp;
   }
 
