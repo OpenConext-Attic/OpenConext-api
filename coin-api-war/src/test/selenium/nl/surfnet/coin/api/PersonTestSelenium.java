@@ -18,27 +18,30 @@
  */
 package nl.surfnet.coin.api;
 
-import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
-import nl.surfnet.coin.mock.MockHandler;
-import nl.surfnet.coin.mock.MockHtppServer;
-
-import org.eclipse.jetty.server.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.*;
-import org.scribe.model.Response;
-import org.scribe.oauth.OAuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.lang.Thread;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.model.Verifier;
+import org.scribe.oauth.OAuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
+import nl.surfnet.coin.mock.MockHandler;
+import nl.surfnet.coin.mock.MockHtppServer;
 
 import static org.junit.Assert.assertTrue;
 
@@ -49,14 +52,14 @@ public class PersonTestSelenium extends SeleniumSupport {
 
   private Logger LOG = LoggerFactory.getLogger(PersonTestSelenium.class);
 
-  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
-  private final String OAUTH_SECRET = "mysecret";
+  private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
+  private static final String OAUTH_SECRET = "mysecret";
 
-  private final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
+  private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-  private final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
+  private static final String SURFCONEXT_BASE_URL = "http://localhost:8095/";
 
-  private final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
+  private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
   private MockHtppServer server;
 
   private Verifier authorizationCode;

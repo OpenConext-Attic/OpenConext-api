@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package nl.surfnet.coin.api;
 
 import java.io.IOException;
@@ -32,7 +33,6 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import junit.framework.Assert;
 import nl.surfnet.coin.api.client.OpenConextApi20Implicit;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
@@ -47,10 +47,10 @@ public class ImplicitGrantSelenium extends SeleniumSupport {
 
   private Logger LOG = LoggerFactory.getLogger(ImplicitGrantSelenium.class);
 
-  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
-  private final String OAUTH_SECRET = "mysecret";
+  private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
+  private static final String OAUTH_SECRET = "mysecret";
 
-  private final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
+  private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
   private MockHtppServer server;
 
