@@ -26,7 +26,7 @@
     <name>coin-api-war</name>
     <properties>
         <jetty.version>8.0.4.v20111024</jetty.version>
-        <selenium.version>2.13.0</selenium.version>
+        <selenium.version>2.20.0</selenium.version>
         <selenium.test.url>http://localhost:8095/coin-api</selenium.test.url>
         <jetty.port>8095</jetty.port>
     </properties>
