@@ -16,7 +16,9 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.StringUtils;
@@ -33,6 +35,10 @@ public class GroupProvider {
   private String name;
   private GroupProviderType groupProviderType;
   private Map<String, Object> allowedOptions;
+  private List<IdConverter> groupIdDecorators = new ArrayList<IdConverter>();
+  private List<IdConverter> groupIdFilters = new ArrayList<IdConverter>();
+  private List<IdConverter> personIdDecorators = new ArrayList<IdConverter>();
+  private List<IdConverter> personIdFilters = new ArrayList<IdConverter>();
   private String userIdPrecondition;
 
   public GroupProvider(Long id, String identifier, String name, String groupProviderType) {
@@ -112,6 +118,114 @@ public class GroupProvider {
    */
   public void setUserIdPrecondition(String userIdPrecondition) {
     this.userIdPrecondition = PHPRegexConverter.convertPHPRegexPattern(userIdPrecondition);
+  }
+
+  /**
+   * Gets (outgoing) conversion rules to convert an urn:collab:groups:nl.myuniversity:group1 into group1
+   *
+   * @return List of {@link IdConverter}'s
+   */
+  public List<IdConverter> getGroupIdDecorators() {
+    return groupIdDecorators;
+  }
+
+  /**
+   * Sets (outgoing) conversion rules to convert an urn:collab:groups:nl.myuniversity:group1 into group1
+   *
+   * @param groupIdDecorators List of {@link IdConverter}'s
+   */
+  public void setGroupIdDecorators(List<IdConverter> groupIdDecorators) {
+    this.groupIdDecorators = groupIdDecorators;
+  }
+
+  /**
+   * Adds a single (outgoing) group id conversion rule
+   *
+   * @param groupIdDecorator {@link IdConverter}
+   */
+  public void addGroupIdDecorator(IdConverter groupIdDecorator) {
+    this.groupIdDecorators.add(groupIdDecorator);
+  }
+
+  /**
+   * Gets (incoming) conversion rules to convert group1 into urn:collab:groups:nl.myuniversity:group1
+   *
+   * @return List of {@link IdConverter}'s
+   */
+  public List<IdConverter> getGroupIdFilters() {
+    return groupIdFilters;
+  }
+
+  /**
+   * Sets (incoming) conversion rules to convert group1 into urn:collab:groups:nl.myuniversity:group1
+   *
+   * @param groupIdFilters List of {@link IdConverter}'s
+   */
+  public void setGroupIdFilters(List<IdConverter> groupIdFilters) {
+    this.groupIdFilters = groupIdFilters;
+  }
+
+  /**
+   * Adds single (incoming) group id conversion rule
+   *
+   * @param groupIdFilter {@link IdConverter}
+   */
+  public void addGroupIdFilter(IdConverter groupIdFilter) {
+    this.groupIdFilters.add(groupIdFilter);
+  }
+
+  /**
+   * Gets (outgoing) conversion rules to convert an urn:collab:person:nl.myuniversity:s123456 into s123456
+   *
+   * @return List of {@link IdConverter}'s
+   */
+  public List<IdConverter> getPersonIdDecorators() {
+    return personIdDecorators;
+  }
+
+  /**
+   * Sets (outgoing) conversion rules to convert an urn:collab:person:nl.myuniversity:s123456 into s123456
+   *
+   * @param personIdDecorators List of {@link IdConverter}'s
+   */
+  public void setPersonIdDecorators(List<IdConverter> personIdDecorators) {
+    this.personIdDecorators = personIdDecorators;
+  }
+
+  /**
+   * Adds single (outgoing) person id conversion rule
+   *
+   * @param personIdDecorator {@link IdConverter}
+   */
+  public void addPersonIdDecorator(IdConverter personIdDecorator) {
+    this.personIdDecorators.add(personIdDecorator);
+  }
+
+  /**
+   * Gets (incoming) conversion rules to convert s123456 into urn:collab:person:nl.myuniversity:s123456
+   *
+   * @return List of {@link IdConverter}'s
+   */
+  public List<IdConverter> getPersonIdFilters() {
+    return personIdFilters;
+  }
+
+  /**
+   * Sets (incoming) conversion rules to convert s123456 into urn:collab:person:nl.myuniversity:s123456
+   *
+   * @param personIdFilters List of {@link IdConverter}'s
+   */
+  public void setPersonIdFilters(List<IdConverter> personIdFilters) {
+    this.personIdFilters = personIdFilters;
+  }
+
+  /**
+   * Adds single (incoming) person id filter
+   *
+   * @param personIdFilter {@link IdConverter}
+   */
+  public void addPersonIdFilter(IdConverter personIdFilter) {
+    this.personIdFilters.add(personIdFilter);
   }
 
   public boolean isMeantForUser(String userId) {

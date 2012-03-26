@@ -31,6 +31,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderPreconditionTypes;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
+import nl.surfnet.coin.teams.domain.IdConverter;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 
 /**
@@ -88,7 +89,7 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     Object[] args = {identifier};
     try {
       return this.jdbcTemplate.queryForObject(
-          SELECT_GROUP_PROVIDER_BY_IDENTIFIER +'=' +'?', args, new RowMapper<GroupProvider>() {
+          SELECT_GROUP_PROVIDER_BY_IDENTIFIER + '=' + '?', args, new RowMapper<GroupProvider>() {
         @Override
         public GroupProvider mapRow(ResultSet rs, int rowNum) throws SQLException {
           return mapRowToGroupProvider(rs);
@@ -107,6 +108,8 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     GroupProvider gp = new GroupProvider(id, identifier, name, gpClassName);
     gp.setAllowedOptions(getAllowedOptions(gp));
     gp.setUserIdPrecondition(getUserIdPreCondition(id));
+    gp.setPersonIdDecorators(getPersonIdDecorators(gp));
+    gp.setGroupIdDecorators(getGroupIdDecorators(gp));
     return gp;
   }
 
@@ -162,8 +165,7 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
    * @return Map with allowed options
    */
   private Map<String, Object> getAllowedOptions(GroupProvider groupProvider) {
-    Object[] args = new Object[1];
-    args[0] = groupProvider.getId();
+    Object[] args = {groupProvider.getId()};
 
     Map<String, Object> options = new HashMap<String, Object>();
 
@@ -177,5 +179,74 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
       options.put(sqlRowSet.getString("name"), sqlRowSet.getObject("value"));
     }
     return options;
+  }
+
+  private List<IdConverter> getPersonIdDecorators(GroupProvider groupProvider) {
+    final String providerClassName = "EngineBlock_Group_Provider_Decorator_UserIdReplace";
+    return getDecorators(groupProvider, providerClassName);
+
+  }
+
+  private List<IdConverter> getGroupIdDecorators(GroupProvider groupProvider) {
+    final String providerClassName = "EngineBlock_Group_Provider_Decorator_GroupIdReplace";
+    return getDecorators(groupProvider, providerClassName);
+  }
+
+  private List<IdConverter> getDecorators(GroupProvider groupProvider, String providerClassName) {
+    Object[] args = {groupProvider.getId(), providerClassName};
+
+    try {
+      final SqlRowSet sqlRowSet = this.jdbcTemplate.queryForRowSet(
+          "SELECT gpd.id AS id," +
+              " gpdo.name     AS option_name," +
+              " gpdo.value    AS option_value" +
+              " FROM group_provider_decorator gpd" +
+              " LEFT JOIN group_provider_decorator_option gpdo ON gpd.id = gpdo.group_provider_decorator_id" +
+              " WHERE gpd.group_provider_id = ? AND gpd.classname = ?" +
+              " ORDER BY gpd.id;",
+          args);
+      return getIdConverters(sqlRowSet);
+    } catch (EmptyResultDataAccessException e) {
+      return new ArrayList<IdConverter>();
+    }
+  }
+
+
+  private List<IdConverter> getIdConverters(SqlRowSet sqlRowSet) {
+    Map<Integer, IdConverter> idConverterMap = new HashMap<Integer, IdConverter>();
+    IdConverter converter;
+    Integer ruleId;
+
+    final String id = "id";
+    final String nameCol = "name";
+    final String valueCol = "value";
+    final String name_search = "search";
+    final String name_replace = "replace";
+    final String name_property = "property";
+
+    while (sqlRowSet.next()) {
+      ruleId = sqlRowSet.getInt(id);
+
+      if (idConverterMap.containsKey(ruleId)) {
+        converter = idConverterMap.get(ruleId);
+      } else {
+        converter = new IdConverter();
+        converter.setPropertyName(id);
+      }
+
+      final String name = sqlRowSet.getString(nameCol);
+      final String value = sqlRowSet.getString(valueCol);
+      if (name_search.equals(name)) {
+        converter.setSearchPattern(value);
+      }
+      if (name_replace.equals(name)) {
+        converter.setReplaceWith(value);
+      }
+      if (name_property.equals(name)) {
+        converter.setPropertyName(value);
+      }
+      idConverterMap.put(ruleId, converter);
+    }
+    return new ArrayList<IdConverter>(idConverterMap.values());
   }
 }
