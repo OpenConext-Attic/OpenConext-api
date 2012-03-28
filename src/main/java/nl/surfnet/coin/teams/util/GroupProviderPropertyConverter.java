@@ -31,8 +31,20 @@ public class GroupProviderPropertyConverter {
   public static final String PROPERTY_ID = "id";
   public static final String PROPERTY_NAME = "name";
   public static final String PROPERTY_DESCRIPTION = "description";
+  private static final String GROUP_URN_PREFIX = "urn:collab:group";
 
 
+  /**
+   * Determines if a SURFconext group id (urn:collab:group:myuniversity.nl:myGroupId) can be found at the {@link GroupProvider}.
+   * 
+   * @param groupId group identifier used within the SURFconext platform
+   * @param groupProvider {@link nl.surfnet.coin.teams.domain.GroupProvider}
+   * @return
+   */
+  public static boolean isGroupFromGroupProvider(String groupId, GroupProvider groupProvider) {
+    return !convertToExternalGroupId(groupId, groupProvider).startsWith(GROUP_URN_PREFIX);
+  }
+  
   /**
    * Converts a SURFconext person id (urn:collab:person:myuniversity.nl:myId) to external form the
    * group provider knows (myId)

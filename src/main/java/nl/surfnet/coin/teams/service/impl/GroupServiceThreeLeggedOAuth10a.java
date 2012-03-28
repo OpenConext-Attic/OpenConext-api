@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ThreeLeggedOauth10aGroupProviderApi;
@@ -73,10 +74,7 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
     Token accessToken = new Token(oauth.getOAuthToken(), oauth.getOAuthSecret());
     final String strippedID = convertToExternalPersonId(oauth.getPersonId(), provider);
 
-    OAuthRequest oAuthRequest = new OAuthRequest(api.getRequestTokenVerb(),
-        MessageFormat.format("{0}/groups/{1}",
-            provider.getAllowedOptionAsString(GroupProviderOptionParameters.URL),
-            strippedID));
+    OAuthRequest oAuthRequest = getGroupOAuthRequest(provider, api, strippedID);
     oAuthService.signRequest(accessToken, oAuthRequest);
     Response oAuthResponse = oAuthRequest.send();
 
@@ -88,6 +86,64 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
       log.trace(oAuthResponse.getBody());
     }
     return new ArrayList<Group20>();
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.teams.service.GroupService#getGroupMembers(nl.surfnet.coin.teams.domain.GroupProviderUserOauth, nl.surfnet.coin.teams.domain.GroupProvider)
+   */
+  @Override
+  public List<Person> getGroupMembers(GroupProviderUserOauth oauth,
+      GroupProvider provider, String groupId) {
+    // we assume now that it's a 3-legged oauth provider
+    final ThreeLeggedOauth10aGroupProviderApi api =
+        new ThreeLeggedOauth10aGroupProviderApi(provider);
+    final GroupProviderServiceThreeLeggedOAuth10a tls =
+        new GroupProviderServiceThreeLeggedOAuth10a(provider, api);
+    final OAuthService oAuthService = tls.getOAuthService();
+
+    Token accessToken = new Token(oauth.getOAuthToken(), oauth.getOAuthSecret());
+    final String strippedPersonID = convertToExternalPersonId(oauth.getPersonId(), provider);
+    final String strippedGroupId = convertToExternalPersonId(oauth.getPersonId(), provider);
+
+    OAuthRequest oAuthRequest = getGroupMembersOAuthRequest(provider, api, strippedPersonID, strippedGroupId);
+    oAuthService.signRequest(accessToken, oAuthRequest);
+    Response oAuthResponse = oAuthRequest.send();
+
+    if (oAuthResponse.isSuccessful()) {
+      return getPersonsFromResponse(oAuthResponse, provider);
+    } else {
+      log.info("Fetching external groupmembers for user {} for group {} failed with status code {}",
+          new Object[]{oauth.getPersonId(),groupId, oAuthResponse.getCode()});
+      log.trace(oAuthResponse.getBody());
+    }
+    return new ArrayList<Person>();
+
+  }
+  
+ 
+  private List<Person> getPersonsFromResponse(Response oAuthResponse,
+      GroupProvider provider) {
+    
+    oAuthResponse.getStream();
+    return null;
+  }
+
+  private OAuthRequest getGroupOAuthRequest(GroupProvider provider,
+      final ThreeLeggedOauth10aGroupProviderApi api, final String strippedPersonID) {
+    OAuthRequest oAuthRequest = new OAuthRequest(api.getRequestTokenVerb(),
+        MessageFormat.format("{0}/groups/{1}",
+            provider.getAllowedOptionAsString(GroupProviderOptionParameters.URL),
+            strippedPersonID));
+    return oAuthRequest;
+  }
+
+  private OAuthRequest getGroupMembersOAuthRequest(GroupProvider provider,
+      final ThreeLeggedOauth10aGroupProviderApi api, final String strippedPersonID, final String strippedGroupId) {
+    OAuthRequest oAuthRequest = new OAuthRequest(api.getRequestTokenVerb(),
+        MessageFormat.format("{0}/people/{1}/{2}",
+            provider.getAllowedOptionAsString(GroupProviderOptionParameters.URL),
+            strippedPersonID, strippedGroupId));
+    return oAuthRequest;
   }
 
   private List<Group20> getGroup20sFromResponse(Response oAuthResponse, GroupProvider groupProvider) {
@@ -124,5 +180,7 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
 
     return groups;
   }
+
+  
 
 }

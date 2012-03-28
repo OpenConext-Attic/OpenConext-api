@@ -28,6 +28,8 @@ import nl.surfnet.coin.teams.domain.GroupProviderType;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test class for {@link GroupProviderPropertyConverter}
@@ -75,6 +77,27 @@ public class GroupProviderPropertyConverterTest {
 
     String externalPersonId = GroupProviderPropertyConverter.convertToExternalPersonId(personId, groupProvider);
     assertEquals("testuser", externalPersonId);
+
+  }
+  
+  @Test
+  public void testIsGroupFromGroupProvider() {
+
+    ConversionRule conversionRule = new ConversionRule();
+    conversionRule.setPropertyName("id");
+    conversionRule.setSearchPattern("urn:collab:group:myuniversity.nl:(.+)");
+    conversionRule.setReplaceWith("$1");
+
+    groupProvider.addGroupDecorator(conversionRule);
+
+    boolean isGroup =  GroupProviderPropertyConverter.isGroupFromGroupProvider("urn:collab:group:myuniversity.nl:testgroup", groupProvider);
+    assertTrue(isGroup);
+
+    isGroup =  GroupProviderPropertyConverter.isGroupFromGroupProvider("urn:collab:group:differentyuniversity.nl:testgroup", groupProvider);
+    assertFalse(isGroup);
+
+    isGroup =  GroupProviderPropertyConverter.isGroupFromGroupProvider("urn:collab:group:surfteams.nl:testgroup", groupProvider);
+    assertFalse(isGroup);
 
   }
 

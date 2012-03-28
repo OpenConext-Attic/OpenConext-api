@@ -19,6 +19,7 @@ package nl.surfnet.coin.teams.service;
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 
@@ -35,4 +36,14 @@ public interface GroupService {
    * @return List of Group20's, can be empty
    */
   List<Group20> getGroup20s(GroupProviderUserOauth oauth, GroupProvider groupProvider);
+
+  /**
+   * Gets a List of  for the user's oauth configuration
+   *
+   * @param oauth {@link GroupProviderUserOauth} configuration for a user
+   * @param groupProvider {@link GroupProvider} for the settings
+   * @param groupId the groupId as we know it in SURFconext context (e.g. urn:collab:group:myuniversity.nl:testgroup)
+   * @return List of Group20's, can be empty
+   */
+  List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId);
 }
