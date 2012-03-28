@@ -20,6 +20,7 @@ import java.util.List;
 
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
+import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
 /**
  * Interface to get Group providers
@@ -49,4 +50,12 @@ public interface GroupProviderService {
    * @return List of GroupProvider's, can be empty
    */
   List<GroupProvider> getOAuthGroupProviders(String userId);
+  
+  
+  /**
+   * 
+   * @param String Service Provider entityId
+   * @return All ServiceProviderGroupAcl's for a specific Service Provider
+   */
+  List<ServiceProviderGroupAcl> getServiceProviderGroupAcl(String serviceProviderEntityId);
 }
