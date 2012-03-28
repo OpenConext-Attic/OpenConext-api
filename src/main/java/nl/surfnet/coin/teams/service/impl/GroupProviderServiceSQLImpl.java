@@ -63,9 +63,9 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
     try {
       gpUserOauths = this.jdbcTemplate.query(
-          "SELECT gp_user_oauth.`user_id`, gp_user_oauth.`provider_id`, gp_user_oauth.`oauth_token`, gp_user_oauth.`oauth_secret` " +
+          "SELECT gp_user_oauth.user_id, gp_user_oauth.provider_id, gp_user_oauth.oauth_token, gp_user_oauth.oauth_secret " +
               "FROM group_provider_user_oauth as gp_user_oauth " +
-              "WHERE gp_user_oauth.`user_id` = ?", args, new RowMapper<GroupProviderUserOauth>() {
+              "WHERE gp_user_oauth.user_id = ?", args, new RowMapper<GroupProviderUserOauth>() {
         @Override
         public GroupProviderUserOauth mapRow(ResultSet rs, int rowNum) throws SQLException {
           String userId = rs.getString("user_id");
@@ -148,9 +148,9 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
       // access to".
       groupProviders = this.jdbcTemplate.query(
           SELECT_GROUP_PROVIDER_BY_IDENTIFIER +
-              " IN (SELECT gp_user_oauth.`provider_id` " +
+              " IN (SELECT gp_user_oauth.provider_id " +
               "     FROM group_provider_user_oauth as gp_user_oauth " +
-              "     WHERE gp_user_oauth.`user_id` = ?);", args, new RowMapper<GroupProvider>() {
+              "     WHERE gp_user_oauth.user_id = ?);", args, new RowMapper<GroupProvider>() {
         @Override
         public GroupProvider mapRow(ResultSet rs, int rowNum) throws SQLException {
           return mapRowToGroupProvider(rs);
@@ -174,9 +174,9 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     Map<String, Object> options = new HashMap<String, Object>();
 
     final SqlRowSet sqlRowSet = this.jdbcTemplate.queryForRowSet(
-        "SELECT gp_option.`name`, gp_option.`value` " +
+        "SELECT gp_option.name, gp_option.value " +
             "FROM group_provider_option AS gp_option " +
-            "WHERE gp_option.`group_provider_id` = ?;",
+            "WHERE gp_option.group_provider_id = ?;",
         args);
 
     while (sqlRowSet.next()) {
@@ -295,7 +295,7 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
       // Get all
       spGroupAcls = this.jdbcTemplate
           .query(
-              "SELECT  group_provider_id, spentityid, allow_groups, allow_members FROM service_provider_group_acl WHERE spentityid = ?);",
+              "SELECT  group_provider_id, spentityid, allow_groups, allow_members FROM service_provider_group_acl WHERE spentityid = ?",
               new Object[] { serviceProviderEntityId },
               new RowMapper<ServiceProviderGroupAcl>() {
                 @Override
