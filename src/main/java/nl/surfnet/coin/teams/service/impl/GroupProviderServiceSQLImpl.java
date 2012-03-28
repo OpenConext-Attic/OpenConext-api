@@ -32,6 +32,7 @@ import nl.surfnet.coin.teams.domain.ConversionRule;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderPreconditionTypes;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
+import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 
 /**
@@ -278,4 +279,38 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     }
     return new ArrayList<ConversionRule>(idConverterMap.values());
   }
+  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.teams.service.GroupProviderService#getServiceProviderGroupAcl
+   * (java.lang.String)
+   */
+  @Override
+  public List<ServiceProviderGroupAcl> getServiceProviderGroupAcl(
+      final String serviceProviderEntityId) {
+    List<ServiceProviderGroupAcl> spGroupAcls;
+    try {
+      // Get all
+      spGroupAcls = this.jdbcTemplate
+          .query(
+              "SELECT  group_provider_id, spentityid, allow_groups, allow_members FROM service_provider_group_acl WHERE spentityid = ?);",
+              new Object[] { serviceProviderEntityId },
+              new RowMapper<ServiceProviderGroupAcl>() {
+                @Override
+                public ServiceProviderGroupAcl mapRow(ResultSet rs, int rowNum)
+                    throws SQLException {
+                  long providerId = rs.getLong("group_provider_id");
+                  boolean allowGroups = rs.getBoolean("allow_groups");
+                  boolean allowMembers = rs.getBoolean("allow_members");
+                  return new ServiceProviderGroupAcl(allowGroups, allowMembers,
+                      serviceProviderEntityId, providerId);
+                }
+              });
+    } catch (EmptyResultDataAccessException e) {
+      spGroupAcls = new ArrayList<ServiceProviderGroupAcl>();
+    }
+    return spGroupAcls;
+ }  
 }
