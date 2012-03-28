@@ -67,8 +67,8 @@ create table group_provider_precondition_option (
 insert into service_provider_group_acl (id, group_provider_id, spentityid, allow_groups, allow_members) values (1, 9, 'https://serviceregistry.test.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 1, 1);
 insert into service_provider_group_acl (id, group_provider_id, spentityid, allow_groups, allow_members) values (2, 9, 'https://teams.test.surfconext.nl/shibboleth', 1, 1);
 
-insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('avans','urn:collab:person:test.surfguest.nl:tester', 'ba786086238d01f81ae481f3c11bee67ebd88b6a', 'e52887d1140e633f3c58bbe1677fc6766c30650d');
-insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('hz', 'urn:collab:person:test.surfguest.nl:tester2', '20ce1240-735f-4752-8269-1449b10a32ee', 'c7106d17-6cd0-4a73-856d-994462b85982');
+insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('avans','urn:collab:person:test.surfguest.nl:tester', 'replaced_by_dummy_value', 'replaced_by_dummy_value');
+insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('hz', 'urn:collab:person:test.surfguest.nl:tester2', 'replaced_by_dummy_value', 'replaced_by_dummy_value');
 
 insert into group_provider (id, identifier, name, classname) values (4, 'hz', 'HZ', 'EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged');
 insert into group_provider (id, identifier, name, classname) values (5, 'grouper', 'SURFteams grouper', 'EngineBlock_Group_Provider_Grouper');
@@ -233,11 +233,11 @@ VALUES
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (4,'auth.consumerKey','SurfConextTest');
+  (4,'auth.consumerKey','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (4,'auth.consumerSecret','b03f5f7f11d50a3a');
+  (4,'auth.consumerSecret','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
@@ -273,7 +273,7 @@ VALUES
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (4,'password','f8Hsl9Ne3ha2D');
+  (4,'password','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
@@ -293,7 +293,7 @@ VALUES
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (5,'password','f8Hsl9Ne3ha2D');
+  (5,'password','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
@@ -337,11 +337,11 @@ VALUES
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (9,'auth.consumerKey','be7d38062a9353f8f93cb68dba32e788e4c452be');
+  (9,'auth.consumerKey','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (9,'auth.consumerSecret','5c2d0b86c51b087cb5186da9f6062cca25fbfae3');
+  (9,'auth.consumerSecret','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
@@ -377,7 +377,7 @@ VALUES
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
-  (9,'password','f8Hsl9Ne3ha2D');
+  (9,'password','replaced_by_dummy_value');
 
 INSERT INTO group_provider_option (group_provider_id, name, value)
 VALUES
