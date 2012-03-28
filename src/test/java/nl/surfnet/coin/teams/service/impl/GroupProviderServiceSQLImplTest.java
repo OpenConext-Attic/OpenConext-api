@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
@@ -34,7 +35,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * 
+ * Test for GroupProviderServiceSQLImpl that uses an in-memory database.
  *
  */
 public class GroupProviderServiceSQLImplTest {
@@ -83,7 +84,8 @@ public class GroupProviderServiceSQLImplTest {
    */
   @Test
   public void testGetGroupProviderByStringIdentifier() {
-      
+      GroupProvider groupProvider = groupProviderServiceSQL.getGroupProviderByStringIdentifier("grouper");
+      assertEquals("SURFteams grouper",groupProvider.getName());
   }
 
   /**
@@ -93,7 +95,8 @@ public class GroupProviderServiceSQLImplTest {
    */
   @Test
   public void testGetOAuthGroupProviders() {
-    
+    List<GroupProvider> providers = groupProviderServiceSQL.getOAuthGroupProviders("urn:collab:person:test.surfguest.nl:tester");
+    assertEquals(1,providers.size());
   }
 
   /**
