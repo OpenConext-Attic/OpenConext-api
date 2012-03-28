@@ -33,6 +33,8 @@
   <properties>
     <coin-api-client.version>2.2.0-SNAPSHOT</coin-api-client.version>
     <coin-master.test-dependencies.version>2.1.1</coin-master.test-dependencies.version>
+
+    <jackson.version>1.8.1</jackson.version>
   </properties>
 
   <dependencies>
@@ -40,6 +42,17 @@
       <groupId>org.surfnet.coin</groupId>
       <artifactId>coin-api-client</artifactId>
       <version>${coin-api-client.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
