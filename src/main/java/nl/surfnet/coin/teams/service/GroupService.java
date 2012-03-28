@@ -19,6 +19,7 @@ package nl.surfnet.coin.teams.service;
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 
 /**
@@ -30,7 +31,8 @@ public interface GroupService {
    * Gets a List of {@link Group20}'s for the user's oauth configuration
    *
    * @param oauth {@link GroupProviderUserOauth} configuration for a user
+   * @param groupProvider {@link GroupProvider} for the settings
    * @return List of Group20's, can be empty
    */
-  List<Group20> getGroup20s(GroupProviderUserOauth oauth);
+  List<Group20> getGroup20s(GroupProviderUserOauth oauth, GroupProvider groupProvider);
 }

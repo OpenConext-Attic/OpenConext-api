@@ -85,6 +85,15 @@ public class GroupProvider {
   }
 
   /**
+   * Add a configuration option
+   * @param key the key
+   * @param value the value
+   */
+  public void addAllowedOption(String key, Object value) {
+    allowedOptions.put(key, value);
+  }
+  
+  /**
    * Sets a Map<String,Object> with possible configuration options for the Group provider.
    *
    * @param allowedOptions allowed options for a Group provider

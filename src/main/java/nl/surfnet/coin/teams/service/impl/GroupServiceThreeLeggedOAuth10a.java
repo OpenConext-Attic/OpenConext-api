@@ -56,18 +56,12 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
 public class GroupServiceThreeLeggedOAuth10a implements GroupService {
   private static Logger log = LoggerFactory.getLogger(GroupServiceThreeLeggedOAuth10a.class);
 
-  @Autowired
-  private GroupProviderService groupProviderService;
-
   private ObjectMapper objectMapper = new ObjectMapper();
 
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   @Override
-  public List<Group20> getGroup20s(GroupProviderUserOauth oauth) {
-    // get the group provider
-    final GroupProvider provider =
-        groupProviderService.getGroupProviderByStringIdentifier(oauth.getProvider());
+  public List<Group20> getGroup20s(GroupProviderUserOauth oauth, GroupProvider provider) {
 
     // we assume now that it's a 3-legged oauth provider
     final ThreeLeggedOauth10aGroupProviderApi api =

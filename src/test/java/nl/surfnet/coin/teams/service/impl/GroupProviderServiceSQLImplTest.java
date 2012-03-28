@@ -21,6 +21,7 @@ package nl.surfnet.coin.teams.service.impl;
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.List;
 
 import nl.surfnet.coin.teams.domain.GroupProvider;
@@ -29,6 +30,7 @@ import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -51,6 +53,11 @@ public class GroupProviderServiceSQLImplTest {
    */
   @BeforeClass
   public static void beforeClass() throws Exception {
+    groupProviderServiceSQL = insertTestData();
+
+  }
+
+  private static GroupProviderServiceSQLImpl insertTestData() throws IOException {
     BasicDataSource dataSource = new BasicDataSource();
     dataSource.setPassword("");
     dataSource.setUsername("sa");
@@ -59,10 +66,18 @@ public class GroupProviderServiceSQLImplTest {
 
     JdbcTemplate template = new JdbcTemplate(dataSource);
     groupProviderServiceSQL = new GroupProviderServiceSQLImpl(template);
-    template.execute(IOUtils.toString(new ClassPathResource("test-data-eb.sql")
+    groupProviderServiceSQL.execute(IOUtils.toString(new ClassPathResource("test-data-eb.sql")
+        .getInputStream()));
+    return groupProviderServiceSQL;
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    groupProviderServiceSQL.execute(IOUtils.toString(new ClassPathResource("cleanup-test-data-eb.sql")
         .getInputStream()));
 
   }
+  
 
   /**
    * Test method for

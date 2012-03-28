@@ -313,4 +313,9 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     }
     return spGroupAcls;
  }  
+
+  protected void execute(String sql) {
+    this.jdbcTemplate.execute(sql);
+  }
 }
+

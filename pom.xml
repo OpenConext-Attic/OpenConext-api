@@ -33,6 +33,7 @@
   <properties>
     <coin-api-client.version>2.2.0-SNAPSHOT</coin-api-client.version>
     <coin-master.test-dependencies.version>2.1.1</coin-master.test-dependencies.version>
+    <coin-test.version>2.1.0</coin-test.version>
   </properties>
 
   <dependencies>
@@ -67,7 +68,11 @@
       <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.surfnet.coin</groupId>
+      <artifactId>coin-test</artifactId>
+      <version>${coin-test.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
