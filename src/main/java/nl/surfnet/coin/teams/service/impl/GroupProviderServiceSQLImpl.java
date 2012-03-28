@@ -121,13 +121,13 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     Object[] args = {id, GroupProviderPreconditionTypes.USER_ID_REGEX.getStringValue()};
     try {
       return this.jdbcTemplate.queryForObject(
-          "SELECT gppo.value    AS option_value " +
+          "SELECT gppo.value " +
               "FROM group_provider_precondition gpp " +
               "LEFT JOIN group_provider_precondition_option gppo ON gpp.id = gppo.group_provider_precondition_id " +
               "WHERE gpp.group_provider_id = ? AND gpp.className = ?;", args, new RowMapper<String>() {
         @Override
         public String mapRow(ResultSet resultSet, int i) throws SQLException {
-          return resultSet.getString("option_value");
+          return resultSet.getString("value");
         }
       });
     } catch (EmptyResultDataAccessException e) {
@@ -198,9 +198,9 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
     try {
       final SqlRowSet sqlRowSet = this.jdbcTemplate.queryForRowSet(
-          "SELECT gpd.id AS id," +
-              " gpdo.name     AS option_name," +
-              " gpdo.value    AS option_value" +
+          "SELECT gpd.id," +
+              " gpdo.name," +
+              " gpdo.value " +
               " FROM group_provider_decorator gpd" +
               " LEFT JOIN group_provider_decorator_option gpdo ON gpd.id = gpdo.group_provider_decorator_id" +
               " WHERE gpd.group_provider_id = ? AND gpd.classname = ?" +
@@ -224,11 +224,11 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     Object[] args = {groupProvider.getId(), filterType};
     try{
       final SqlRowSet sqlRowSet = this.jdbcTemplate.queryForRowSet(
-          "SELECT gpf.id AS id," +
-              " gpf.type      AS type," +
-              " gpf.classname AS className," +
-              " gpfo.name     AS option_name," +
-              " gpfo.value    AS option_value" +
+          "SELECT gpf.id," +
+              " gpf.type," +
+              " gpf.classname," +
+              " gpfo.name," +
+              " gpfo.value " +
               " FROM group_provider_filter gpf" +
               " LEFT JOIN group_provider_filter_option gpfo ON gpf.id = gpfo.group_provider_filter_id" +
               " WHERE gpf.group_provider_id = ?" +
