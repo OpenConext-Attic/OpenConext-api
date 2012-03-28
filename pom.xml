@@ -33,8 +33,6 @@
   <properties>
     <coin-api-client.version>2.2.0-SNAPSHOT</coin-api-client.version>
     <coin-master.test-dependencies.version>2.1.1</coin-master.test-dependencies.version>
-
-    <jackson.version>1.8.1</jackson.version>
   </properties>
 
   <dependencies>
