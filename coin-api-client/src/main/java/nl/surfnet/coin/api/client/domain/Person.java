@@ -33,6 +33,8 @@ public class Person {
   private String displayName;
   private String voot_membership_role;
   private Set<Organization> organizations;
+  private Set<PhoneNumber> phoneNumbers;
+  private String error;
 
   /**
    * @return the nickName
@@ -167,6 +169,34 @@ public class Person {
    */
   public void setOrganizations(Set<Organization> organizations) {
     this.organizations = organizations;
+  }
+
+  /**
+   * @return the phoneNumbers
+   */
+  public Set<PhoneNumber> getPhoneNumbers() {
+    return phoneNumbers;
+  }
+
+  /**
+   * @param phoneNumbers the phoneNumbers to set
+   */
+  public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
+    this.phoneNumbers = phoneNumbers;
+  }
+
+  /**
+   * @return the error
+   */
+  public String getError() {
+    return error;
+  }
+
+  /**
+   * @param error the error to set
+   */
+  public void setError(String error) {
+    this.error = error;
   }
 
 }

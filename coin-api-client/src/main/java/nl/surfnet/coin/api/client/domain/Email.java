@@ -25,7 +25,7 @@ private String value;
   private Type type;
 
   public enum Type {
-    email
+    email, work
   }
 
   /**

@@ -23,17 +23,33 @@ package nl.surfnet.coin.api.client.domain;
 public class Organization {
   private String name;
 
-/**
- * @return the name
- */
-public String getName() {
-  return name;
-}
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-/**
- * @param name the name to set
- */
-public void setName(String name) {
-  this.name = name;
-}
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * @return the value
+   */
+  public String getValue() {
+    return name;
+  }
+
+  /**
+   * @param value the value to set
+   */
+  public void setValue(String value) {
+    this.name = value;
+  }
+
 }
