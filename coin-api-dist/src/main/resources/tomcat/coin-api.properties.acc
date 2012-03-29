@@ -22,5 +22,5 @@
 ####################################################################
 
 janus.uri=https\://serviceregistry.acc.surfconext.nl/simplesaml/module.php/janus/services/rest/
-janus.user=engineblock
-janus.secret=janussecret
+janus.user=??
+janus.secret=??
