@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
@@ -33,9 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
@@ -48,7 +52,7 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_NAME;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertProperty;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToExternalPersonId;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextGroupId;
+import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.*;
 
 /**
  * Implementation for a {@link GroupService} using 3-legged OAuth
@@ -56,8 +60,6 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
 @Service
 public class GroupServiceThreeLeggedOAuth10a implements GroupService {
   private static Logger log = LoggerFactory.getLogger(GroupServiceThreeLeggedOAuth10a.class);
-
-  private ObjectMapper objectMapper = new ObjectMapper();
 
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
@@ -103,7 +105,7 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
 
     Token accessToken = new Token(oauth.getOAuthToken(), oauth.getOAuthSecret());
     final String strippedPersonID = convertToExternalPersonId(oauth.getPersonId(), provider);
-    final String strippedGroupId = convertToExternalPersonId(oauth.getPersonId(), provider);
+    final String strippedGroupId = convertToExternalGroupId(groupId, provider);
 
     OAuthRequest oAuthRequest = getGroupMembersOAuthRequest(provider, api, strippedPersonID, strippedGroupId);
     oAuthService.signRequest(accessToken, oAuthRequest);
@@ -123,9 +125,24 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
  
   private List<Person> getPersonsFromResponse(Response oAuthResponse,
       GroupProvider provider) {
-    
-    oAuthResponse.getStream();
-    return null;
+    String body = oAuthResponse.getBody();
+    InputStream in = new ByteArrayInputStream(body.getBytes());
+    if (log.isDebugEnabled()) {
+      log.debug("Groupmember {} response {}",provider.getIdentifier(),body);
+    }
+    GroupMembersEntry groupMembersEntry = parser.parseTeamMembers(in);
+    List<Person> persons = groupMembersEntry.getEntry();
+    for (Iterator<Person> iterator = persons.iterator(); iterator.hasNext();) {
+      Person person = iterator.next();
+      String id = person.getId();
+      if (StringUtils.hasText(id)) {
+        String collabId = convertToSurfConextPersonId(id, provider);
+        person.setId(collabId);
+      } else {
+        iterator.remove();
+      }
+    }
+    return persons;
   }
 
   private OAuthRequest getGroupOAuthRequest(GroupProvider provider,
@@ -147,21 +164,8 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
   }
 
   private List<Group20> getGroup20sFromResponse(Response oAuthResponse, GroupProvider groupProvider) {
-    List<Group20> groups = new ArrayList<Group20>();
-    String body = oAuthResponse.getBody();
-    InputStream in = new ByteArrayInputStream(body.getBytes());
-
-    try {
-      final JsonNode jsonNodes = objectMapper.readTree(body);
-
-      if (jsonNodes.has("result")) {
-        groups = parser.parseGroup20ResultWrapper(in).getResult().getEntry();
-      } else if (jsonNodes.has("entry")) {
-        groups = parser.parseGroups20(in).getEntry();
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Could not parse response into JSON objects", e);
-    }
+    
+    List<Group20> groups = parser.parseGroups20(oAuthResponse.getStream()).getEntry();;
 
     for (Group20 group20: groups) {
       String scGroupId = convertToSurfConextGroupId(group20.getId(),

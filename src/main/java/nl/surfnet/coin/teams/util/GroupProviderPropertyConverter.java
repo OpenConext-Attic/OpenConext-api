@@ -117,7 +117,7 @@ public class GroupProviderPropertyConverter {
                                        List<ConversionRule> converters) {
     String s = propertyValue;
     for (ConversionRule converter : converters) {
-      if (propertyName.equals(converter.getPropertyName())) {
+      if (s != null && propertyName.equals(converter.getPropertyName())) {
         s = s.replaceAll(converter.getSearchPattern(), converter.getReplaceWith());
       }
     }

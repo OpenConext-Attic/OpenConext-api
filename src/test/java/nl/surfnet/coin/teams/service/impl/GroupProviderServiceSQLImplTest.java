@@ -65,7 +65,7 @@ public class GroupProviderServiceSQLImplTest {
     dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
 
     JdbcTemplate template = new JdbcTemplate(dataSource);
-    groupProviderServiceSQL = new GroupProviderServiceSQLImpl(template);
+    GroupProviderServiceSQLImpl groupProviderServiceSQL = new GroupProviderServiceSQLImpl(template);
     groupProviderServiceSQL.execute(IOUtils.toString(new ClassPathResource("test-data-eb.sql")
         .getInputStream()));
     return groupProviderServiceSQL;

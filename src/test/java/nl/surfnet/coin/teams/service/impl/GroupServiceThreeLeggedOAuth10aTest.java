@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
@@ -58,6 +59,13 @@ public class GroupServiceThreeLeggedOAuth10aTest extends
     List<Group20> group20s = groupService.getGroup20s(oauth, provider);
     assertEquals(1, group20s.size());
     assertEquals("nl.avans.AVANS-employee_grp", group20s.get(0).getId());
+  }
+  
+  @Test
+  public void testGetGroupMembersAvans() {
+    super.setResponseResource(new ClassPathResource("avans-teammembers.json"));
+    List<Person> groupMembers = groupService.getGroupMembers(oauth, provider, "urn:collab:group:avans.nl:testgroup");
+    assertEquals(12, groupMembers.size());
   }
   
   /**

@@ -1,0 +1,243 @@
+{
+    "result": {
+        "totalResults": 12,
+        "startIndex": 0,
+        "itemsPerPage": 12,
+        "filtered": false,
+        "updatedSince": 0,
+        "sorted": false,
+        "entry": [
+            {
+                "id": "agmhermu",
+                "displayName": "Anita Bekers - Hermus",
+                "name": {
+                    "formatted": "Anita Bekers - Hermus",
+                    "givenName": "Anita",
+                    "familyName": "Bekers - Hermus"
+                },
+                "phoneNumbers": {
+                    "value": "xxxx"
+                },
+                "emails": {
+                    "value": "agm.bekers-hermus@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "DPO-PA"
+                }
+            },
+            {
+                "id": "ajmjong",
+                "displayName": "Toon de Jong",
+                "name": {
+                    "formatted": "Toon de Jong",
+                    "givenName": "Toon",
+                    "familyName": "de Jong"
+                },
+                "phoneNumbers": {
+                    "value": "xxxx"
+                },
+                "emails": {
+                    "value": "ajm.dejong@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "AMB-OPL"
+                }
+            },
+            {
+                "id": "acwvisse",
+                "displayName": "Annuska Vissers",
+                "name": {
+                    "formatted": "Annuska Vissers",
+                    "givenName": "Annuska",
+                    "familyName": "Vissers"
+                },
+                "phoneNumbers": {
+                    "value": "xxxx"
+                },
+                "emails": {
+                    "value": "acw.vissers@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "DFS-PCA"
+                }
+            },
+            {
+                "id": "ajfhasse",
+                "displayName": "John van Hasselt",
+                "name": {
+                    "formatted": "John van Hasselt",
+                    "givenName": "John",
+                    "familyName": "van Hasselt"
+                },
+                "phoneNumbers": {
+                    "value": "xxxx"
+                },
+                "emails": {
+                    "value": "ajf.vanhasselt@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "DFS-SAL"
+                }
+            },
+            {
+                "id": "akessel",
+                "displayName": "Adrie van Kessel",
+                "name": {
+                    "formatted": "Adrie van Kessel",
+                    "givenName": "Adrie",
+                    "familyName": "van Kessel"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "a.vankessel@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "ABI-BBE"
+                }
+            },
+            {
+                "id": "ahcmspij",
+                "displayName": "Ad Spijkers",
+                "name": {
+                    "formatted": "Ad Spijkers",
+                    "givenName": "Ad",
+                    "familyName": "Spijkers"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "ahcm.spijkers@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "CVB-ALG"
+                }
+            },
+            {
+                "id": "aehgoos",
+                "displayName": "Rian van Velthoven - Goos",
+                "name": {
+                    "formatted": "Rian van Velthoven - Goos",
+                    "givenName": "Rian",
+                    "familyName": "van Velthoven - Goos"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "aeh.vanvelthoven-goos@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "AKVALG"
+                }
+            },
+            {
+                "id": "aamdamen",
+                "displayName": "Ton Damen",
+                "name": {
+                    "formatted": "Ton Damen",
+                    "givenName": "Ton",
+                    "familyName": "Damen"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "aam.damen@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "AKVALG"
+                }
+            },
+            {
+                "id": "aadeurse",
+                "displayName": "Aafke de Baat - van Deursen",
+                "name": {
+                    "formatted": "Aafke de Baat - van Deursen",
+                    "givenName": "Aafke",
+                    "familyName": "de Baat - van Deursen"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "aa.debaat-vandeursen@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "AKVBDES"
+                }
+            },
+            {
+                "id": "adhoerle",
+                "displayName": "Anita Vervaart",
+                "name": {
+                    "formatted": "Anita Vervaart",
+                    "givenName": "Anita",
+                    "familyName": "Vervaart"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "adh.vervaart@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "LIC-IC"
+                }
+            },
+            {
+                "id": "aakorpor",
+                "displayName": "Anita Korporaal",
+                "name": {
+                    "formatted": "Anita Korporaal",
+                    "givenName": "Anita",
+                    "familyName": "Korporaal"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "aa.korporaal@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "DMCSALG"
+                }
+            },
+            {
+                "id": "aahooste",
+                "displayName": "Ad van Oosterhout",
+                "name": {
+                    "formatted": "Ad van Oosterhout",
+                    "givenName": "Ad",
+                    "familyName": "van Oosterhout"
+                },
+                "phoneNumbers": {
+                    "value": null
+                },
+                "emails": {
+                    "value": "aah.vanoosterhout@myuniveristy.nl",
+                    "type": "work"
+                },
+                "organizations": {
+                    "value": "ADT-ALG"
+                }
+            },
+            {
+                "error": "Not found"
+            }
+        ]
+    }
+}
