@@ -45,10 +45,25 @@
     <access-denied-handler ref="oauthAccessDeniedHandler"/>
   </http>
 
-  <security:http auto-config="true" authentication-manager-ref="authenticationManager"  access-decision-manager-ref="accessDecisionManager">
+  <security:http authentication-manager-ref="shibbolethAuthenticationManager"
+       access-decision-manager-ref="accessDecisionManager"
+       entry-point-ref="shibbolethEntryPoint"
+      >
     <security:intercept-url pattern="/social/rest/**" access="ROLE_USER,SCOPE_READ"/>
+    <security:custom-filter ref="shibbolethFilter" after="LOGOUT_FILTER"/>
     <security:custom-filter ref="oauth2ProviderFilter" after="EXCEPTION_TRANSLATION_FILTER"/>
   </security:http>
+
+  <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
+    <constructor-arg index="0" value="/Shibboleth.sso/Login" />
+    <property name="useForward" value="false" />
+  </bean>
+
+
+  <bean id="shibbolethFilter" class="nl.surfnet.coin.api.shib.ShibbolethFilter">
+    <constructor-arg value="/oauth/authorize" />
+    <property name="authenticationManager" ref="shibbolethAuthenticationManager" />
+  </bean>
 
   <bean id="approvalHandler" class="org.springframework.security.oauth2.provider.approval.TokenServicesUserApprovalHandler">
     <property name="tokenServices" ref="tokenServices" />
@@ -96,15 +111,8 @@
   </bean>
   <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore"/>
 
-  <!-- TODO: be a SAML-SP using Shibboleth  -->
-  <security:authentication-manager id="authenticationManager" alias="authenticationManager">
-    <security:authentication-provider>
-      <security:user-service id="enduserService">
-        <security:user name="jimi" password="jimispassword" authorities="ROLE_USER, ROLE_ADMIN"/>
-        <security:user name="bob" password="bobspassword" authorities="ROLE_USER"/>
-      </security:user-service>
-    </security:authentication-provider>
-  </security:authentication-manager>
+  <bean id="shibbolethAuthenticationManager" class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
+
   <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" xmlns="http://www.springframework.org/schema/beans">
     <constructor-arg>
       <list>
