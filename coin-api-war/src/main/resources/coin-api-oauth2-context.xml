@@ -45,14 +45,16 @@
     <access-denied-handler ref="oauthAccessDeniedHandler"/>
   </http>
 
+
   <security:http authentication-manager-ref="shibbolethAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
        entry-point-ref="shibbolethEntryPoint"
       >
     <security:intercept-url pattern="/social/rest/**" access="ROLE_USER,SCOPE_READ"/>
-    <security:custom-filter ref="shibbolethFilter" after="LOGOUT_FILTER"/>
-    <security:custom-filter ref="oauth2ProviderFilter" after="EXCEPTION_TRANSLATION_FILTER"/>
+    <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
+    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
   </security:http>
+
 
   <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
     <constructor-arg index="0" value="/Shibboleth.sso/Login" />
@@ -98,6 +100,7 @@
       authorization-endpoint-url="/oauth2/authorize"
       user-approval-handler-ref="approvalHandler"
       client-details-service-ref="clientDetailsService"
+      user-approval-page="forward:/oauth2/confirm_access"
       token-services-ref="tokenServices">
     <oauth2:authorization-code/>
     <oauth2:implicit/>

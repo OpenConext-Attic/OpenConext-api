@@ -40,7 +40,7 @@ public class AccessConfirmationController {
 
   private ClientDetailsService clientDetailsService;
 
-  @RequestMapping("/oauth/confirm_access")
+  @RequestMapping("/oauth2/confirm_access")
   public ModelAndView getAccessConfirmation(@ModelAttribute AuthorizationRequest clientAuth) throws Exception {
     ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
     TreeMap<String, Object> model = new TreeMap<String, Object>();

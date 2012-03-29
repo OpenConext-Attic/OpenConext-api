@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 public class ShibbolethFilter extends AbstractAuthenticationProcessingFilter {
@@ -55,6 +56,8 @@ public class ShibbolethFilter extends AbstractAuthenticationProcessingFilter {
     LOG.debug("Hitting ShibbolethFilters requiresAuth (returns {}, {})", super.requiresAuthentication(request, response), request.getHeader("REMOTE_USER") != null);
     LOG.debug("cp: {}, processuri: {}, request-uri: {}", new Object[] {request.getContextPath(), getFilterProcessesUrl(), request.getRequestURI()});
     LOG.debug("remote-user: '{}'", request.getHeader("REMOTE_USER"));
+
+
     return (super.requiresAuthentication(request, response) && request.getHeader("REMOTE_USER") != null);
   }
 
@@ -72,4 +75,11 @@ public class ShibbolethFilter extends AbstractAuthenticationProcessingFilter {
     }
   }
 
+  @Override
+  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    SecurityContextHolder.getContext().setAuthentication(authResult);
+    LOG.debug("successfulAuthentication: Letting chain continue.");
+
+    chain.doFilter(request, response);
+  }
 }

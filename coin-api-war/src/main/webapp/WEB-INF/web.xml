@@ -59,7 +59,7 @@
 <!--
   <filter-mapping>
     <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/oauth/authorize</url-pattern>
+    <url-pattern>/oauth2/authorize</url-pattern>
   </filter-mapping>
 -->
   <filter-mapping>
