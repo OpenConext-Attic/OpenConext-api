@@ -37,15 +37,14 @@ public class OpenConextJsonParserTest {
   public void testParseResultWrapper() throws Exception {
     Resource resource = new ClassPathResource("multiple-wrapped-groups20.json");
     InputStream in = resource.getInputStream();
-    final ResultWrapper resultWrapper = parser.parseGroup20ResultWrapper(in);
-    Group20Entry entry = (Group20Entry) resultWrapper.getResult();
+    Group20Entry entry = parser.parseGroups20(in);
     assertEquals(3, entry.getEntry().size());
     in.close();
   }
 
   @Test
   public void testParseGroup20() throws Exception {
-    Resource resource = new ClassPathResource("multiple-groups.json");
+    Resource resource = new ClassPathResource("multiple-groups20.json");
     InputStream in = resource.getInputStream();    
     final Group20Entry group20Entry = parser.parseGroups20(in);
     assertEquals(3, group20Entry.getEntry().size());

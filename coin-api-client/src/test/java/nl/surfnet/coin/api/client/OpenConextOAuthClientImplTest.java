@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 
@@ -84,10 +85,22 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    * .
    */
   @Test
-  public void testGetPeople() {
+  public void testGetGroupMembers() {
     super.setResponseResource(new ClassPathResource("multiple-persons.json"));
     List<Person> persons = this.client.getGroupMembers(GROUP_ID, USER_ID);
     assertEquals(22, persons.size());
+  }
+
+  /**
+   * Test method for
+   * {@link nl.surfnet.coin.api.client.OpenConextOAuthClientImpl#getGroups20(java.lang.String, java.lang.String)}
+   * .
+   */
+  @Test
+  public void testGetGroups20() {
+    super.setResponseResource(new ClassPathResource("multiple-groups20.json"));
+    List<Group20> groups20 = this.client.getGroups20(USER_ID, USER_ID);
+    assertEquals(3, groups20.size());
   }
 
   /**
@@ -97,9 +110,22 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetGroups() {
-    super.setResponseResource(new ClassPathResource("multiple-groups20.json"));
+    super.setResponseResource(new ClassPathResource("multiple-groups.json"));
     List<Group> groups = this.client.getGroups(USER_ID, USER_ID);
     assertEquals(17, groups.size());
   }
 
+  /**
+   * Test method for
+   * {@link nl.surfnet.coin.api.client.OpenConextOAuthClientImpl#getGroups(java.lang.String, java.lang.String)}
+   * .
+   */
+  @Test
+  public void testGetWrappedGroupMembers() {
+    super.setResponseResource(new ClassPathResource("multiple-wrapped-teammembers.json"));
+     List<Person> groupMembers = this.client.getGroupMembers(GROUP_ID, USER_ID);
+    assertEquals(12, groupMembers.size());
+  }
+
+  
 }
