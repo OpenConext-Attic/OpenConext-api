@@ -23,7 +23,6 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-<!--
   <filter>
     <filter-name>mockShibbolethFilter</filter-name>
     <filter-class>nl.surfnet.coin.api.shib.MockShibbolethFilter</filter-class>
@@ -32,7 +31,6 @@
       <param-value>geert</param-value>
     </init-param>
   </filter>
--->
 
   <filter>
     <filter-name>springSecurityFilterChain</filter-name>
@@ -56,12 +54,10 @@
     <filter-name>oauth2EndpointUrlFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
   </filter>
-<!--
   <filter-mapping>
     <filter-name>mockShibbolethFilter</filter-name>
     <url-pattern>/oauth2/authorize</url-pattern>
   </filter-mapping>
--->
   <filter-mapping>
     <filter-name>oauth2EndpointUrlFilter</filter-name>
     <url-pattern>/*</url-pattern>

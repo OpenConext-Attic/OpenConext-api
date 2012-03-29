@@ -114,9 +114,6 @@ public class PersonTestSelenium extends SeleniumSupport {
 
     getWebDriver().get(authUrl);
 
-    // Login end user
-    loginEndUser();
-
     // Authorize on user consent page
     giveUserConsentIfNeeded();
 

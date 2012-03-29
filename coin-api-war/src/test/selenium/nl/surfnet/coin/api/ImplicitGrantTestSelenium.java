@@ -108,7 +108,7 @@ public class ImplicitGrantTestSelenium extends SeleniumSupport {
 
     getWebDriver().get(authUrl);
 
-    loginEndUser();
+//    loginEndUser();
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();

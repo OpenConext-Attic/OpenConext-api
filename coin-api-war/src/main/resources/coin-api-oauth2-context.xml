@@ -100,7 +100,7 @@
       authorization-endpoint-url="/oauth2/authorize"
       user-approval-handler-ref="approvalHandler"
       client-details-service-ref="clientDetailsService"
-      user-approval-page="forward:/oauth2/confirm_access"
+      user-approval-page="redirect:/oauth2/confirm_access"
       token-services-ref="tokenServices">
     <oauth2:authorization-code/>
     <oauth2:implicit/>
