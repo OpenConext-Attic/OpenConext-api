@@ -23,6 +23,10 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+
+
+
+<!-- from selenium-web.xml ================================================ -->
   <filter>
     <filter-name>mockShibbolethFilter</filter-name>
     <filter-class>nl.surfnet.coin.api.shib.MockShibbolethFilter</filter-class>
@@ -31,6 +35,16 @@
       <param-value>geert</param-value>
     </init-param>
   </filter>
+  <filter-mapping>
+    <filter-name>mockShibbolethFilter</filter-name>
+    <url-pattern>/oauth/requestToken</url-pattern>
+  </filter-mapping>
+  <!-- from selenium-web.xml ================================================ -->
+
+
+
+
+
 
   <filter>
     <filter-name>springSecurityFilterChain</filter-name>
@@ -49,20 +63,18 @@
       <param-value>*</param-value>
     </init-param>
   </filter>
-
+<!--
   <filter>
     <filter-name>oauth2EndpointUrlFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
   </filter>
-  <filter-mapping>
-    <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/oauth2/authorize</url-pattern>
-  </filter-mapping>
+  -->
+  <!--
   <filter-mapping>
     <filter-name>oauth2EndpointUrlFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
+-->
   <filter-mapping>
     <filter-name>springSecurityFilterChain</filter-name>
     <url-pattern>/*</url-pattern>
@@ -103,7 +115,7 @@
       classpath:coin-api-properties-context.xml,
       classpath:coin-api-context.xml
       classpath:coin-api-oauth1-context.xml
-      classpath:coin-api-oauth2-context.xml
+      <!--classpath:coin-api-oauth2-context.xml-->
     </param-value>
   </context-param>
 </web-app>

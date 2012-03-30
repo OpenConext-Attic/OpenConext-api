@@ -44,9 +44,17 @@
     <custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER"/>
     <access-denied-handler ref="oauthAccessDeniedHandler"/>
   </http>
+  <!--
+  <security:http pattern="/oauth2/authorize" authentication-manager-ref="shibbolethAuthenticationManager"
+                 access-decision-manager-ref="accessDecisionManager"
+                 entry-point-ref="shibbolethEntryPoint"
+      >
+    <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
+    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+  </security:http>
 
 
-  <security:http authentication-manager-ref="shibbolethAuthenticationManager"
+  <security:http pattern="/social/rest/**" authentication-manager-ref="shibbolethAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
        entry-point-ref="shibbolethEntryPoint"
       >
@@ -54,12 +62,7 @@
     <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
   </security:http>
-
-
-  <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
-    <constructor-arg index="0" value="/Shibboleth.sso/Login" />
-    <property name="useForward" value="false" />
-  </bean>
+-->
 
 
   <bean id="shibbolethFilter" class="nl.surfnet.coin.api.shib.ShibbolethFilter">
@@ -114,7 +117,6 @@
   </bean>
   <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore"/>
 
-  <bean id="shibbolethAuthenticationManager" class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
 
   <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" xmlns="http://www.springframework.org/schema/beans">
     <constructor-arg>

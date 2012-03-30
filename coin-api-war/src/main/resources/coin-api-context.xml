@@ -29,6 +29,14 @@
   <bean id="clientDetailsService" class="nl.surfnet.coin.api.service.JanusClientDetailsService" />
   <bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
 
+
+  <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
+    <constructor-arg index="0" value="/Shibboleth.sso/Login" />
+    <property name="useForward" value="false" />
+  </bean>
+  <bean id="shibbolethAuthenticationManager" class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
+
+
   <bean id="log4jInitialization"
         class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
     <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>

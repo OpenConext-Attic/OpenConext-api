@@ -19,6 +19,15 @@ package nl.surfnet.coin.api.service;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth.common.OAuthException;
+import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
+import org.springframework.security.oauth.common.signature.SignatureSecret;
+import org.springframework.security.oauth.provider.BaseConsumerDetails;
+import org.springframework.security.oauth.provider.ConsumerDetails;
+import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -27,9 +36,9 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import nl.surfnet.coin.janus.Janus;
 
 /**
- * Client details service that uses Janus as backend.
+ * Client details service that uses Janus as backend. Implements both the oauth1 and oauth2 interface.
  */
-public class JanusClientDetailsService implements ClientDetailsService {
+public class JanusClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
 
   @Autowired
   private Janus janus;
@@ -44,5 +53,18 @@ public class JanusClientDetailsService implements ClientDetailsService {
     clientDetails.setClientId(clientId);
     clientDetails.setScope(Arrays.asList("read"));
     return clientDetails;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
+    final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
+    SignatureSecret secret = new SharedConsumerSecret(janus.getOauthSecretByClientId(consumerKey));
+    consumerDetails.setSignatureSecret(secret);
+    consumerDetails.setConsumerKey(consumerKey);
+    consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+    return consumerDetails;
   }
 }

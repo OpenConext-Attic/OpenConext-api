@@ -1,20 +1,45 @@
-<!--
-  Copyright 2012 SURFnet bv, The Netherlands
+<?xml version="1.0" encoding="UTF-8"?>
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:oauth="http://www.springframework.org/schema/security/oauth"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+              http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
-       http://www.apache.org/licenses/LICENSE-2.0
+  <http pattern="/oauth/**" authentication-manager-ref="clientAuthenticationManager" entry-point-ref="shibbolethEntryPoint">
+    <!-- do not filter the resource urls here; they will be filtered by oauth2 security context only -->
+    <!--<intercept-url pattern="/social/rest" access="ROLE_USER" />-->
+    <intercept-url pattern="/oauth/**" access="ROLE_USER" />
+    <custom-filter ref="oauth1shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
+  </http>
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  <beans:bean id="oauth1shibbolethFilter" class="nl.surfnet.coin.api.shib.ShibbolethFilter">
+    <beans:constructor-arg value="/oauth/authorize" />
+    <beans:property name="authenticationManager" ref="shibbolethAuthenticationManager" />
+  </beans:bean>
+  <oauth:provider consumer-details-service-ref="clientDetailsService"
+                  token-services-ref="tokenServices"
+                  request-token-url="/oauth/requestToken"
 
-</beans>
+                  authenticate-token-url="/oauth/authorize"
+                  token-id-param="oauth_token"
+
+                  authentication-failed-url="/oauth/confirm_access"
+                  access-token-url="/oauth/accessToken"
+                  require10a="false"/>
+
+
+  <authentication-manager alias="clientAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
+    <authentication-provider user-service-ref="clientDetailsUserDetailsService" />
+  </authentication-manager>
+
+  <beans:bean id="clientDetailsUserDetailsService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+    <beans:constructor-arg ref="clientDetailsService" /><!-- from generic context, this is the janus client -->
+  </beans:bean>
+
+
+  <oauth:token-services id="tokenServices" />
+
+</beans:beans>
