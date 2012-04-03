@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
+import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
@@ -28,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import nl.surfnet.coin.api.client.OpenConextApi10aThreeLegged;
-import nl.surfnet.coin.mock.MockHtppServer;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -45,10 +45,6 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
   private static final String OS_URL = "social/rest/people/" + USER_ID + "/@self";
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
-  private MockHtppServer server;
-
-  private Verifier authorizationCode;
-
   @Test
   public void noAccessWithoutToken() {
     getWebDriver().manage().deleteAllCookies();
@@ -58,7 +54,6 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     assertFalse("No valid content without an OAuth token", pageSource.contains("mnice@surfguest.nl"));
   }
 
-
   @Test
   public void test() {
     OAuthService service = new ServiceBuilder()
@@ -67,6 +62,7 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
         .apiSecret(OAUTH_SECRET)
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
         .callback("oob")
+        .signatureType(SignatureType.QueryString)
         .debug()
         .build();
     Token requestToken = service.getRequestToken();

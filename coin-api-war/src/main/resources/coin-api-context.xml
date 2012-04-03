@@ -25,10 +25,11 @@
   <mvc:annotation-driven/>
   <context:component-scan base-package="nl.surfnet.coin.api" />
 
-  <!-- Janus or rdbms -->
-  <bean id="clientDetailsService" class="nl.surfnet.coin.api.service.JanusClientDetailsService" />
+  <bean id="clientDetailsService" class="nl.surfnet.coin.api.service.MockClientDetailsService">
+    <property name="defaultSecret" value="mysecret" />
+  </bean>
+  <bean id="janusClientDetailsService" class="nl.surfnet.coin.api.service.JanusClientDetailsService" />
   <bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
-
 
   <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
     <constructor-arg index="0" value="/Shibboleth.sso/Login" />

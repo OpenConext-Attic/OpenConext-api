@@ -37,7 +37,7 @@
   </filter>
   <filter-mapping>
     <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/oauth/requestToken</url-pattern>
+    <url-pattern>/oauth/confirm_access</url-pattern>
   </filter-mapping>
   <!-- from selenium-web.xml ================================================ -->
 
