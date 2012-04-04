@@ -16,16 +16,13 @@
 
 package nl.surfnet.coin.api.shib;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class ShibbolethAuthenticationManager implements AuthenticationManager {
@@ -35,8 +32,8 @@ public class ShibbolethAuthenticationManager implements AuthenticationManager {
   /**
    * Very simple implementation: the actual authentication is done by Shibboleth.
    *
-   * @param authentication
-   * @return
+   * @param authentication the unauthenticated token
+   * @return authenticated token.
    * @throws AuthenticationException
    */
   @Override

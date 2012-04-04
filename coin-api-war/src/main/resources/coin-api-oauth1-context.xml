@@ -7,9 +7,10 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
-  <http pattern="/oauth/**" entry-point-ref="shibbolethEntryPoint">
-    <intercept-url pattern="/oauth/confirm_access" access="ROLE_USER" />
-    <custom-filter ref="oauth1shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
+  <http entry-point-ref="shibbolethEntryPoint">
+    <intercept-url pattern="/oauth/**" access="ROLE_USER" />
+    <custom-filter ref="requestHeaderAuthenticationFilter" position="PRE_AUTH_FILTER" />
+    <anonymous enabled="false" />
   </http>
 
   <oauth:provider consumer-details-service-ref="clientDetailsService"
@@ -17,19 +18,29 @@
                   request-token-url="/oauth/requestToken"
                   authenticate-token-url="/oauth/authorize"
                   token-id-param="oauth_token"
-
                   authentication-failed-url="/oauth/confirm_access"
                   access-token-url="/oauth/accessToken"
                   require10a="false"/>
 
 
-  <beans:bean id="oauth1shibbolethFilter" class="nl.surfnet.coin.api.shib.ShibbolethFilter">
-    <beans:constructor-arg value="/oauth/confirm_access" />
-    <beans:property name="authenticationManager" ref="shibbolethAuthenticationManager" />
+  <beans:bean id="preAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+  <beans:property name="preAuthenticatedUserDetailsService" ref="preAuthUserDetailsService" />
+  </beans:bean>
+  <beans:bean id="preAuthUserDetailsService" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService">
   </beans:bean>
 
-  <authentication-manager alias="clientAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
-    <authentication-provider user-service-ref="clientDetailsUserDetailsService" />
+  <beans:bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
+    <beans:property name="principalRequestHeader" value="REMOTE_USER" />
+    <beans:property name="exceptionIfHeaderMissing" value="false" />
+    <beans:property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" />
+    <beans:property name="authenticationManager" ref="authenticationManager" />
+    <beans:property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
+  </beans:bean>
+
+  <beans:bean id="authenticationDetailsSource" class="nl.surfnet.coin.api.oauth.ShibAuthenticationDetailsSource" />
+
+  <authentication-manager alias="authenticationManager">
+    <authentication-provider ref="preAuthProvider" />
   </authentication-manager>
 
   <beans:bean id="clientDetailsUserDetailsService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
