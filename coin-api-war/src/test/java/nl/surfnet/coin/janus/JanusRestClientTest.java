@@ -63,7 +63,7 @@ public class JanusRestClientTest {
     final HashMap<String, String> map = new HashMap<String, String>();
     map.put("coin:oauth:consumer_secret", "hissecret");
     when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(map);
-    String result = janusRestClient.getOauthSecretByClientId("foo");
+    String result = janusRestClient.getMetadataByClientId("foo").get(Janus.Metadata.OAUTH_CONSUMERSECRET.val());
     assertEquals("hissecret", result);
     verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
     assertTrue("Query string should contain correct spentityid (the client id)", captor.getValue().getQuery().contains("entityid=foo"));

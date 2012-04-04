@@ -23,20 +23,18 @@ import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.surfnet.coin.api.client.OpenConextApi10aThreeLegged;
 import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class Oauth1aTwoLeggedTestSelenium {
+public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
 
-  private Logger LOG = LoggerFactory.getLogger(Oauth1aTwoLeggedTestSelenium.class);
+  private Logger LOG = LoggerFactory.getLogger(Oauth1aTwoLeggedTestIntegration.class);
 
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
@@ -45,11 +43,20 @@ public class Oauth1aTwoLeggedTestSelenium {
   private static final String OS_URL = "social/rest/people/" + USER_ID + "/@self";
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
-  private String getApiBaseUrl() {
-    return "http://localhost:8095/";
-  }
+
   @Test
-  public void test() {
+  public void withoutToken() {
+
+    // Use a request that is not signed.
+    OAuthRequest req = new OAuthRequest(Verb.GET, URL_UNDER_TEST + OS_URL);
+    Response response = req.send();
+    assertEquals("Without token, the server response should be 401", 401, response.getCode());
+    final String bodyText = response.getBody();
+    LOG.debug("Response body: {}", bodyText);
+  }
+
+  @Test
+  public void withToken() {
     OAuthService service = new ServiceBuilder()
         .provider(new OpenConextApi10aTwoLegged())
         .apiKey(OAUTH_KEY)
@@ -60,7 +67,7 @@ public class Oauth1aTwoLeggedTestSelenium {
         .debug()
         .build();
 
-    OAuthRequest req = new OAuthRequest(Verb.GET, getApiBaseUrl() + OS_URL);
+    OAuthRequest req = new OAuthRequest(Verb.GET, URL_UNDER_TEST + OS_URL);
 service.signRequest(new Token("", ""), req);
     Response response = req.send();
     final String bodyText = response.getBody();

@@ -16,16 +16,34 @@
 
 package nl.surfnet.coin.janus;
 
+import java.util.Map;
+
 /**
  * Interface to Janus.
  */
 public interface Janus {
 
+
+
+  public enum Metadata {
+
+    OAUTH_SECRET("coin:oauth:secret"),
+    OAUTH_CONSUMERSECRET("coin:oauth:consumer_secret");
+
+    private String val;
+
+    public String val() {
+      return val;
+    }
+
+    Metadata(String val) {
+      this.val = val;
+    }
+  }
   /**
-   * Get a client's oauth secret by his client_id.
+   * Get a client's metadata by his client_id.
    * @param clientId the client_id
    * @return the secret
    */
-  String getOauthSecretByClientId(String clientId);
-
+  Map<String, String> getMetadataByClientId(String clientId);
 }

@@ -8,7 +8,7 @@
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
   <http entry-point-ref="shibbolethEntryPoint">
-    <intercept-url pattern="/oauth/**" access="ROLE_USER" />
+    <intercept-url pattern="/**" access="ROLE_USER" />
     <custom-filter ref="requestHeaderAuthenticationFilter" position="PRE_AUTH_FILTER" />
     <anonymous enabled="false" />
   </http>
@@ -46,16 +46,6 @@
   <beans:bean id="clientDetailsUserDetailsService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
     <beans:constructor-arg ref="clientDetailsService" /><!-- from generic context, this is the janus client -->
   </beans:bean>
-
-  <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" xmlns="http://www.springframework.org/schema/beans">
-    <constructor-arg>
-      <list>
-        <bean class="org.springframework.security.access.vote.RoleVoter" />
-        <bean class="org.springframework.security.access.vote.AuthenticatedVoter" />
-      </list>
-    </constructor-arg>
-  </bean>
-
 
   <oauth:token-services id="tokenServices"  />
 

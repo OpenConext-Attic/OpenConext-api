@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,6 +41,7 @@ import nl.surfnet.coin.janus.Janus;
  */
 public class JanusClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
 
+
   @Autowired
   private Janus janus;
 
@@ -49,11 +51,12 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
     final BaseClientDetails clientDetails = new BaseClientDetails();
-    clientDetails.setClientSecret(janus.getOauthSecretByClientId(clientId));
+    clientDetails.setClientSecret(janus.getMetadataByClientId(clientId).get(Janus.Metadata.OAUTH_CONSUMERSECRET.val()));
     clientDetails.setClientId(clientId);
     clientDetails.setScope(Arrays.asList("read"));
     return clientDetails;
   }
+
 
   /**
    * {@inheritDoc}
@@ -61,10 +64,25 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
     final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
-    SignatureSecret secret = new SharedConsumerSecret(janus.getOauthSecretByClientId(consumerKey));
-    consumerDetails.setSignatureSecret(secret);
+    final Map<String, String> metadata = janus.getMetadataByClientId(consumerKey);
     consumerDetails.setConsumerKey(consumerKey);
-    consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+
+    SignatureSecret secret;
+    /*
+      Here we always use the Janus.Metadata.OAUTH_SECRET as the client's secret in case the consumer has two legged access.
+      However, if a two-legged allowed client performs a 3 legged request, this will fail (as he will sign with his Janus.Metadata.OAUTH_SECRET secret)
+      FIXME: set secret based on type of issued request
+     */
+    if (metadata.get(Janus.Metadata.OAUTH_SECRET.val()) != null) {
+      // consumer has a 'secret' attribute; therefore allowed to do two legged OAuth 1.0
+      consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+      consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
+      secret = new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
+    } else {
+      consumerDetails.setRequiredToObtainAuthenticatedToken(true);
+      secret = new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_CONSUMERSECRET.val()));
+    }
+    consumerDetails.setSignatureSecret(secret);
     return consumerDetails;
   }
 }

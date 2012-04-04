@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
 import org.springframework.security.oauth.common.signature.SignatureSecret;
@@ -55,7 +57,10 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
     SignatureSecret secret = new SharedConsumerSecret(defaultSecret);
     consumerDetails.setConsumerKey(consumerKey);
+
+    // Can do 2 legged
     consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+    consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
     consumerDetails.setSignatureSecret(new SharedConsumerSecret(defaultSecret));
     LOG.debug("Got request loadClientByClientId({}), will return: {}", consumerKey, consumerDetails);
     return consumerDetails;
