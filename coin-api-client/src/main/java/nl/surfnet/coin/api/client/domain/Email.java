@@ -21,6 +21,20 @@ package nl.surfnet.coin.api.client.domain;
  *
  */
 public class Email {
+public Email() {
+    super();
+  }
+
+public Email(String value, Type type) {
+    super();
+    this.value = value;
+    this.type = type;
+  }
+
+public Email(String value) {
+  this(value, Type.email);
+}
+
 private String value;
   private Type type;
 

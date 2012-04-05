@@ -16,36 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package nl.surfnet.coin.api.client.domain;
+package nl.surfnet.coin.eb;
 
 /**
- * 
+ * Abstraction for EngineBlock including the datbase contents
  *
  */
-public class PhoneNumber {
-  public PhoneNumber() {
-    super();
-  }
+public interface EngineBlock {
 
-  public PhoneNumber(String value) {
-    super();
-    this.value = value;
-  }
-
-  private String value;
-
+  
   /**
-   * @return the value
+   * The identifier can either be the urn
+   * (urn:collab:person:nl.myuniversity:s123456) or the persistent identifier (hashed urn specific for the SP). 
+   * 
+   * @param identifier the unique identifier (urn or persistent)
+   * @return the urn identifier
    */
-  public String getValue() {
-    return value;
-  }
-
-  /**
-   * @param value
-   *          the value to set
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
+  String getPersistentNameIdentifier(String identifier) ;
+  
 }

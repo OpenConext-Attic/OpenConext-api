@@ -24,6 +24,21 @@ public class Account {
   private String username;
   private String userId;
 
+  public Account() {
+    super();
+
+  }
+
+  public Account(String username) {
+    this(username, username);
+  }
+
+  public Account(String username, String userId) {
+    super();
+    this.username = username;
+    this.userId = userId;
+  }
+
   /**
    * @return the username
    */

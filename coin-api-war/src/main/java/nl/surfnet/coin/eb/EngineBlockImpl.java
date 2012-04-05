@@ -16,36 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package nl.surfnet.coin.api.client.domain;
+package nl.surfnet.coin.eb;
 
 /**
  * 
  *
  */
-public class PhoneNumber {
-  public PhoneNumber() {
-    super();
-  }
+public class EngineBlockImpl implements EngineBlock {
 
-  public PhoneNumber(String value) {
-    super();
-    this.value = value;
-  }
-
-  private String value;
-
-  /**
-   * @return the value
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.eb.EngineBlock#getPersistentNameIdentifier(java.lang.String)
    */
-  public String getValue() {
-    return value;
+  @Override
+  public String getPersistentNameIdentifier(String identifier) {
+    return identifier;
   }
 
-  /**
-   * @param value
-   *          the value to set
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
 }

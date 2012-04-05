@@ -21,12 +21,33 @@ package nl.surfnet.coin.ldap;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+
+import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.directory.server.core.CoreSession;
+import org.apache.directory.server.protocol.shared.store.LdifFileLoader;
+import org.apache.directory.server.schema.bootstrap.ApachemetaSyntaxProducer;
+import org.apache.directory.shared.ldap.schema.AbstractAttributeType;
+import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.schema.Syntax;
+import org.easymock.EasyMock;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.ldap.core.LdapOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.security.ldap.server.ApacheDSContainer;
@@ -38,72 +59,22 @@ import org.springframework.util.CollectionUtils;
  */
 public class LdapClientImplTest {
 
-  private static LdapClientImpl ldapClient;
-  private static ApacheDSContainer ldapServer;
-
-  @BeforeClass
-  public static void startEmbeddedLdap() throws Exception {
-    deleteWorkingDirectory();
-
-    LdapClientImplTest.ldapServer = new ApacheDSContainer(
-        "dc=surfconext,dc=nl", "classpath:ldif/person.ldif");
-    ldapServer.setPort(33389);
-    ldapServer.afterPropertiesSet();
-    LdapContextSource context = new LdapContextSource();
-    context.setUrl("ldap://localhost:33389");
-    context.setBase("dc=surfconext,dc=nl");
-    context.setUserDn("cn=engine,dc=surfconext,dc=nl");
-    context.setPassword("secret");
-    context.setAnonymousReadOnly(true);
-    context.afterPropertiesSet();
-
-    LdapTemplate ldapTemplate = new LdapTemplate(context);
-    LdapClientImplTest.ldapClient = new LdapClientImpl();
-    ldapClient.setLdapTemplate(ldapTemplate);
-  }
-
-  private static void deleteWorkingDirectory() {
-    String loc = System.getProperty("java.io.tmpdir")
-        + "apacheds-spring-security";
-    File file = new File(loc);
-    if (file.isDirectory()) {
-      String[] children = file.list();
-      if (children.length < 1) {
-        file.delete();
-      } else {
-        for (String child : children) {
-          deleteDir(new File(file, child));
-        }
-      }
-    }
-  }
-
-  private static boolean deleteDir(File dir) {
-    if (dir.isDirectory()) {
-      String[] children = dir.list();
-      for (String child : children) {
-        boolean success = deleteDir(new File(dir, child));
-        if (!success) {
-          return false;
-        }
-      }
-    }
-
-    return dir.delete();
-  }
-
-  @AfterClass
-  public static void stopEmbeddedLdap() throws Exception {
-    ldapServer.destroy();
-  }
-
   /**
    * Test method for
    * {@link nl.surfnet.coin.ldap.LdapClientImpl#findPerson(java.lang.String)}.
+   * 
+   * @throws InvocationTargetException
+   * @throws IllegalAccessException
    */
   @Test
-  public void testFindPerson() {
-    Person person = ldapClient.findPerson("");
+  public void testFindPerson() throws IllegalAccessException,
+      InvocationTargetException {
+    Person person = new Person();
+    BeanUtils.setProperty(person, "name", new Name());
+    BeanUtils.setProperty(person, "name.formatted", "formatted");
+    // Person person = ldapClient.findPerson("");
+    // assertEquals("Test User", person.getNickname());
+    assertEquals(person.getName().getFormatted(), "formatted");
   }
 
 }

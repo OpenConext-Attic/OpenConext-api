@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,6 +36,41 @@ public class Person {
   private Set<Organization> organizations;
   private Set<PhoneNumber> phoneNumbers;
   private String error;
+
+  public void addEmail(Email email) {
+    if (emails == null) {
+      emails = new HashSet<Email>();
+    }
+    emails.add(email);
+  }
+
+  public void addTag(String tag) {
+    if (tags == null) {
+      tags = new HashSet<String>();
+    }
+    tags.add(tag);
+  }
+
+  public void addAccount(Account account) {
+    if (accounts == null) {
+      accounts = new HashSet<Account>();
+    }
+    accounts.add(account);
+  }
+
+  public void addOrganization(Organization organization) {
+    if (organizations == null) {
+      organizations = new HashSet<Organization>();
+    }
+    organizations.add(organization);
+  }
+
+  public void addPhoneNumber(PhoneNumber phoneNumber) {
+    if (phoneNumbers == null) {
+      phoneNumbers = new HashSet<PhoneNumber>();
+    }
+    phoneNumbers.add(phoneNumber);
+  }
 
   /**
    * @return the nickName
@@ -179,7 +215,8 @@ public class Person {
   }
 
   /**
-   * @param phoneNumbers the phoneNumbers to set
+   * @param phoneNumbers
+   *          the phoneNumbers to set
    */
   public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
@@ -193,7 +230,8 @@ public class Person {
   }
 
   /**
-   * @param error the error to set
+   * @param error
+   *          the error to set
    */
   public void setError(String error) {
     this.error = error;
