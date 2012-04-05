@@ -31,7 +31,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 import org.springframework.security.oauth.provider.token.RandomValueProviderTokenServices;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
+/**
+ * Token store for Oauth1 tokens.
+ *
+ */
 @Component
 public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServices implements InitializingBean {
 
@@ -39,8 +44,23 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   private JdbcTemplate jdbcTemplate;
 
   private final static String selectTokenFromAuthenticationSql = "select * from oauth1_tokens where token like ?";
-  private String insertAccessTokenSql = "";
+  private String insertAccessTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?)";
+  private String deleteTokenSql = "delete from oauth1_tokens where token like ?";
 
+
+  public static class OAuthProviderTokenRowMapper implements RowMapper<OAuthProviderTokenImpl> {
+    public OAuthProviderTokenImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
+      OAuthProviderTokenImpl token = new OAuthProviderTokenImpl();
+      token.setValue(rs.getString("token"));
+      token.setCallbackUrl(rs.getString("callbackUrl"));
+      token.setVerifier(rs.getString("verifier"));
+      token.setSecret(rs.getString("secret"));
+      token.setConsumerKey(rs.getString("consumerKey"));
+      token.setAccessToken(rs.getBoolean("isAccessToken"));
+      token.setTimestamp(rs.getLong("tokenTimestamp"));
+      return token;
+    }
+  }
 
   @Autowired
   private DataSource dataSource;
@@ -56,15 +76,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   protected OAuthProviderTokenImpl readToken(String authentication) {
     OAuthProviderTokenImpl token = null;
     try {
-      token = jdbcTemplate.queryForObject(selectTokenFromAuthenticationSql,
-          new RowMapper<OAuthProviderTokenImpl>() {
-            public OAuthProviderTokenImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
-              OAuthProviderTokenImpl token = new OAuthProviderTokenImpl();
-              token.setCallbackUrl(rs.getString(1));
-              // TODO: other columns
-              return token;
-            }
-          }, authentication);
+      token = jdbcTemplate.queryForObject(selectTokenFromAuthenticationSql, new OAuthProviderTokenRowMapper(), authentication);
     } catch (EmptyResultDataAccessException e) {
       if (LOG.isInfoEnabled()) {
         LOG.debug("Failed to find token for input '{}'", authentication);
@@ -75,18 +87,25 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   }
 
   @Override
-  protected void storeToken(String tokenValue, OAuthProviderTokenImpl token) {
-//    jdbcTemplate.update(
-//        insertAccessTokenSql,
-//        new Object[] { token.getValue(), new SqlLobValue(SerializationUtils.serialize(token)),
-//            tokenValue,
-//            new SqlLobValue(SerializationUtils.serialize(authentication)), refreshToken }, new int[] {
-//        Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.BLOB, Types.VARCHAR });
+  protected void storeToken(String value, OAuthProviderTokenImpl token) {
+    Assert.notNull(token, "Token cannot be null");
+    Assert.notNull(value, "token value cannot be null");
+    jdbcTemplate.update(insertAccessTokenSql, new Object[] {
+        value,
+        token.getCallbackUrl(),
+        token.getVerifier(),
+        token.getSecret(),
+        token.getConsumerKey(),
+        token.isAccessToken(),
+        token.getTimestamp()
+    });
   }
 
   @Override
   protected OAuthProviderTokenImpl removeToken(String tokenValue) {
-    return null;
+    final OAuthProviderTokenImpl token = readToken(tokenValue);
+    jdbcTemplate.update(deleteTokenSql, tokenValue);
+    return token;
   }
 
   public void setDataSource(DataSource dataSource) {

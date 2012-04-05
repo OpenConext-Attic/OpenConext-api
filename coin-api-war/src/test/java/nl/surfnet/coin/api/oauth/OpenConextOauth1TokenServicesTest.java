@@ -16,22 +16,27 @@
 
 package nl.surfnet.coin.api.oauth;
 
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class OpenConextOauth1TokenServicesTest {
 
 
   private OpenConextOauth1TokenServices s;
+  private JdbcTemplate jdbcTemplate;
 
   @Before
   public void initWithDb() throws Exception {
@@ -41,10 +46,15 @@ public class OpenConextOauth1TokenServicesTest {
     dataSource.setUrl("jdbc:hsqldb:mem:coin_api");
     dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
 
+    jdbcTemplate = new JdbcTemplate(dataSource);
+    jdbcTemplate.execute(FileUtils.readFileToString(new ClassPathResource("coin-api-test-db.sql").getFile()));
+
     s = new OpenConextOauth1TokenServices();
+
     s.setDataSource(dataSource);
-    new JdbcTemplate(dataSource).execute(FileUtils.readFileToString(new ClassPathResource("coin-api-test-db.sql").getFile()));
     s.afterPropertiesSet();
+
+
   }
 
   @Test
@@ -55,5 +65,56 @@ public class OpenConextOauth1TokenServicesTest {
   @Test
   public void readTokenEmptyInput() {
     assertNull(s.readToken(""));
+  }
+
+  @Test
+  public void storeNullToken() {
+    try {
+      s.storeToken(null, null);
+      fail();
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      s.storeToken("", null);
+      fail();
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+        s.storeToken(null, new OAuthProviderTokenImpl());
+      fail();
+    } catch (IllegalArgumentException e) {
+    }
+  }
+
+  @Test
+  public void storeTokenHappy() {
+
+    s.storeToken("footoken", buildToken());
+
+    assertEquals("One token should be inserted",
+        1, jdbcTemplate.queryForInt("select count(*) from oauth1_tokens"));
+
+    assertEquals("token id should match inserted one",
+        "footoken", jdbcTemplate.queryForObject("select * from oauth1_tokens where token = ?",
+        new OpenConextOauth1TokenServices.OAuthProviderTokenRowMapper(), "footoken").getValue());
+  }
+
+  @Test
+  public void removeTokenHappy() {
+    s.storeToken("footoken", buildToken());
+    s.removeToken("footoken");
+
+    assertEquals("No tokens should be in store after removing the only one.",
+        0, jdbcTemplate.queryForInt("select count(*) from oauth1_tokens"));
+  }
+
+  private OAuthProviderTokenImpl buildToken() {
+    final OAuthProviderTokenImpl token = new OAuthProviderTokenImpl();
+    token.setValue("value");
+    token.setVerifier("verifier");
+    token.setSecret("ssh");
+    token.setCallbackUrl("callbackurl");
+    token.setConsumerKey("consumerkey");
+    return token;
   }
 }
