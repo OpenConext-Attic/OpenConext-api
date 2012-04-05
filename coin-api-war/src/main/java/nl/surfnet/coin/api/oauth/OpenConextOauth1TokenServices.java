@@ -18,33 +18,37 @@ package nl.surfnet.coin.api.oauth;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.SqlLobValue;
-import org.springframework.security.oauth.provider.token.OAuthAccessProviderToken;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 import org.springframework.security.oauth.provider.token.RandomValueProviderTokenServices;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.util.SerializationUtils;
-import org.springframework.util.Assert;
+import org.springframework.stereotype.Component;
 
-public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServices {
+@Component
+public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServices implements InitializingBean {
 
   Logger LOG = LoggerFactory.getLogger(OpenConextOauth1TokenServices.class);
-  private final JdbcTemplate jdbcTemplate;
+  private JdbcTemplate jdbcTemplate;
 
-  private String selectTokenFromAuthenticationSql;
-  private String insertAccessTokenSql;
+  private final static String selectTokenFromAuthenticationSql = "select * from oauth1_tokens where token like ?";
+  private String insertAccessTokenSql = "";
 
-  public OpenConextOauth1TokenServices(DataSource dataSource) {
-    Assert.notNull(dataSource, "DataSource required");
+
+  @Autowired
+  private DataSource dataSource;
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    super.afterPropertiesSet();
+
     this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
 
@@ -84,4 +88,9 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   protected OAuthProviderTokenImpl removeToken(String tokenValue) {
     return null;
   }
+
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
 }

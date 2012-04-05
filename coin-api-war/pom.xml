@@ -192,10 +192,36 @@
         <artifactId>commons-collections</artifactId>
         <version>3.2.1</version>
       </dependency>
+      <dependency>
+        <groupId>com.googlecode.flyway</groupId>
+        <artifactId>flyway-core</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>commons-dbcp</groupId>
+        <artifactId>commons-dbcp</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+      </dependency>
     </dependencies>
-
     <build>
-        <plugins>
+      <testResources>
+        <testResource>
+          <directory>src/test/resources</directory>
+          <filtering>true</filtering>
+        </testResource>
+      </testResources>
+      <plugins>
+          <plugin>
+            <groupId>com.googlecode.flyway</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <configuration>
+              <user>foo</user>
+              <password>bar</password>
+              <url>jdbc:hsqldb:file:${project.build.directory}/db/coin_api;shutdown=true</url>
+            </configuration>
+          </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
