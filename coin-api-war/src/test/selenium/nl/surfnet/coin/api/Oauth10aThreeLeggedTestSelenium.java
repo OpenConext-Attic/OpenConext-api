@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -75,6 +76,9 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
 
     // direct user to verification url.
     getWebDriver().get(authUrl);
+    LOG.debug("Confirm-URL: {}", getWebDriver().getCurrentUrl());
+    getWebDriver().findElement(By.name("authorize")).click();
+    LOG.debug("after-Confirm-URL: {}", getWebDriver().getCurrentUrl());
 
     final String redirectUrl = getWebDriver().getCurrentUrl();
     String verifier = redirectUrl.substring(redirectUrl.indexOf("oauth_verifier=") + 15);
