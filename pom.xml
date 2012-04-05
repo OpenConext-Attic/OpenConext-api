@@ -60,6 +60,7 @@
 
   <modules>
     <module>coin-api-client</module>
+    <module>coin-api-external-groups</module>
     <module>coin-api-war</module>
     <module>coin-api-dist</module>
   </modules>
