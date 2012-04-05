@@ -22,6 +22,7 @@ package nl.surfnet.coin.api.client;
  */
 public class OAuthEnvironment {
 
+  public static final String OUT_OF_BOUND_CALLBACK = "oob";
   private String oauthKey;
   private String oauthSecret;
   private String endpointBaseUrl;

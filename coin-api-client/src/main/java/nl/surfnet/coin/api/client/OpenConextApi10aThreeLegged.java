@@ -18,6 +18,7 @@ package nl.surfnet.coin.api.client;
 
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
+import org.scribe.model.Verb;
 
 /**
  * Thrre legged Api. 
@@ -68,6 +69,8 @@ public class OpenConextApi10aThreeLegged extends DefaultApi10a {
     return baseUrl + "oauth/authorize?oauth_token=" + requestToken.getToken();
   }
 
-
-
+  @Override
+  public Verb getRequestTokenVerb() {
+    return Verb.GET;
+  }
 }

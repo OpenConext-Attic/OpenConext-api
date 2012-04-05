@@ -30,7 +30,8 @@
 		<priority value="WARN" />
 	</category>
 	<category name="org.springframework">
-		<priority value="WARN" />
+		<priority value="DEBUG
+		" />
 	</category>
     <category name="org.springframework.security">
         <priority value="DEBUG" />

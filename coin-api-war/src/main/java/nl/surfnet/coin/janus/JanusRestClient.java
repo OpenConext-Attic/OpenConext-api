@@ -39,7 +39,7 @@ public class JanusRestClient implements Janus {
 
   private static  Logger LOG = LoggerFactory.getLogger(JanusRestClient.class);
 
-  private static final String KEY_CONSUMER_SECRET = "coin:oauth:consumer_secret";
+  private static final String METADATA_TO_FETCH = "coin:oauth:consumer_secret,coin:oauth:secret";
 
   @Autowired
   private RestTemplate restTemplate;
@@ -57,10 +57,10 @@ public class JanusRestClient implements Janus {
    * {@inheritDoc}
    */
   @Override
-  public String getOauthSecretByClientId(String clientId) {
+  public Map <String,String> getMetadataByClientId(String clientId) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", clientId);
-    parameters.put("keys", KEY_CONSUMER_SECRET);
+    parameters.put("keys", METADATA_TO_FETCH);
 
     URI signedUri;
     try {
@@ -76,7 +76,7 @@ public class JanusRestClient implements Janus {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
 
-      return restResponse.get(KEY_CONSUMER_SECRET);
+      return restResponse;
 
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);

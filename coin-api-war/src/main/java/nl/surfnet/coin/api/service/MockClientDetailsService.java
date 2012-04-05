@@ -17,11 +17,10 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
@@ -34,55 +33,41 @@ import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
-import nl.surfnet.coin.janus.Janus;
-
 /**
- * Client details service that uses Janus as backend. Implements both the oauth1 and oauth2 interface.
+ * Mock details service. Replacement for JanusClientDetailsService.
  */
-public class JanusClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
+public class MockClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
-  @Autowired
-  private Janus janus;
+  private String defaultSecret = "secret";
 
-  /**
-   * {@InheritDoc}
-   */
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
-    final BaseClientDetails clientDetails = new BaseClientDetails();
-    clientDetails.setClientSecret(janus.getMetadataByClientId(clientId).get(Janus.Metadata.OAUTH_CONSUMERSECRET.val()));
-    clientDetails.setClientId(clientId);
-    clientDetails.setScope(Arrays.asList("read"));
-    return clientDetails;
+    final BaseClientDetails details = new BaseClientDetails();
+    details.setClientId(clientId);
+    details.setScope(Arrays.asList("read"));
+    details.setClientSecret(defaultSecret);
+    LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
+    return details;
   }
 
-
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
     final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
-    final Map<String, String> metadata = janus.getMetadataByClientId(consumerKey);
+    SignatureSecret secret = new SharedConsumerSecret(defaultSecret);
     consumerDetails.setConsumerKey(consumerKey);
 
-    SignatureSecret secret;
-    /*
-      Here we always use the Janus.Metadata.OAUTH_SECRET as the client's secret in case the consumer has two legged access.
-      However, if a two-legged allowed client performs a 3 legged request, this will fail (as he will sign with his Janus.Metadata.OAUTH_SECRET secret)
-      FIXME: set secret based on type of issued request
-     */
-    if (metadata.get(Janus.Metadata.OAUTH_SECRET.val()) != null) {
-      // consumer has a 'secret' attribute; therefore allowed to do two legged OAuth 1.0
-      consumerDetails.setRequiredToObtainAuthenticatedToken(false);
-      consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
-      secret = new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
-    } else {
-      consumerDetails.setRequiredToObtainAuthenticatedToken(true);
-      secret = new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_CONSUMERSECRET.val()));
-    }
-    consumerDetails.setSignatureSecret(secret);
+    // Can do 2 legged
+    consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+    consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
+    consumerDetails.setSignatureSecret(new SharedConsumerSecret(defaultSecret));
+    LOG.debug("Got request loadClientByClientId({}), will return: {}", consumerKey, consumerDetails);
     return consumerDetails;
+
+  }
+
+  public void setDefaultSecret(String defaultSecret) {
+    this.defaultSecret = defaultSecret;
   }
 }

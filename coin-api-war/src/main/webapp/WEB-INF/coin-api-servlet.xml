@@ -23,7 +23,17 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.1.xsd
     ">
-    <context:annotation-config/>
+
+<!--
+
+  <bean id="oauth1accessConfirmationController" class="nl.surfnet.coin.api.controller.Oauth1AccessConfirmationController">
+    <property name="tokenServices" ref="tokenServices" />
+    <property name="consumerDetailsService" ref="clientDetailsService" />
+  </bean>
+-->
+
+
+  <context:annotation-config/>
     <context:component-scan base-package="nl.surfnet.coin.api"/>
     <context:property-placeholder location="classpath:coin-api.properties"/>
 
