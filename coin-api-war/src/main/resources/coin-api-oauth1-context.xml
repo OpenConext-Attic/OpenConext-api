@@ -14,7 +14,7 @@
   </http>
 
   <oauth:provider consumer-details-service-ref="clientDetailsService"
-                  token-services-ref="tokenServices"
+                  token-services-ref="oauth1TokenServices"
                   request-token-url="/oauth/requestToken"
                   authenticate-token-url="/oauth/authorize"
                   token-id-param="oauth_token"
@@ -46,7 +46,5 @@
   <beans:bean id="clientDetailsUserDetailsService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
     <beans:constructor-arg ref="clientDetailsService" /><!-- from generic context, this is the janus client -->
   </beans:bean>
-
-  <oauth:token-services id="tokenServices"  />
 
 </beans:beans>

@@ -37,7 +37,7 @@ import org.springframework.util.Assert;
  * Token store for Oauth1 tokens.
  *
  */
-@Component
+@Component(value = "oauth1TokenServices")
 public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServices implements InitializingBean {
 
   Logger LOG = LoggerFactory.getLogger(OpenConextOauth1TokenServices.class);
