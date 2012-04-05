@@ -234,7 +234,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-ldap</artifactId>
-      <version>${spring.version}</version>
+      <version>3.1.0.RELEASE</version>
       <scope>test</scope>
     </dependency>
 
@@ -310,8 +310,8 @@
               <maxIdleTime>60000</maxIdleTime>
             </connector>
           </connectors>
-          <stopKey />
-          <stopPort />
+          <stopKey>apistop</stopKey>
+          <stopPort>9095</stopPort>
         </configuration>
       </plugin>
       <plugin>
