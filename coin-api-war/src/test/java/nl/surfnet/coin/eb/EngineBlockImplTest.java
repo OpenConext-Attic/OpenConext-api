@@ -53,16 +53,16 @@ public class EngineBlockImplTest {
     EngineBlockImplTest.template = new JdbcTemplate(dataSource);
     EngineBlockImplTest.engineBlock = new EngineBlockImpl();
     engineBlock.setEbJdbcTemplate(template);
-      // TODO find elegant solution for multiple statements
-      final String sql = IOUtils.toString(new ClassPathResource("sql/test-data-eb.sql").getInputStream());
-      final String[] split = sql.split(";");
+      // TODO find elegant solution for multiple statement
+    final String sql = IOUtils.toString(new ClassPathResource("sql/test-data-eb.sql").getInputStream());
+    final String[] split = sql.split(";");
       for (String s : split) {
           if (!StringUtils.hasText(s)) {
               continue;
           }
           template.execute(s + ';');
       }
-//      template.execute(sql);
+    //template.execute(sql);
 
   }
 

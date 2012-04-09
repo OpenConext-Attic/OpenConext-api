@@ -18,11 +18,7 @@
  */
 package nl.surfnet.coin.ldap;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -35,7 +31,6 @@ import nl.surfnet.coin.api.client.domain.Organization;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.eb.EngineBlock;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
@@ -125,6 +120,9 @@ public class LdapClientImpl implements LdapClient {
     return person;
   }
 
+  /*
+   * Save get of an Attribute value, may return null
+   */
   private String getAttribute(String attrID, Attributes attributes) {
     Attribute attribute = attributes.get(attrID);
     try {
