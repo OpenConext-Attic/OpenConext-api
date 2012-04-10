@@ -495,7 +495,7 @@
             <configuration>
               <scanIntervalSeconds>0</scanIntervalSeconds>
               <webAppConfig>
-                <contextPath>/${project.name}</contextPath>
+                <contextPath>/</contextPath>
                 <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
               </webAppConfig>
               <connectors>
