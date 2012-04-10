@@ -18,44 +18,18 @@
  */
 package nl.surfnet.coin.ldap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
-
-import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.eb.EngineBlockImpl;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.directory.server.core.CoreSession;
-import org.apache.directory.server.protocol.shared.store.LdifFileLoader;
-import org.apache.directory.server.schema.bootstrap.ApachemetaSyntaxProducer;
-import org.apache.directory.shared.ldap.schema.AbstractAttributeType;
-import org.apache.directory.shared.ldap.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.MatchingRule;
-import org.apache.directory.shared.ldap.schema.Syntax;
-import org.easymock.EasyMock;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.NameClassPairCallbackHandler;
-import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.security.ldap.server.ApacheDSContainer;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Test for {@link LdapClientImpl} which uses an in-memory ldap base

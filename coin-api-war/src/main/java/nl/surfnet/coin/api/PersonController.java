@@ -38,7 +38,7 @@ public class PersonController {
     private static final String GROUP_ID_SELF = "@self";
 
     private MockService mockService = new MockService();
-///social/rest/people/foo/@self
+
     @RequestMapping(value = "/social/rest/people/{userId}/{groupId}")
     @ResponseBody
     public PersonEntry getPerson(

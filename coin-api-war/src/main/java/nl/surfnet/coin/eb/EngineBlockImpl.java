@@ -50,12 +50,10 @@ public class EngineBlockImpl implements EngineBlock {
   @Override
   public String getUserUUID(String identifier) {
     Assert.hasText(identifier, "Not allowed to provide a null or empty identifier");
-    List<String> results = ebJdbcTemplate.query("SELECT user_uuid, persistent_id FROM saml_persistent_id WHERE persistent_id = 'persistent'",
-   /*   new Object[] { identifier },*/ new RowMapper<String>() {
+    List<String> results = ebJdbcTemplate.query("SELECT user_uuid FROM saml_persistent_id WHERE persistent_id =  ?",
+     new String[] { identifier }, new RowMapper<String>() {
           @Override
           public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-            String string = rs.getString(1);
-            String string2 = rs.getString(2);
             return rs.getString(1);
           }
         });
