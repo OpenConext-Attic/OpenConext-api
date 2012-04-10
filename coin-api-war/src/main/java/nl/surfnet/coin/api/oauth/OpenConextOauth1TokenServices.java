@@ -44,9 +44,8 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   private JdbcTemplate jdbcTemplate;
 
   private final static String selectTokenFromAuthenticationSql = "select * from oauth1_tokens where token like ?";
-  private String insertAccessTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?)";
-  private String deleteTokenSql = "delete from oauth1_tokens where token like ?";
-
+  private final static String insertAccessTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?)";
+  private final static String deleteTokenSql = "delete from oauth1_tokens where token like ?";
 
   public static class OAuthProviderTokenRowMapper implements RowMapper<OAuthProviderTokenImpl> {
     public OAuthProviderTokenImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -74,7 +73,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
 
   @Override
   protected OAuthProviderTokenImpl readToken(String authentication) {
-    OAuthProviderTokenImpl token = null;
+    OAuthProviderTokenImpl token;
     try {
       token = jdbcTemplate.queryForObject(selectTokenFromAuthenticationSql, new OAuthProviderTokenRowMapper(), authentication);
     } catch (EmptyResultDataAccessException e) {
@@ -90,15 +89,13 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   protected void storeToken(String value, OAuthProviderTokenImpl token) {
     Assert.notNull(token, "Token cannot be null");
     Assert.notNull(value, "token value cannot be null");
-    jdbcTemplate.update(insertAccessTokenSql, new Object[] {
-        value,
+    jdbcTemplate.update(insertAccessTokenSql, value,
         token.getCallbackUrl(),
         token.getVerifier(),
         token.getSecret(),
         token.getConsumerKey(),
         token.isAccessToken(),
-        token.getTimestamp()
-    });
+        token.getTimestamp());
   }
 
   @Override
