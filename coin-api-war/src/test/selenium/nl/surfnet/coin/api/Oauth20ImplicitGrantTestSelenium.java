@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api;
 
 import java.io.IOException;
+import java.net.URI;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,46 +29,33 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
+import nl.surfnet.coin.api.client.OpenConextApi20Implicit;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Test Person related queries with selenium
  */
-public class PersonTestSelenium extends SeleniumSupport {
+public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
 
-  private Logger LOG = LoggerFactory.getLogger(PersonTestSelenium.class);
+  private Logger LOG = LoggerFactory.getLogger(Oauth20ImplicitGrantTestSelenium.class);
 
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
-
-  private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
-
-  private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
-
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
+  private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
   private MockHtppServer server;
 
-  private Verifier authorizationCode;
+  private String callbackRequestFragment;
 
-  @Before
-  public void clearCookies() {
-    getWebDriver().manage().deleteAllCookies();
-  }
 
   @Before
   public void startServer() {
@@ -84,7 +72,6 @@ public class PersonTestSelenium extends SeleniumSupport {
               return;
             }
             LOG.debug("Request to mock http server: {}", request);
-            authorizationCode = new Verifier(request.getParameter("code"));
             response.setStatus(200);
           }
         };
@@ -99,44 +86,41 @@ public class PersonTestSelenium extends SeleniumSupport {
     server.stopServer();
   }
 
+
   @Test
-  public void authorizationCodeGrant() throws Exception {
+  public void implicitGrant() throws Exception {
+
+    final String restUrl = getApiBaseUrl() + "social/rest/people/foo/@self";
+    getWebDriver().get(restUrl);
+    LOG.debug("Page source before authentication: " + getWebDriver().getPageSource());
+    assertFalse("Result of getPerson-call should fail because of missing authentication", getWebDriver().getPageSource().contains("Mister Foo"));
+
+
     OAuthService service = new ServiceBuilder()
-        .provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
+        .provider(OpenConextApi20Implicit.class)
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
+        .callback(restUrl)
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
-        .callback(OAUTH_CALLBACK_URL)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
 
-
     getWebDriver().get(authUrl);
+
+//    loginEndUser();
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();
 
-    // Wait for authorizationCode to be sent to the mock http server
-    while (authorizationCode == null) {
-      Thread.sleep(100L);
-    }
+    URI uri = URI.create(getWebDriver().getCurrentUrl());
+    callbackRequestFragment = uri.getFragment();
+    LOG.debug("URL is: " + uri.toString());
+    assertTrue("redirect URL fragment should contain access token", callbackRequestFragment.contains("access_token="));
 
-    LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
-    Token aToken = service.getAccessToken(null, authorizationCode);
-
-    final String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID + "/@self";
-
-    // Verify that a normal request (without access token) fails now.
-    getWebDriver().manage().deleteAllCookies();
-    getWebDriver().get(restUrl);
-    assertFalse(getWebDriver().getPageSource().contains("mnice@surfguest.nl"));
-    OAuthRequest request = new OAuthRequest(Verb.GET, restUrl);
-    
-    service.signRequest(aToken, request);
-    Response response = request.send();
-    LOG.debug("Response: {}", response.getBody());
-    assertTrue(response.getBody().contains("mnice@surfguest.nl"));
+    // Further tests are actually part of the coin-api-client... The server has issued an access_token so it works.
   }
+
+
 
 }
