@@ -408,7 +408,7 @@
             <configuration>
               <scanIntervalSeconds>0</scanIntervalSeconds>
               <webAppConfig>
-                <overrideDescriptor>src/test/resources/selenium-web.xml</overrideDescriptor>
+                <overrideDescriptor>${basedir}/src/test/resources/selenium-web.xml</overrideDescriptor>
                 <contextPath>/</contextPath>
                 <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
               </webAppConfig>
