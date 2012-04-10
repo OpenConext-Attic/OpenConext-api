@@ -26,12 +26,11 @@ public interface EngineBlock {
 
   
   /**
-   * The identifier can either be the urn
-   * (urn:collab:person:nl.myuniversity:s123456) or the persistent identifier (hashed urn specific for the SP). 
+   * The identifier is the persistent identifier (hashed urn specific for the SP). 
    * 
-   * @param identifier the unique identifier (urn or persistent)
-   * @return the urn identifier
+   * @param identifier the unique persistent identifier 
+   * @return the uuid identifier stored in the LDAP (collabPersonUUID)
    */
-  String getPersistentNameIdentifier(String identifier) ;
+  String getUserUUID(String identifier) ;
   
 }

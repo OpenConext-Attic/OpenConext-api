@@ -32,6 +32,9 @@
 	<category name="org.springframework">
 		<priority value="info" />
 	</category>
+  <category name="org.springframework.jdbc">
+    <priority value="INFO" />
+  </category>
     <category name="org.springframework.security">
         <priority value="info" />
     </category>

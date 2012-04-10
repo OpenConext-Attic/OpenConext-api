@@ -18,11 +18,7 @@
  */
 package nl.surfnet.coin.ldap;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -35,12 +31,12 @@ import nl.surfnet.coin.api.client.domain.Organization;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.eb.EngineBlock;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -49,6 +45,8 @@ import org.springframework.util.StringUtils;
  * 
  */
 public class LdapClientImpl implements LdapClient {
+
+  private static final String URN_IDENTIFIER = "urn:collab:person:";
 
   @Autowired
   private LdapOperations ldapOperations;
@@ -63,15 +61,20 @@ public class LdapClientImpl implements LdapClient {
    * (hashed urn specific for the SP).
    * 
    * @param identifier
-   *          unqiue identifier of the Person
+   *          unique identifier of the Person
    * @return Person object
    */
   @Override
   @SuppressWarnings("unchecked")
   public Person findPerson(String identifier) {
-    identifier = engineBlock.getPersistentNameIdentifier(identifier);
+    Assert.hasText(identifier, "Identifier may not be null or empty when searching for a Person");
+    String searchAttribute = "collabpersonid";
+    if (!identifier.startsWith(URN_IDENTIFIER)) {
+      searchAttribute = "collabpersonuuid";
+      identifier = engineBlock.getUserUUID(identifier);
+    }
     AndFilter filter = new AndFilter().and(new EqualsFilter("objectclass", "collabPerson")).and(
-        new EqualsFilter("collabpersonid", identifier));
+        new EqualsFilter(searchAttribute, identifier));
     String encode = filter.encode();
     List<Person> search = (List<Person>) ldapOperations.search("", encode, new AttributesMapper() {
       @Override
@@ -82,8 +85,9 @@ public class LdapClientImpl implements LdapClient {
     if (CollectionUtils.isEmpty(search)) {
       return null;
     }
-    if (search.size() > 1)
+    if (search.size() > 1) {
       throw new RuntimeException("Found more then one LDAP entry for identifier(" + identifier + ")");
+    }
     return search.get(0);
   }
 
@@ -96,7 +100,7 @@ public class LdapClientImpl implements LdapClient {
    * 'organizations.type', 'nledupersonorgunit' => 'organizations.department',
    * 'edupersonaffiliation' => 'organizations.title',
    */
-  private Person convertLdapProperties(Person person, Attributes attributes) {
+  protected Person convertLdapProperties(Person person, Attributes attributes) {
     person.setId(getAttribute("collabpersonid", attributes));
     person.addTag(Boolean.valueOf(getAttribute("collabpersonisguest", attributes)) ? "member" : "guest");
     String uid = getAttribute("uid", attributes);
@@ -116,6 +120,9 @@ public class LdapClientImpl implements LdapClient {
     return person;
   }
 
+  /*
+   * Save get of an Attribute value, may return null
+   */
   private String getAttribute(String attrID, Attributes attributes) {
     Attribute attribute = attributes.get(attrID);
     try {

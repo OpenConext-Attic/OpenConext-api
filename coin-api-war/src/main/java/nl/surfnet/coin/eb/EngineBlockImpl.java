@@ -18,18 +18,58 @@
  */
 package nl.surfnet.coin.eb;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
 /**
  * 
  *
  */
 public class EngineBlockImpl implements EngineBlock {
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.eb.EngineBlock#getPersistentNameIdentifier(java.lang.String)
+  @Autowired
+  private JdbcTemplate ebJdbcTemplate;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.eb.EngineBlock#getPersistentNameIdentifier(java.lang.String
+   * )
    */
   @Override
-  public String getPersistentNameIdentifier(String identifier) {
-    return identifier;
+  public String getUserUUID(String identifier) {
+    Assert.hasText(identifier, "Not allowed to provide a null or empty identifier");
+    List<String> results = ebJdbcTemplate.query("SELECT user_uuid, persistent_id FROM saml_persistent_id WHERE persistent_id = 'persistent'",
+   /*   new Object[] { identifier },*/ new RowMapper<String>() {
+          @Override
+          public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+            String string = rs.getString(1);
+            String string2 = rs.getString(2);
+            return rs.getString(1);
+          }
+        });
+    if (CollectionUtils.isEmpty(results)) {
+      throw new RuntimeException("No persistent_id found for user_uuid("+identifier+")");
+    }
+    return results.get(0);
+  }
+
+  /**
+   * @param ebJdbcTemplate the ebJdbcTemplate to set
+   */
+  public void setEbJdbcTemplate(JdbcTemplate ebJdbcTemplate) {
+    this.ebJdbcTemplate = ebJdbcTemplate;
   }
 
 }

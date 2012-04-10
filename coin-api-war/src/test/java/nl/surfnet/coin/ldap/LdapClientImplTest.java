@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -31,6 +32,7 @@ import javax.naming.directory.DirContext;
 
 import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.eb.EngineBlockImpl;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.directory.server.core.CoreSession;
@@ -47,8 +49,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.NameClassPairCallbackHandler;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.security.ldap.server.ApacheDSContainer;
 import org.springframework.util.CollectionUtils;
@@ -67,14 +71,17 @@ public class LdapClientImplTest {
    * @throws IllegalAccessException
    */
   @Test
-  public void testFindPerson() throws IllegalAccessException,
-      InvocationTargetException {
-    Person person = new Person();
-    BeanUtils.setProperty(person, "name", new Name());
-    BeanUtils.setProperty(person, "name.formatted", "formatted");
-    // Person person = ldapClient.findPerson("");
-    // assertEquals("Test User", person.getNickname());
-    assertEquals(person.getName().getFormatted(), "formatted");
+  public void testFindPerson() throws IllegalAccessException, InvocationTargetException {
+    LdapOperations ldapOperations = Mockito.mock(LdapOperations.class);
+    LdapClientImpl ldapClient = new LdapClientImpl();
+    ldapClient.setEngineBlock(new EngineBlockImpl());
+    ldapClient.setLdapOperations(ldapOperations);
+
+    Mockito.when(ldapOperations.search(Mockito.anyString(), Mockito.anyString(), (AttributesMapper) Mockito.any()))
+        .thenReturn(Collections.EMPTY_LIST);
+
+    Person findPerson = ldapClient.findPerson("urn:collab:person:myuniversity:john.doe");
+    assertNull(findPerson);
   }
 
 }
