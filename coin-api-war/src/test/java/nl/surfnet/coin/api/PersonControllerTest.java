@@ -53,7 +53,7 @@ public class PersonControllerTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void getPersonInGroupNotSupported() {
-        pc.getPerson("foo", "bar", "loggedInUser");
+        pc.getPerson("foo", "bar");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class PersonControllerTest {
         PersonEntry entry = new PersonEntry();
         entry.setEntry(p);
         when(personService.getPerson("foo", "loggedInUser")).thenReturn(entry);
-        Person personReturned = pc.getPerson("foo", "@self", "loggedInUser").getEntry();
+        Person personReturned = pc.getPerson("foo", "@self").getEntry();
         assertEquals("urn:collab:person:test.surfguest.nl:mfoo", personReturned.getId());
     }
 }

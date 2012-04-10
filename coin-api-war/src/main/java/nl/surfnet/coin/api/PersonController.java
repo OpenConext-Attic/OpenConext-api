@@ -21,8 +21,11 @@ import nl.surfnet.coin.api.service.MockService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,17 +46,33 @@ public class PersonController {
     @ResponseBody
     public PersonEntry getPerson(
             @PathVariable("userId") String userId,
-            @PathVariable("groupId") String groupId,
-            // for now, a cookie with the onBehalfOf-user is required. Will probably change to a SessionAttribute set by a filter, when OAuth is in place.
-            @CookieValue(value="onBehalfOf", required = false) String onBehalfOf) {
+            @PathVariable("groupId") String groupId) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Got getPerson-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] {userId, groupId, onBehalfOf});
+            LOG.debug("Got getPerson-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] {userId, groupId, getOnBehalfOf()});
         }
         if (GROUP_ID_SELF.equals(groupId)) {
-            return mockService.getPerson(userId, onBehalfOf);
+            return mockService.getPerson(userId, getOnBehalfOf());
         } else {
             throw new UnsupportedOperationException("Not supported: person query other than @self.");
         }
     }
 
+  /**
+   * Get the username of the (via oauth) authenticated user that performs this request.
+   *
+   * @return the username in case of an end user authorized request (3 legged oauth1, authorization code grant oauth2) or the consumer key in case of unauthorized requests.
+   */
+  private String getOnBehalfOf() {
+    Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null) {
+      return null;
+    } else {
+      if (auth.getPrincipal() instanceof ConsumerDetails) {
+        // Two legged, it does not have end user details
+        return ((ConsumerDetails) auth.getPrincipal()).getConsumerKey();
+      } else {
+        return ((UserDetails) auth.getPrincipal()).getUsername();
+      }
+    }
+  }
 }
