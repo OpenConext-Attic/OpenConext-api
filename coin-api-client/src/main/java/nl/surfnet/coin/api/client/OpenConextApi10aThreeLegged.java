@@ -66,7 +66,7 @@ public class OpenConextApi10aThreeLegged extends DefaultApi10a {
    */
   @Override
   public String getAuthorizationUrl(Token requestToken) {
-    return baseUrl + "oauth/authorize?oauth_token=" + requestToken.getToken();
+    return baseUrl + "oauth/confirm_access?oauth_token=" + requestToken.getToken();
   }
 
   @Override

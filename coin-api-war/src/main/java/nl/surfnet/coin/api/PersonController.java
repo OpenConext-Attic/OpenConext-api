@@ -63,7 +63,7 @@ public class PersonController {
    * @return the username in case of an end user authorized request (3 legged oauth1, authorization code grant oauth2) or the consumer key in case of unauthorized requests.
    */
   private String getOnBehalfOf() {
-    Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null) {
       return null;
     } else {
