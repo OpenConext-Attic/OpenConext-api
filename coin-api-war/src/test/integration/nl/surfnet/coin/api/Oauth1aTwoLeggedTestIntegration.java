@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
@@ -50,10 +51,12 @@ public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
     // Use a request that is not signed.
     OAuthRequest req = new OAuthRequest(Verb.GET, URL_UNDER_TEST + OS_URL);
     Response response = req.send();
-    assertEquals("Without token, the server response should be 401", 401, response.getCode());
     final String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
+    assertFalse("response body should not contain json data", bodyText.contains("Mister Nice"));
   }
+
+
 
   @Test
   public void withToken() {

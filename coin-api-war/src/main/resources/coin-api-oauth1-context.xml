@@ -12,9 +12,6 @@
     <!-- TODO: remove this interception of /social/rest once we integrate oauth1 and oauth2 protection -->
     <intercept-url pattern="/social/rest/**" access="ROLE_USER" />
     <custom-filter ref="requestHeaderAuthenticationFilter" position="PRE_AUTH_FILTER" />
-    <!--
-    <anonymous enabled="false" />
-    -->
   </http>
 
   <oauth:provider consumer-details-service-ref="clientDetailsService"
@@ -24,7 +21,7 @@
                   token-id-param="oauth_token"
                   authentication-failed-url="/oauth/confirm_access"
                   access-token-url="/oauth/accessToken"
-                  require10a="false"/>
+                  require10a="true" />
 
 
   <beans:bean id="preAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">

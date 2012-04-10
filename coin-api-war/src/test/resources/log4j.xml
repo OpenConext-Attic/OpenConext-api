@@ -30,7 +30,7 @@
 		<priority value="WARN" />
 	</category>
 	<category name="org.springframework">
-		<priority value="info" />
+		<priority value="warn" />
 	</category>
   <category name="org.springframework.jdbc">
     <priority value="INFO" />

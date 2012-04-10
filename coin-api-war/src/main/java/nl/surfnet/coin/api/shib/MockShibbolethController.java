@@ -27,6 +27,11 @@ public class MockShibbolethController {
 
   @RequestMapping(method= RequestMethod.GET)
   public String getLogin(@RequestParam("target") String target) {
+
+    if (target.contains("shibbed=true")) {
+      throw new IllegalStateException("Loop detected, will not redirect.");
+    }
+
     return "redirect:" + target + "&shibbed=true";
   } 
 }

@@ -16,11 +16,14 @@
 
 package nl.surfnet.coin.api.oauth;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 import org.springframework.security.oauth.provider.token.RandomValueProviderTokenServices;
 import org.springframework.stereotype.Component;
@@ -35,7 +39,6 @@ import org.springframework.util.Assert;
 
 /**
  * Token store for Oauth1 tokens.
- *
  */
 @Component(value = "oauth1TokenServices")
 public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServices implements InitializingBean {
@@ -43,8 +46,8 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   Logger LOG = LoggerFactory.getLogger(OpenConextOauth1TokenServices.class);
   private JdbcTemplate jdbcTemplate;
 
-  private final static String selectTokenFromAuthenticationSql = "select * from oauth1_tokens where token like ?";
-  private final static String insertAccessTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?)";
+  private final static String selectTokenSql = "select * from oauth1_tokens where token like ?";
+  private final static String insertTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?, ?)";
   private final static String deleteTokenSql = "delete from oauth1_tokens where token like ?";
 
   public static class OAuthProviderTokenRowMapper implements RowMapper<OAuthProviderTokenImpl> {
@@ -57,6 +60,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
       token.setConsumerKey(rs.getString("consumerKey"));
       token.setAccessToken(rs.getBoolean("isAccessToken"));
       token.setTimestamp(rs.getLong("tokenTimestamp"));
+      token.setUserAuthentication((Authentication) SerializationUtils.deserialize(rs.getBlob("userAuthentication").getBinaryStream()));
       return token;
     }
   }
@@ -75,7 +79,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   protected OAuthProviderTokenImpl readToken(String authentication) {
     OAuthProviderTokenImpl token;
     try {
-      token = jdbcTemplate.queryForObject(selectTokenFromAuthenticationSql, new OAuthProviderTokenRowMapper(), authentication);
+      token = jdbcTemplate.queryForObject(selectTokenSql, new OAuthProviderTokenRowMapper(), authentication);
     } catch (EmptyResultDataAccessException e) {
       if (LOG.isInfoEnabled()) {
         LOG.debug("Failed to find token for input '{}'", authentication);
@@ -89,13 +93,15 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   protected void storeToken(String value, OAuthProviderTokenImpl token) {
     Assert.notNull(token, "Token cannot be null");
     Assert.notNull(value, "token value cannot be null");
-    jdbcTemplate.update(insertAccessTokenSql, value,
+    jdbcTemplate.update(deleteTokenSql, value);
+    jdbcTemplate.update(insertTokenSql, value,
         token.getCallbackUrl(),
         token.getVerifier(),
         token.getSecret(),
         token.getConsumerKey(),
         token.isAccessToken(),
-        token.getTimestamp());
+        token.getTimestamp(),
+        SerializationUtils.serialize(token.getUserAuthentication()));
   }
 
   @Override
