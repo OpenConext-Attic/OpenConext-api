@@ -57,6 +57,10 @@ public class MockShibbolethFilter implements Filter {
         public String getHeader(String name) {
           if (name.equals("REMOTE_USER")) {
             return remoteUser;
+          } else if (name.equals("displayName")) {
+            return String.format("%s's Display Name", remoteUser);
+          } else if (name.equals("schacHomeOrganization")) {
+            return String.format("%s's Schac Home Organization", remoteUser);
           } else {
             return super.getHeader(name);
           }
