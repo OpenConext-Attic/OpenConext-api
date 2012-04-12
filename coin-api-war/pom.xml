@@ -306,6 +306,7 @@
         <configuration>
           <reload>manual</reload>
           <webAppConfig>
+            <descriptor>${basedir}/src/test/resources/selenium-web.xml</descriptor>
             <contextPath>/</contextPath>
             <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
           </webAppConfig>
@@ -408,7 +409,7 @@
             <configuration>
               <scanIntervalSeconds>0</scanIntervalSeconds>
               <webAppConfig>
-                <overrideDescriptor>${basedir}/src/test/resources/selenium-web.xml</overrideDescriptor>
+                <descriptor>${basedir}/src/test/resources/selenium-web.xml</descriptor>
                 <contextPath>/</contextPath>
                 <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
               </webAppConfig>
@@ -495,6 +496,7 @@
             <configuration>
               <scanIntervalSeconds>0</scanIntervalSeconds>
               <webAppConfig>
+				<descriptor>${basedir}/src/test/resources/selenium-web.xml</descriptor>
                 <contextPath>/</contextPath>
                 <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
               </webAppConfig>

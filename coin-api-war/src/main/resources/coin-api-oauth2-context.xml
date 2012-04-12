@@ -51,7 +51,8 @@
       >
     <security:anonymous enabled="false" />
     <security:intercept-url pattern="/social/rest/**" access="ROLE_USER,SCOPE_READ"/>
-    <security:custom-filter ref="oauth2ProviderFilter" before="EXCEPTION_TRANSLATION_FILTER" />
+    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+    <security:custom-filter ref="oauthProtectedResourceFilter" after="EXCEPTION_TRANSLATION_FILTER" />
   </security:http>
 
   <security:http pattern="/oauth/**" authentication-manager-ref="shibbolethAuthenticationManager"

@@ -56,7 +56,6 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   }
 
   @Test
-  @Ignore
   public void completeFlow() throws Exception {
     // The client uses OAuth 1.0a but server only talks OAuth 2.0 currently.
     Person person = client.getPerson(USER_ID, null);
