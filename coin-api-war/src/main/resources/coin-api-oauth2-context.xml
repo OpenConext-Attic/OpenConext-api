@@ -86,7 +86,7 @@
     <property name="authenticationManager" ref="clientAuthenticationManager"/>
   </bean>
 
-  <authentication-manager alias="clientAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
+  <authentication-manager id="clientAuthenticationManager" alias="clientAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
     <authentication-provider user-service-ref="clientDetailsUserService"/>
   </authentication-manager>
 

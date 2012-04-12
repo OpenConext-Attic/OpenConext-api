@@ -73,7 +73,7 @@
       <img class="app-thumb" src="${appThumbnail}" align="right" alt="application thumbnail" />
       <span class="description"><c:out value="${appDesc}" default="This application has no description."/></span>
       <div class="form">
-        <form name="authZFormGrant" action="<%=request.getContextPath()%>/oauth/authorize" method="POST">
+        <form name="authZFormGrant" action="<%=request.getContextPath()%>/oauth1/authorize" method="POST">
         <input name="oauth_token" value="<c:out value="${oauth_token}"/>" type="hidden"/>
         <c:if test="${!empty oauth_callback}">
           <input name="callbackURL" value="<c:out value="${oauth_callback}"/>" type="hidden"/>

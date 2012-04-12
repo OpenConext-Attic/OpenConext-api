@@ -45,7 +45,7 @@ public class Oauth1AccessConfirmationController {
   @Autowired
 	private ConsumerDetailsService clientDetailsService;
 
-	@RequestMapping("/oauth/confirm_access")
+	@RequestMapping("/oauth1/confirm_access")
 	public ModelAndView getAccessConfirmation(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String token = request.getParameter("oauth_token");

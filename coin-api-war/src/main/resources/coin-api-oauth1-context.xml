@@ -17,7 +17,7 @@
                   request-token-url="/oauth1/requestToken"
                   authenticate-token-url="/oauth1/authorize"
                   token-id-param="oauth_token"
-                  authentication-failed-url="/oauth1/confirm_access"
+                  user-approval-url="/oauth1/confirm_access"
                   access-token-url="/oauth1/accessToken"
 
                   require10a="true" />
