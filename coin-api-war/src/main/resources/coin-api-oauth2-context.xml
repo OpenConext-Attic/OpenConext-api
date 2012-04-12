@@ -42,23 +42,31 @@
     <http-basic/>
     <!-- include this only if you need to authenticate clients via request parameters -->
     <custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER"/>
-    <access-denied-handler ref="oauthAccessDeniedHandler"/>
+
   </http>
-
-  <security:http pattern="/oauth2/authorize" authentication-manager-ref="shibbolethAuthenticationManager"
-                 access-decision-manager-ref="accessDecisionManager"
-                 entry-point-ref="shibbolethEntryPoint"
-      >
-    <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
-    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
-  </security:http>
-
 
   <security:http pattern="/social/rest/**" authentication-manager-ref="shibbolethAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
        entry-point-ref="shibbolethEntryPoint"
       >
+    <security:anonymous enabled="false" />
     <security:intercept-url pattern="/social/rest/**" access="ROLE_USER,SCOPE_READ"/>
+    <security:custom-filter ref="oauth2ProviderFilter" before="EXCEPTION_TRANSLATION_FILTER" />
+  </security:http>
+
+  <security:http pattern="/oauth/**" authentication-manager-ref="shibbolethAuthenticationManager"
+       access-decision-manager-ref="accessDecisionManager"
+       entry-point-ref="shibbolethEntryPoint"
+      >
+    <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
+    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+  </security:http>
+
+  <!-- confirm_access is not filtered by EndpointValidationFilter, therefore an additional config is required. -->
+  <security:http pattern="/oauth2/confirm_access" authentication-manager-ref="shibbolethAuthenticationManager"
+       access-decision-manager-ref="accessDecisionManager"
+       entry-point-ref="shibbolethEntryPoint"
+      >
     <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
   </security:http>
@@ -73,7 +81,7 @@
   </bean>
 
   <bean id="clientCredentialsTokenEndpointFilter"
-        class="org.springframework.security.oauth2.provider.filter.ClientCredentialsTokenEndpointFilter">
+        class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">
     <property name="authenticationManager" ref="clientAuthenticationManager"/>
   </bean>
 
@@ -85,12 +93,6 @@
         class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
     <constructor-arg ref="clientDetailsService"/>
   </bean>
-
-
-
-
-  <bean id="oauthAccessDeniedHandler"
-        class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler"/>
 
   <bean id="accessConfirmationController" class="nl.surfnet.coin.api.controller.AccessConfirmationController">
     <property name="clientDetailsService" ref="clientDetailsService" />

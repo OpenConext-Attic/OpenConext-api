@@ -58,7 +58,7 @@ public class ShibbolethFilter extends AbstractAuthenticationProcessingFilter {
     LOG.debug("remote-user: '{}'", request.getHeader("REMOTE_USER"));
 
 
-    return (super.requiresAuthentication(request, response) && request.getHeader("REMOTE_USER") != null);
+    return (request.getHeader("REMOTE_USER") != null);
   }
 
   @Override

@@ -70,6 +70,8 @@ public class PersonController {
       if (auth.getPrincipal() instanceof ConsumerDetails) {
         // Two legged, it does not have end user details
         return ((ConsumerDetails) auth.getPrincipal()).getConsumerKey();
+      } else if (auth.getPrincipal() instanceof String) {
+        return (String) auth.getPrincipal();
       } else {
         return ((UserDetails) auth.getPrincipal()).getUsername();
       }

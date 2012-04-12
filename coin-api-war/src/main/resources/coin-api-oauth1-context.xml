@@ -7,27 +7,26 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
-  <http entry-point-ref="shibbolethEntryPoint">
-    <intercept-url pattern="/oauth/**" access="ROLE_USER" />
-    <!-- TODO: remove this interception of /social/rest once we integrate oauth1 and oauth2 protection -->
-    <intercept-url pattern="/social/rest/**" access="ROLE_USER" />
+  <http pattern="/oauth1/**" entry-point-ref="shibbolethEntryPoint">
+    <intercept-url pattern="/oauth1/**" access="ROLE_USER" />
     <custom-filter ref="requestHeaderAuthenticationFilter" position="PRE_AUTH_FILTER" />
   </http>
 
   <oauth:provider consumer-details-service-ref="clientDetailsService"
                   token-services-ref="oauth1TokenServices"
-                  request-token-url="/oauth/requestToken"
-                  authenticate-token-url="/oauth/authorize"
+                  request-token-url="/oauth1/requestToken"
+                  authenticate-token-url="/oauth1/authorize"
                   token-id-param="oauth_token"
-                  authentication-failed-url="/oauth/confirm_access"
-                  access-token-url="/oauth/accessToken"
+                  authentication-failed-url="/oauth1/confirm_access"
+                  access-token-url="/oauth1/accessToken"
+
                   require10a="true" />
 
 
   <beans:bean id="preAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
-  <beans:property name="preAuthenticatedUserDetailsService" ref="preAuthUserDetailsService" />
-  </beans:bean>
-  <beans:bean id="preAuthUserDetailsService" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService">
+    <beans:property name="preAuthenticatedUserDetailsService">
+        <beans:bean class="org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService" />
+    </beans:property>
   </beans:bean>
 
   <beans:bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
