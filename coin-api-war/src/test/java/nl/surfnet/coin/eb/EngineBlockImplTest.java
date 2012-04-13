@@ -15,6 +15,8 @@
  */
 package nl.surfnet.coin.eb;
 
+import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -30,68 +32,50 @@ import static junit.framework.Assert.assertEquals;
  * 
  *
  */
-public class EngineBlockImplTest {
+public class EngineBlockImplTest extends AbstractInMemoryDatabaseTest {
 
-  private static JdbcTemplate template;
-  private static EngineBlockImpl engineBlock;
-
-  /**
-   * We use an in-memory database - no need for Spring in this one - and
-   * populate it with the sql statements in test-data-eb.sql
-   * 
-   * @throws Exception
-   *           unexpected
-   */
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-    BasicDataSource dataSource = new BasicDataSource();
-    dataSource.setPassword("");
-    dataSource.setUsername("sa");
-    dataSource.setUrl("jdbc:hsqldb:mem:coin");
-    dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-
-    EngineBlockImplTest.template = new JdbcTemplate(dataSource);
-    EngineBlockImplTest.engineBlock = new EngineBlockImpl();
-    engineBlock.setEbJdbcTemplate(template);
-      // TODO find elegant solution for multiple statement
-    final String sql = IOUtils.toString(new ClassPathResource("sql/test-data-eb.sql").getInputStream());
-    final String[] split = sql.split(";");
-      for (String s : split) {
-          if (!StringUtils.hasText(s)) {
-              continue;
-          }
-          template.execute(s + ';');
-      }
-    //template.execute(sql);
-
-  }
-
-  @AfterClass
-  public static void afterClass() throws Exception {
-      // TODO find elegant solution for multiple statements
-      final String sql = IOUtils.toString(new ClassPathResource("sql/cleanup-test-data-eb.sql").getInputStream());
-      final String[] split = sql.split(";");
-      for (String s : split) {
-          if (!StringUtils.hasText(s)) {
-              continue;
-          }
-          template.execute(s + ';');
-      }
-//      template.execute(sql);
-
-  }
+  private EngineBlockImpl engineBlock;
 
   /**
    * Test method for
-   * {@link nl.surfnet.coin.eb.EngineBlockImpl#getUserUUID(java.lang.String)}
-   * .
+   * {@link nl.surfnet.coin.eb.EngineBlockImpl#getUserUUID(java.lang.String)} .
    */
   @Test
   public void testGetPersistentNameIdentifier() {
     // user_uuid
+    initEngineBlock();
     String persistentNameIdentifier = engineBlock.getUserUUID("persistent");
     assertEquals("user_uuid", persistentNameIdentifier);
 
+  }
+
+  private void initEngineBlock() {
+    engineBlock = new EngineBlockImpl();
+    engineBlock.setEbJdbcTemplate(getJdbcTemplate());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.db.AbstractInMemoryDatabaseTest#getMockDataContentFilename
+   * ()
+   */
+  @Override
+  public String getMockDataContentFilename() {
+    return "sql/test-data-eb.sql";
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.db.AbstractInMemoryDatabaseTest#getMockDataCleanUpFilename
+   * ()
+   */
+  @Override
+  public String getMockDataCleanUpFilename() {
+    return "sql/cleanup-test-data-eb.sql";
   }
 
 }
