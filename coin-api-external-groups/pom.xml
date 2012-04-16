@@ -69,6 +69,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.surfnet.coin</groupId>
       <artifactId>coin-test</artifactId>
       <version>${coin-test.version}</version>
