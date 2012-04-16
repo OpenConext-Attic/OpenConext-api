@@ -7,6 +7,9 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
+  <!--
+    All requests to /oauth/** are protected by this configuration. Invalid requests are redirected to the shibbolethEntryPoint.
+  -->
   <http pattern="/oauth1/**" entry-point-ref="shibbolethEntryPoint">
     <intercept-url pattern="/oauth1/**" access="ROLE_USER" />
     <custom-filter ref="requestHeaderAuthenticationFilter" position="PRE_AUTH_FILTER" />
@@ -19,9 +22,7 @@
                   token-id-param="oauth_token"
                   user-approval-url="/oauth1/confirm_access"
                   access-token-url="/oauth1/accessToken"
-
                   require10a="true" />
-
 
   <beans:bean id="preAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
     <beans:property name="preAuthenticatedUserDetailsService">
@@ -29,6 +30,9 @@
     </beans:property>
   </beans:bean>
 
+  <!--
+    This requestHeaderAuthenticationFilter uses the REMOTE_USER header from the HTTP request (set by Shibboleth) to build an authentication object.
+  -->
   <beans:bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
     <beans:property name="principalRequestHeader" value="REMOTE_USER" />
     <beans:property name="exceptionIfHeaderMissing" value="false" />
