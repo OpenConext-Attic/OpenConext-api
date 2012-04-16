@@ -36,7 +36,9 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
         "classpath:coin-api-properties-context.xml",
-        "classpath:coin-api-context.xml"})
+        "classpath:coin-api-context.xml",
+        "classpath:coin-api-oauth1-context.xml",
+        "classpath:coin-api-oauth2-context.xml"})
 public class PersonControllerTest {
 
     @Autowired
