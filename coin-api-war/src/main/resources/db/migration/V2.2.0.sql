@@ -11,7 +11,7 @@ create table oauth1_tokens (
   consumerKey varchar(255) not null,
   isAccessToken bit(1) not null,
   tokenTimestamp bigint,
-  userAuthentication blob(1M),
+  userAuthentication blob,
 
   primary key (token)
 );

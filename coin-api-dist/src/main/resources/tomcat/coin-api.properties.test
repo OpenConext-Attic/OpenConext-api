@@ -24,3 +24,8 @@
 janus.user=??
 janus.secret=??
 janus.uri=https\://serviceregistry.test.surfconext.nl/simplesaml/module.php/janus/services/rest/
+
+coin-api.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.jdbc.url=jdbc:mysql://localhost/api
+coin-api.jdbc.user=??
+coin-api.jdbc.password=??
