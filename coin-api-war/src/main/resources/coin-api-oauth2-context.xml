@@ -45,15 +45,20 @@
 
   </http>
 
-
-
   <security:http pattern="/oauth/**" authentication-manager-ref="shibbolethAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
        entry-point-ref="shibbolethEntryPoint"
       >
     <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+    <security:request-cache ref="nullRequestCache" />
   </security:http>
+
+  <!-- Normally, Spring Security remembers the initial request and replays it, after authentication.
+  However, our authentication mechanism relies on extra headers being set after authentication.
+  Therefore, the request should not be saved but the new one should just be used. This NullRequestCache effectively does not store the requests.
+   -->
+  <bean id="nullRequestCache" class="org.springframework.security.web.savedrequest.NullRequestCache" />
 
   <!-- confirm_access is not filtered by EndpointValidationFilter, therefore an additional config is required. -->
   <security:http pattern="/oauth2/confirm_access" authentication-manager-ref="shibbolethAuthenticationManager"
