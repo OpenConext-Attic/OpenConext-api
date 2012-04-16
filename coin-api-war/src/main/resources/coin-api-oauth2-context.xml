@@ -113,7 +113,9 @@
   <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.RandomValueTokenServices">
     <property name="tokenStore" ref="tokenStore"/>
   </bean>
-  <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore"/>
+  <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
+    <constructor-arg ref="dataSource"/>
+  </bean>
 
 
   <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" xmlns="http://www.springframework.org/schema/beans">
