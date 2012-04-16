@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.EnumerationUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -53,12 +54,11 @@ public class ShibbolethFilter extends AbstractAuthenticationProcessingFilter {
 
   @Override
   protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-    LOG.debug("Hitting ShibbolethFilters requiresAuth (returns {}, {})", super.requiresAuthentication(request, response), request.getHeader("REMOTE_USER") != null);
+    LOG.debug("Hitting ShibbolethFilters requiresAuth (returns, {})", StringUtils.isNotEmpty(request.getHeader("REMOTE_USER")));
     LOG.debug("cp: {}, processuri: {}, request-uri: {}", new Object[] {request.getContextPath(), getFilterProcessesUrl(), request.getRequestURI()});
     LOG.debug("remote-user: '{}'", request.getHeader("REMOTE_USER"));
 
-
-    return (request.getHeader("REMOTE_USER") != null);
+    return (StringUtils.isNotEmpty(request.getHeader("REMOTE_USER")));
   }
 
   @Override

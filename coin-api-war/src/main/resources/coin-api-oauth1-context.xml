@@ -33,7 +33,7 @@
   <!--
     This requestHeaderAuthenticationFilter uses the REMOTE_USER header from the HTTP request (set by Shibboleth) to build an authentication object.
   -->
-  <beans:bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
+  <beans:bean id="requestHeaderAuthenticationFilter" class="nl.surfnet.coin.api.shib.ShibRequestHeaderAuthenticationFilter">
     <beans:property name="principalRequestHeader" value="REMOTE_USER" />
     <beans:property name="exceptionIfHeaderMissing" value="false" />
     <beans:property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" />
