@@ -54,7 +54,7 @@ public interface GroupProviderService {
   
   /**
    * 
-   * @param String Service Provider entityId
+   * @param serviceProviderEntityId Service Provider entityId
    * @return All ServiceProviderGroupAcl's for a specific Service Provider
    */
   List<ServiceProviderGroupAcl> getServiceProviderGroupAcl(String serviceProviderEntityId);
