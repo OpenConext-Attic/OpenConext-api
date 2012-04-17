@@ -48,7 +48,7 @@
   </authentication-manager>
 
   <beans:bean id="clientDetailsUserDetailsService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
-    <beans:constructor-arg ref="clientDetailsService" /><!-- from generic context, this is the janus client -->
+    <beans:constructor-arg ref="clientDetailsService" />
   </beans:bean>
 
 </beans:beans>

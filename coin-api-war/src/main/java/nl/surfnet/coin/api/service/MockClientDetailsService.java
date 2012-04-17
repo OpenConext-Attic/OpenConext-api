@@ -40,7 +40,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
 
   private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
-  private String defaultSecret = "secret";
+  private String defaultSecret = "mysecret";
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {

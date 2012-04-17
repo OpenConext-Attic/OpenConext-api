@@ -41,11 +41,9 @@
     <security:custom-filter ref="oauthProtectedResourceFilter" after="EXCEPTION_TRANSLATION_FILTER" />
   </security:http>
 
-  <bean id="mockClientDetailsService" class="nl.surfnet.coin.api.service.MockClientDetailsService">
-    <property name="defaultSecret" value="mysecret" />
-  </bean>
+  <bean id="clientDetailsService" class="nl.surfnet.coin.api.service.MockClientDetailsService" />
 
-  <bean id="clientDetailsService" class="nl.surfnet.coin.api.service.JanusClientDetailsService" />
+  <bean id="janusClientDetailsService" class="nl.surfnet.coin.api.service.JanusClientDetailsService" />
   <bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
 
   <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
