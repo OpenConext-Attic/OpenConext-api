@@ -35,10 +35,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConextApiControllerTestIntegration extends IntegrationSupport {
 
-  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
+  private final String OAUTH_KEY = "the-person-i-am";
   private final String OAUTH_SECRET = "mysecret";
 
-  private final String USER_ID = "foo";
+  private final String USER_ID = "the-person-i-am";
 
   private OpenConextOAuthClientImpl client;
 
@@ -57,9 +57,7 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
 
   @Test
   public void completeFlow() throws Exception {
-    // The client uses OAuth 1.0a but server only talks OAuth 2.0 currently.
     Person person = client.getPerson(USER_ID, null);
-    assertEquals("mFoo", person.getAccounts().iterator().next().getUserId());
+    assertEquals("the-person-i-am", person.getAccounts().iterator().next().getUserId());
   }
-
 }

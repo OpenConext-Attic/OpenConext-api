@@ -46,6 +46,22 @@ public class GroupMembersEntry extends AbstractEntry {
     return entry != null && !entry.isEmpty();
   }
 
- 
+  /**
+   * Returns whether the given personId is member of this group
+   * @param personId the person
+   * @return boolean
+   */
+  public boolean isMember(String personId)
+  {
+    boolean found = false;
+    for (Person p : entry) {
+      if (p.getId().equals(personId))
+      {
+        found = true;
+        break;
+      }
+    }
+    return found;
+  }
   
 }

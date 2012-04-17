@@ -23,7 +23,7 @@
 
 janus.user=??
 janus.secret=??
-janus.uri=https\://serviceregistry.dev.surfconext.nl/simplesaml/module.php/janus/services/rest/
+janus.uri=https://serviceregistry.dev.surfconext.nl/simplesaml/module.php/janus/services/rest/
 
 # Choose either mockClientDetailsService or janusClientDetailsService
 clientDetailsServiceClass=nl.surfnet.coin.api.service.JanusClientDetailsService
@@ -32,3 +32,17 @@ coin-api.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.jdbc.url=jdbc:mysql://db.dev.surfconext.nl:3306/api
 coin-api.jdbc.user=??
 coin-api.jdbc.password=??
+
+coin-api.ldap.url=ldap://ldap.dev.surfconext.nl:389
+coin-api.ldap.userDn=??
+coin-api.ldap.password=??
+
+engineblockClass=nl.surfnet.coin.eb.EngineBlockImpl
+
+# database link to Engineblock.
+coin-api.engineblock.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.engineblock.jdbc.url=jdbc\:mysql\://db.dev.surfconext.nl\:3306/eb
+coin-api.engineblock.jdbc.user=??
+coin-api.engineblock.jdbc.password=??
+
+ldapClientClass=nl.surfnet.coin.ldap.LdapClientImpl

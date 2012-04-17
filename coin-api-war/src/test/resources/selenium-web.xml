@@ -32,7 +32,7 @@
     <filter-class>nl.surfnet.coin.api.shib.MockShibbolethFilter</filter-class>
     <init-param>
       <param-name>remoteUser</param-name>
-      <param-value>geert</param-value>
+      <param-value>mock-shib-remote-user</param-value>
     </init-param>
   </filter>
   <filter-mapping>

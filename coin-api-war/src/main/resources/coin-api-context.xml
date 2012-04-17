@@ -27,6 +27,9 @@
   <mvc:annotation-driven/>
   <context:component-scan base-package="nl.surfnet.coin.api" />
 
+  <!-- Authorization annotations on service methods -->
+  <security:global-method-security pre-post-annotations="enabled"/>
+
   <!--
     One configuration entry for /social/rest/**, regardless of OAuth-version. For both versions
     a filter is included. Only if both fail (i.e. do not put an Authentication object in the Security Context)
@@ -83,6 +86,30 @@
     <property name="url" value="${coin-api.jdbc.url}" />
     <property name="username" value="${coin-api.jdbc.user}" />
     <property name="password" value="${coin-api.jdbc.password}" />
+  </bean>
+
+  <bean id="ldapClient" class="${ldapClientClass}" />
+  <bean id="engineBlock" class="${engineblockClass}" />
+
+  <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+    <property name="contextSource">
+      <bean class="org.springframework.ldap.core.support.LdapContextSource">
+        <property name="url" value="${coin-api.ldap.url}" />
+        <property name="base" value="dc=surfconext,dc=nl" />
+        <property name="userDn" value="${coin-api.ldap.userDn}" />
+        <property name="password" value="${coin-api.ldap.password}" />
+      </bean>
+    </property>
+  </bean>
+  <bean id="ebJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource">
+      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${coin-api.engineblock.jdbc.driver}" />
+        <property name="url" value="${coin-api.engineblock.jdbc.url}" />
+        <property name="username" value="${coin-api.engineblock.jdbc.user}" />
+        <property name="password" value="${coin-api.engineblock.jdbc.password}" />
+      </bean>
+    </property>
   </bean>
 
   <bean class="com.googlecode.flyway.core.Flyway" init-method="migrate">

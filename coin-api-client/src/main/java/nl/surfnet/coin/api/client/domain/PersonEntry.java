@@ -27,6 +27,13 @@ public class PersonEntry extends AbstractEntry {
 
   private Person entry;
 
+  public PersonEntry() {
+  }
+
+  public PersonEntry(Person person) {
+    this.entry = person;
+  }
+
   /**
    * @return the entry
    */

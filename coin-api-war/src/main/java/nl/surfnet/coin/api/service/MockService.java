@@ -16,26 +16,17 @@
 
 package nl.surfnet.coin.api.service;
 
-import org.json.JSONArray;
+import java.io.IOException;
 
-import nl.surfnet.coin.api.client.OpenConextJsonParser;
-import nl.surfnet.coin.api.client.domain.Group;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupEntry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Name;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.domain.PersonEntry;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
+import nl.surfnet.coin.api.client.OpenConextJsonParser;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupEntry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.PersonEntry;
 
 public class MockService implements PersonService, GroupService {
 

@@ -17,6 +17,9 @@
 package nl.surfnet.coin.api.service;
 
 
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
@@ -31,8 +34,9 @@ public interface PersonService {
    * @param onBehalfOf
    *          the unique identifier of the user that is going to make the
    *          request
-   * @return the {@link org.opensocial.models.Person}
+   * @return the {@link PersonEntry}
    */
+  @PreAuthorize("#onBehalfOf.equals(#userId) or #onBehalfOf == null")
   PersonEntry getPerson(String userId, String onBehalfOf);
 
   /**
@@ -45,5 +49,6 @@ public interface PersonService {
    *          make the request
    * @return an {@link java.util.ArrayList} containing {@link Person}'s
    */
+  @PostAuthorize("#onBehalf == null or returnObject.isMember(#onBehalfOf)")
   GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf);
 }

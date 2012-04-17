@@ -51,12 +51,12 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   private Logger LOG = LoggerFactory.getLogger(Oauth20AuthorizationGrantTestSelenium.class);
 
-  private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
+  private static final String OAUTH_KEY = "urn:collab:person:test.surfguest.nl:oharsta";
   private static final String OAUTH_SECRET = "mysecret";
 
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-  private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
+  private static final String USER_ID = "mock-shib-remote-user";
 
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
@@ -136,7 +136,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     service.signRequest(aToken, request);
     Response response = request.send();
     LOG.debug("Response: {}", response.getBody());
-    assertTrue(response.getBody().contains("mnice@surfguest.nl"));
+    assertTrue(response.getBody().contains("foo@example.com"));
   }
 
 }

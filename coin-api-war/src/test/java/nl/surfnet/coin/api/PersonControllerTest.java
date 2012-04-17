@@ -23,6 +23,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,41 +33,57 @@ import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.PersonService;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-        "classpath:coin-api-properties-context.xml",
-        "classpath:coin-api-context.xml",
-        "classpath:coin-api-oauth1-context.xml",
-        "classpath:coin-api-oauth2-context.xml"})
+    "classpath:coin-api-properties-context.xml",
+    "classpath:coin-api-context.xml",
+    "classpath:coin-api-oauth1-context.xml",
+    "classpath:coin-api-oauth2-context.xml"})
 public class PersonControllerTest {
 
-    @Autowired
-    @InjectMocks
-    PersonController pc;
+  @Autowired
+  @InjectMocks
+  PersonController pc;
 
-    @Mock
-    private PersonService personService;
+  @Mock
+  private PersonService personService;
 
-    @Before
-    public void before() {
-        MockitoAnnotations.initMocks(this);
-    }
+  @Before
+  public void before() {
+    MockitoAnnotations.initMocks(this);
+  }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void getPersonInGroupNotSupported() {
-        pc.getPerson("foo", "bar");
-    }
+  @Test(expected = UnsupportedOperationException.class)
+  public void getPersonInGroupNotSupported() {
+    pc.getPerson("foo", "bar");
+  }
 
-    @Test
-    public void getPerson() {
-        Person p = new Person();
-        p.setId("id");
-        PersonEntry entry = new PersonEntry();
-        entry.setEntry(p);
-        when(personService.getPerson("foo", "loggedInUser")).thenReturn(entry);
-        Person personReturned = pc.getPerson("foo", "@self").getEntry();
-        assertEquals("urn:collab:person:test.surfguest.nl:mfoo", personReturned.getId());
-    }
+  @Test
+  public void getPersonOtherThanOnBehalfOfNotAllowed() {
+
+    final Authentication authentication = mock(Authentication.class);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    when(authentication.getPrincipal()).thenReturn("bar");
+
+    assertNull(pc.getPerson("foo", "@self"));
+  }
+
+  @Test
+  public void getPerson() {
+    final Authentication authentication = mock(Authentication.class);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    when(authentication.getPrincipal()).thenReturn("foo");
+
+    Person p = new Person();
+    p.setId("urn:collab:person:test.surfguest.nl:bar");
+    PersonEntry entry = new PersonEntry();
+    entry.setEntry(p);
+    when(personService.getPerson("foo", "foo")).thenReturn(entry);
+    Person personReturned = pc.getPerson("foo", "@self").getEntry();
+    assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
+  }
 }
