@@ -40,7 +40,7 @@ public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
 
-  private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
+  private static final String USER_ID = "mock-shib-remote-user";
   private static final String OS_URL = "social/rest/people/" + USER_ID + "/@self";
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
@@ -71,10 +71,10 @@ public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
         .build();
 
     OAuthRequest req = new OAuthRequest(Verb.GET, URL_UNDER_TEST + OS_URL);
-service.signRequest(new Token("", ""), req);
+    service.signRequest(new Token("", ""), req);
     Response response = req.send();
     final String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
-    assertTrue("response body should contain correct json data", bodyText.contains("Mister Nice"));
+    assertTrue("response body should contain correct json data", bodyText.contains("\"id\":\"mock-shib-remote-user\""));
   }
 }

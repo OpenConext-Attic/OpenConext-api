@@ -36,7 +36,7 @@ public interface PersonService {
    *          request
    * @return the {@link PersonEntry}
    */
-  @PreAuthorize("#onBehalfOf.equals(#userId) or #onBehalfOf == null")
+  @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   PersonEntry getPerson(String userId, String onBehalfOf);
 
   /**

@@ -42,7 +42,7 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
 
-  private static final String USER_ID = "urn:collab:person:test.surfguest.nl:oharsta";
+  private static final String USER_ID = "mock-shib-remote-user";
   private static final String OS_URL = "social/rest/people/" + USER_ID + "/@self";
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
@@ -52,7 +52,7 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     getWebDriver().get(getApiBaseUrl() + OS_URL);
     final String pageSource = getWebDriver().getPageSource();
     LOG.debug("Response body: {}", pageSource);
-    assertFalse("No valid content without an OAuth token", pageSource.contains("mnice@surfguest.nl"));
+    assertFalse("No valid content without an OAuth token", pageSource.contains("@example.com"));
   }
 
   @Test
@@ -95,6 +95,6 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     Response response = req.send();
     final String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
-    assertTrue("response body should contain correct json data", bodyText.contains("Mister Nice"));
+    assertTrue("response body should contain correct json data", bodyText.contains("mock-shib-remote-user"));
   }
 }
