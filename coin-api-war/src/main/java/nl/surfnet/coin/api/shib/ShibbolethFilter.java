@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api.shib;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.servlet.FilterChain;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.EnumerationUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -53,12 +55,21 @@ public class ShibbolethFilter extends AbstractAuthenticationProcessingFilter {
 
   @Override
   protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-    LOG.debug("Hitting ShibbolethFilters requiresAuth (returns {}, {})", super.requiresAuthentication(request, response), request.getHeader("REMOTE_USER") != null);
-    LOG.debug("cp: {}, processuri: {}, request-uri: {}", new Object[] {request.getContextPath(), getFilterProcessesUrl(), request.getRequestURI()});
-    LOG.debug("remote-user: '{}'", request.getHeader("REMOTE_USER"));
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Hitting ShibbolethFilters requiresAuth (returns, {})", StringUtils.isNotEmpty(request.getHeader("REMOTE_USER")));
+      LOG.debug("cp: {}, processuri: {}, request-uri: {}", new Object[] {request.getContextPath(), getFilterProcessesUrl(), request.getRequestURI()});
 
+      StringBuffer b = new StringBuffer("Headers: \n" );
+      for (Object headerNameObj : EnumerationUtils.toList(request.getHeaderNames())) {
+        final String headerName = (String) headerNameObj;
+        b.append(headerName).append(": ").append(request.getHeader(headerName)).append("\n");
+      }
+      LOG.debug(b.toString());
 
-    return (request.getHeader("REMOTE_USER") != null);
+      LOG.debug("remote-user: '{}'", request.getHeader("REMOTE_USER"));
+    }
+
+    return (StringUtils.isNotEmpty(request.getHeader("REMOTE_USER")));
   }
 
   @Override

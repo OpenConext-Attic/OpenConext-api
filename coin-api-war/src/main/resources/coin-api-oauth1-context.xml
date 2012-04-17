@@ -33,7 +33,7 @@
   <!--
     This requestHeaderAuthenticationFilter uses the REMOTE_USER header from the HTTP request (set by Shibboleth) to build an authentication object.
   -->
-  <beans:bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
+  <beans:bean id="requestHeaderAuthenticationFilter" class="nl.surfnet.coin.api.shib.ShibRequestHeaderAuthenticationFilter">
     <beans:property name="principalRequestHeader" value="REMOTE_USER" />
     <beans:property name="exceptionIfHeaderMissing" value="false" />
     <beans:property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" />
@@ -48,7 +48,7 @@
   </authentication-manager>
 
   <beans:bean id="clientDetailsUserDetailsService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
-    <beans:constructor-arg ref="clientDetailsService" /><!-- from generic context, this is the janus client -->
+    <beans:constructor-arg ref="clientDetailsService" />
   </beans:bean>
 
 </beans:beans>

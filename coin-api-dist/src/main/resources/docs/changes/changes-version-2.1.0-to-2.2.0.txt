@@ -1,0 +1,1 @@
+Fill in the database properties in coin-api.properties for the connection to service registry (janus).
