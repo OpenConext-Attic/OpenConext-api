@@ -20,6 +20,7 @@ package nl.surfnet.coin.teams.domain;
  * User's key and secret for a Group provider
  */
 public class GroupProviderUserOauth {
+  private static final int PRIME = 31;
   private String personId;
   private String provider;
   private String oAuthToken;
@@ -46,5 +47,41 @@ public class GroupProviderUserOauth {
 
   public String getOAuthSecret() {
     return oAuthSecret;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    GroupProviderUserOauth oauth = (GroupProviderUserOauth) o;
+
+    if (oAuthSecret != null ? !oAuthSecret.equals(oauth.oAuthSecret) : oauth.oAuthSecret != null) {
+      return false;
+    }
+    if (oAuthToken != null ? !oAuthToken.equals(oauth.oAuthToken) : oauth.oAuthToken != null) {
+      return false;
+    }
+    if (personId != null ? !personId.equals(oauth.personId) : oauth.personId != null) {
+      return false;
+    }
+    if (provider != null ? !provider.equals(oauth.provider) : oauth.provider != null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = personId != null ? personId.hashCode() : 0;
+    result = PRIME * result + (provider != null ? provider.hashCode() : 0);
+    result = PRIME * result + (oAuthToken != null ? oAuthToken.hashCode() : 0);
+    result = PRIME * result + (oAuthSecret != null ? oAuthSecret.hashCode() : 0);
+    return result;
   }
 }
