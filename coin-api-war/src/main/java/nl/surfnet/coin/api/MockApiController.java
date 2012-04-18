@@ -18,6 +18,7 @@ package nl.surfnet.coin.api;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ import nl.surfnet.coin.api.service.MockService;
 import static nl.surfnet.coin.api.PersonController.getOnBehalfOf;
 
 /**
- * Controller for the mock REST interface..
+ * Controller for the mock REST interface.
  */
 @Controller
 @RequestMapping(value = "mock10/social/rest")
@@ -39,7 +40,8 @@ public class MockApiController {
 
   private static Logger LOG = LoggerFactory.getLogger(MockApiController.class);
 
-  private MockService mockService = new MockService();
+  @Autowired
+  private MockService mockService;
 
   @RequestMapping(value = "/people/{userId}/@self")
   @ResponseBody
@@ -49,32 +51,35 @@ public class MockApiController {
 
   @RequestMapping(value = "/people/{userId}")
   @ResponseBody
-  public PersonEntry getPerson(@PathVariable("userId") String userId) {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Got getPerson-request, for userId '{}' on behalf of '{}'", new Object[]{userId, getOnBehalfOf()});
-    }
-    return mockService.getPerson(userId, getOnBehalfOf());
+  public PersonEntry getPerson(@PathVariable("userId")
+  String userId) {
+
+    LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'",
+        new Object[] { userId, PersonController.getOnBehalfOf() });
+    return mockService.getPerson(userId, PersonController.getOnBehalfOf());
   }
 
   @RequestMapping(value = "/people/{userId}/{groupId}")
   @ResponseBody
-  public GroupMembersEntry getGroupMembers(
-      @PathVariable("userId") String userId,
-      @PathVariable("groupId") String groupId) {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
-          "Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'",
-          new Object[]{userId, groupId, getOnBehalfOf()});
-    }
-    return mockService.getGroupMembers(groupId, getOnBehalfOf());
+  public GroupMembersEntry getGroupMembers(@PathVariable("userId")
+  String userId, @PathVariable("groupId")
+  String groupId) {
+
+    LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
+        groupId, PersonController.getOnBehalfOf() });
+    return mockService.getGroupMembers(groupId, PersonController.getOnBehalfOf());
   }
 
   @RequestMapping(value = "/groups/{userId}")
   @ResponseBody
-  public Group20Entry getGroups(@PathVariable("userId") String userId) {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Got getGroups-request, for userId '{}',  on behalf of '{}'", new Object[]{userId, getOnBehalfOf()});
-    }
-    return mockService.getGroups20(userId, getOnBehalfOf());
+  public Group20Entry getGroups(@PathVariable("userId")
+  String userId) {
+
+    LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'",
+        new Object[] { userId, PersonController.getOnBehalfOf() });
+    return mockService.getGroups20(userId, PersonController.getOnBehalfOf());
   }
+
+ 
+
 }

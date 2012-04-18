@@ -22,6 +22,7 @@ import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 
 import org.junit.Test;
@@ -44,51 +45,61 @@ public class MockServiceTest {
 
   @Test
   public void getGroupMembers() {
-    List<Person> groupMembers = service.getGroupMembers("foo",
-        "some logged in user").getEntry();
+    List<Person> groupMembers = service.getGroupMembers("foo", "some logged in user").getEntry();
     assertEquals(3, groupMembers.size());
   }
 
   @Test
   public void getGroups() {
-    List<Group> groups = service.getGroups("foo", "some logged in user")
-        .getEntry();
+    List<Group> groups = service.getGroups("foo", "some logged in user").getEntry();
     assertEquals(2, groups.size());
   }
 
   @Test
   public void getGroups20() {
-    List<Group20> groups = service.getGroups20("foo", "some logged in user")
-        .getEntry();
+    List<Group20> groups = service.getGroups20("foo", "some logged in user").getEntry();
     assertEquals(2, groups.size());
   }
 
   @Test
   public void getPersonFallback() {
-    Person person = service.getPerson("qwerty", "some logged in user")
-        .getEntry();
+    Person person = service.getPerson("qwerty", "some logged in user").getEntry();
     assertEquals("Nice", person.getName().getFamilyName());
   }
 
   @Test
   public void getGroupMembersFallback() {
-    List<Person> groupMembers = service.getGroupMembers("qwerty",
-        "some logged in user").getEntry();
+    List<Person> groupMembers = service.getGroupMembers("qwerty", "some logged in user").getEntry();
     assertEquals(22, groupMembers.size());
   }
 
   @Test
   public void getGroupsFallback() {
-    List<Group> groups = service.getGroups("qwerty", "some logged in user")
-        .getEntry();
+    List<Group> groups = service.getGroups("qwerty", "some logged in user").getEntry();
     assertEquals(17, groups.size());
   }
 
   @Test
   public void getGroups20Fallback() {
-    List<Group20> groups = service.getGroups20("qwerty", "some logged in user")
-        .getEntry();
+    List<Group20> groups = service.getGroups20("qwerty", "some logged in user").getEntry();
     assertEquals(2, groups.size());
+  }
+
+  @Test
+  public void testInjection() {
+    service.setActive(true);
+    Group20 group = new Group20();
+    group.setDescription("description");
+    group.setId("group1");
+    service.addGroup(group);
+    Person person = new Person();
+    person.setId("person1");
+    service.addPerson(person);
+    service.addGroup(group);
+    service.addPersonToGroup(person.getId(), group.getId());
+    GroupMembersEntry groupMembers = service.getGroupMembers(group.getId(), null);
+    assertEquals(1, groupMembers.getEntry().size());
+    service.setActive(false);
   }
 
 }
