@@ -60,7 +60,7 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   @Override
-  public List<Group20> getGroup20s(GroupProviderUserOauth oauth, GroupProvider provider) {
+  public List<Group20> getGroup20List(GroupProviderUserOauth oauth, GroupProvider provider) {
 
     // we assume now that it's a 3-legged oauth provider
     final ThreeLeggedOauth10aGroupProviderApi api =
@@ -72,7 +72,7 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
     Token accessToken = new Token(oauth.getOAuthToken(), oauth.getOAuthSecret());
     final String strippedID = convertToExternalPersonId(oauth.getPersonId(), provider);
 
-    OAuthRequest oAuthRequest = getGroupOAuthRequest(provider, api, strippedID);
+    OAuthRequest oAuthRequest = getGroupsOAuthRequest(provider, api, strippedID);
     oAuthService.signRequest(accessToken, oAuthRequest);
     Response oAuthResponse = oAuthRequest.send();
 
@@ -86,12 +86,48 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
     return new ArrayList<Group20>();
   }
 
+  @Override
+  public Group20 getGroup20(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId) {
+    // we assume now that it's a 3-legged oauth provider
+    final ThreeLeggedOauth10aGroupProviderApi api =
+        new ThreeLeggedOauth10aGroupProviderApi(groupProvider);
+    final GroupProviderServiceThreeLeggedOAuth10a tls =
+        new GroupProviderServiceThreeLeggedOAuth10a(groupProvider, api);
+    final OAuthService oAuthService = tls.getOAuthService();
+
+    Token accessToken = new Token(oauth.getOAuthToken(), oauth.getOAuthSecret());
+    final String strippedPersonID = convertToExternalPersonId(oauth.getPersonId(), groupProvider);
+    final String strippedGroupID = convertToExternalGroupId(groupId, groupProvider);
+    final OAuthRequest oAuthRequest = getGroupOAuthRequest(groupProvider, api, strippedPersonID, strippedGroupID);
+    oAuthService.signRequest(accessToken, oAuthRequest);
+    Response oAuthResponse = oAuthRequest.send();
+    if (oAuthResponse.isSuccessful()) {
+      final List<Group20> group20s = getGroup20sFromResponse(oAuthResponse, groupProvider);
+      if (group20s != null && group20s.size() == 1) {
+        return group20s.get(0);
+      } else if (group20s != null && group20s.size() > 1) {
+        throw new RuntimeException(String.format("Received %s groups for groupid %s", group20s.size(), groupId));
+      }
+    } else {
+      Object[] logArgs = {groupId, oauth.getPersonId(), oAuthResponse.getCode()};
+      log.info("Fetching external group {} for user {} failed with status code {}", logArgs);
+      log.trace(oAuthResponse.getBody());
+    }
+    return null;
+  }
+
   /* (non-Javadoc)
    * @see nl.surfnet.coin.teams.service.GroupService#getGroupMembers(nl.surfnet.coin.teams.domain.GroupProviderUserOauth, nl.surfnet.coin.teams.domain.GroupProvider)
    */
   @Override
   public List<Person> getGroupMembers(GroupProviderUserOauth oauth,
       GroupProvider provider, String groupId) {
+
+    return this.getGroupMembers(oauth, provider, groupId, 100000, 0);
+  }
+
+  @Override
+  public List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider provider, String groupId, int limit, int offset) {
     // we assume now that it's a 3-legged oauth provider
     final ThreeLeggedOauth10aGroupProviderApi api =
         new ThreeLeggedOauth10aGroupProviderApi(provider);
@@ -104,6 +140,11 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
     final String strippedGroupId = convertToExternalGroupId(groupId, provider);
 
     OAuthRequest oAuthRequest = getGroupMembersOAuthRequest(provider, api, strippedPersonID, strippedGroupId);
+
+    oAuthRequest.addQuerystringParameter("count", String.valueOf(limit));
+    oAuthRequest.addQuerystringParameter("startIndex", String.valueOf(offset));
+    oAuthRequest.addQuerystringParameter("sortBy", "familyName");
+
     oAuthService.signRequest(accessToken, oAuthRequest);
     Response oAuthResponse = oAuthRequest.send();
 
@@ -111,14 +152,12 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
       return getPersonsFromResponse(oAuthResponse, provider);
     } else {
       log.info("Fetching external groupmembers for user {} for group {} failed with status code {}",
-          new Object[]{oauth.getPersonId(),groupId, oAuthResponse.getCode()});
+          new Object[]{strippedPersonID, strippedPersonID, oAuthResponse.getCode()});
       log.trace(oAuthResponse.getBody());
     }
-    return new ArrayList<Person>();
+    return new ArrayList<Person>();  }
 
-  }
-  
- 
+
   private List<Person> getPersonsFromResponse(Response oAuthResponse,
       GroupProvider provider) {
     String body = oAuthResponse.getBody();
@@ -141,12 +180,21 @@ public class GroupServiceThreeLeggedOAuth10a implements GroupService {
     return persons;
   }
 
-  private OAuthRequest getGroupOAuthRequest(GroupProvider provider,
-      final ThreeLeggedOauth10aGroupProviderApi api, final String strippedPersonID) {
+  private OAuthRequest getGroupsOAuthRequest(GroupProvider provider, final ThreeLeggedOauth10aGroupProviderApi api,
+                                             final String strippedPersonID) {
     OAuthRequest oAuthRequest = new OAuthRequest(api.getRequestTokenVerb(),
         MessageFormat.format("{0}/groups/{1}",
             provider.getAllowedOptionAsString(GroupProviderOptionParameters.URL),
             strippedPersonID));
+    return oAuthRequest;
+  }
+
+  private OAuthRequest getGroupOAuthRequest(GroupProvider provider, final ThreeLeggedOauth10aGroupProviderApi api,
+                                             final String strippedPersonID, final String strippedGroupId) {
+    OAuthRequest oAuthRequest = new OAuthRequest(api.getRequestTokenVerb(),
+        MessageFormat.format("{0}/groups/{1}/{2}",
+            provider.getAllowedOptionAsString(GroupProviderOptionParameters.URL),
+            strippedPersonID, strippedGroupId));
     return oAuthRequest;
   }
 
