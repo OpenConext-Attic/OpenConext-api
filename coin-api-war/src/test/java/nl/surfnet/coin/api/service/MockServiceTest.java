@@ -29,8 +29,10 @@ import org.junit.Test;
 
 public class MockServiceTest {
 
-  private MockService service = new MockService();
+  private MockServiceImpl service = new MockServiceImpl();
 
+  
+  
   @Test
   public void getPerson() {
     Person person = service.getPerson("foo", "some logged in user").getEntry();

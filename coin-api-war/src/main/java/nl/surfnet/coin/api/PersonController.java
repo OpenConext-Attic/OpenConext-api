@@ -16,9 +16,10 @@
 
 package nl.surfnet.coin.api;
 
+import javax.annotation.Resource;
+
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
-import nl.surfnet.coin.api.service.MockService;
 import nl.surfnet.coin.api.service.PersonService;
 
 import org.slf4j.Logger;
@@ -44,10 +45,10 @@ public class PersonController {
 
   private static final String GROUP_ID_SELF = "@self";
 
-  @Autowired
+  @Resource(name="ldapService")
   private PersonService personService;
 
-  @Autowired
+  @Resource(name="ldapService")
   private GroupService groupService;
 
   @RequestMapping(value = "/people/{userId}/{groupId}")

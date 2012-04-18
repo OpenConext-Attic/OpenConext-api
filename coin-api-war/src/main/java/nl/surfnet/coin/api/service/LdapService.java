@@ -25,7 +25,7 @@ import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.ldap.LdapClient;
 
-@Component
+@Component(value = "ldapService")
 public class LdapService implements GroupService, PersonService {
 
   @Autowired

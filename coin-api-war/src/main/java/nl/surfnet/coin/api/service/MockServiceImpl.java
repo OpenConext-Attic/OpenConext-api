@@ -38,11 +38,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-@Component
-public class MockService implements PersonService, GroupService {
+@Component(value = "mockService")
+public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider {
 
-
-  private Logger LOG = LoggerFactory.getLogger(MockService.class);
+  private Logger LOG = LoggerFactory.getLogger(MockServiceImpl.class);
 
   private static boolean isActive;
   private static long sleepMilliseconds;
@@ -189,7 +188,7 @@ public class MockService implements PersonService, GroupService {
   }
 
   public void setActive(boolean isActive) {
-    MockService.isActive = isActive;
+    MockServiceImpl.isActive = isActive;
   }
 
   public void reset() {

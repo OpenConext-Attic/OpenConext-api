@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.api;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
-import nl.surfnet.coin.api.service.MockService;
+import nl.surfnet.coin.api.service.GroupService;
+
+import nl.surfnet.coin.api.service.PersonService;
 
 import static nl.surfnet.coin.api.PersonController.getOnBehalfOf;
 
@@ -40,8 +44,11 @@ public class MockApiController {
 
   private static Logger LOG = LoggerFactory.getLogger(MockApiController.class);
 
-  @Autowired
-  private MockService mockService;
+  @Resource(name="mockService")
+  private PersonService personService;
+
+  @Resource(name="mockService")
+  private GroupService groupService;
 
   @RequestMapping(value = "/people/{userId}/@self")
   @ResponseBody
@@ -56,7 +63,7 @@ public class MockApiController {
 
     LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'",
         new Object[] { userId, PersonController.getOnBehalfOf() });
-    return mockService.getPerson(userId, PersonController.getOnBehalfOf());
+    return personService.getPerson(userId, PersonController.getOnBehalfOf());
   }
 
   @RequestMapping(value = "/people/{userId}/{groupId}")
@@ -67,7 +74,7 @@ public class MockApiController {
 
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, PersonController.getOnBehalfOf() });
-    return mockService.getGroupMembers(groupId, PersonController.getOnBehalfOf());
+    return personService.getGroupMembers(groupId, PersonController.getOnBehalfOf());
   }
 
   @RequestMapping(value = "/groups/{userId}")
@@ -77,7 +84,7 @@ public class MockApiController {
 
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'",
         new Object[] { userId, PersonController.getOnBehalfOf() });
-    return mockService.getGroups20(userId, PersonController.getOnBehalfOf());
+    return groupService.getGroups20(userId, PersonController.getOnBehalfOf());
   }
 
  
