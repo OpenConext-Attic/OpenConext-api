@@ -35,15 +35,39 @@ public interface GroupService {
    * @param groupProvider {@link GroupProvider} for the settings
    * @return List of Group20's, can be empty
    */
-  List<Group20> getGroup20s(GroupProviderUserOauth oauth, GroupProvider groupProvider);
+  List<Group20> getGroup20List(GroupProviderUserOauth oauth, GroupProvider groupProvider);
+
+  /**
+   * Gets a specific {@link Group20} for the users oauth configuration
+   *
+   * @param oauth         {@link GroupProviderUserOauth} configuration for a user
+   * @param groupProvider {@link GroupProvider} for the settings
+   * @param groupId       identifier of the external group
+   * @return {@link Group20}, can be {@literal null}
+   */
+  Group20 getGroup20(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId);
+
 
   /**
    * Gets a List of  for the user's oauth configuration
    *
-   * @param oauth {@link GroupProviderUserOauth} configuration for a user
+   * @param oauth         {@link GroupProviderUserOauth} configuration for a user
    * @param groupProvider {@link GroupProvider} for the settings
-   * @param groupId the groupId as we know it in SURFconext context (e.g. urn:collab:group:myuniversity.nl:testgroup)
+   * @param groupId       the groupId as we know it in SURFconext context (e.g. urn:collab:group:myuniversity.nl:testgroup)
    * @return List of Group20's, can be empty
+   * @deprecated use {@link #getGroupMembers(nl.surfnet.coin.teams.domain.GroupProviderUserOauth, nl.surfnet.coin.teams.domain.GroupProvider, String, int, int)}
    */
   List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId);
+
+  /**
+   * Gets a List of  for the user's oauth configuration
+   *
+   * @param oauth         {@link GroupProviderUserOauth} configuration for a user
+   * @param groupProvider {@link GroupProvider} for the settings
+   * @param groupId       the groupId as we know it in SURFconext context (e.g. urn:collab:group:myuniversity.nl:testgroup)
+   * @param limit         maximum number of items
+   * @param offset        starting point for paging
+   * @return List of Group20's, can be empty
+   */
+  List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId, int limit, int offset);
 }
