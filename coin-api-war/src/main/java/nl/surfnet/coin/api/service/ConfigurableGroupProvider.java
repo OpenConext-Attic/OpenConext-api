@@ -19,5 +19,5 @@ public interface ConfigurableGroupProvider {
   public void reset();
   
   public void sleep(long millSeconds);
-
+  
 }

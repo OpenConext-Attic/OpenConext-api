@@ -63,6 +63,9 @@ public class MockApiController {
 
     LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'",
         new Object[] { userId, PersonController.getOnBehalfOf() });
+    if (PersonController.PERSON_ID_SELF.equals(userId)) {
+      userId = getOnBehalfOf();
+    }
     return personService.getPerson(userId, PersonController.getOnBehalfOf());
   }
 
@@ -71,6 +74,9 @@ public class MockApiController {
   public GroupMembersEntry getGroupMembers(@PathVariable("userId")
   String userId, @PathVariable("groupId")
   String groupId) {
+    if (PersonController.PERSON_ID_SELF.equals(userId)) {
+      userId = getOnBehalfOf();
+    }
 
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, PersonController.getOnBehalfOf() });
@@ -81,7 +87,9 @@ public class MockApiController {
   @ResponseBody
   public Group20Entry getGroups(@PathVariable("userId")
   String userId) {
-
+    if (PersonController.PERSON_ID_SELF.equals(userId)) {
+      userId = getOnBehalfOf();
+    }
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'",
         new Object[] { userId, PersonController.getOnBehalfOf() });
     return groupService.getGroups20(userId, PersonController.getOnBehalfOf());

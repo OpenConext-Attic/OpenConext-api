@@ -43,7 +43,8 @@ public class PersonController {
 
   private static Logger LOG = LoggerFactory.getLogger(PersonController.class);
 
-  private static final String GROUP_ID_SELF = "@self";
+  public static final String GROUP_ID_SELF = "@self";
+  public static final String PERSON_ID_SELF = "@me";
 
   @Resource(name="ldapService")
   private PersonService personService;
@@ -60,6 +61,9 @@ public class PersonController {
       LOG.debug("Got getPerson-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[]{userId, groupId, getOnBehalfOf()});
     }
     if (GROUP_ID_SELF.equals(groupId)) {
+      if (PERSON_ID_SELF.equals(userId)) {
+        userId = getOnBehalfOf();
+      }
       return personService.getPerson(userId, getOnBehalfOf());
     } else {
       throw new UnsupportedOperationException("Not supported: person query with group other than @self.");
@@ -71,6 +75,9 @@ public class PersonController {
   public PersonEntry getPerson(@PathVariable("userId") String userId) {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Got getPerson-request, for userId '{}' on behalf of '{}'", new Object[]{userId, getOnBehalfOf()});
+    }
+    if (PERSON_ID_SELF.equals(userId)) {
+      userId = getOnBehalfOf();
     }
     return personService.getPerson(userId, getOnBehalfOf());
   }

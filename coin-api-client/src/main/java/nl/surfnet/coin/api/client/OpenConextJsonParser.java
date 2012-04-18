@@ -27,6 +27,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.TypeReference;
 
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
@@ -46,8 +47,8 @@ public class OpenConextJsonParser {
   private ObjectMapper objectMapper;
 
   public OpenConextJsonParser() {
-    objectMapper = new ObjectMapper()
-        .enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+    objectMapper = new ObjectMapper().enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 
   }
 
@@ -99,20 +100,17 @@ public class OpenConextJsonParser {
 
   private ResultWrapper<Group20Entry> parseGroup20ResultWrapper(InputStream in) {
     try {
-      return objectMapper.readValue(in,
-          new TypeReference<ResultWrapper<Group20Entry>>() {
-          });
+      return objectMapper.readValue(in, new TypeReference<ResultWrapper<Group20Entry>>() {
+      });
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private ResultWrapper<GroupMembersEntry> parseTeamMembersResultWrapper(
-      InputStream in) {
+  private ResultWrapper<GroupMembersEntry> parseTeamMembersResultWrapper(InputStream in) {
     try {
-      return objectMapper.readValue(in,
-          new TypeReference<ResultWrapper<GroupMembersEntry>>() {
-          });
+      return objectMapper.readValue(in, new TypeReference<ResultWrapper<GroupMembersEntry>>() {
+      });
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

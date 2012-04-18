@@ -195,7 +195,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     PERSONS_IN_MEMORY = new HashMap<String, Person>();
     GROUPS_IN_MEMORY = new HashMap<String, Group20>();
     MEMBERSHIPS_IN_MEMORY = new HashMap<String, List<String>>();
-    isActive = true;
+    isActive = false;
     sleepMilliseconds = 0;
   }
 
