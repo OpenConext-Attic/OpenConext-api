@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package nl.surfnet.coin.teams.service.impl;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 import nl.surfnet.coin.teams.domain.GroupProvider;
@@ -74,6 +76,16 @@ public class GroupServiceThreeLeggedOAuth10aTest extends
   public void testGetGroup20ListHz() {
     super.setResponseResource(new ClassPathResource("hz-groups.json"));
     List<Group20> group20s = groupService.getGroup20List(oauth, provider);
+    assertEquals(3, group20s.size());
+    assertEquals("HZG-1042", group20s.get(0).getId());
+  }
+
+  @Test
+  public void testGetGroup20EntryHz() {
+    super.setResponseResource(new ClassPathResource("hz-groups.json"));
+    final Group20Entry group20Entry = groupService.getGroup20Entry(oauth, provider, 123456, 0);
+    final List<Group20> group20s = group20Entry.getEntry();
+    assertEquals(3, group20Entry.getTotalResults());
     assertEquals(3, group20s.size());
     assertEquals("HZG-1042", group20s.get(0).getId());
   }

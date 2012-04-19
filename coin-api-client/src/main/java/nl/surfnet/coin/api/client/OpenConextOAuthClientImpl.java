@@ -25,10 +25,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import nl.surfnet.coin.api.client.domain.Group;
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Person;
-
 import org.apache.commons.io.IOUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
@@ -41,6 +37,10 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+
+import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
 
 /**
  * Implementation of OpenConextOAuthClient
@@ -175,7 +175,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
    * (non-Javadoc)
    * 
    * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getPeople(java.lang.String
+   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getGroupMembers(java.lang.String
    * , java.lang.String)
    */
   @Override

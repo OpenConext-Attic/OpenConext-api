@@ -89,7 +89,7 @@ public interface OpenConextOAuthClient {
    * @param onBehalfOf
    *          the unique identifier of the user that is going to make the
    *          request
-   * @return the {@link org.opensocial.models.Person}
+   * @return the {@link Person}
    */
   Person getPerson(String userId, String onBehalfOf);
 
