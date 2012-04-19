@@ -21,12 +21,9 @@
 ##
 ####################################################################
 
-janus.uri=https://serviceregistry.acc.surfconext.nl/simplesaml/module.php/janus/services/rest/
 janus.user=??
 janus.secret=??
-
-# Choose either mockClientDetailsService or janusClientDetailsService
-clientDetailsServiceClass=nl.surfnet.coin.api.service.JanusClientDetailsService
+janus.uri=https://serviceregistry.acc.surfconext.nl/simplesaml/module.php/janus/services/rest/
 
 coin-api.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.jdbc.url=jdbc:mysql://db.acc.surfconext.nl:3306/api
@@ -37,11 +34,23 @@ coin-api.ldap.url=ldap://ldap.acc.surfconext.nl:389
 coin-api.ldap.password=??
 coin-api.ldap.userDn=??
 
-ldapClientClass=nl.surfnet.coin.ldap.LdapClientImpl
-
-engineblockClass=nl.surfnet.coin.eb.EngineBlockImpl
-
 coin-api.engineblock.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.engineblock.jdbc.password=??
 coin-api.engineblock.jdbc.url=jdbc:mysql://db.acc.surfconext.nl:3306/eb
 coin-api.engineblock.jdbc.user=??
+
+####################################################################
+##
+## The following properties are the responsibility of the developers
+##
+####################################################################
+
+#Choose either mockClientDetailsService or janusClientDetailsService
+clientDetailsServiceClass=nl.surfnet.coin.api.service.JanusClientDetailsService
+
+#For future purposes we might mock them
+ldapClientClass=nl.surfnet.coin.ldap.LdapClientImpl
+engineblockClass=nl.surfnet.coin.eb.EngineBlockImpl
+
+#Is the mock API enabled?
+mock-api-enabled=false

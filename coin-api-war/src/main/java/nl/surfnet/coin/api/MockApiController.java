@@ -18,6 +18,7 @@ package nl.surfnet.coin.api;
 
 import static nl.surfnet.coin.api.PersonController.getOnBehalfOf;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +36,8 @@ import nl.surfnet.coin.api.service.PersonService;
 import org.apache.commons.beanutils.BeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.AdvisedSupport;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +54,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MockApiController {
 
   private static Logger LOG = LoggerFactory.getLogger(MockApiController.class);
-
+  
+  @Value("${mock-api-enabled}")
+  private boolean mockApiEnabled;
+  
   @Resource(name = "mockService")
   private PersonService personService;
 
@@ -69,7 +75,7 @@ public class MockApiController {
   @ResponseBody
   public PersonEntry getPerson(@PathVariable("userId")
   String userId) {
-
+    invariant();
     LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'",
         new Object[] { userId, PersonController.getOnBehalfOf() });
     if (PersonController.PERSON_ID_SELF.equals(userId)) {
@@ -86,6 +92,7 @@ public class MockApiController {
   Integer count, @RequestParam(value = "startIndex", required = false)
   Integer startIndex, @RequestParam(value = "sortBy", required = false)
   String sortBy) {
+    invariant();
     if (PersonController.PERSON_ID_SELF.equals(userId)) {
       userId = getOnBehalfOf();
     }
@@ -105,6 +112,7 @@ public class MockApiController {
   Integer count, @RequestParam(value = "startIndex", required = false)
   Integer startIndex, @RequestParam(value = "sortBy", required = false)
   String sortBy) {
+    invariant();
     if (PersonController.PERSON_ID_SELF.equals(userId)) {
       userId = getOnBehalfOf();
     }
@@ -124,16 +132,23 @@ public class MockApiController {
       Collections.sort(entry, comparator);
       parent.setSorted(true);
     }
-    if (startIndex != null) {
+    if (startIndex != null && startIndex > -1 && startIndex < entry.size()) {
       entry = entry.subList(startIndex, entry.size());
       parent.setStartIndex(startIndex);
     }
-    if (count != null) {
+    if (count != null && count > -1 && count < entry.size()) {
       entry = entry.subList(0, count);
       parent.setItemsPerPage(count);
     }
-
     return entry;
   }
 
+  private void invariant() {
+    if (!this.mockApiEnabled) {
+      throw new RuntimeException("Mock API not enabled");
+    }
+    
+  }
+
+  
 }

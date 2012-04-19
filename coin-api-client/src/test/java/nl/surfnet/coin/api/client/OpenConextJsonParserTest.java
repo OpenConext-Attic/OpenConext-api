@@ -18,10 +18,14 @@ package nl.surfnet.coin.api.client;
 
 import java.io.InputStream;
 
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.ResultWrapper;
 
@@ -35,20 +39,13 @@ public class OpenConextJsonParserTest {
 
   @Test
   public void testParseResultWrapper() throws Exception {
-    Resource resource = new ClassPathResource("multiple-wrapped-groups20.json");
-    InputStream in = resource.getInputStream();
-    Group20Entry entry = parser.parseGroups20(in);
+    Group20Entry entry = parser.parseGroups20(new ClassPathResource("multiple-wrapped-groups20.json").getInputStream());
     assertEquals(3, entry.getEntry().size());
-    in.close();
   }
 
   @Test
   public void testParseGroup20() throws Exception {
-    Resource resource = new ClassPathResource("multiple-groups20.json");
-    InputStream in = resource.getInputStream();    
-    final Group20Entry group20Entry = parser.parseGroups20(in);
+    final Group20Entry group20Entry = parser.parseGroups20(new ClassPathResource("multiple-groups20.json").getInputStream());
     assertEquals(3, group20Entry.getEntry().size());
-    in.close();
-
   }
 }

@@ -10,14 +10,14 @@ import nl.surfnet.coin.api.client.domain.Person;
  */
 public interface ConfigurableGroupProvider {
 
-  public void addPerson(Person person);
+  void addPerson(Person person);
 
-  public void addGroup(Group20 group);
+  void addGroup(Group20 group);
   
-  public void addPersonToGroup(String personId, String groupId);
+  void addPersonToGroup(String personId, String groupId);
   
-  public void reset();
+  void reset();
   
-  public void sleep(long millSeconds);
+  void sleep(long millSeconds);
   
 }

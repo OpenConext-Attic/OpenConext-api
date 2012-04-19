@@ -33,8 +33,7 @@
         <property name="messageConverters">
             <list>
                 <!-- Support JSON -->
-                <bean
-                        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+                <bean class="nl.surfnet.coin.util.CustomMappingJacksonHttpMessageConverter"/>
             </list>
         </property>
     </bean>
@@ -44,7 +43,7 @@
             <list>
                 <!-- Support JSON -->
                 <bean
-                        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+                        class="nl.surfnet.coin.util.CustomMappingJacksonHttpMessageConverter"/>
             </list>
         </property>
     </bean>
