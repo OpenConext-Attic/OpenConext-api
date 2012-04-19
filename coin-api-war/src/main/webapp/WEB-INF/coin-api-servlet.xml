@@ -28,7 +28,7 @@
     <context:component-scan base-package="nl.surfnet.coin.api"/>
     <context:property-placeholder location="classpath:coin-api.properties"/>
 
-    <bean id="messageAdapter"
+	<bean id="messageAdapter"
           class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <list>
