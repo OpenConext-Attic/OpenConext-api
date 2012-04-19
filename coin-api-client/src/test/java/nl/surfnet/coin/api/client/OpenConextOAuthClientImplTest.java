@@ -16,19 +16,19 @@
 
 package nl.surfnet.coin.api.client;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.scribe.model.Token;
+import org.springframework.core.io.ClassPathResource;
 
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.scribe.model.Token;
-import org.springframework.core.io.ClassPathResource;
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -81,7 +81,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
 
   /**
    * Test method for
-   * {@link nl.surfnet.coin.api.client.OpenConextOAuthClientImpl#getPeople(java.lang.String, java.lang.String)}
+   * {@link nl.surfnet.coin.api.client.OpenConextOAuthClientImpl#getGroupMembers(java.lang.String, java.lang.String)}
    * .
    */
   @Test

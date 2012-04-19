@@ -19,6 +19,8 @@ package nl.surfnet.coin.teams.service;
 import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
@@ -29,9 +31,20 @@ import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 public interface GroupService {
 
   /**
+   * Gets a {@link Group20Entry} for the user's oauth configuration
+   *
+   * @param oauth         {@link nl.surfnet.coin.teams.domain.GroupProviderUserOauth} configuration for a user
+   * @param groupProvider {@link nl.surfnet.coin.teams.domain.GroupProvider} for the settings
+   * @param limit         maximum amount of {@link Group20}'s in the resultset
+   * @param offset        start index
+   * @return {@link Group20Entry}
+   */
+  Group20Entry getGroup20Entry(GroupProviderUserOauth oauth, GroupProvider groupProvider, int limit, int offset);
+
+  /**
    * Gets a List of {@link Group20}'s for the user's oauth configuration
    *
-   * @param oauth {@link GroupProviderUserOauth} configuration for a user
+   * @param oauth         {@link GroupProviderUserOauth} configuration for a user
    * @param groupProvider {@link GroupProvider} for the settings
    * @return List of Group20's, can be empty
    */
@@ -55,19 +68,20 @@ public interface GroupService {
    * @param groupProvider {@link GroupProvider} for the settings
    * @param groupId       the groupId as we know it in SURFconext context (e.g. urn:collab:group:myuniversity.nl:testgroup)
    * @return List of Group20's, can be empty
-   * @deprecated use {@link #getGroupMembers(nl.surfnet.coin.teams.domain.GroupProviderUserOauth, nl.surfnet.coin.teams.domain.GroupProvider, String, int, int)}
+   * @deprecated use {@link #getGroupMembersEntry}
    */
   List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId);
 
   /**
-   * Gets a List of  for the user's oauth configuration
+   * Gets group members with paginating information for the user's oauth configuration
    *
    * @param oauth         {@link GroupProviderUserOauth} configuration for a user
    * @param groupProvider {@link GroupProvider} for the settings
    * @param groupId       the groupId as we know it in SURFconext context (e.g. urn:collab:group:myuniversity.nl:testgroup)
    * @param limit         maximum number of items
    * @param offset        starting point for paging
-   * @return List of Group20's, can be empty
+   * @return {@link GroupMembersEntry}, can be {@literal null}
    */
-  List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId, int limit, int offset);
+  GroupMembersEntry getGroupMembersEntry(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId,
+                                         int limit, int offset);
 }
