@@ -26,6 +26,27 @@ public class Group {
   private String description;
   private String voot_membership_role;
 
+  public Group(GroupId id, String title, String description, String voot_membership_role) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.voot_membership_role = voot_membership_role;
+  }
+  public Group() {
+  }
+
+  /**
+   * Some sort of copy constructor.
+   * @param group
+   */
+  public Group(Group20 group) {
+    this.id = new GroupId(group.getId(), GroupId.Type.groupId);
+    this.title = group.getTitle();
+    this.description = group.getDescription();
+    this.voot_membership_role = group.getVoot_membership_role();
+  }
+
+
   /**
    * @return the id
    */

@@ -76,9 +76,9 @@
           <input type="submit" name="Authorize" value="Deny Access" />
         </form>
         <form name="authZFormGrant" action="<%=request.getContextPath()%>/oauth/authorize" method="POST">
-          <input name="user_oauth_approval" value="true" type="hidden"/>
-          <input type="submit" name="Authorize" value="Grant Access" />
-        </form>
+        <input name="user_oauth_approval" value="true" type="hidden"/>
+        <input type="submit" name="Authorize" value="Grant Access" />
+      </form>
       </div>
     </div>
     <div class="main-bottom"></div>

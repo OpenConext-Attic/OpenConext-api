@@ -26,6 +26,7 @@
 
   <mvc:annotation-driven/>
   <context:component-scan base-package="nl.surfnet.coin.api" />
+  <context:component-scan base-package="nl.surfnet.coin.teams" />
 
   <!-- Authorization annotations on service methods -->
   <security:global-method-security pre-post-annotations="enabled"/>

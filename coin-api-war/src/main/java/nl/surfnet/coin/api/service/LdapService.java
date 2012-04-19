@@ -26,20 +26,10 @@ import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.ldap.LdapClient;
 
 @Component(value = "ldapService")
-public class LdapService implements GroupService, PersonService {
+public class LdapService implements PersonService {
 
   @Autowired
   private LdapClient ldapClient;
-
-  @Override
-  public GroupEntry getGroups(String userId, String onBehalfOf) {
-    return new GroupEntry();
-  }
-
-  @Override
-  public Group20Entry getGroups20(String userId, String onBehalfOf) {
-    return null;
-  }
 
   @Override
   public PersonEntry getPerson(String userId, String onBehalfOf) {

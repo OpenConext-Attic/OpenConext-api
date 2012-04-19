@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,21 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class GroupEntry extends AbstractEntry {
   private List<Group> entry;
+
+  public GroupEntry() {
+  }
+
+  public GroupEntry(List<Group> groups) {
+    this.entry = groups;
+  }
+
+  public GroupEntry(Group20Entry groups20) {
+    List myEntry = new ArrayList<Group>();
+    for (Group20 group20 : groups20.getEntry()) {
+      myEntry.add(new Group(group20));
+    }
+    this.entry = myEntry;
+  }
 
   /**
    * @return the entry

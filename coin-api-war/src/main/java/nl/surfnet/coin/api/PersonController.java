@@ -49,7 +49,7 @@ public class PersonController extends AbstractApiController {
   @Resource(name="ldapService")
   private PersonService personService;
 
-  @Resource(name="ldapService")
+  @Resource(name="groupService")
   private GroupService groupService;
 
   @RequestMapping(value = "/people/{userId}/{groupId}")

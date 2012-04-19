@@ -24,8 +24,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-import org.apache.commons.collections.KeyValue;
-import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
@@ -37,8 +35,6 @@ import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.client.domain.Account;
 import nl.surfnet.coin.api.client.domain.Email;
-import nl.surfnet.coin.api.client.domain.Group;
-import nl.surfnet.coin.api.client.domain.GroupId;
 import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Organization;
 import nl.surfnet.coin.api.client.domain.Person;

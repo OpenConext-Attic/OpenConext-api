@@ -70,6 +70,7 @@ public interface GroupService {
    * @return List of Group20's, can be empty
    * @deprecated use {@link #getGroupMembersEntry}
    */
+  @Deprecated
   List<Person> getGroupMembers(GroupProviderUserOauth oauth, GroupProvider groupProvider, String groupId);
 
   /**

@@ -25,7 +25,10 @@ public class GroupId {
   private Type type;
 
   public enum Type {
-    type
+    all, friends, self, deleted, groupId;
+  }
+
+  public GroupId() {
   }
 
   public GroupId(String groupId, Type type) {

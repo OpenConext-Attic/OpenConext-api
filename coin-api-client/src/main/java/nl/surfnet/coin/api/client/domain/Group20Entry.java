@@ -26,6 +26,13 @@ import java.util.List;
 public class Group20Entry extends AbstractEntry {
   private List<Group20> entry;
 
+  public Group20Entry(List<Group20> groups) {
+    this.entry = groups;
+  }
+
+  public Group20Entry() {
+  }
+
   /**
    * @return the entry
    */
