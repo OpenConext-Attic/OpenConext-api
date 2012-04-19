@@ -54,7 +54,6 @@
     <security:custom-filter ref="oauthProtectedResourceFilter" after="EXCEPTION_TRANSLATION_FILTER" />
   </security:http>
 
-	<security:http pattern="/mock10/social/rest/**" security="none"/>
   <security:http pattern="/css/**" security="none"/>
   <security:http pattern="/images/**" security="none"/>
   <security:http pattern="/favicon.ico" security="none"/>
