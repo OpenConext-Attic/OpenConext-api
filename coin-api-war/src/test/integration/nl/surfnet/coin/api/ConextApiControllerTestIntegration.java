@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.api;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import nl.surfnet.coin.api.client.OAuthEnvironment;
 import nl.surfnet.coin.api.client.OAuthRepository;
 import nl.surfnet.coin.api.client.OAuthVersion;
 import nl.surfnet.coin.api.client.OpenConextOAuthClientImpl;
+import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Person;
 
 import static org.junit.Assert.assertEquals;
@@ -56,8 +59,14 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   }
 
   @Test
-  public void completeFlow() throws Exception {
+  public void getPerson() throws Exception {
     Person person = client.getPerson(USER_ID, null);
     assertEquals("the-person-i-am", person.getAccounts().iterator().next().getUserId());
+  }
+
+  @Test
+  public void getGroups() throws Exception {
+    final List<Group> groups = client.getGroups(USER_ID, null);
+    assertEquals(1, groups.size());
   }
 }

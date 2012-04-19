@@ -127,6 +127,17 @@
     </property>
   </bean>
 
+  <bean id="grouperJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource">
+      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${coin-api.grouper.jdbc.driver}" />
+        <property name="url" value="${coin-api.grouper.jdbc.url}" />
+        <property name="username" value="${coin-api.grouper.jdbc.user}" />
+        <property name="password" value="${coin-api.grouper.jdbc.password}" />
+      </bean>
+    </property>
+  </bean>
+
   <bean class="com.googlecode.flyway.core.Flyway" init-method="migrate">
     <property name="dataSource" ref="dataSource" />
   </bean>

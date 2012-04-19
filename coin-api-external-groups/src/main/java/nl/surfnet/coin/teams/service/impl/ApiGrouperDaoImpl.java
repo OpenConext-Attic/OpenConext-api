@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,7 +37,7 @@ import nl.surfnet.coin.api.client.domain.Group20Entry;
 @Component(value="apiGrouperDao")
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl {
 
-  @Autowired
+  @Resource(name = "grouperJdbcTemplate")
   JdbcTemplate jdbcTemplate;
 
   public Group20Entry findAllGroup20sByMember(String personId, int offset, int pageSize) {
@@ -102,5 +104,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl {
     }
   }
 
-
+  public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 }
