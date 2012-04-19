@@ -18,12 +18,6 @@ package nl.surfnet.coin.api;
 
 import javax.annotation.Resource;
 
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.service.ConfigurableGroupProvider;
-import nl.surfnet.coin.api.service.GroupService;
-import nl.surfnet.coin.api.service.PersonService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,6 +28,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.service.ConfigurableGroupProvider;
 
 /**
  * Controller for the mock REST interface..

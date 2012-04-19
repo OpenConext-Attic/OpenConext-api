@@ -22,7 +22,16 @@ package nl.surfnet.coin.api.client.domain;
  */
 public class GroupId {
   private String groupId;
-  private String type;
+  private Type type;
+
+  public enum Type {
+    type
+  }
+
+  public GroupId(String groupId, Type type) {
+    this.groupId = groupId;
+    this.type = type;
+  }
 
   /**
    * @return the groupId
@@ -42,7 +51,7 @@ public class GroupId {
   /**
    * @return the type
    */
-  public String getType() {
+  public Type getType() {
     return type;
   }
 
@@ -50,7 +59,7 @@ public class GroupId {
    * @param type
    *          the type to set
    */
-  public void setType(String type) {
+  public void setType(Type type) {
     this.type = type;
   }
 }

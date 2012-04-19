@@ -24,13 +24,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-import nl.surfnet.coin.api.client.domain.Account;
-import nl.surfnet.coin.api.client.domain.Email;
-import nl.surfnet.coin.api.client.domain.Name;
-import nl.surfnet.coin.api.client.domain.Organization;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.eb.EngineBlock;
-
+import org.apache.commons.collections.KeyValue;
+import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
@@ -39,6 +34,15 @@ import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import nl.surfnet.coin.api.client.domain.Account;
+import nl.surfnet.coin.api.client.domain.Email;
+import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.GroupId;
+import nl.surfnet.coin.api.client.domain.Name;
+import nl.surfnet.coin.api.client.domain.Organization;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.eb.EngineBlock;
 
 /**
  * Interface to Ldap where all persons are stored.
@@ -55,7 +59,7 @@ public class LdapClientImpl implements LdapClient {
   private EngineBlock engineBlock;
 
   /**
-   * 
+   *
    * Find the Person in the LDAP. The identifier can either be the urn
    * (urn:collab:person:nl.myuniversity:s123456) or the persistent identifier
    * (hashed urn specific for the SP).
@@ -115,13 +119,18 @@ public class LdapClientImpl implements LdapClient {
     if (StringUtils.hasText(mail)) {
       person.addEmail(new Email(mail));
     }
-    person.addOrganization(new Organization(getAttribute("o", attributes), getAttribute("schachomeorganizationtype",
-        attributes), getAttribute("nledupersonorgunit", attributes), getAttribute("edupersonaffiliation", attributes)));
+    person.addOrganization(new Organization(getAttribute("o", attributes),
+        getAttribute("schachomeorganizationtype", attributes),
+        getAttribute("nledupersonorgunit", attributes),
+        getAttribute("edupersonaffiliation", attributes)));
     return person;
   }
 
-  /*
+  /**
    * Save get of an Attribute value, may return null
+   * @param attrID the attribute id
+   * @param attributes the attributes holder to get it from
+   * @return the stringified attribute or null.
    */
   private String getAttribute(String attrID, Attributes attributes) {
     Attribute attribute = attributes.get(attrID);
