@@ -16,17 +16,12 @@
 
 package nl.surfnet.coin.api;
 
-import static nl.surfnet.coin.api.PersonController.getOnBehalfOf;
-
-import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,8 +109,8 @@ public class MockApiController extends AbstractApiController {
       userId = getOnBehalfOf();
 }
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'",
-        new Object[] { userId, PersonController.getOnBehalfOf() });
-    Group20Entry groups = groupService.getGroups20(userId, PersonController.getOnBehalfOf());
+        new Object[] { userId, getOnBehalfOf() });
+    Group20Entry groups = groupService.getGroups20(userId, getOnBehalfOf());
     List<Group20> entry = groups.getEntry();
     entry = (List<Group20>) processQueryOptions(groups, count, startIndex, sortBy, entry);
     return groups;
