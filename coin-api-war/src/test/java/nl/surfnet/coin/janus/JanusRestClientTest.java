@@ -61,8 +61,9 @@ public class JanusRestClientTest {
   @Test
   public void getMetadataByEntityId() {
     ArgumentCaptor<URI> captor = ArgumentCaptor.forClass(URI.class);
-    final HashMap<String, String> map = new HashMap<String, String>();
+    final Map<String, Object> map = new HashMap<String, Object>();
     map.put("coin:oauth:secret", "hissecret");
+    map.put("coin:oauth:two_legged_allowed", Boolean.TRUE);
     when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(map);
     String result = janusRestClient.getMetadataByEntityId("foo", Janus.Metadata.OAUTH_SECRET).get(Janus.Metadata.OAUTH_SECRET.val());
     assertEquals("hissecret", result);

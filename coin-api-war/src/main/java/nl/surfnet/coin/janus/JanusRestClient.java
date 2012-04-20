@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -83,18 +84,31 @@ public class JanusRestClient implements Janus {
         LOG.debug("Signed Janus-request is: {}", signedUri);
       }
 
-      final Map<String, String>restResponse = restTemplate.getForObject(signedUri, Map.class);
+      final Map<String, Object>restResponse = restTemplate.getForObject(signedUri, Map.class);
       
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
-
-      return restResponse;
+      return transformMetadataResponse(restResponse);
 
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);
     }
     return null;
+  }
+
+  /**
+   * Transform a Map&lt;String, Object&gt; to Map&lt;String, String&gt;.
+   * @param metadata input map
+   * @return transformed map
+   */
+  private Map<String, String> transformMetadataResponse(Map<String, Object> metadata) {
+    Assert.notNull(metadata, "input object should not be null");
+    Map<String, String> result = new HashMap<String, String>();
+    for (Map.Entry<String, Object> es : metadata.entrySet()) {
+      result.put(es.getKey(), es.getValue().toString());
+    }
+    return result;
   }
 
   @Override
