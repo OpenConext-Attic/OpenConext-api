@@ -56,6 +56,7 @@ clientDetailsServiceClass=nl.surfnet.coin.api.service.JanusClientDetailsService
 #For future purposes we might mock them
 ldapClientClass=nl.surfnet.coin.ldap.LdapClientImpl
 engineblockClass=nl.surfnet.coin.eb.EngineBlockImpl
+groupServiceClass=nl.surfnet.coin.api.service.GrouperServiceImpl
 
 #Is the mock API enabled?
 mock-api-enabled=true

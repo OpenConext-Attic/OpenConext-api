@@ -18,14 +18,11 @@ package nl.surfnet.coin.api.service;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Component;
-
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl;
 
-@Component(value = "groupService")
-public class GroupServiceImpl implements GroupService {
+public class GrouperServiceImpl implements GroupService {
 
   @Resource(name = "apiGrouperDao")
   private ApiGrouperDaoImpl apiGrouperDao;

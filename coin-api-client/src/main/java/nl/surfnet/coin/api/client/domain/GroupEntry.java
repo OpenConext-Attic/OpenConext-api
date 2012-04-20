@@ -35,7 +35,7 @@ public class GroupEntry extends AbstractEntry {
   }
 
   public GroupEntry(Group20Entry groups20) {
-    List myEntry = new ArrayList<Group>();
+    List<Group> myEntry = new ArrayList<Group>();
     for (Group20 group20 : groups20.getEntry()) {
       myEntry.add(new Group(group20));
     }

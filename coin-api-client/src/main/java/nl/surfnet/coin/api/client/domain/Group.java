@@ -37,13 +37,13 @@ public class Group {
 
   /**
    * Some sort of copy constructor.
-   * @param group
+   * @param group20
    */
-  public Group(Group20 group) {
-    this.id = new GroupId(group.getId(), GroupId.Type.groupId);
-    this.title = group.getTitle();
-    this.description = group.getDescription();
-    this.voot_membership_role = group.getVoot_membership_role();
+  public Group(Group20 group20) {
+    this.id = new GroupId(group20.getId(), GroupId.Type.groupId);
+    this.title = group20.getTitle();
+    this.description = group20.getDescription();
+    this.voot_membership_role = group20.getVoot_membership_role();
   }
 
 

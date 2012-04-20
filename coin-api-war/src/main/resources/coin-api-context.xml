@@ -105,6 +105,7 @@
 
   <bean id="ldapClient" class="${ldapClientClass}" />
   <bean id="engineBlock" class="${engineblockClass}" />
+  <bean id="groupService" class="${groupServiceClass}" />
 
   <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
     <property name="contextSource">

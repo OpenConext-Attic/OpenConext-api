@@ -17,23 +17,19 @@
 package nl.surfnet.coin.api.oauth;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.util.Assert;
 import org.springframework.web.util.UriUtils;
 
 public class ShibbolethAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
-  
-  private static final Logger LOG = LoggerFactory.getLogger(ShibbolethAuthenticationEntryPoint.class);
 
+  private static final Logger LOG = LoggerFactory.getLogger(ShibbolethAuthenticationEntryPoint.class);
 
   public ShibbolethAuthenticationEntryPoint(String loginFormUrl) {
     super(loginFormUrl);
