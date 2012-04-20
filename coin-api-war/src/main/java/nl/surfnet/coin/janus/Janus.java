@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.janus;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +29,10 @@ public interface Janus {
   public enum Metadata {
 
     OAUTH_SECRET("coin:oauth:secret"),
-    OAUTH_CONSUMERSECRET("coin:oauth:consumer_secret");
+    OAUTH_CONSUMERKEY("coin:gadgetbaseurl"),
+    OAUTH_CALLBACKURL("coin:oauth:callback_url"),
+    OAUTH_TWOLEGGEDALLOWED("coin:oauth:two_legged_allowed");
+
 
     private String val;
 
@@ -41,9 +45,19 @@ public interface Janus {
     }
   }
   /**
-   * Get a client's metadata by his client_id.
-   * @param clientId the client_id
+   * Get a client's metadata by his entityId.
+   * @param entityId the entityId
    * @return the secret
    */
-  Map<String, String> getMetadataByClientId(String clientId);
-}
+  Map<String, String> getMetadataByEntityId(String entityId, Metadata... attributes);
+
+  /**
+   *
+   * Get a list of entity ids that match the given metadata key/value pair.
+   *
+   * @param key the metadata key
+   *            @param value the value the give metadata key should have
+   * @return the entity id
+   */
+  List<String> getEntityIdsByMetaData(Metadata key, String value);
+  }

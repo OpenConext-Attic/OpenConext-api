@@ -17,15 +17,17 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
-import org.springframework.security.oauth.common.signature.SignatureSecret;
 import org.springframework.security.oauth.provider.BaseConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetailsService;
@@ -41,7 +43,7 @@ import nl.surfnet.coin.janus.Janus;
  */
 public class JanusClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
 
-
+  private final static Logger LOG = LoggerFactory.getLogger(JanusClientDetailsService.class);
   @Autowired
   private Janus janus;
 
@@ -51,7 +53,8 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
     final BaseClientDetails clientDetails = new BaseClientDetails();
-    clientDetails.setClientSecret(janus.getMetadataByClientId(clientId).get(Janus.Metadata.OAUTH_CONSUMERSECRET.val()));
+    clientDetails.setClientSecret(janus.getMetadataByEntityId(clientId, Janus.Metadata.OAUTH_SECRET)
+        .get(Janus.Metadata.OAUTH_SECRET.val()));
     clientDetails.setClientId(clientId);
     clientDetails.setScope(Arrays.asList("read"));
     return clientDetails;
@@ -63,26 +66,32 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
    */
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-    final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
-    final Map<String, String> metadata = janus.getMetadataByClientId(consumerKey);
-    consumerDetails.setConsumerKey(consumerKey);
-
-    SignatureSecret secret;
-    /*
-      Here we always use the Janus.Metadata.OAUTH_SECRET as the client's secret in case the consumer has two legged access.
-      However, if a two-legged allowed client performs a 3 legged request, this will fail (as he will sign with his Janus.Metadata.OAUTH_SECRET secret)
-      FIXME: set secret based on type of issued request
-     */
-    if (metadata.get(Janus.Metadata.OAUTH_SECRET.val()) != null) {
-      // consumer has a 'secret' attribute; therefore allowed to do two legged OAuth 1.0
-      consumerDetails.setRequiredToObtainAuthenticatedToken(false);
-      consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
-      secret = new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
-    } else {
-      consumerDetails.setRequiredToObtainAuthenticatedToken(true);
-      secret = new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_CONSUMERSECRET.val()));
+    List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
+    if (entityIds.size() != 1) {
+      LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size());
+      return null;
     }
-    consumerDetails.setSignatureSecret(secret);
+    String entityId = entityIds.get(0);
+
+    final Map<String, String> metadata = janus.getMetadataByEntityId(entityId,
+        Janus.Metadata.OAUTH_TWOLEGGEDALLOWED,
+        Janus.Metadata.OAUTH_CALLBACKURL,
+        Janus.Metadata.OAUTH_SECRET);
+
+    final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
+    // even if additional metadata not found, set these properties.
+    consumerDetails.setConsumerKey(consumerKey);
+    consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
+
+    // set to required by default
+    consumerDetails.setRequiredToObtainAuthenticatedToken(true);
+    if (metadata != null) {
+      consumerDetails.setSignatureSecret(new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val())));
+      if (StringUtils.equals("true", metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()))) {
+        // two legged allowed
+        consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+      }
+    }
     return consumerDetails;
   }
 }

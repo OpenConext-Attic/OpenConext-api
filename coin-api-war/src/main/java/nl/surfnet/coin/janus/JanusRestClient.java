@@ -21,11 +21,13 @@ import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +59,10 @@ public class JanusRestClient implements Janus {
    * {@inheritDoc}
    */
   @Override
-  public Map <String,String> getMetadataByClientId(String clientId) {
+  public Map <String,String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("entityid", clientId);
-    parameters.put("keys", METADATA_TO_FETCH);
+    parameters.put("entityid", entityId);
+    parameters.put("keys", StringUtils.join(metadatas, ','));
 
     URI signedUri;
     try {
@@ -82,6 +84,35 @@ public class JanusRestClient implements Janus {
       LOG.error("While doing Janus-request", e);
     }
     return null;
+  }
+
+  @Override
+  public List<String> getEntityIdsByMetaData(Metadata key, String value) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("key", key.val());
+    parameters.put("value", value);
+
+    URI signedUri;
+    try {
+      signedUri = sign("findIdentifierByMetadata", parameters);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Signed Janus-request is: {}", signedUri);
+      }
+
+      final List<String> restResponse = restTemplate.getForObject(signedUri, List.class);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Janus-request returned: {}", restResponse.toString());
+      }
+
+      return restResponse;
+
+    } catch (IOException e) {
+      LOG.error("While doing Janus-request", e);
+    }
+    return null;
+
   }
 
   /**
