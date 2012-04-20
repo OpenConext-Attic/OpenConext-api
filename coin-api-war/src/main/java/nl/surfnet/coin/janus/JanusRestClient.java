@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +66,14 @@ public class JanusRestClient implements Janus {
   public Map <String,String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", entityId);
-    parameters.put("keys", StringUtils.join(metadatas, ','));
+    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
+      @Override
+      public Object transform(Object input) {
+        return ((Metadata) input).val();
+      }
+    });
+
+    parameters.put("keys", StringUtils.join(metadataAsStrings, ','));
 
     URI signedUri;
     try {
@@ -94,7 +105,7 @@ public class JanusRestClient implements Janus {
 
     URI signedUri;
     try {
-      signedUri = sign("findIdentifierByMetadata", parameters);
+      signedUri = sign("findIdentifiersByMetadata", parameters);
 
       if (LOG.isDebugEnabled()) {
         LOG.debug("Signed Janus-request is: {}", signedUri);

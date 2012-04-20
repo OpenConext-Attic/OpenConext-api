@@ -69,6 +69,8 @@ public class JanusRestClientTest {
     verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
     assertTrue("Query string should contain correct entityid", captor.getValue().getQuery().contains("entityid=foo"));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains("method=getMetadata"));
+    assertTrue("Query string should contain correct metadata field names", captor.getValue().getQuery().contains
+        ("keys=coin:oauth:secret"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 
@@ -87,7 +89,7 @@ public class JanusRestClientTest {
     assertTrue("Query string should contain correct value (the consumer key metadata value)",
         captor.getValue().getQuery().contains("value=foobar"));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
-        ("method=findIdentifierByMetadata"));
+        ("method=findIdentifiersByMetadata"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
 
   }

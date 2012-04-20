@@ -68,7 +68,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
     List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
     if (entityIds.size() != 1) {
-      LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size());
+      LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size(), consumerKey);
       return null;
     }
     String entityId = entityIds.get(0);
