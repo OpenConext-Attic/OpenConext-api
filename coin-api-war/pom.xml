@@ -273,6 +273,12 @@
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
       </dependency>
+
+    <dependency>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>0.9.1.2</version>
+    </dependency>
   </dependencies>
   <build>
       <testResources>
