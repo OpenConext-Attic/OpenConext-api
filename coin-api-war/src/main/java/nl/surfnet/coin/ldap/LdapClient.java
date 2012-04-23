@@ -26,6 +26,8 @@ import nl.surfnet.coin.api.client.domain.Person;
  */
 public interface LdapClient {
 
+  public static final String URN_IDENTIFIER = "urn:collab:person:";
+
   /**
    * 
    * Find the Person in the LDAP. The identifier can either be the urn

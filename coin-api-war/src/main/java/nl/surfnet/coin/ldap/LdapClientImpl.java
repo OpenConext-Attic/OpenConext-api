@@ -46,7 +46,6 @@ import nl.surfnet.coin.eb.EngineBlock;
  */
 public class LdapClientImpl implements LdapClient {
 
-  private static final String URN_IDENTIFIER = "urn:collab:person:";
 
   @Autowired
   private LdapOperations ldapOperations;

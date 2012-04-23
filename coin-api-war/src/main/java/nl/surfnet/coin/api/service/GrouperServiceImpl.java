@@ -20,12 +20,17 @@ import javax.annotation.Resource;
 
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.ldap.LdapClient;
 import nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl;
 
 public class GrouperServiceImpl implements GroupService {
 
   @Resource(name = "apiGrouperDao")
   private ApiGrouperDaoImpl apiGrouperDao;
+
+  @Resource(name="ldapClient")
+  private LdapClient ldapClient;
 
   @Override
   // FIXME: implement paging
@@ -37,8 +42,11 @@ public class GrouperServiceImpl implements GroupService {
   @Override
   // FIXME: paging
   public Group20Entry getGroups20(String userId, String onBehalfOf) {
-    final Group20Entry groups = apiGrouperDao.findAllGroup20sByMember(userId, 0, 0);
-    // FIXME: restrict based on onBehalfOf
-    return groups;
+    String userIdToUse = userId;
+    if (!userId.startsWith(LdapClient.URN_IDENTIFIER)) {
+      final Person person = ldapClient.findPerson(userId);
+      userIdToUse = person.getId();
+    }
+    return apiGrouperDao.findAllGroup20sByMember(userIdToUse, 0, 0);
   }
 }
