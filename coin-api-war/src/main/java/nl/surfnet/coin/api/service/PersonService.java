@@ -36,7 +36,7 @@ public interface PersonService {
    *          request
    * @return the {@link PersonEntry}
    */
-  //@PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
+  @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   PersonEntry getPerson(String userId, String onBehalfOf);
 
   /**
@@ -49,6 +49,6 @@ public interface PersonService {
    *          make the request
    * @return an {@link java.util.ArrayList} containing {@link Person}'s
    */
-  //@PostAuthorize("#onBehalf == null or returnObject.isMember(#onBehalfOf)")
+  @PostAuthorize("#onBehalf == null or returnObject.isMember(#onBehalfOf)")
   GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf);
 }

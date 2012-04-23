@@ -18,6 +18,8 @@ package nl.surfnet.coin.api.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
@@ -38,6 +40,7 @@ public interface GroupService {
    *          request
    * @return {@link List} containing the {@link Group}s
    */
+  @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   GroupEntry getGroups(String userId, String onBehalfOf);
   
   /**
@@ -50,6 +53,7 @@ public interface GroupService {
    *          request
    * @return {@link List} containing the {@link Group}s
    */
+  @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   Group20Entry getGroups20(String userId, String onBehalfOf);
 
 }

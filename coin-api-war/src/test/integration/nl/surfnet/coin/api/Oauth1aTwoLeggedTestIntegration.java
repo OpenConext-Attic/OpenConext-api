@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
