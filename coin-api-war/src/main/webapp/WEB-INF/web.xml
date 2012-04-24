@@ -58,7 +58,11 @@
 
   <filter-mapping>
     <filter-name>corsHeaderFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/social/rest/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>corsHeaderFilter</filter-name>
+    <url-pattern>/mock10/social/rest/*</url-pattern>
   </filter-mapping>
 
   <servlet>
@@ -72,15 +76,14 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
- <!--  <servlet-mapping>
-    <servlet-name>default</servlet-name>
-    <url-pattern>/css/*</url-pattern>
-  </servlet-mapping>
-
+  <!-- static content -->
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/images/*</url-pattern>
-  </servlet-mapping> -->
+    <url-pattern>*.png</url-pattern>
+    <url-pattern>*.gif</url-pattern>
+    <url-pattern>*.js</url-pattern>
+    <url-pattern>*.css</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>coin-api</servlet-name>
