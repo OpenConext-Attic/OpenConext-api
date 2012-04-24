@@ -40,7 +40,7 @@ coin-api.engineblock.jdbc.url=jdbc:mysql://db.surfconext.nl:3306/eb
 coin-api.engineblock.jdbc.user=??
 
 coin-api.grouper.jdbc.driver=com.mysql.jdbc.Driver
-coin-api.grouper.jdbc.url=jdbc:mysql://db.surfconext.nl:3306/grouper
+coin-api.grouper.jdbc.url=jdbc:mysql://db.surfconext.nl:3306/teams
 coin-api.grouper.jdbc.user=??
 coin-api.grouper.jdbc.password=??
 
