@@ -66,7 +66,8 @@ public class CorsHeaderTestSelenium {
         System.out.println("Response of preflight request: " + response.toString());
         assertThat("response header Access-Control-Allow-Methods should contain 'GET'",
             response.getFirstHeader("Access-Control-Allow-Methods").getValue(), containsString("GET"));
-        assertThat("No content should be served on a preflight request", response.getEntity(), equalTo(null));
+        assertThat("No content should be served on a preflight request", response.getEntity().getContentLength(),
+            equalTo(0L));
         return null;
       }
     });

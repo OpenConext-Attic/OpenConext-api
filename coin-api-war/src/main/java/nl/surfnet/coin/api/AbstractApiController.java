@@ -113,10 +113,9 @@ public abstract class AbstractApiController {
 
     HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.set("Allow", "GET,OPTIONS,HEAD");
-    responseHeaders.set("Access-Control-Allow-Origin", "*");
     responseHeaders.set("Access-Control-Allow-Methods", "GET,OPTIONS,HEAD");
     responseHeaders.set("Access-Control-Allow-Headers", "Authorization");
     responseHeaders.set("Access-Control-Max-Age", "86400"); // allow cache of 1 day
-    return new ResponseEntity<String>(null, responseHeaders, HttpStatus.NO_CONTENT);
+    return new ResponseEntity<String>(null, responseHeaders, HttpStatus.OK);
   }
 }
