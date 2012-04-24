@@ -20,15 +20,25 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
 
 public abstract class AbstractApiController {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractApiController.class);
 
   /**
    * Get the username of the (via oauth) authenticated user that performs this request.
@@ -79,4 +89,31 @@ public abstract class AbstractApiController {
     return entry;
   }
 
+
+  /**
+   * Handle CORS preflight request.
+   *
+   * @param origin the Origin header
+   * @param methods the "Access-Control-Request-Method" header
+   * @param headers the "Access-Control-Request-Headers" header
+   * @return a ResponseEntity with 204 (no content) and the right response headers
+   */
+  @RequestMapping(method = RequestMethod.OPTIONS, value="/**")
+  public ResponseEntity<String> preflightCORS(
+      @RequestHeader("Origin") String origin,
+      @RequestHeader(value="Access-Control-Request-Method",
+          required = false) String[] methods,
+      @RequestHeader(value="Access-Control-Request-Headers",
+          required=false) String[] headers) {
+    LOG.debug("Hitting CORS preflight handler. Origin header: {}, methods: {}, headers: {}",
+        new Object[] {origin, methods, headers});
+
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.set("Allow", "GET,OPTIONS,HEAD");
+    responseHeaders.set("Access-Control-Allow-Origin", "*");
+    responseHeaders.set("Access-Control-Allow-Methods", "GET,OPTIONS,HEAD");
+    responseHeaders.set("Access-Control-Allow-Headers", "Authorization");
+    responseHeaders.set("Access-Control-Max-Age", "86400"); // allow cache of 1 day
+    return new ResponseEntity<String>(null, responseHeaders, HttpStatus.NO_CONTENT);
+  }
 }

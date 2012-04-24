@@ -25,13 +25,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
@@ -54,7 +53,7 @@ public class PersonController extends AbstractApiController {
   @Resource(name="groupService")
   private GroupService groupService;
 
-  @RequestMapping(value = "/people/{userId:.+}/{groupId}")
+  @RequestMapping(method=RequestMethod.GET, value = "/people/{userId:.+}/{groupId}")
   @ResponseBody
   public PersonEntry getPerson(
       @PathVariable("userId") String userId,
@@ -72,7 +71,7 @@ public class PersonController extends AbstractApiController {
     }
   }
 
-  @RequestMapping(value = "/people/{userId:.+}")
+  @RequestMapping(method=RequestMethod.GET, value = "/people/{userId:.+}")
   @ResponseBody
   public PersonEntry getPerson(@PathVariable("userId") String userId) {
     if (LOG.isDebugEnabled()) {
@@ -85,7 +84,7 @@ public class PersonController extends AbstractApiController {
   }
 
 
-  @RequestMapping(value = "/groups/{userId:.+}")
+  @RequestMapping(method=RequestMethod.GET, value = "/groups/{userId:.+}")
   @ResponseBody
   public Group20Entry getGroups(@PathVariable("userId")
                                 String userId, @RequestParam(value = "count", required = false)
@@ -102,5 +101,4 @@ public class PersonController extends AbstractApiController {
     processQueryOptions(groups, count, startIndex, sortBy, entry);
     return groups;
   }
-
 }

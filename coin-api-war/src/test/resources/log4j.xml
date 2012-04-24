@@ -44,6 +44,15 @@
 	<category name="org.mortbay">
 		<priority value="WARN" />
 	</category>
+
+	<!-- c3p0 -->
+	<category name="com.mchange">
+		<priority value="WARN" />
+	</category>
+	<category name="hsqldb.db">
+		<priority value="WARN" />
+	</category>
+
 	<root>
 		<priority value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
