@@ -52,12 +52,15 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
 
     Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
-
-    final BaseClientDetails clientDetails = new BaseClientDetails();
-    clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.name()));
-    clientDetails.setClientId(metadata.get(Janus.Metadata.ENTITY_ID.name()));
-    clientDetails.setScope(Arrays.asList("read"));
-    return clientDetails;
+    if (metadata == null) {
+      return null;
+    } else {
+      final BaseClientDetails clientDetails = new BaseClientDetails();
+      clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.name()));
+      clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.name()));
+      clientDetails.setScope(Arrays.asList("read"));
+      return clientDetails;
+    }
   }
 
 
