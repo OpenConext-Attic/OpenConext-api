@@ -19,8 +19,6 @@ package nl.surfnet.coin.api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.ldap.LdapClient;
@@ -33,7 +31,7 @@ public class LdapService implements PersonService {
 
   @Override
   public PersonEntry getPerson(String userId, String onBehalfOf) {
-    return new PersonEntry(ldapClient.findPerson(userId));
+    return new PersonEntry(ldapClient.findPerson(userId), 1, 0, null, 1);
   }
 
   @Override

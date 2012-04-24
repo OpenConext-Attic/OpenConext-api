@@ -28,7 +28,7 @@ public abstract class AbstractEntry implements Serializable {
   private int totalResults;
   private int itemsPerPage;
   private boolean filtered;
-  private int updatedSince;
+  private boolean updatedSince;
   private boolean sorted;
 
   /**
@@ -93,14 +93,14 @@ public abstract class AbstractEntry implements Serializable {
   /**
    * @return updated since
    */
-  public int getUpdatedSince() {
+  public boolean getUpdatedSince() {
     return updatedSince;
   }
 
   /**
    * @param updatedSince int to indicate when it was updated
    */
-  public void setUpdatedSince(int updatedSince) {
+  public void setUpdatedSince(boolean updatedSince) {
     this.updatedSince = updatedSince;
   }
 

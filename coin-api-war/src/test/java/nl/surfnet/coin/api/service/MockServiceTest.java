@@ -16,16 +16,16 @@
 
 package nl.surfnet.coin.api.service;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
+
+import org.junit.Test;
 
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class MockServiceTest {
 
@@ -53,13 +53,13 @@ public class MockServiceTest {
 
   @Test
   public void getGroups() {
-    List<Group> groups = service.getGroups("foo", "some logged in user").getEntry();
+    List<Group> groups = service.getGroups("foo", "some logged in user", 10, 0, null).getEntry();
     assertEquals(2, groups.size());
   }
 
   @Test
   public void getGroups20() {
-    List<Group20> groups = service.getGroups20("foo", "some logged in user").getEntry();
+    List<Group20> groups = service.getGroups20("foo", "some logged in user", 10, 0, null).getEntry();
     assertEquals(2, groups.size());
   }
 
@@ -77,13 +77,13 @@ public class MockServiceTest {
 
   @Test
   public void getGroupsFallback() {
-    List<Group> groups = service.getGroups("qwerty", "some logged in user").getEntry();
+    List<Group> groups = service.getGroups("qwerty", "some logged in user", 10, 0, null).getEntry();
     assertEquals(17, groups.size());
   }
 
   @Test
   public void getGroups20Fallback() {
-    List<Group20> groups = service.getGroups20("qwerty", "some logged in user").getEntry();
+    List<Group20> groups = service.getGroups20("qwerty", "some logged in user", 10, 0, null).getEntry();
     assertEquals(2, groups.size());
   }
 

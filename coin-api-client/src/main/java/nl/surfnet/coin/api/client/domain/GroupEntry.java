@@ -40,6 +40,13 @@ public class GroupEntry extends AbstractEntry {
       myEntry.add(new Group(group20));
     }
     this.entry = myEntry;
+
+    this.setFiltered(groups20.isFiltered());
+    this.setItemsPerPage(groups20.getItemsPerPage());
+    this.setSorted(groups20.isSorted());
+    this.setStartIndex(groups20.getStartIndex());
+    this.setTotalResults(groups20.getTotalResults());
+    this.setUpdatedSince(groups20.getUpdatedSince());
   }
 
   /**

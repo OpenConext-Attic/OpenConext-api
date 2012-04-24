@@ -18,7 +18,6 @@ package nl.surfnet.coin.teams.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +27,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyVararg;
 import static org.mockito.Mockito.when;
 
 public class ApiGrouperDaoImplTest {
@@ -53,7 +52,7 @@ public class ApiGrouperDaoImplTest {
   public void getGroupsEmpty() {
     when(jdbcTemplate.query(anyString(), (Object[]) anyVararg(), (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject()))
         .thenReturn(new ArrayList<Group20>());
-    assertEquals(0, dao.findAllGroup20sByMember("personid", 1, 1).getEntry().size());
+    assertEquals(0, dao.findAllGroup20sByMember("personid", 1, 1, "name").getEntry().size());
   }
 
   @Test
@@ -62,6 +61,6 @@ public class ApiGrouperDaoImplTest {
     group20s.add(new Group20("foo", "bar", "baz", "admin"));
     when(jdbcTemplate.query(anyString(), (Object[]) anyVararg(), (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject()))
         .thenReturn(group20s);
-    assertEquals(1, dao.findAllGroup20sByMember("personid", 1, 1).getEntry().size());
+    assertEquals(1, dao.findAllGroup20sByMember("personid", 1, 1, "name").getEntry().size());
   }
 }

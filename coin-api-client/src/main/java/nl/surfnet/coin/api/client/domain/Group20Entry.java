@@ -33,6 +33,16 @@ public class Group20Entry extends AbstractEntry {
   public Group20Entry() {
   }
 
+  public Group20Entry(List<Group20> groups, int pageSize, int offset, String sortBy, int rowCount) {
+    this.entry = groups;
+    setFiltered(true);
+    setItemsPerPage(pageSize);
+    setSorted(true);
+    setStartIndex(offset);
+    setUpdatedSince(false);
+    setTotalResults(rowCount);
+  }
+
   /**
    * @return the entry
    */

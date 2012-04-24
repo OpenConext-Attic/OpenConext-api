@@ -19,6 +19,7 @@ package nl.surfnet.coin.teams.service.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +35,27 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl {
 
   JdbcTemplate jdbcTemplate;
 
-  public Group20Entry findAllGroup20sByMember(String personId, int offset, int pageSize) {
-    //    int rowCount = this.jdbcTemplate.queryForInt(SQL_FIND_ALL_TEAMS_BY_MEMBER_ROWCOUNT, personId);
+
+  public Group20Entry findGroup20(String personId, String groupName) {
+    return new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(SQL_FIND_TEAMS_LIKE_GROUPNAME,
+        new Object[]{personId, groupName, 1, 0},
+        new OpenSocial20GroupRowMapper())));
+  }
+
+  public Group20Entry findAllGroup20sByMember(String personId, Integer offset, Integer pageSize, String sortBy) {
+    int rowCount = this.jdbcTemplate.queryForInt(SQL_FIND_ALL_TEAMS_BY_MEMBER_ROWCOUNT, personId);
     List<Group20> groups = new ArrayList<Group20>();
+    if (pageSize == null) {
+      pageSize = Integer.MAX_VALUE;
+    }
     try {
+      // TODO: include sortBy in query.
       groups = jdbcTemplate.query(SQL_FIND_ALL_TEAMS_BY_MEMBER, new Object[]{personId, pageSize, offset},
           new OpenSocial20GroupRowMapper());
       addRolesToGroups(personId, groups);
     } catch (EmptyResultDataAccessException e) {
     }
-    return new Group20Entry(groups);
+    return new Group20Entry(groups, pageSize, offset, sortBy, rowCount);
 
   }
 

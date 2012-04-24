@@ -16,8 +16,6 @@
 
 package nl.surfnet.coin.api.client.domain;
 
-import java.util.List;
-
 /**
  * 
  *
@@ -30,8 +28,14 @@ public class PersonEntry extends AbstractEntry {
   public PersonEntry() {
   }
 
-  public PersonEntry(Person person) {
+  public PersonEntry(Person person, int pageSize, int offset, String sortBy, int totalResults) {
     this.entry = person;
+    setStartIndex(0);
+    setSorted(false);
+    setTotalResults(1);
+    setFiltered(false);
+    setItemsPerPage(1);
+    setUpdatedSince(false);
   }
 
   /**

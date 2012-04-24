@@ -16,8 +16,6 @@
 
 package nl.surfnet.coin.api;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
@@ -91,14 +88,20 @@ public class PersonController extends AbstractApiController {
   Integer count, @RequestParam(value = "startIndex", required = false)
   Integer startIndex, @RequestParam(value = "sortBy", required = false)
   String sortBy) {
-    if (PersonController.PERSON_ID_SELF.equals(userId)) {
+    if (PERSON_ID_SELF.equals(userId)) {
       userId = getOnBehalfOf();
     }
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'",
         new Object[] { userId, getOnBehalfOf() });
-    Group20Entry groups = groupService.getGroups20(userId, getOnBehalfOf());
-    List<Group20> entry = groups.getEntry();
-    processQueryOptions(groups, count, startIndex, sortBy, entry);
-    return groups;
+    return groupService.getGroups20(userId, getOnBehalfOf(), count, startIndex, sortBy);
+  }
+
+  @RequestMapping(method=RequestMethod.GET, value="/groups/{userId:.+}/{groupId}")
+  @ResponseBody
+  public Group20Entry getGroup(@PathVariable("userId") String userId, @PathVariable("groupId") String groupId) {
+    if (PERSON_ID_SELF.equals(userId)) {
+      userId = getOnBehalfOf();
+    }
+    return groupService.getGroup20(userId, groupId, getOnBehalfOf());
   }
 }

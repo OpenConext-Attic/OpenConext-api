@@ -33,20 +33,33 @@ public class GrouperServiceImpl implements GroupService {
   private LdapClient ldapClient;
 
   @Override
-  // FIXME: implement paging
-  public GroupEntry getGroups(String userId, String onBehalfOf) {
-    final Group20Entry groups20 = getGroups20(userId, onBehalfOf);
+  public GroupEntry getGroups(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
+    final Group20Entry groups20 = getGroups20(userId, onBehalfOf, count, startIndex, sortBy);
     return new GroupEntry(groups20);
   }
 
   @Override
-  // FIXME: paging
-  public Group20Entry getGroups20(String userId, String onBehalfOf) {
+  public Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
     String userIdToUse = userId;
     if (!userId.startsWith(LdapClient.URN_IDENTIFIER)) {
       final Person person = ldapClient.findPerson(userId);
       userIdToUse = person.getId();
     }
-    return apiGrouperDao.findAllGroup20sByMember(userIdToUse, 0, 0);
+    return apiGrouperDao.findAllGroup20sByMember(userIdToUse, startIndex, count, sortBy);
+  }
+
+  @Override
+  public GroupEntry getGroup(String userId, String groupId, String onBehalfOf) {
+    return new GroupEntry(getGroup20(userId, groupId, onBehalfOf));
+  }
+
+  @Override
+  public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
+    String userIdToUse = userId;
+    if (!userId.startsWith(LdapClient.URN_IDENTIFIER)) {
+      final Person person = ldapClient.findPerson(userId);
+      userIdToUse = person.getId();
+    }
+    return apiGrouperDao.findGroup20(userIdToUse, groupId);
   }
 }

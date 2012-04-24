@@ -24,6 +24,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
@@ -31,12 +37,6 @@ import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 @Component(value = "mockService")
 public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider {
@@ -134,7 +134,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public GroupEntry getGroups(String userId, String onBehalfOf) {
+  public GroupEntry getGroups(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
     ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, userId, "groups"));
     if (!pathResource.exists()) {
       pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "groups"));
@@ -168,7 +168,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public Group20Entry getGroups20(String userId, String onBehalfOf) {
+  public Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
     if (isActive) {
       return getPreparedGroups20(userId);
     }
@@ -181,6 +181,18 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public GroupEntry getGroup(String userId, String groupId, String onBehalfOf) {
+    // TODO: implement
+    return null;
+  }
+
+  @Override
+  public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
+    // TODO: implement
+    return null;
   }
 
   public boolean isActive() {

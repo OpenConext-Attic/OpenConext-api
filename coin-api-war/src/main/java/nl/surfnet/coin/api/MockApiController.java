@@ -109,7 +109,7 @@ public class MockApiController extends AbstractApiController {
       userId = getOnBehalfOf();
     }
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'", new Object[] { userId, getOnBehalfOf() });
-    Group20Entry groups = groupService.getGroups20(userId, getOnBehalfOf());
+    Group20Entry groups = groupService.getGroups20(userId, getOnBehalfOf(), count, startIndex, sortBy);
     List<Group20> entry = groups.getEntry();
     entry = (List<Group20>) processQueryOptions(groups, count, startIndex, sortBy, entry);
     return groups;

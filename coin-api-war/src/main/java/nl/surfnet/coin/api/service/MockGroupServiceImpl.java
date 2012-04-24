@@ -28,14 +28,27 @@ public class MockGroupServiceImpl implements GroupService {
   private static AtomicInteger groupId = new AtomicInteger(1);
 
   @Override
-  public GroupEntry getGroups(String userId, String onBehalfOf) {
-    final Group20Entry groups20 = getGroups20(userId, onBehalfOf);
+  public GroupEntry getGroups(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
+    final Group20Entry groups20 = getGroups20(userId, onBehalfOf, count, startIndex, sortBy);
     return new GroupEntry(groups20);
   }
 
   @Override
-  public Group20Entry getGroups20(String userId, String onBehalfOf) {
-    return new Group20Entry(Arrays.asList(createGroup(), createGroup(), createGroup()));
+  public Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
+    return new Group20Entry(
+        Arrays.asList(createGroup(), createGroup(), createGroup()),
+        1, 0, null, 1
+    );
+  }
+
+  @Override
+  public GroupEntry getGroup(String userId, String groupId, String onBehalfOf) {
+    return new GroupEntry(getGroup20(userId, groupId, onBehalfOf));
+  }
+
+  @Override
+  public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
+    return new Group20Entry(Arrays.asList(createGroup()), 1, 0, null, 1);
   }
 
   protected static Group20 createGroup() {

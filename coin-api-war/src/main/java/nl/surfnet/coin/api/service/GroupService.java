@@ -38,22 +38,57 @@ public interface GroupService {
    * @param onBehalfOf
    *          the unique identifier of the user that is going to make the
    *          request
+   * @param count nr of records to return
+   * @param startIndex first record of result set
+   * @param sortBy field to sort by
    * @return {@link List} containing the {@link Group}s
    */
   @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
-  GroupEntry getGroups(String userId, String onBehalfOf);
+  GroupEntry getGroups(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy);
   
   /**
    * Get Persons' Groups
    * 
+   *
    * @param userId
    *          the unique identifier
    * @param onBehalfOf
    *          the unique identifier of the user that is going to make the
    *          request
+   * @param count nr of records to return
+   * @param startIndex first record of result set
+   * @param sortBy field to sort by
    * @return {@link List} containing the {@link Group}s
    */
   @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
-  Group20Entry getGroups20(String userId, String onBehalfOf);
+  Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy);
 
+  /**
+   * Get specific Group
+   *
+   * @param userId
+   *          the unique identifier
+   * @param groupId
+   *          the unique identifier
+   * @param onBehalfOf
+   *          the unique identifier of the user that is going to make the
+   *          request
+   */
+  @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
+  GroupEntry getGroup(String userId, String groupId, String onBehalfOf);
+
+
+  /**
+   * Get specific Group
+   *
+   * @param userId
+   *          the unique identifier
+   * @param groupId
+   *          the unique identifier
+   * @param onBehalfOf
+   *          the unique identifier of the user that is going to make the
+   *          request
+   */
+  @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
+  Group20Entry getGroup20(String userId, String groupId, String onBehalfOf);
 }

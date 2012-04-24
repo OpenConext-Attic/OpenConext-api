@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
 
 public abstract class AbstractGrouperDaoImpl  {
 
@@ -118,6 +119,16 @@ public abstract class AbstractGrouperDaoImpl  {
       + " and gs.name != 'etc' "
       + " and (gf.name = 'admins' or gf.name = 'updaters') order by gg.name ";
 
+  /**
+   * Pad a string with SQL wildcards
+   * @param part the string to search for
+   * @return padded string
+   */
+  protected String wildCard(String part) {
+    Assert.hasText(part);
+    part = ("%" + part + "%").toUpperCase();
+    return part;
+  }
 
   /**
    * Template method Row Mapper that only extracts the fields from the resultset, leaving creation
