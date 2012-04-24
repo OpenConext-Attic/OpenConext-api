@@ -29,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
+import org.springframework.security.oauth.provider.OAuthAuthenticationDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,8 @@ public abstract class AbstractApiController {
         return null;
       } else if (auth.getPrincipal() instanceof String) {
         return (String) auth.getPrincipal();
+      } else if (auth.getPrincipal() instanceof OAuthAuthenticationDetails) {
+        return ((OAuthAuthenticationDetails) auth.getPrincipal()).getConsumerDetails().getConsumerName();
       } else {
         return ((UserDetails) auth.getPrincipal()).getUsername();
       }
