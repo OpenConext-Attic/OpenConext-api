@@ -66,9 +66,8 @@ public class JanusClientDetailsServiceTest {
         .thenReturn(new ArrayList<String>(Arrays.asList("identityId2")));
     when(janus.getMetadataByEntityId(eq("identityId2"), (Janus.Metadata[]) anyVararg())).thenReturn(null);
     ConsumerDetails result = s.loadConsumerByConsumerKey("consumerkey2");
-    assertEquals("service should return ConsumerDetails and fill in consumer key even when no additional metadata " +
-        "found for consumer.",
-        "consumerkey2", result.getConsumerKey());
+    assertNull("service should return null when no  metadata found for consumer.",
+        result);
   }
 
   @Test
