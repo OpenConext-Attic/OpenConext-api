@@ -89,7 +89,9 @@ public class JanusRestClient implements Janus {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
-      return transformMetadataResponse(restResponse);
+      final Map<String, String> returnMap = transformMetadataResponse(restResponse);
+      returnMap.put(Metadata.ENTITY_ID.name(), entityId); // put entity id as a metadata field as well.
+      return returnMap;
 
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);

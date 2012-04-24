@@ -47,25 +47,21 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   @Autowired
   private Janus janus;
 
-  /**
-   * {@InheritDoc}
-   */
+
   @Override
-  public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
+  public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
+
+    Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
+
     final BaseClientDetails clientDetails = new BaseClientDetails();
-    clientDetails.setClientSecret(janus.getMetadataByEntityId(clientId, Janus.Metadata.OAUTH_SECRET)
-        .get(Janus.Metadata.OAUTH_SECRET.val()));
-    clientDetails.setClientId(clientId);
+    clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.name()));
+    clientDetails.setClientId(metadata.get(Janus.Metadata.ENTITY_ID.name()));
     clientDetails.setScope(Arrays.asList("read"));
     return clientDetails;
   }
 
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
+  private Map<String, String> getJanusMetadataByConsumerKey(String consumerKey) {
     List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
     if (entityIds.size() != 1) {
       LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size(), consumerKey);
@@ -73,19 +69,32 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     }
     String entityId = entityIds.get(0);
 
-    final Map<String, String> metadata = janus.getMetadataByEntityId(entityId,
+    return janus.getMetadataByEntityId(entityId,
         Janus.Metadata.OAUTH_TWOLEGGEDALLOWED,
         Janus.Metadata.OAUTH_CALLBACKURL,
         Janus.Metadata.OAUTH_SECRET);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
 
     final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
     // even if additional metadata not found, set these properties.
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
 
+
     // set to required by default
     consumerDetails.setRequiredToObtainAuthenticatedToken(true);
-    if (metadata != null) {
+
+    Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
+
+    if (metadata == null) {
+      return null;
+    } else {
       consumerDetails.setSignatureSecret(new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val())));
       if (StringUtils.equals("true", metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()))) {
         // two legged allowed

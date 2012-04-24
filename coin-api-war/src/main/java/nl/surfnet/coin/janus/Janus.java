@@ -28,6 +28,7 @@ public interface Janus {
 
   public enum Metadata {
 
+    ENTITY_ID("__identityId"),
     OAUTH_SECRET("coin:oauth:secret"),
     OAUTH_CONSUMERKEY("coin:gadgetbaseurl"),
     OAUTH_CALLBACKURL("coin:oauth:callback_url"),
