@@ -18,6 +18,9 @@
  */
 package nl.surfnet.coin.ldap;
 
+import java.util.Collection;
+import java.util.List;
+
 import nl.surfnet.coin.api.client.domain.Person;
 
 /**
@@ -39,4 +42,14 @@ public interface LdapClient {
    */
   Person findPerson(String identifier);
 
+  /**
+   * 
+   * Find the Persons in the LDAP. The identifier can either be the urn
+   * (urn:collab:person:nl.myuniversity:s123456) or the persistent identifier (hashed urn specific for the SP).
+   * 
+   * @param identifier
+   *          unqiue identifier of the Person
+   * @return Persons objects
+   */
+  List<Person> findPersons(Collection<String> identifiers);
 }

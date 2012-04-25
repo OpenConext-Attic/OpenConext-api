@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class ApiGrouperDaoImplTest {
 
   @InjectMocks
-  private ApiGrouperDaoImpl dao;
+  private ApiGrouperDao dao;
 
   @Mock
   private JdbcTemplate jdbcTemplate;

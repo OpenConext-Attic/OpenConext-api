@@ -28,12 +28,15 @@ public interface Janus {
 
   public enum Metadata {
 
-    ENTITY_ID("__identityId"),
+    ENTITY_ID("__entityId"),
     OAUTH_SECRET("coin:oauth:secret"),
     OAUTH_CONSUMERKEY("coin:gadgetbaseurl"),
     OAUTH_CALLBACKURL("coin:oauth:callback_url"),
-    OAUTH_TWOLEGGEDALLOWED("coin:oauth:two_legged_allowed");
-
+    OAUTH_TWOLEGGEDALLOWED("coin:oauth:two_legged_allowed"),
+    OAUTH_APPTITLE("coin:oauth:app_title"),
+    OAUTH_APPDESCRIPTION("coin:oauth:app_description"),
+    OAUTH_APPTHUMBNAIL("coin:oauth:app_thumbnail"), 
+    OAUTH_APPICON("coin:oauth:app_icon");
 
     private String val;
 

@@ -16,6 +16,10 @@
 
 package nl.surfnet.coin.ldap;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import nl.surfnet.coin.api.client.domain.Account;
 import nl.surfnet.coin.api.client.domain.Email;
 import nl.surfnet.coin.api.client.domain.Name;
@@ -36,6 +40,14 @@ public class MockLdapClientImpl implements LdapClient {
     account.setUsername("the username");
     p.addAccount(account);
     return p;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.ldap.LdapClient#findPersons(java.util.Collection)
+   */
+  @Override
+  public List<Person> findPersons(Collection<String> identifiers) {
+    return Collections.singletonList(findPerson(identifiers.iterator().next()));
   }
 
 }

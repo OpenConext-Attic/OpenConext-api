@@ -20,18 +20,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
 
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-
-public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl {
+public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao{
 
   JdbcTemplate jdbcTemplate;
 
@@ -87,7 +94,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl {
 
   }
   private class RolesRowCallbackHandler implements RowCallbackHandler {
-    private Map<String, Role> roles;
+    protected Map<String, Role> roles;
 
     public RolesRowCallbackHandler() {
       super();
@@ -112,5 +119,66 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl {
 
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
+  }
+  
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.teams.service.impl.ApiGrouperDao#findAllMembers(java.lang.String, int, int)
+   */
+  @Override
+  public GroupMembersEntry findAllMembers(String groupId, int offset, int pageSize) {
+    
+    List<Person> persons = new ArrayList<Person>();
+    pageSize = limitCheck(pageSize);
+    try {
+      RowMapper<Person> mapper = new RowMapper<Person>() {
+        @Override
+        public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
+          Person person = new Person();
+          person.setId(rs.getString(1));
+          return person;
+        }
+      };
+      persons = jdbcTemplate.query(SQL_MEMBERS_BY_TEAM, new Object[]{groupId, pageSize, offset},
+          mapper );
+      addPersonRolesToGroup(persons, groupId);
+    } catch (EmptyResultDataAccessException e) {
+    }
+    return new GroupMembersEntry(persons);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void addPersonRolesToGroup(Collection<Person> persons, String groupId) {
+    try {
+      RolesMembersRowCallbackHandler handler = new RolesMembersRowCallbackHandler();
+      Collection<String> personIds = CollectionUtils.collect(persons, new Transformer() {
+        @Override
+        public Object transform(Object input) {
+          return ((Person)input).getId();
+        }
+      });
+      String join = StringUtils.join(personIds,",");
+      this.jdbcTemplate.query(SQL_ROLES_BY_TEAM_AND_MEMBERS, new Object[] { groupId, join }, handler);
+      Map<String, Role> roles = handler.roles;
+      for (Person person : persons) {
+        Role role = roles.get(person.getId());
+        role = (role == null ? Role.Member : role);
+        person.setVoot_membership_role(role.name().toLowerCase());
+      }
+    } catch (EmptyResultDataAccessException e) {
+      // this we can ignore
+    }
+  }
+  
+  private class RolesMembersRowCallbackHandler extends RolesRowCallbackHandler {
+
+    @Override
+    public void processRow(ResultSet rs) throws SQLException {
+      String personName = rs.getString("subject_id");
+      String permission = rs.getString("fieldname");
+      Role role = roles.get(personName);
+      if (!Role.Admin.equals(role)) {
+        roles.put(personName, permission.equals("admins") ? Role.Admin : Role.Manager);
+      }
+    }
   }
 }

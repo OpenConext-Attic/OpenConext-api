@@ -22,12 +22,12 @@ import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.ldap.LdapClient;
-import nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl;
+import nl.surfnet.coin.teams.service.impl.ApiGrouperDao;
 
 public class GrouperServiceImpl implements GroupService {
 
   @Resource(name = "apiGrouperDao")
-  private ApiGrouperDaoImpl apiGrouperDao;
+  private ApiGrouperDao apiGrouperDao;
 
   @Resource(name="ldapClient")
   private LdapClient ldapClient;

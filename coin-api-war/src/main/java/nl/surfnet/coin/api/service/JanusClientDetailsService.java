@@ -36,46 +36,54 @@ import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
+import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
+import nl.surfnet.coin.janus.Janus.Metadata;
 
 /**
- * Client details service that uses Janus as backend. Implements both the oauth1 and oauth2 interface.
+ * Client details service that uses Janus as backend. Implements both the oauth1
+ * and oauth2 interface.
  */
 public class JanusClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
 
   private final static Logger LOG = LoggerFactory.getLogger(JanusClientDetailsService.class);
+  
   @Autowired
   private Janus janus;
 
+  /*
+   * All the meta data fields we need from Janus 
+   */
+  private static final Metadata[] METADATA_TO_FETCH = { Metadata.OAUTH_SECRET, Metadata.OAUTH_CONSUMERKEY,
+      Metadata.OAUTH_CALLBACKURL, Metadata.OAUTH_TWOLEGGEDALLOWED, Metadata.OAUTH_APPTITLE,
+      Metadata.OAUTH_APPDESCRIPTION, Metadata.OAUTH_APPTHUMBNAIL, Metadata.OAUTH_APPICON };
 
   @Override
   public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
-
     Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
     if (metadata == null) {
       return null;
-    } else {
-      final BaseClientDetails clientDetails = new BaseClientDetails();
-      clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.name()));
-      clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.name()));
+    } 
+      final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
+      clientDetails.setClientMetaData(ClientMetaData.fromMetaData(metadata));
+      clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
+      clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
       clientDetails.setScope(Arrays.asList("read"));
       return clientDetails;
-    }
+    
   }
-
 
   private Map<String, String> getJanusMetadataByConsumerKey(String consumerKey) {
     List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
     if (entityIds.size() != 1) {
-      LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size(), consumerKey);
+      LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size(),
+          consumerKey);
       return null;
     }
     String entityId = entityIds.get(0);
-
-    return janus.getMetadataByEntityId(entityId,
-        Janus.Metadata.OAUTH_TWOLEGGEDALLOWED,
-        Janus.Metadata.OAUTH_CALLBACKURL,
-        Janus.Metadata.OAUTH_SECRET);
+    return janus.getMetadataByEntityId(entityId, METADATA_TO_FETCH);
   }
 
   /**
@@ -83,27 +91,27 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
    */
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-
-    final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
-    // even if additional metadata not found, set these properties.
-    consumerDetails.setConsumerKey(consumerKey);
-    consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
-
-
-    // set to required by default
-    consumerDetails.setRequiredToObtainAuthenticatedToken(true);
-
     Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
 
     if (metadata == null) {
       return null;
-    } else {
-      consumerDetails.setSignatureSecret(new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val())));
-      if (StringUtils.equals("true", metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()))) {
-        // two legged allowed
-        consumerDetails.setRequiredToObtainAuthenticatedToken(false);
-      }
     }
+
+    final ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
+    // even if additional metadata not found, set these properties.
+    consumerDetails.setConsumerKey(consumerKey);
+    consumerDetails.setAuthorities(Arrays.<GrantedAuthority> asList(new SimpleGrantedAuthority("ROLE_USER")));
+    consumerDetails.setClientMetaData(ClientMetaData.fromMetaData(metadata));
+
+    // set to required by default
+    consumerDetails.setRequiredToObtainAuthenticatedToken(true);
+
+    consumerDetails.setSignatureSecret(new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val())));
+    if (StringUtils.equals("true", metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()))) {
+      // two legged allowed
+      consumerDetails.setRequiredToObtainAuthenticatedToken(false);
+    }
+
     return consumerDetails;
   }
 }

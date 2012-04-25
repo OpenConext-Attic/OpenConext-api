@@ -30,7 +30,9 @@ import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
 import org.springframework.security.oauth.provider.BaseConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 
+import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
+import nl.surfnet.coin.janus.Janus.Metadata;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -78,14 +80,19 @@ public class JanusClientDetailsServiceTest {
     Map<String, String> metadata = new HashMap();
     metadata.put(Janus.Metadata.OAUTH_SECRET.val(), "secret");
     metadata.put(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val(), "false");
+    metadata.put(Metadata.OAUTH_APPDESCRIPTION.val(),"app-description");
+    metadata.put(Metadata.OAUTH_APPICON.val(),"app-icon");
+    metadata.put(Metadata.OAUTH_APPTITLE.val(),"app-title");
+    metadata.put(Metadata.OAUTH_APPTHUMBNAIL.val(),"app-thumbnail");
     when(janus.getMetadataByEntityId(eq("identityId3"), (Janus.Metadata[]) anyVararg())).thenReturn(metadata);
 
-    BaseConsumerDetails result = (BaseConsumerDetails) s.loadConsumerByConsumerKey("consumerkey3");
+    ExtendedBaseConsumerDetails result = (ExtendedBaseConsumerDetails) s.loadConsumerByConsumerKey("consumerkey3");
 
     assertEquals("service should return correct key", "consumerkey3", result.getConsumerKey());
     assertEquals("service should return correct secret", "secret",
         ((SharedConsumerSecret) result.getSignatureSecret()).getConsumerSecret());
     assertEquals("service should return whether client is required to authenticate (so two legged NOT allowed)",
         true, result.isRequiredToObtainAuthenticatedToken());
+    assertEquals("app-thumbnail", result.getClientMetaData().getAppThumbNail());
   }
 }

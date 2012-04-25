@@ -124,4 +124,18 @@ public class OpenConextJsonParser {
     }
   }
 
+  /**
+   * @return the objectMapper
+   */
+  public ObjectMapper getObjectMapper() {
+    return objectMapper;
+  }
+
+  /**
+   * @param objectMapper the objectMapper to set
+   */
+  public void setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
 }

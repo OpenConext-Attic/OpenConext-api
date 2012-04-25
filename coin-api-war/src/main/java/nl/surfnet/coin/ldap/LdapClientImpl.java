@@ -18,6 +18,9 @@
  */
 package nl.surfnet.coin.ldap;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -29,6 +32,8 @@ import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.Filter;
+import org.springframework.ldap.filter.OrFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -66,14 +71,30 @@ public class LdapClientImpl implements LdapClient {
   @Override
   @SuppressWarnings("unchecked")
   public Person findPerson(String identifier) {
-    Assert.hasText(identifier, "Identifier may not be null or empty when searching for a Person");
-    String searchAttribute = "collabpersonid";
-    if (!identifier.startsWith(URN_IDENTIFIER)) {
-      searchAttribute = "collabpersonuuid";
-      identifier = engineBlock.getUserUUID(identifier);
+    Filter query = getFilter(identifier);
+    List<Person> search = findPersons(query);
+    if (CollectionUtils.isEmpty(search)) {
+      return null;
     }
+    if (search.size() > 1) {
+      throw new RuntimeException("Found more then one LDAP entry for identifier(" + query.toString() + ")");
+    }
+    return search.get(0);
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.ldap.LdapClient#findPersons(java.util.Collection)
+   */
+  @Override
+  public List<Person> findPersons(Collection<String> identifiers) {
+    Filter query = getFilter(identifiers.toArray(new String[identifiers.size()]));
+    List<Person> search = findPersons(query);
+    return search;
+  }
+  
+  private List<Person> findPersons(Filter query) {
     AndFilter filter = new AndFilter().and(new EqualsFilter("objectclass", "collabPerson")).and(
-        new EqualsFilter(searchAttribute, identifier));
+        query);
     String encode = filter.encode();
     List<Person> search = (List<Person>) ldapOperations.search("", encode, new AttributesMapper() {
       @Override
@@ -81,13 +102,21 @@ public class LdapClientImpl implements LdapClient {
         return convertLdapProperties(new Person(), attributes);
       }
     });
-    if (CollectionUtils.isEmpty(search)) {
-      return null;
+    return search;
+  }
+
+  private Filter getFilter(String... identifiers) {
+    OrFilter orFilter = new OrFilter();
+    for (String identifier : identifiers) {
+      Assert.hasText(identifier, "Identifier may not be null or empty when searching for a Person");
+      String searchAttribute = "collabpersonid";
+      if (!identifier.startsWith(URN_IDENTIFIER)) {
+        searchAttribute = "collabpersonuuid";
+        identifier = engineBlock.getUserUUID(identifier);
+      }
+      orFilter.or(new EqualsFilter(searchAttribute, identifier));
     }
-    if (search.size() > 1) {
-      throw new RuntimeException("Found more then one LDAP entry for identifier(" + identifier + ")");
-    }
-    return search.get(0);
+    return orFilter;
   }
 
   /*
@@ -152,5 +181,7 @@ public class LdapClientImpl implements LdapClient {
   public void setEngineBlock(EngineBlock engineBlock) {
     this.engineBlock = engineBlock;
   }
+
+  
 
 }

@@ -57,10 +57,6 @@ public class PersonControllerTest {
     MockitoAnnotations.initMocks(this);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void getPersonInGroupNotSupported() {
-    pc.getPerson("foo", "bar");
-  }
 
   @Test
   public void getPersonOtherThanOnBehalfOfNotAllowed() {

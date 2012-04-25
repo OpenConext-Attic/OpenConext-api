@@ -63,6 +63,7 @@ public interface GroupService {
   @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy);
 
+
   /**
    * Get specific Group
    *
@@ -91,4 +92,5 @@ public interface GroupService {
    */
   @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   Group20Entry getGroup20(String userId, String groupId, String onBehalfOf);
+
 }

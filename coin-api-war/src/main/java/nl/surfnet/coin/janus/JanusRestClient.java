@@ -44,9 +44,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class JanusRestClient implements Janus {
 
-  private static  Logger LOG = LoggerFactory.getLogger(JanusRestClient.class);
-
-  private static final String METADATA_TO_FETCH = "coin:oauth:consumer_secret,coin:oauth:secret";
+  private static Logger LOG = LoggerFactory.getLogger(JanusRestClient.class);
 
   @Autowired
   private RestTemplate restTemplate;
@@ -64,7 +62,7 @@ public class JanusRestClient implements Janus {
    * {@inheritDoc}
    */
   @Override
-  public Map <String,String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
+  public Map<String, String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", entityId);
     final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
@@ -79,18 +77,20 @@ public class JanusRestClient implements Janus {
     URI signedUri;
     try {
       signedUri = sign("getMetadata", parameters);
-      
+
       if (LOG.isDebugEnabled()) {
         LOG.debug("Signed Janus-request is: {}", signedUri);
       }
 
-      final Map<String, Object>restResponse = restTemplate.getForObject(signedUri, Map.class);
-      
+      final Map<String, Object> restResponse = restTemplate.getForObject(signedUri, Map.class);
+
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
       final Map<String, String> returnMap = transformMetadataResponse(restResponse);
-      returnMap.put(Metadata.ENTITY_ID.name(), entityId); // put entity id as a metadata field as well.
+      returnMap.put(Metadata.ENTITY_ID.val(), entityId); // put entity id as a
+                                                         // metadata field as
+                                                         // well.
       return returnMap;
 
     } catch (IOException e) {
@@ -101,7 +101,9 @@ public class JanusRestClient implements Janus {
 
   /**
    * Transform a Map&lt;String, Object&gt; to Map&lt;String, String&gt;.
-   * @param metadata input map
+   * 
+   * @param metadata
+   *          input map
    * @return transformed map
    */
   private Map<String, String> transformMetadataResponse(Map<String, Object> metadata) {
@@ -144,8 +146,11 @@ public class JanusRestClient implements Janus {
 
   /**
    * Sign the given method call.
-   * @param method the name of the method to call
-   * @param parameters additional parameters that need to be passed to Janus
+   * 
+   * @param method
+   *          the name of the method to call
+   * @param parameters
+   *          additional parameters that need to be passed to Janus
    * @return URI with parameters janus_sig and janus_key
    * @throws NoSuchAlgorithmException
    * @throws IOException
@@ -190,28 +195,32 @@ public class JanusRestClient implements Janus {
   }
 
   /**
-   * @param restTemplate the restTemplate to set
+   * @param restTemplate
+   *          the restTemplate to set
    */
   public void setRestTemplate(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 
   /**
-   * @param janusUri the janusUri to set
+   * @param janusUri
+   *          the janusUri to set
    */
   public void setJanusUri(URI janusUri) {
     this.janusUri = janusUri;
   }
 
   /**
-   * @param user the user to set
+   * @param user
+   *          the user to set
    */
   public void setUser(String user) {
     this.user = user;
   }
 
   /**
-   * @param secret the secret to set
+   * @param secret
+   *          the secret to set
    */
   public void setSecret(String secret) {
     this.secret = secret;

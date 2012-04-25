@@ -18,6 +18,7 @@ package nl.surfnet.coin.api.client;
 
 import java.io.InputStream;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -27,6 +28,7 @@ import org.springframework.core.io.Resource;
 
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.ResultWrapper;
 
 import static junit.framework.Assert.assertEquals;
@@ -47,5 +49,14 @@ public class OpenConextJsonParserTest {
   public void testParseGroup20() throws Exception {
     final Group20Entry group20Entry = parser.parseGroups20(new ClassPathResource("multiple-groups20.json").getInputStream());
     assertEquals(3, group20Entry.getEntry().size());
+  }
+  
+  @Test
+  public void testNotNullInclusion() throws Exception {
+    ObjectMapper objectMapper = parser.getObjectMapper();
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    objectMapper.writeValue(  out, new Person());
+    assertEquals("{}", out.toString());
+    
   }
 }

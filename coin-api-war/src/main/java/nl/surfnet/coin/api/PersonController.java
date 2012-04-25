@@ -16,8 +16,11 @@
 
 package nl.surfnet.coin.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -28,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
@@ -50,7 +55,7 @@ public class PersonController extends AbstractApiController {
   @Resource(name="groupService")
   private GroupService groupService;
 
-  @RequestMapping(method=RequestMethod.GET, value = "/people/{userId:.+}/{groupId}")
+  @RequestMapping(method=RequestMethod.GET, value = "/people/{userId:.+}/@self")
   @ResponseBody
   public PersonEntry getPerson(
       @PathVariable("userId") String userId,
@@ -58,14 +63,7 @@ public class PersonController extends AbstractApiController {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Got getPerson-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[]{userId, groupId, getOnBehalfOf()});
     }
-    if (GROUP_ID_SELF.equals(groupId)) {
-      if (PERSON_ID_SELF.equals(userId)) {
-        userId = getOnBehalfOf();
-      }
-      return personService.getPerson(userId, getOnBehalfOf());
-    } else {
-      throw new UnsupportedOperationException("Not supported: person query with group other than @self.");
-    }
+    return getPerson(userId);
   }
 
   @RequestMapping(method=RequestMethod.GET, value = "/people/{userId:.+}")
@@ -80,6 +78,41 @@ public class PersonController extends AbstractApiController {
     return personService.getPerson(userId, getOnBehalfOf());
   }
 
+  @RequestMapping(method= RequestMethod.GET, value = "/people/{userId:.+}/{groupId:.+}")
+  @ResponseBody
+  public GroupMembersEntry getGroupMembers(@PathVariable("userId")
+  String userId, @PathVariable("groupId")
+  String groupId, @RequestParam(value = "count", required = false)
+  Integer count, @RequestParam(value = "startIndex", required = false)
+  Integer startIndex, @RequestParam(value = "sortBy", required = false)
+  String sortBy) {
+    if (PersonController.PERSON_ID_SELF.equals(userId)) {
+      userId = getOnBehalfOf();
+    }
+    LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
+        groupId, getOnBehalfOf() });
+    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, getOnBehalfOf());
+    List<Person> persons = groupMembers.getEntry();
+    persons = (List<Person>) processQueryOptions(groupMembers, count, startIndex, sortBy, persons);
+    persons = enforceSecurity(persons, getOnBehalfOf());
+    groupMembers.setEntry(persons);
+    return groupMembers;
+  }
+
+  /*
+   * Only someone who is a member of the group can retirve the info about the group
+   */
+  private List<Person> enforceSecurity(List<Person> persons, String onBehalfOf) {
+    if (StringUtils.isBlank(onBehalfOf)) {
+      return persons;
+    }
+    for (Person person : persons) {
+      if (person.getId().equals(onBehalfOf)) {
+        return persons;
+      }
+    }
+    return new ArrayList<Person>();
+  }
 
   @RequestMapping(method=RequestMethod.GET, value = "/groups/{userId:.+}")
   @ResponseBody

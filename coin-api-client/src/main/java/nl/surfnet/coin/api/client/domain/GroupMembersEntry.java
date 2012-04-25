@@ -27,6 +27,19 @@ public class GroupMembersEntry extends AbstractEntry {
 
   private List<Person> entry;
 
+  public GroupMembersEntry() {
+    super();
+  }
+
+  /**
+   * @param persons
+   */
+  public GroupMembersEntry(List<Person> persons) {
+    super();
+    entry = persons;
+  }
+
+
   /**
    * @return the entry
    */

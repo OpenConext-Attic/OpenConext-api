@@ -129,6 +129,18 @@ public abstract class AbstractGrouperDaoImpl  {
     part = ("%" + part + "%").toUpperCase();
     return part;
   }
+  protected static final String SQL_ROLES_BY_TEAM_AND_MEMBERS = "select gm.subject_id as subject_id, " +
+  		"gf.name as fieldname, gg.name as groupname from grouper_memberships gms, " +
+  		"grouper_groups gg, grouper_fields gf, grouper_stems gs, grouper_members gm " +
+  		"where gms.field_id = gf.id and  gms.owner_group_id = gg.id and gms.member_id = gm.id " +
+  		"and gg.parent_stem = gs.id and gs.name != 'etc' and subject_id in (?) " +
+  		"and (gf.name = 'admins' or gf.name = 'updaters') and gg.name = ? ";
+
+  protected static final String SQL_MEMBERS_BY_TEAM = " select distinct gm.subject_id as subject_id " +
+  		"from grouper_memberships gms, grouper_groups gg, grouper_stems gs, " +
+  		"grouper_members gm where gms.owner_group_id = gg.id and gms.member_id = gm.id " +
+  		"and gg.parent_stem = gs.id and gs.name != 'etc' and gm.subject_id != 'GrouperSystem' " +
+  		"and gm.subject_id != 'GrouperAll' and gg.name = ? order by gm.subject_id limit ? offset ?";
 
   /**
    * Template method Row Mapper that only extracts the fields from the resultset, leaving creation
@@ -149,6 +161,10 @@ public abstract class AbstractGrouperDaoImpl  {
     // FIXME: get membership role somewhere
       return createObj(id, name, description, "");
     }
+  }
+  
+  protected static int limitCheck(int limit) {
+    return limit < 1 ? Integer.MAX_VALUE : limit;
   }
 
 }
