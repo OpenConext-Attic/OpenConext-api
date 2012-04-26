@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
@@ -55,7 +54,7 @@ public class ApiController extends AbstractApiController {
 
   @RequestMapping(method= RequestMethod.GET, value = "/people/{userId:.+}/{groupId:.+}")
   @ResponseBody
-  public GroupMembersEntry getGroupMembers(@PathVariable("userId") String userId,
+  public Object getGroupMembers(@PathVariable("userId") String userId,
                                            @PathVariable("groupId") String groupId,
                                            @RequestParam(value = "count",required = false) Integer count,
                                            @RequestParam(value = "startIndex", required = false) Integer startIndex,
@@ -64,7 +63,8 @@ public class ApiController extends AbstractApiController {
       userId = getOnBehalfOf();
     }
     if (GROUP_ID_SELF.equals(groupId)) {
-      throw new UnsupportedOperationException("@self is not supported.");
+      // Backwards compatibility with os.surfconext.
+      return getPerson(userId);
     }
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, getOnBehalfOf() });

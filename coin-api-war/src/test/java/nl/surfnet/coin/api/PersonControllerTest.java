@@ -56,17 +56,6 @@ public class PersonControllerTest {
     MockitoAnnotations.initMocks(this);
   }
 
-
-  @Test(expected = UnsupportedOperationException.class)
-  public void getPersonOtherThanOnBehalfOfNotAllowed() {
-
-    final Authentication authentication = mock(Authentication.class);
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-    when(authentication.getPrincipal()).thenReturn("bar");
-
-    pc.getGroupMembers("foo", "@self", 0, 0, "");
-  }
-
   @Test
   public void getPerson() {
     final Authentication authentication = mock(Authentication.class);
@@ -80,5 +69,9 @@ public class PersonControllerTest {
     when(personService.getPerson("foo", "foo")).thenReturn(entry);
     Person personReturned = pc.getPerson("foo").getEntry();
     assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
+
+    Person person2Returned = ((PersonEntry) pc.getGroupMembers("foo", "@self", 1, 0, "")).getEntry();
+    assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
+
   }
 }
