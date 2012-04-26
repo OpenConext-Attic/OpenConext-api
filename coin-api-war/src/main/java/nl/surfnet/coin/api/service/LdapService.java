@@ -16,7 +16,6 @@
 
 package nl.surfnet.coin.api.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class LdapService implements PersonService {
   
   @Resource(name = "apiGrouperDao")
   private ApiGrouperDao apiGrouperDao;
-  
+
   @Override
   public PersonEntry getPerson(String userId, String onBehalfOf) {
     return new PersonEntry(ldapClient.findPerson(userId), 1, 0, null, 1);
@@ -49,9 +48,9 @@ public class LdapService implements PersonService {
 
   @SuppressWarnings("unchecked")
   @Override
-  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf) {
+  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
     //first get all members from grouper
-    GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, 0, 0);
+    GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, startIndex, count);
     List<Person> persons = entry.getEntry();
     if (!CollectionUtils.isEmpty(persons)) {
       Collection<String> identifiers = CollectionUtils.collect(persons, new Transformer() {
@@ -67,6 +66,7 @@ public class LdapService implements PersonService {
       }
       entry.setEntry(enrichtedInfo);
     }
+    // TODO: implement sortBy
     return entry;
   }
 

@@ -16,10 +16,6 @@
 
 package nl.surfnet.coin.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
@@ -73,31 +68,8 @@ public class ApiController extends AbstractApiController {
     }
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, getOnBehalfOf() });
-    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, getOnBehalfOf());
-    List<Person> persons = groupMembers.getEntry();
-    persons = (List<Person>) processQueryOptions(groupMembers, count, startIndex, sortBy, persons);
-    persons = enforceSecurity(persons, getOnBehalfOf());
-    groupMembers.setEntry(persons);
-    return groupMembers;
+    return personService.getGroupMembers(groupId, getOnBehalfOf(), count, startIndex, sortBy);
   }
-
-  /*
-   * Only someone who is a member of the group can retirve the info about the group
-   */
-  private List<Person> enforceSecurity(List<Person> persons, String onBehalfOf) {
-    if (StringUtils.isBlank(onBehalfOf)) {
-      return persons;
-    }
-    for (Person person : persons) {
-      if (person.getId().equals(onBehalfOf)) {
-        return persons;
-      }
-    }
-    return new ArrayList<Person>();
-  }
-
-
-
 
   @RequestMapping(method=RequestMethod.GET, value = "/groups/{userId:.+}")
   @ResponseBody

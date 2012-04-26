@@ -16,10 +16,6 @@
 
 package nl.surfnet.coin.api;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.beanutils.BeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -30,12 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.OAuthAuthenticationDetails;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import nl.surfnet.coin.api.client.domain.AbstractEntry;
 
 public abstract class AbstractApiController {
 
@@ -63,35 +56,6 @@ public abstract class AbstractApiController {
       }
     }
   }
-  /**
-   * Filter/mangle a result set based on query parameters
-   * @param parent the root object; effectively this parameter is altered by setting the totalResults property
-   * @param count nr of records to fetch
-   * @param startIndex the start index
-   * @param sortBy field to sort by
-   * @param entry the result list of entries
-   * @return
-   */
-  protected List<? extends Object> processQueryOptions(AbstractEntry parent, Integer count, Integer startIndex,
-                                                     String sortBy, List<? extends Object> entry) {
-    parent.setTotalResults(entry.size());
-    if (StringUtils.hasText(sortBy)) {
-      BeanComparator comparator = new BeanComparator(sortBy);
-      Collections.sort(entry, comparator);
-      parent.setSorted(true);
-    }
-    if (startIndex != null) {
-      entry = entry.subList(startIndex, entry.size());
-      parent.setStartIndex(startIndex);
-    }
-    if (count != null) {
-      entry = entry.subList(0, count);
-      parent.setItemsPerPage(count);
-    }
-
-    return entry;
-  }
-
 
   /**
    * Handle CORS preflight request.

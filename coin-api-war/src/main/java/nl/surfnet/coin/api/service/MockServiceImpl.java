@@ -18,19 +18,23 @@ package nl.surfnet.coin.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
+import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupEntry;
@@ -98,7 +102,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf) {
+  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex,
+                                    String sortBy) {
     if (isActive) {
       return getPreparedGroupMembers(groupId);
     }
@@ -107,7 +112,9 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
       pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "teammembers"));
     }
     try {
-      return parser.parseTeamMembers(pathResource.getInputStream());
+      GroupMembersEntry entry = parser.parseTeamMembers(pathResource.getInputStream());
+      processQueryOptions(entry, count, startIndex, sortBy, entry.getEntry());
+      return entry;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -254,6 +261,34 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     MEMBERSHIPS_IN_MEMORY.put(groupId, members);
   }
 
+  /**
+   * Filter/mangle a result set based on query parameters
+   * @param parent the root object; effectively this parameter is altered by setting the totalResults property
+   * @param count nr of records to fetch
+   * @param startIndex the start index
+   * @param sortBy field to sort by
+   * @param entry the result list of entries
+   * @return
+   */
+  protected List<? extends Object> processQueryOptions(AbstractEntry parent, Integer count, Integer startIndex,
+                                                       String sortBy, List<? extends Object> entry) {
+    parent.setTotalResults(entry.size());
+    if (StringUtils.hasText(sortBy)) {
+      BeanComparator comparator = new BeanComparator(sortBy);
+      Collections.sort(entry, comparator);
+      parent.setSorted(true);
+    }
+    if (startIndex != null) {
+      entry = entry.subList(startIndex, entry.size());
+      parent.setStartIndex(startIndex);
+    }
+    if (count != null) {
+      entry = entry.subList(0, count);
+      parent.setItemsPerPage(count);
+    }
+
+    return entry;
+  }
 
   public void sleep(long millSeconds) {
     isActive = true;

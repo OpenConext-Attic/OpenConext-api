@@ -47,7 +47,7 @@ public class MockServiceTest {
 
   @Test
   public void getGroupMembers() {
-    List<Person> groupMembers = service.getGroupMembers("foo", "some logged in user").getEntry();
+    List<Person> groupMembers = service.getGroupMembers("foo", "some logged in user", 1, 0, "").getEntry();
     assertEquals(3, groupMembers.size());
   }
 
@@ -71,7 +71,7 @@ public class MockServiceTest {
 
   @Test
   public void getGroupMembersFallback() {
-    List<Person> groupMembers = service.getGroupMembers("qwerty", "some logged in user").getEntry();
+    List<Person> groupMembers = service.getGroupMembers("qwerty", "some logged in user", 1, 0, "").getEntry();
     assertEquals(22, groupMembers.size());
   }
 
@@ -99,7 +99,7 @@ public class MockServiceTest {
     service.addPerson(person);
     service.addGroup(group);
     service.addPersonToGroup(person.getId(), group.getId());
-    GroupMembersEntry groupMembers = service.getGroupMembers(group.getId(), null);
+    GroupMembersEntry groupMembers = service.getGroupMembers(group.getId(), null, 1, 0, "");
     assertEquals(1, groupMembers.getEntry().size());
     service.setActive(false);
   }
