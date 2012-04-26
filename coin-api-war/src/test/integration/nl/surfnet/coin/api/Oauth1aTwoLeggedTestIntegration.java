@@ -40,7 +40,7 @@ public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
   private static final String OAUTH_SECRET = "mysecret";
 
   private static final String USER_ID = "mock-shib-remote-user";
-  private static final String OS_URL = "social/rest/people/" + USER_ID + "/@self";
+  private static final String OS_URL = "social/rest/people/" + USER_ID;
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
 
