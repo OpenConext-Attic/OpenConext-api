@@ -27,6 +27,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import nl.surfnet.coin.teams.domain.ConversionRule;
 import nl.surfnet.coin.teams.domain.GroupProvider;

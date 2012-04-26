@@ -41,6 +41,10 @@ import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
+import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
+import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
+import nl.surfnet.coin.teams.service.GroupProviderService;
 
 @Component(value = "mockService")
 public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider {
@@ -295,5 +299,6 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     sleepMilliseconds = millSeconds;
 
   }
+
 
 }
