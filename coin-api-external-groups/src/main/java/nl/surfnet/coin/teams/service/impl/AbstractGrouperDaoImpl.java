@@ -142,6 +142,17 @@ public abstract class AbstractGrouperDaoImpl  {
   		"and gg.parent_stem = gs.id and gs.name != 'etc' and gm.subject_id != 'GrouperSystem' " +
   		"and gm.subject_id != 'GrouperAll' and gg.name = ? order by gm.subject_id limit ? offset ?";
 
+  protected static final String SQL_ADD_MEMBER_COUNT_TO_TEAMS = "select gg.name  as groupname, " +
+      "count(distinct gms.member_id) as membercount from "
+      + " grouper_groups gg, grouper_stems gs, grouper_members gm, "
+      + " grouper_memberships gms "
+      + " where gg.parent_stem = gs.id and gms.member_id = gm.id and gms.owner_group_id = gg.id "
+      + " and gm.subject_type = 'person' "
+      + " and gs.name != 'etc' "
+      + " and gg.id in (select distinct(ggo.id) from grouper_groups ggo, grouper_members gmo, grouper_memberships gmso  "
+      + " where gmso.member_id = gmo.id and gmso.owner_group_id = ggo.id and gmo.subject_id = ?)   "
+      + " group by gg.name  ";
+
   /**
    * Template method Row Mapper that only extracts the fields from the resultset, leaving creation
    *  of a concrete group to implementations.
