@@ -28,9 +28,10 @@ import nl.surfnet.coin.janus.Janus.Metadata;
  * OAuth2 terms a client)
  * 
  */
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class ClientMetaData implements Serializable {
 
+  private static final long serialVersionUID = 1L;
   private String appTitle;
   private String appIcon;
   private String appDescription;

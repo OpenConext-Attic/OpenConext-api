@@ -26,6 +26,7 @@ import org.springframework.security.oauth.provider.BaseConsumerDetails;
  */
 @SuppressWarnings("serial")
 public class ExtendedBaseConsumerDetails extends BaseConsumerDetails {
+
   private ClientMetaData clientMetaData;
 
   /**

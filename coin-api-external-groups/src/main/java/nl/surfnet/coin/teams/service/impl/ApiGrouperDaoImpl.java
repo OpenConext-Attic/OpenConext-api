@@ -58,7 +58,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
       pageSize = Integer.MAX_VALUE;
     }
     if (offset == null) {
-      offset = 0;
+      offset = new Integer(0);
     }
     try {
       // TODO: include sortBy in query.
