@@ -27,11 +27,10 @@ public class Group20 {
   private String voot_membership_role;
 
 
-  public Group20(String id, String title, String description, String vootMembershipRole) {
+  public Group20(String id, String title, String description) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.voot_membership_role = vootMembershipRole;
   }
 
   public Group20() {

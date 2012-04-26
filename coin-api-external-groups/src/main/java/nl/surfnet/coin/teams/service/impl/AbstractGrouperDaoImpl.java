@@ -149,7 +149,7 @@ public abstract class AbstractGrouperDaoImpl  {
    */
   public abstract static class GrouperRowMapper<T> implements RowMapper<T> {
 
-    public abstract T createObj(String id, String name, String description, String vootMembershipRole);
+    public abstract T createObj(String id, String name, String description);
 
     @Override
     public T mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -158,13 +158,11 @@ public abstract class AbstractGrouperDaoImpl  {
       String name = rs.getString("display_name");
       name = name.substring(name.lastIndexOf(':') + 1);
       String description = rs.getString("description");
-    // FIXME: get membership role somewhere
-      return createObj(id, name, description, "");
+      return createObj(id, name, description);
     }
   }
-  
   protected static int limitCheck(int limit) {
     return limit < 1 ? Integer.MAX_VALUE : limit;
-  }
+}
 
 }

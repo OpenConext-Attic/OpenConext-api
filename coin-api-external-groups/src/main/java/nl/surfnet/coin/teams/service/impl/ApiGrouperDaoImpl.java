@@ -44,9 +44,11 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
 
   public Group20Entry findGroup20(String personId, String groupName) {
-    return new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(SQL_FIND_TEAMS_LIKE_GROUPNAME,
+    final Group20Entry group20Entry = new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(SQL_FIND_TEAMS_LIKE_GROUPNAME,
         new Object[]{personId, groupName, 1, 0},
         new OpenSocial20GroupRowMapper())));
+    addRolesToGroups(personId, group20Entry.getEntry());
+    return group20Entry;
   }
 
   public Group20Entry findAllGroup20sByMember(String personId, Integer offset, Integer pageSize, String sortBy) {
@@ -54,6 +56,9 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     List<Group20> groups = new ArrayList<Group20>();
     if (pageSize == null) {
       pageSize = Integer.MAX_VALUE;
+    }
+    if (offset == null) {
+      offset = 0;
     }
     try {
       // TODO: include sortBy in query.
@@ -68,8 +73,8 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
   public static class OpenSocial20GroupRowMapper extends GrouperRowMapper<Group20> {
     @Override
-    public Group20 createObj(String id, String name, String description, String vootMembershipRole) {
-      return new Group20(id, name, description, vootMembershipRole);
+    public Group20 createObj(String id, String name, String description) {
+      return new Group20(id, name, description);
     }
   }
 

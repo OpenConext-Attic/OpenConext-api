@@ -53,6 +53,8 @@ public class MockGroupServiceImpl implements GroupService {
 
   protected static Group20 createGroup() {
     int thisGroupId = groupId.getAndIncrement();
-    return new Group20("groupId-" + thisGroupId, "group title", "description for group " + thisGroupId, "admin");
+    final Group20 group20 = new Group20("groupId-" + thisGroupId, "group title", "description for group " + thisGroupId);
+    group20.setVoot_membership_role("admin");
+    return group20;
   }
 }

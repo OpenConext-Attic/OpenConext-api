@@ -58,7 +58,7 @@ public class ApiGrouperDaoImplTest {
   @Test
   public void getGroups() {
     final ArrayList<Group20> group20s = new ArrayList<Group20>();
-    group20s.add(new Group20("foo", "bar", "baz", "admin"));
+    group20s.add(new Group20("foo", "bar", "baz"));
     when(jdbcTemplate.query(anyString(), (Object[]) anyVararg(), (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject()))
         .thenReturn(group20s);
     assertEquals(1, dao.findAllGroup20sByMember("personid", 1, 1, "name").getEntry().size());
