@@ -44,6 +44,13 @@ coin-api.grouper.jdbc.url=jdbc:mysql://db.test.surfconext.nl:3306/teams
 coin-api.grouper.jdbc.user=??
 coin-api.grouper.jdbc.password=??
 
+# global configuration of database properties, used for all data sources
+# in seconds
+coin-api.database.idleConnectionTestPeriod=900
+# in seconds
+coin-api.database.maxIdleTime=900
+
+
 ####################################################################
 ##
 ## The following properties are the responsibility of the developers
