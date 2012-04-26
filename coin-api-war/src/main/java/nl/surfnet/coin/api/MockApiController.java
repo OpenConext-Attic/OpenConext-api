@@ -16,25 +16,14 @@
 
 package nl.surfnet.coin.api;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
 
@@ -44,88 +33,26 @@ import nl.surfnet.coin.api.service.PersonService;
 @Controller
 @RequestMapping(value = "mock10/social/rest")
 @SuppressWarnings("unchecked")
-public class MockApiController extends AbstractApiController {
+public class MockApiController extends ApiController {
 
   private static Logger LOG = LoggerFactory.getLogger(MockApiController.class);
 
   @Value("${mock-api-enabled}")
   private boolean mockApiEnabled;
 
-  @Resource(name = "mockService")
-  private PersonService personService;
-
-  @Resource(name = "mockService")
-  private GroupService groupService;
-
-  @RequestMapping(method= RequestMethod.GET, value = "/people/{userId:.+}/@self")
-  @ResponseBody
-  public PersonEntry getPersonAtSelf(@PathVariable("userId")
-  String userId) {
-    return getPerson(userId);
-  }
-
-  @RequestMapping(method= RequestMethod.GET, value = "/people/{userId:.+}")
-  @ResponseBody
-  public PersonEntry getPerson(@PathVariable("userId")
-  String userId) {
-    invariant();
-    LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'", new Object[] { userId, getOnBehalfOf() });
-    if (PersonController.PERSON_ID_SELF.equals(userId)) {
-      userId = getOnBehalfOf();
-    }
-    return personService.getPerson(userId, getOnBehalfOf());
-  }
-
-  @RequestMapping(method= RequestMethod.GET, value = "/people/{userId:.+}/{groupId:.+}")
-  @ResponseBody
-  public GroupMembersEntry getGroupMembers(@PathVariable("userId")
-  String userId, @PathVariable("groupId")
-  String groupId, @RequestParam(value = "count", required = false)
-  Integer count, @RequestParam(value = "startIndex", required = false)
-  Integer startIndex, @RequestParam(value = "sortBy", required = false)
-  String sortBy) {
-    invariant();
-    if (PersonController.PERSON_ID_SELF.equals(userId)) {
-      userId = getOnBehalfOf();
-    }
-    LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
-        groupId, getOnBehalfOf() });
-    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, getOnBehalfOf());
-    List<Person> entry = groupMembers.getEntry();
-    entry = (List<Person>) processQueryOptions(groupMembers, count, startIndex, sortBy, entry);
-    groupMembers.setEntry(entry);
-    return groupMembers;
-  }
-
-  @RequestMapping(method= RequestMethod.GET, value = "/groups/{userId:.+}")
-  @ResponseBody
-  public Group20Entry getGroups(@PathVariable("userId")
-  String userId, @RequestParam(value = "count", required = false)
-  Integer count, @RequestParam(value = "startIndex", required = false)
-  Integer startIndex, @RequestParam(value = "sortBy", required = false)
-  String sortBy) {
-    invariant();
-    if (PersonController.PERSON_ID_SELF.equals(userId)) {
-      userId = getOnBehalfOf();
-    }
-    LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'", new Object[] { userId, getOnBehalfOf() });
-    Group20Entry groups = groupService.getGroups20(userId, getOnBehalfOf(), count, startIndex, sortBy);
-    List<Group20> entry = groups.getEntry();
-    entry = (List<Group20>) processQueryOptions(groups, count, startIndex, sortBy, entry);
-    return groups;
-  }
-
-  private void invariant() {
+  @Override
+  public void invariant() {
     if (!this.mockApiEnabled) {
       throw new RuntimeException("Mock API not enabled");
     }
-
   }
 
+  @Resource(name = "mockService")
   public void setPersonService(PersonService personService) {
     this.personService = personService;
   }
 
+  @Resource(name = "mockService")
   public void setGroupService(GroupService groupService) {
     this.groupService = groupService;
   }
@@ -133,5 +60,4 @@ public class MockApiController extends AbstractApiController {
   public void setMockApiEnabled(boolean mockApiEnabled) {
     this.mockApiEnabled = mockApiEnabled;
   }
-
 }

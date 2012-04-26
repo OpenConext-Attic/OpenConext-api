@@ -64,7 +64,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * nl.surfnet.coin.api.client.OpenConextOAuthClient#isAccessTokenGranted(java
    * .lang.String)
@@ -165,8 +165,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
   @Override
   public Person getPerson(String userId, String onBehalfOf) {
     OAuthRequest request = new OAuthRequest(Verb.GET,
-        environment.getEndpointBaseUrl() + "social/rest/people/" + userId
-            + "/@self");
+        environment.getEndpointBaseUrl() + "social/rest/people/" + userId);
     InputStream in = execute(onBehalfOf, request);
     return parser.parsePerson(in).getEntry();
   }

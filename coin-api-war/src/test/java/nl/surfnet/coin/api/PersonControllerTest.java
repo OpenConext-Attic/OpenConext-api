@@ -33,7 +33,6 @@ import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.PersonService;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,14 +57,14 @@ public class PersonControllerTest {
   }
 
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void getPersonOtherThanOnBehalfOfNotAllowed() {
 
     final Authentication authentication = mock(Authentication.class);
     SecurityContextHolder.getContext().setAuthentication(authentication);
     when(authentication.getPrincipal()).thenReturn("bar");
 
-    assertNull(pc.getPerson("foo", "@self"));
+    pc.getGroupMembers("foo", "@self", 0, 0, "");
   }
 
   @Test
@@ -79,7 +78,7 @@ public class PersonControllerTest {
     PersonEntry entry = new PersonEntry();
     entry.setEntry(p);
     when(personService.getPerson("foo", "foo")).thenReturn(entry);
-    Person personReturned = pc.getPerson("foo", "@self").getEntry();
+    Person personReturned = pc.getPerson("foo").getEntry();
     assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
   }
 }

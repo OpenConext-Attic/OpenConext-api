@@ -54,8 +54,7 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
     environment.setOauthSecret(OAUTH_SECRET);
     environment.setCallbackUrl("http://not-used/");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
-    repository.storeToken(new Token(OAUTH_KEY, OAUTH_SECRET), USER_ID,
-        OAuthVersion.v2);
+    repository.storeToken(new Token(OAUTH_KEY, OAUTH_SECRET), USER_ID, OAuthVersion.v2);
     client = new OpenConextOAuthClientImpl(environment, repository);
   }
 

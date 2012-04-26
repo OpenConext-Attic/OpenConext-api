@@ -125,7 +125,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
     Token aToken = service.getAccessToken(null, authorizationCode);
 
-    final String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID + "/@self";
+    final String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID;
 
     // Verify that a normal request (without access token) fails now.
     getWebDriver().manage().deleteAllCookies();
