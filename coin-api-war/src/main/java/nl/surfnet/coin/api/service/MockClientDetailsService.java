@@ -17,6 +17,8 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +27,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
 import org.springframework.security.oauth.common.signature.SignatureSecret;
-import org.springframework.security.oauth.provider.BaseConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
+import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.janus.Janus;
 
 /**
  * Mock details service. Replacement for JanusClientDetailsService.
@@ -44,30 +49,45 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
-    final BaseClientDetails details = new BaseClientDetails();
+    final ExtendedBaseClientDetails details = new ExtendedBaseClientDetails();
     details.setClientId(clientId);
     details.setScope(Arrays.asList("read"));
     details.setClientSecret(defaultSecret);
+    details.setClientMetaData(mockMetadata(clientId));
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;
   }
 
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-    final BaseConsumerDetails consumerDetails = new BaseConsumerDetails();
+    final ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
     SignatureSecret secret = new SharedConsumerSecret(defaultSecret);
     consumerDetails.setConsumerKey(consumerKey);
+    consumerDetails.setConsumerName("Mock consumer name");
 
     // Can do 2 legged
     consumerDetails.setRequiredToObtainAuthenticatedToken(false);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
     consumerDetails.setSignatureSecret(new SharedConsumerSecret(defaultSecret));
+    consumerDetails.setClientMetaData(mockMetadata(consumerKey));
+
     LOG.debug("Got request loadClientByClientId({}), will return: {}", consumerKey, consumerDetails);
     return consumerDetails;
 
   }
 
+  public static ClientMetaData mockMetadata(String entityId) {
+    Map<String, String> map = new HashMap<String, String>();
+    map.put(Janus.Metadata.OAUTH_APPDESCRIPTION.val(), "My mocked application description");
+    map.put(Janus.Metadata.ENTITY_ID.val(), entityId);
+    map.put(Janus.Metadata.OAUTH_APPICON.val(), "mock-appicon.png");
+    map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
+    map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
+    return ClientMetaData.fromMetaData(map);
+  }
+
   public void setDefaultSecret(String defaultSecret) {
     this.defaultSecret = defaultSecret;
   }
+
 }

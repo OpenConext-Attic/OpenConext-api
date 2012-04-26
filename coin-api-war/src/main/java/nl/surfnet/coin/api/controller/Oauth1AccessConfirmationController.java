@@ -53,7 +53,7 @@ public class Oauth1AccessConfirmationController {
     }
 
     OAuthProviderToken providerToken = tokenServices.getToken(token);
-    ConsumerDetails consumer = clientDetailsService
+    ConsumerDetails client = clientDetailsService
         .loadConsumerByConsumerKey(providerToken.getConsumerKey());
 
     String callback = request.getParameter("oauth_callback");
@@ -62,7 +62,7 @@ public class Oauth1AccessConfirmationController {
     if (callback != null) {
       model.put("oauth_callback", callback);
     }
-    model.put("consumer", consumer);
+    model.put("client", client);
     return new ModelAndView("access_confirmation_oauth1", model);
   }
 

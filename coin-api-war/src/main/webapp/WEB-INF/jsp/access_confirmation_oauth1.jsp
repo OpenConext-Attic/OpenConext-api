@@ -29,13 +29,13 @@
 </head>
 <body class="index">
 <div id="wrapper">
-  <div id="header"><img class="app-icon" src="${client.clientId}"/> <strong><c:out value="${client.clientId}" default="No Title"/></strong> is trying to access your information</div>
+  <div id="header"><img class="app-icon" src="${client.clientMetaData.appIcon}"/> <strong><c:out value="${client.clientMetaData.appEntityId}" default="No Title"/></strong> is trying to access your information</div>
   <div id="main">
     <ul class="nav">
       <li class="active"><a href="#">EN</a></li>
     </ul>
 
-    <h1>Do you want to grant access to <c:out value="${client.clientId}" default="No Title"/>?</h1>
+    <h1>Do you want to grant access to <c:out value="${client.consumerName}" default="No Title"/>?</h1>
 
     <% if (session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) != null && !(session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) instanceof UnapprovedClientAuthenticationException)) { %>
     <div class="error">
@@ -58,7 +58,7 @@
             <dt>Display Name:</dt>
             <dd><c:out value="${header.displayName}" default="No Display Name provided" /></dd>
             <dt>User ID:</dt>
-            <dd class="last user-id" id="UserId">${client.clientId}</dd>
+            <dd class="last user-id" id="UserId">${header.REMOTE_USER}</dd>
           </dl>
         </div>
         <div class="column">
@@ -69,8 +69,9 @@
         </div>
       </div>
       <span class="category"><strong>Application Details:</strong></span>
-      <img class="app-thumb" src="${appThumbnail}" align="right" alt="application thumbnail" />
-      <span class="description"><c:out value="${appDesc}" default="This application has no description."/></span>
+      <img class="app-thumb" src="${client.clientMetaData.appThumbNail}" align="right" alt="application thumbnail" />
+      <span class="description"><c:out value="${client.clientMetaData.appDescription}"
+                                       default="This application has no description."/></span>
       <div class="form">
         <form name="authZFormGrant" action="<%=request.getContextPath()%>/oauth1/authorize" method="POST">
         <input name="oauth_token" value="<c:out value="${oauth_token}"/>" type="hidden"/>

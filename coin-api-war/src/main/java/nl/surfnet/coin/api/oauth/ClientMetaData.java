@@ -21,6 +21,9 @@ package nl.surfnet.coin.api.oauth;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import nl.surfnet.coin.janus.Janus.Metadata;
 
 /**
@@ -118,4 +121,7 @@ public class ClientMetaData implements Serializable {
     this.appEntityId = appEntityId;
   }
 
+  public String toString() {
+    return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
+  }
 }
