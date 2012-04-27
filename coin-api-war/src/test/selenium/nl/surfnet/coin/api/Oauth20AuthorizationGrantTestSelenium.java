@@ -131,8 +131,8 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     getWebDriver().manage().deleteAllCookies();
     getWebDriver().get(restUrl);
     assertFalse(getWebDriver().getPageSource().contains("mnice@surfguest.nl"));
+
     OAuthRequest request = new OAuthRequest(Verb.GET, restUrl);
-    
     service.signRequest(aToken, request);
     Response response = request.send();
     LOG.debug("Response: {}", response.getBody());

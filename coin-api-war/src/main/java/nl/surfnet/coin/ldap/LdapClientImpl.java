@@ -87,6 +87,9 @@ public class LdapClientImpl implements LdapClient {
    */
   @Override
   public List<Person> findPersons(Collection<String> identifiers) {
+    //TODO https://jira.springsource.org/browse/LDAP-153
+    //http://static.springsource.org/spring-ldap/site/reference/html/processor.html
+    //http://forum.springsource.org/showthread.php?63690-PagedResultsRequestControl-SortControlDirContextProcessor-with-eDirectory-8-8
     Filter query = getFilter(identifiers.toArray(new String[identifiers.size()]));
     List<Person> search = findPersons(query);
     return search;

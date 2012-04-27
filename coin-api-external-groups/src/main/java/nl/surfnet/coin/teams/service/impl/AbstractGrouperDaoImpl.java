@@ -172,8 +172,18 @@ public abstract class AbstractGrouperDaoImpl  {
       return createObj(id, name, description);
     }
   }
-  protected static int limitCheck(int limit) {
-    return limit < 1 ? Integer.MAX_VALUE : limit;
-}
+  protected Integer correctOffset(Integer offset) {
+    if (offset == null) {
+      offset = new Integer(0);
+    }
+    return offset;
+  }
+
+  protected Integer correctPageSize(Integer pageSize) {
+    if (pageSize == null) {
+      pageSize = Integer.MAX_VALUE;
+    }
+    return pageSize;
+  }
 
 }

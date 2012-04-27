@@ -50,7 +50,7 @@ public class LdapService implements PersonService {
   @Override
   public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
     //first get all members from grouper
-    GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, startIndex, count);
+    GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, startIndex, count, sortBy);
     List<Person> persons = entry.getEntry();
     if (!CollectionUtils.isEmpty(persons)) {
       Collection<String> identifiers = CollectionUtils.collect(persons, new Transformer() {

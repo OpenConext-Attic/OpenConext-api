@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@RequestMapping(value="/Shibboleth.sso/Login")
+@RequestMapping(value="/Shibboleth.sso/Login*")
 @Controller
 public class MockShibbolethController {
 

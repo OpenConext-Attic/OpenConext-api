@@ -110,7 +110,7 @@
 
   <oauth2:resource-server id="oauth2ProviderFilter" token-services-ref="tokenServices" />
 
-  <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.RandomValueTokenServices">
+  <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
     <property name="tokenStore" ref="tokenStore"/>
   </bean>
   <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">

@@ -54,12 +54,8 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
   public Group20Entry findAllGroup20sByMember(String personId, Integer offset, Integer pageSize, String sortBy) {
     int rowCount = this.jdbcTemplate.queryForInt(SQL_FIND_ALL_TEAMS_BY_MEMBER_ROWCOUNT, personId);
     List<Group20> groups = new ArrayList<Group20>();
-    if (pageSize == null) {
-      pageSize = Integer.MAX_VALUE;
-    }
-    if (offset == null) {
-      offset = new Integer(0);
-    }
+    pageSize = correctPageSize(pageSize);
+    offset = correctOffset(offset);
     try {
       // TODO: include sortBy in query.
       groups = jdbcTemplate.query(SQL_FIND_ALL_TEAMS_BY_MEMBER, new Object[]{personId, pageSize, offset},
@@ -130,10 +126,11 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
    * @see nl.surfnet.coin.teams.service.impl.ApiGrouperDao#findAllMembers(java.lang.String, int, int)
    */
   @Override
-  public GroupMembersEntry findAllMembers(String groupId, int offset, int pageSize) {
-    
+  public GroupMembersEntry findAllMembers(String groupId, Integer offset, Integer pageSize, String sortBy) {
+ // TODO: include sortBy in query.
     List<Person> persons = new ArrayList<Person>();
-    pageSize = limitCheck(pageSize);
+    pageSize = correctPageSize(pageSize);
+    offset = correctOffset(offset);
     try {
       RowMapper<Person> mapper = new RowMapper<Person>() {
         @Override
