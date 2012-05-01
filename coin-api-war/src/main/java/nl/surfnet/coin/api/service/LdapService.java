@@ -37,7 +37,7 @@ public class LdapService implements PersonService {
 
   @Autowired
   private LdapClient ldapClient;
-  
+
   @Resource(name = "apiGrouperDao")
   private ApiGrouperDao apiGrouperDao;
 
@@ -48,25 +48,29 @@ public class LdapService implements PersonService {
 
   @SuppressWarnings("unchecked")
   @Override
-  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
-    //first get all members from grouper
-    GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, startIndex, count, sortBy);
+  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex,
+      String sortBy) {
+    /*
+     * first get all members from grouper. Note that we don't support sortBy but
+     * we do support count and startIndex. See
+     * https://jira.surfconext.nl/jira/br owse/BACKLOG-438
+     */
+    GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, startIndex, count);
     List<Person> persons = entry.getEntry();
     if (!CollectionUtils.isEmpty(persons)) {
       Collection<String> identifiers = CollectionUtils.collect(persons, new Transformer() {
         @Override
         public Object transform(Object input) {
-          return ((Person)input).getId();
+          return ((Person) input).getId();
         }
       });
-      //Now enrich the information
+      // Now enrich the information
       List<Person> enrichtedInfo = ldapClient.findPersons(identifiers);
       for (Person person : enrichtedInfo) {
         person.setVoot_membership_role(getVootMembersShip(person.getId(), persons));
       }
       entry.setEntry(enrichtedInfo);
     }
-    // TODO: implement sortBy
     return entry;
   }
 
@@ -80,6 +84,6 @@ public class LdapService implements PersonService {
         return person.getVoot_membership_role();
       }
     }
-    throw new RuntimeException("No person found with identifier ('"+id+"')");
+    throw new RuntimeException("No person found with identifier ('" + id + "')");
   }
 }

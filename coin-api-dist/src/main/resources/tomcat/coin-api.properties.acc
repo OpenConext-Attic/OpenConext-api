@@ -51,6 +51,9 @@ coin-api.database.idleConnectionTestPeriod=900
 # in seconds
 coin-api.database.maxIdleTime=900
 
+# The login url of Shibboleth
+coin-api.shibboleth.login.url=https://api.acc.surfconext.nl/Shibboleth.sso/Login
+
 ####################################################################
 ##
 ## The following properties are the responsibility of the developers

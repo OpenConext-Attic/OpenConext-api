@@ -116,6 +116,7 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     gp.setGroupDecorators(getGroupIdDecorators(gp));
     gp.setPersonFilters(getPersonIdFilters(gp));
     gp.setGroupFilters(getGroupIdFilters(gp));
+    gp.setServiceProviderGroupAcls(getServiceProviderGroupAcl(gp));
     return gp;
   }
 
@@ -282,40 +283,36 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     return new ArrayList<ConversionRule>(idConverterMap.values());
   }
   
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.teams.service.GroupProviderService#getServiceProviderGroupAcl
-   * (java.lang.String)
-   */
-  @Override
-  public List<ServiceProviderGroupAcl> getServiceProviderGroupAcl(
-      final String serviceProviderEntityId) {
+  private List<ServiceProviderGroupAcl> getServiceProviderGroupAcl(
+      GroupProvider groupProvider) {
     List<ServiceProviderGroupAcl> spGroupAcls;
     try {
       // Get all
+      RowMapper<ServiceProviderGroupAcl> rowMapper = new ServiceProviderGroupAclRowMapper();
       spGroupAcls = this.jdbcTemplate
           .query(
-              "SELECT  group_provider_id, spentityid, allow_groups, allow_members FROM service_provider_group_acl WHERE spentityid = ?",
-              new Object[] { serviceProviderEntityId },
-              new RowMapper<ServiceProviderGroupAcl>() {
-                @Override
-                public ServiceProviderGroupAcl mapRow(ResultSet rs, int rowNum)
-                    throws SQLException {
-                  long providerId = rs.getLong("group_provider_id");
-                  boolean allowGroups = rs.getBoolean("allow_groups");
-                  boolean allowMembers = rs.getBoolean("allow_members");
-                  return new ServiceProviderGroupAcl(allowGroups, allowMembers,
-                      serviceProviderEntityId, providerId);
-                }
-              });
+              "SELECT  group_provider_id, spentityid, allow_groups, allow_members FROM service_provider_group_acl WHERE group_provider_id = ?",
+              new Object[] { groupProvider.getId() },
+              rowMapper);
     } catch (EmptyResultDataAccessException e) {
       spGroupAcls = new ArrayList<ServiceProviderGroupAcl>();
     }
     return spGroupAcls;
  }  
 
+  private class ServiceProviderGroupAclRowMapper implements RowMapper<ServiceProviderGroupAcl> {
+    @Override
+    public ServiceProviderGroupAcl mapRow(ResultSet rs, int rowNum)
+        throws SQLException {
+      long providerId = rs.getLong("group_provider_id");
+      String serviceProviderEntityId = rs.getString("spentityid");
+      boolean allowGroups = rs.getBoolean("allow_groups");
+      boolean allowMembers = rs.getBoolean("allow_members");
+      return new ServiceProviderGroupAcl(allowGroups, allowMembers,
+          serviceProviderEntityId, providerId);
+    }
+  }
+  
   protected void execute(String sql) {
     this.jdbcTemplate.execute(sql);
   }

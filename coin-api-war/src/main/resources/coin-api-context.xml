@@ -87,7 +87,7 @@
   <bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
 
   <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
-    <constructor-arg index="0" value="/Shibboleth.sso/Login" />
+    <constructor-arg index="0" value="${coin-api.shibboleth.login.url}" />
     <property name="useForward" value="false" />
   </bean>
   <bean id="shibbolethAuthenticationManager" class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />

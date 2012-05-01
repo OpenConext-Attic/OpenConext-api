@@ -28,6 +28,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import nl.surfnet.coin.api.client.domain.Group20;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.anyObject;
@@ -50,17 +51,34 @@ public class ApiGrouperDaoImplTest {
 
   @Test
   public void getGroupsEmpty() {
-    when(jdbcTemplate.query(anyString(), (Object[]) anyVararg(), (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject()))
-        .thenReturn(new ArrayList<Group20>());
-    assertEquals(0, dao.findAllGroup20sByMember("personid", 1, 1, "name").getEntry().size());
+    when(
+        jdbcTemplate.query(anyString(), (Object[]) anyVararg(),
+            (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject())).thenReturn(new ArrayList<Group20>());
+    assertEquals(0, dao.findAllGroup20sByMember("personid", 1, 1, "id").getEntry().size());
   }
 
   @Test
   public void getGroups() {
     final ArrayList<Group20> group20s = new ArrayList<Group20>();
     group20s.add(new Group20("foo", "bar", "baz"));
-    when(jdbcTemplate.query(anyString(), (Object[]) anyVararg(), (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject()))
-        .thenReturn(group20s);
-    assertEquals(1, dao.findAllGroup20sByMember("personid", 1, 1, "name").getEntry().size());
+    when(
+        jdbcTemplate.query(anyString(), (Object[]) anyVararg(),
+            (ApiGrouperDaoImpl.OpenSocial20GroupRowMapper) anyObject())).thenReturn(group20s);
+    assertEquals(1, dao.findAllGroup20sByMember("personid", 1, 1, "id").getEntry().size());
+  }
+
+  @Test
+  public void sortByOptions() {
+    ApiGrouperDaoImpl daoImpl = new ApiGrouperDaoImpl();
+    String sql = daoImpl.formatSQLWithSortByOption(null);
+    assertTrue(sql.endsWith("order by gg.name limit ? offset ?"));
+    try {
+      daoImpl.formatSQLWithSortByOption("wtf");
+      fail();
+    } catch (RuntimeException e) {
+    }
+    sql = daoImpl.formatSQLWithSortByOption("title");
+    assertTrue(sql.endsWith("order by gg.display_name limit ? offset ?"));
+
   }
 }

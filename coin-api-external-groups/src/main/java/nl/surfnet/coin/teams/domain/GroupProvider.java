@@ -40,6 +40,7 @@ public class GroupProvider {
   private List<ConversionRule> groupFilters = new ArrayList<ConversionRule>();
   private List<ConversionRule> personDecorators = new ArrayList<ConversionRule>();
   private List<ConversionRule> personFilters = new ArrayList<ConversionRule>();
+  private List<ServiceProviderGroupAcl> serviceProviderGroupAcls = new ArrayList<ServiceProviderGroupAcl>();
   private String userIdPrecondition;
 
   public GroupProvider(Long id, String identifier, String name, String groupProviderType) {
@@ -295,5 +296,23 @@ public class GroupProvider {
     sb.append(", groupProviderType=").append(groupProviderType);
     sb.append('}');
     return sb.toString();
+  }
+
+  /**
+   * @return the serviceProviderGroupAcls
+   */
+  public List<ServiceProviderGroupAcl> getServiceProviderGroupAcls() {
+    return serviceProviderGroupAcls;
+  }
+
+  /**
+   * @param serviceProviderGroupAcls the serviceProviderGroupAcls to set
+   */
+  public void setServiceProviderGroupAcls(List<ServiceProviderGroupAcl> serviceProviderGroupAcls) {
+    this.serviceProviderGroupAcls = serviceProviderGroupAcls;
+  }
+  
+  public void addServiceProviderGroupAcl(ServiceProviderGroupAcl serviceProviderGroupAcl) {
+    this.serviceProviderGroupAcls.add(serviceProviderGroupAcl);
   }
 }

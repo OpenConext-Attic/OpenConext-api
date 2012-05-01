@@ -70,7 +70,6 @@ public class ApiController extends AbstractApiController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/people/{userId:.+}/{groupId:.+}")
   @ResponseBody
-
   public Object getGroupMembers(@PathVariable("userId") String userId,
                                            @PathVariable("groupId") String groupId,
                                            @RequestParam(value = "count",required = false) Integer count,
@@ -143,10 +142,6 @@ public class ApiController extends AbstractApiController {
               + (principal != null ? principal.getClass() : "null") + ")");
     }
     Assert.notNull(clientMetaData,"ClientMetaData may not be null for checking ACL's");
-    List<ServiceProviderGroupAcl> acls = groupProviderService.getServiceProviderGroupAcl(clientMetaData.getAppEntityId());
-    for (ServiceProviderGroupAcl acl : acls) {
-      
-    }
     return true;
   }
 }
