@@ -11,6 +11,7 @@ create table group_provider (
   identifier varchar(255) not null,
   name varchar(255) not null,
   classname varchar(255) not null,
+  logo_url varchar(1024) null,
   primary key (id)
 );
 create table group_provider_user_oauth (
@@ -70,9 +71,9 @@ insert into service_provider_group_acl (id, group_provider_id, spentityid, allow
 insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('avans','urn:collab:person:test.surfguest.nl:tester', 'replaced_by_dummy_value', 'replaced_by_dummy_value');
 insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('hz', 'urn:collab:person:test.surfguest.nl:tester2', 'replaced_by_dummy_value', 'replaced_by_dummy_value');
 
-insert into group_provider (id, identifier, name, classname) values (4, 'hz', 'HZ', 'EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged');
+insert into group_provider (id, identifier, name, classname, logo_url) values (4, 'hz', 'HZ', 'EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged', 'http://farm8.staticflickr.com/7165/6459549075_1b1a9c1a45_s.jpg');
 insert into group_provider (id, identifier, name, classname) values (5, 'grouper', 'SURFteams grouper', 'EngineBlock_Group_Provider_Grouper');
-insert into group_provider (id, identifier, name, classname) values (9, 'avans', 'Avans', 'EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged');
+insert into group_provider (id, identifier, name, classname, logo_url) values (9, 'avans', 'Avans', 'EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged', 'http://farm8.staticflickr.com/7165/6459549075_1b1a9c1a45_s.jpg');
 
 
 INSERT INTO group_provider_decorator (id, group_provider_id, classname)

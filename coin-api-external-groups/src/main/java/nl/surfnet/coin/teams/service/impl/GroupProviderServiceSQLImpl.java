@@ -27,7 +27,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
 
 import nl.surfnet.coin.teams.domain.ConversionRule;
 import nl.surfnet.coin.teams.domain.GroupProvider;
@@ -42,7 +41,7 @@ import nl.surfnet.coin.teams.service.GroupProviderService;
 public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
   private static final String SELECT_GROUP_PROVIDER_BY_IDENTIFIER =
-      "SELECT gp.id, gp.identifier, gp.name, gp.classname FROM group_provider AS gp WHERE gp.identifier ";
+      "SELECT gp.id, gp.identifier, gp.name, gp.classname, gp.logo_url FROM group_provider AS gp WHERE gp.identifier ";
 
   // Cannot autowire because OpenConext-teams already has a JdbcTemplate defined for Grouper
   // or change autowire by name instead of type
@@ -109,6 +108,8 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     String name = rs.getString("name");
     String gpClassName = rs.getString("classname");
     GroupProvider gp = new GroupProvider(id, identifier, name, gpClassName);
+    String logoUrl = rs.getString("logo_url");
+    gp.setLogoUrl(logoUrl);
     gp.setAllowedOptions(getAllowedOptions(gp));
     gp.setUserIdPrecondition(getUserIdPreCondition(id));
     gp.setPersonDecorators(getPersonIdDecorators(gp));

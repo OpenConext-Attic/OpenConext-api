@@ -33,6 +33,7 @@ public class GroupProvider {
   private Long id;
   private String identifier;
   private String name;
+  private String logoUrl;
   private GroupProviderType groupProviderType;
   private Map<String, Object> allowedOptions;
   private List<ConversionRule> groupDecorators = new ArrayList<ConversionRule>();
@@ -237,9 +238,28 @@ public class GroupProvider {
     this.personFilters.add(personIdFilter);
   }
 
+  /**
+   * Checks if the user identifier matches the precondition for this group provider
+   *
+   * @param userId urn for the user
+   * @return {@literal true} if the urn for this user matches the precondition
+   */
   public boolean isMeantForUser(String userId) {
     return (!StringUtils.hasText(this.userIdPrecondition)) || userId.matches(this.userIdPrecondition);
   }
+
+  /**
+   *
+   * @return location of the logo for this group provider
+   */
+  public String getLogoUrl() {
+    return logoUrl;
+  }
+
+  public void setLogoUrl(String logoUrl) {
+    this.logoUrl = logoUrl;
+  }
+
 
   @Override
   public boolean equals(Object o) {
