@@ -81,6 +81,9 @@
     <coin-test.version>2.3.0</coin-test.version>
     <commons-collections.version>3.2.1</commons-collections.version>
     <coin-master-test-dependencies.version>2.1.1</coin-master-test-dependencies.version>
+    <!-- We develop against the SNAPSHOT awaiting a stable release/ milestone -->
+    <!--spring-oauth.version>1.0.0.BUILD-SNAPSHOT<spring-oauth.version-->
+    <spring-oauth.version>1.0.0.BUILD-20120430.SURFCONEXT</spring-oauth.version>
   </properties>
 
   <dependencyManagement>
@@ -88,12 +91,12 @@
       <dependency>
         <groupId>org.springframework.security.oauth</groupId>
         <artifactId>spring-security-oauth</artifactId>
-        <version>1.0.0.BUILD-SNAPSHOT</version>
+        <version>1.0.0.BUILD-20120430.SURFCONEXT</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security.oauth</groupId>
         <artifactId>spring-security-oauth2</artifactId>
-        <version>1.0.0.BUILD-SNAPSHOT</version>
+        <version>1.0.0.BUILD-20120430.SURFCONEXT</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
