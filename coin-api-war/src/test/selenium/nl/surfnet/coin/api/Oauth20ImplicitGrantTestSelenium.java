@@ -50,7 +50,6 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
-  private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
   private MockHtppServer server;
 
@@ -107,8 +106,6 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     LOG.debug("Auth url: {}", authUrl);
 
     getWebDriver().get(authUrl);
-
-//    loginEndUser();
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();

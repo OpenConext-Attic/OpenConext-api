@@ -88,6 +88,14 @@ public abstract class AbstractGrouperDaoImpl  {
       + "and gs.name != 'etc' "
       + "and gf.id = gms.field_id and gf.name = 'members' "
       + "order by gg.name limit ? offset ?";
+  protected static String SQL_FIND_ALL_TEAMS_BY_MEMBER_SORTED = "select distinct gg.name, gg.display_name ,gg.description, gs.name as stem_name, gs.display_name as stem_display_name, gs.description as stem_description "
+      + "from grouper_groups gg, grouper_stems gs, grouper_members gm, "
+      + "grouper_memberships gms, grouper_fields gf "
+      + "where gg.parent_stem = gs.id and gms.member_id = gm.id and gms.owner_group_id = gg.id "
+      + "and gm.subject_id = ? "
+      + "and gs.name != 'etc' "
+      + "and gf.id = gms.field_id and gf.name = 'members' "
+      + "order by gg.%s limit ? offset ?";
   protected static String SQL_FIND_TEAMS_BY_MEMBER_ROWCOUNT = "select count(distinct gg.name) "
       + "from grouper_groups gg, grouper_stems gs, grouper_members gm, "
       + "grouper_memberships gms "

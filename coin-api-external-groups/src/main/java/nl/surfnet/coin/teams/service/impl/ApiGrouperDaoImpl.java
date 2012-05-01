@@ -37,11 +37,20 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
 
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao{
 
   JdbcTemplate jdbcTemplate;
-
+  
+  private static final Map<String, String> VALID_SORTS_FOR_TEAM_QUERY;
+  
+  static {
+    VALID_SORTS_FOR_TEAM_QUERY = new HashMap<String, String>();
+    VALID_SORTS_FOR_TEAM_QUERY.put("id", "name");
+    VALID_SORTS_FOR_TEAM_QUERY.put("title", "display_name");
+    VALID_SORTS_FOR_TEAM_QUERY.put("description", "description");
+  }
 
   public Group20Entry findGroup20(String personId, String groupName) {
     final Group20Entry group20Entry = new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(SQL_FIND_TEAMS_LIKE_GROUPNAME,
@@ -57,8 +66,12 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     pageSize = correctPageSize(pageSize);
     offset = correctOffset(offset);
     try {
-      // TODO: include sortBy in query.
-      groups = jdbcTemplate.query(SQL_FIND_ALL_TEAMS_BY_MEMBER, new Object[]{personId, pageSize, offset},
+      String sql = SQL_FIND_ALL_TEAMS_BY_MEMBER;//SQL_FIND_ALL_TEAMS_BY_MEMBER_SORTED;
+      if (StringUtils.isBlank(sortBy) && false) {
+        Assert.isTrue(sortBy.equals("name") , "");
+        sql = String.format(sql, sortBy);
+      }
+      groups = jdbcTemplate.query(sql, new Object[]{personId, pageSize, offset},
           new OpenSocial20GroupRowMapper());
       addRolesToGroups(personId, groups);
     } catch (EmptyResultDataAccessException e) {
