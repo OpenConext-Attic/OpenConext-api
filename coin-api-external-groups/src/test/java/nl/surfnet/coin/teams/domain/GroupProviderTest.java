@@ -36,11 +36,10 @@ public class GroupProviderTest {
 
   @Test
   public void emptyGroupProvider() {
-    GroupProvider groupProvider = new GroupProvider(null, null, null, null);
+    GroupProvider groupProvider = new GroupProvider(null, null, null, GroupProviderType.GROUPER);
     assertNull(groupProvider.getId());
     assertNull(groupProvider.getIdentifier());
     assertNull(groupProvider.getName());
-    assertNull(groupProvider.getGroupProviderType());
     assertEquals(Collections.emptyMap(), groupProvider.getAllowedOptions());
     assertNull(groupProvider.getAllowedOptionAsString(ALLOWED_OPTION_KEY));
     assertNull(groupProvider.getUserIdPrecondition());

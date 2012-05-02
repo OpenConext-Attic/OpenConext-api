@@ -29,10 +29,10 @@
   <properties>
     <jetty.version>8.0.4.v20111024</jetty.version>
     <apacheds.version>1.5.5</apacheds.version>
+    <ehcache.version>2.2.0</ehcache.version>
     <selenium.version>2.20.0</selenium.version>
     <selenium.test.url>http://localhost:8095/</selenium.test.url>
     <jetty.port>8095</jetty.port>
-
 
     <!-- default webdriver for selenium tests. To be overridden on a per 
       profile base -->
@@ -111,6 +111,11 @@
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
         <version>1.8.3</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache-core</artifactId>
+        <version>${ehcache.version}</version>
       </dependency>
       <dependency>
         <groupId>org.scribe</groupId>

@@ -27,6 +27,9 @@ import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,6 +70,12 @@ public class GroupProviderServiceSQLImplTest extends AbstractInMemoryDatabaseTes
       assertEquals("SURFteams grouper",groupProvider.getName());
   }
 
+  @Test
+  public void testGetAllGroupProviders() throws Exception {
+    List<GroupProvider> all = groupProviderServiceSQL.getAllGroupProviders();
+    assertEquals(3,all.size());
+  }
+  
   /**
    * Test method for
    * {@link nl.surfnet.coin.teams.service.impl.GroupProviderServiceSQLImpl#getOAuthGroupProviders(java.lang.String)}

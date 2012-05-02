@@ -43,6 +43,9 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
   private static final String SELECT_GROUP_PROVIDER_BY_IDENTIFIER =
       "SELECT gp.id, gp.identifier, gp.name, gp.classname, gp.logo_url FROM group_provider AS gp WHERE gp.identifier ";
 
+  private static final String SELECT_ALL_GROUP_PROVIDER =
+      "SELECT gp.id, gp.identifier, gp.name, gp.classname, gp.logo_url FROM group_provider AS gp ";
+
   // Cannot autowire because OpenConext-teams already has a JdbcTemplate defined for Grouper
   // or change autowire by name instead of type
   private final JdbcTemplate jdbcTemplate;
@@ -315,6 +318,24 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
   
   protected void execute(String sql) {
     this.jdbcTemplate.execute(sql);
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.teams.service.GroupProviderService#getAllGroupProviders()
+   */
+  @Override
+  public List<GroupProvider> getAllGroupProviders() {
+    try {
+      return this.jdbcTemplate.query(
+          SELECT_ALL_GROUP_PROVIDER, new RowMapper<GroupProvider>() {
+        @Override
+        public GroupProvider mapRow(ResultSet rs, int rowNum) throws SQLException {
+          return mapRowToGroupProvider(rs);
+        }
+      });
+    } catch (EmptyResultDataAccessException e) {
+      return new ArrayList<GroupProvider>();
+    }
   }
 }
 

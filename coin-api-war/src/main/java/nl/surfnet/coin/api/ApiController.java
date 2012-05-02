@@ -20,26 +20,23 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.PersonEntry;
+import nl.surfnet.coin.api.service.GroupService;
+import nl.surfnet.coin.api.service.PersonService;
+import nl.surfnet.coin.teams.domain.GroupProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.PersonEntry;
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
-import nl.surfnet.coin.api.service.GroupService;
-import nl.surfnet.coin.api.service.PersonService;
-import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
-import nl.surfnet.coin.teams.service.GroupProviderService;
+;
 
 public class ApiController extends AbstractApiController {
 
@@ -52,8 +49,8 @@ public class ApiController extends AbstractApiController {
 
   protected GroupService groupService;
 
-  @Resource(name = "groupProviderService")
-  private GroupProviderService groupProviderService;
+  @Resource(name = "groupProviderConfiguration")
+  private GroupProviderConfiguration groupProviderConfiguration;
 
   @RequestMapping(method = RequestMethod.GET, value = "/people/{userId:.+}")
   @ResponseBody
@@ -70,11 +67,12 @@ public class ApiController extends AbstractApiController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/people/{userId:.+}/{groupId:.+}")
   @ResponseBody
-  public Object getGroupMembers(@PathVariable("userId") String userId,
-                                           @PathVariable("groupId") String groupId,
-                                           @RequestParam(value = "count",required = false) Integer count,
-                                           @RequestParam(value = "startIndex", required = false) Integer startIndex,
-                                           @RequestParam(value = "sortBy", required = false) String sortBy) {
+  public Object getGroupMembers(@PathVariable("userId")
+  String userId, @PathVariable("groupId")
+  String groupId, @RequestParam(value = "count", required = false)
+  Integer count, @RequestParam(value = "startIndex", required = false)
+  Integer startIndex, @RequestParam(value = "sortBy", required = false)
+  String sortBy) {
     if (PERSON_ID_SELF.equals(userId)) {
       userId = getOnBehalfOf();
     }
@@ -84,7 +82,20 @@ public class ApiController extends AbstractApiController {
     }
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, getOnBehalfOf() });
-    return personService.getGroupMembers(groupId, getOnBehalfOf(), count, startIndex, sortBy);
+    /*
+     * Is the call to Grouper allowed?
+     */
+    List<GroupProvider> groupProviders = groupProviderConfiguration.getAllowedGroupProviders(Service.People,
+        getClientMetaData().getAppEntityId());
+
+    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, getOnBehalfOf(), count, startIndex, sortBy);
+    /*
+     * Is the call to Grouper necessary (e.g. is this an internal group)?
+     */
+    /*
+     * Do we need to make calls to external group providers?
+     */
+    return groupMembers;
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/groups/{userId:.+}")
@@ -117,31 +128,4 @@ public class ApiController extends AbstractApiController {
   protected void invariant() {
   }
 
-  /*
-   * The two Service options for determining the correct ACL
-   */
-  private enum Service {
-    People, Group
-  }
-
-  /*
-   * Is the SP allowed to access the information based on the Group ACL's
-   */
-  private boolean isSpAllowed(Service service) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    ClientMetaData clientMetaData;
-    if (principal instanceof ExtendedBaseClientDetails) {
-      ExtendedBaseClientDetails clientDetails = (ExtendedBaseClientDetails) principal;
-      clientMetaData = clientDetails.getClientMetaData();
-    } else if (principal instanceof ExtendedBaseConsumerDetails) {
-      ExtendedBaseConsumerDetails consumerDetails = (ExtendedBaseConsumerDetails) principal;
-      clientMetaData = consumerDetails.getClientMetaData();
-    } else {
-      throw new RuntimeException(
-          "The Principal from 'SecurityContextHolder.getContext().getAuthentication().getPrincipal()' is an unknown instance("
-              + (principal != null ? principal.getClass() : "null") + ")");
-    }
-    Assert.notNull(clientMetaData,"ClientMetaData may not be null for checking ACL's");
-    return true;
-  }
 }

@@ -1,197 +1,214 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright 2012 SURFnet bv, The Netherlands
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
+<!-- Copyright 2012 SURFnet bv, The Netherlands Licensed under the Apache 
+	License, Version 2.0 (the "License"); you may not use this file except in 
+	compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
-    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
 
-  <mvc:annotation-driven/>
-  <context:component-scan base-package="nl.surfnet.coin.api" />
-  <context:component-scan base-package="nl.surfnet.coin.teams" />
+	<mvc:annotation-driven />
+	<cache:annotation-driven />
+	<context:component-scan base-package="nl.surfnet.coin.api" />
+	<context:component-scan base-package="nl.surfnet.coin.teams" />
 
-  <!-- Authorization annotations on service methods -->
-  <security:global-method-security pre-post-annotations="enabled"/>
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehcache" />
+	</bean>
 
-  <!--
-    One configuration entry for /social/rest/**, regardless of OAuth-version. For both versions
-    a filter is included. Only if both fail (i.e. do not put an Authentication object in the Security Context)
-    the request will be rejected.
-  -->
-  <security:http pattern="/social/rest/**" authentication-manager-ref="shibbolethAuthenticationManager"
-                 access-decision-manager-ref="accessDecisionManager"
-                 entry-point-ref="shibbolethEntryPoint">
+	<bean id="ehcache"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:api-ehcache.xml" />
+	</bean>
 
-    <security:anonymous enabled="true" />
+	<!-- Authorization annotations on service methods -->
+	<security:global-method-security
+		pre-post-annotations="enabled" />
 
-    <!--
-    Allow OPTIONS-request without security, which is a CORS-preflight request, handled by a specific controller
-    -->
-    <security:intercept-url pattern="/social/rest/**" method="OPTIONS" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+	<!-- One configuration entry for /social/rest/**, regardless of OAuth-version. 
+		For both versions a filter is included. Only if both fail (i.e. do not put 
+		an Authentication object in the Security Context) the request will be rejected. -->
+	<security:http pattern="/social/rest/**"
+		authentication-manager-ref="shibbolethAuthenticationManager"
+		access-decision-manager-ref="accessDecisionManager" entry-point-ref="shibbolethEntryPoint">
 
-    <!--
-    This is the rule that effectively secures the OpenSocial queries and requires that users be logged in
-    -->
-    <security:intercept-url pattern="/social/rest/**" access="ROLE_USER,SCOPE_READ"/>
+		<security:anonymous enabled="true" />
 
-    <!-- OAuth2 filter -->
-    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR" />
-    <!-- OAuth1 filter -->
-    <security:custom-filter ref="oauthProtectedResourceFilter" after="EXCEPTION_TRANSLATION_FILTER" />
-  </security:http>
+		<!-- Allow OPTIONS-request without security, which is a CORS-preflight 
+			request, handled by a specific controller -->
+		<security:intercept-url pattern="/social/rest/**"
+			method="OPTIONS" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-	<security:http pattern="/mock10/social/rest/**" authentication-manager-ref="shibbolethAuthenticationManager"
-                 access-decision-manager-ref="accessDecisionManager"
-                 entry-point-ref="shibbolethEntryPoint">
-    <security:anonymous enabled="true" />
-    <!--
-    Allow OPTIONS-request without security, which is a CORS-preflight request, handled by a specific controller
-    -->
-    <security:intercept-url pattern="/mock10/social/rest/**" method="OPTIONS" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+		<!-- This is the rule that effectively secures the OpenSocial queries and 
+			requires that users be logged in -->
+		<security:intercept-url pattern="/social/rest/**"
+			access="ROLE_USER,SCOPE_READ" />
 
-    <security:intercept-url pattern="/mock10/social/rest/**" access="ROLE_USER,SCOPE_READ"/>
-    <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR" />
-    <security:custom-filter ref="oauthProtectedResourceFilter" after="EXCEPTION_TRANSLATION_FILTER" />
-  </security:http>
+		<!-- OAuth2 filter -->
+		<security:custom-filter ref="oauth2ProviderFilter"
+			before="FILTER_SECURITY_INTERCEPTOR" />
+		<!-- OAuth1 filter -->
+		<security:custom-filter ref="oauthProtectedResourceFilter"
+			after="EXCEPTION_TRANSLATION_FILTER" />
+	</security:http>
 
+	<security:http pattern="/mock10/social/rest/**"
+		authentication-manager-ref="shibbolethAuthenticationManager"
+		access-decision-manager-ref="accessDecisionManager" entry-point-ref="shibbolethEntryPoint">
+		<security:anonymous enabled="true" />
+		<!-- Allow OPTIONS-request without security, which is a CORS-preflight 
+			request, handled by a specific controller -->
+		<security:intercept-url pattern="/mock10/social/rest/**"
+			method="OPTIONS" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-
-
-  <!-- configuration interface -->
-  <security:http security="none" pattern="/configure/**" />
-  <!-- static stuff -->
-  <security:http security="none" pattern="/css/**" />
-  <security:http security="none" pattern="/favicon.ico" />
-  <security:http security="none" pattern="/images/**" />
-
-  <bean id="clientDetailsService" class="${clientDetailsServiceClass}" />
-
-  <bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
-
-  <bean id="shibbolethEntryPoint" class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
-    <constructor-arg index="0" value="${coin-api.shibboleth.login.url}" />
-    <property name="useForward" value="false" />
-  </bean>
-  <bean id="shibbolethAuthenticationManager" class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
+		<security:intercept-url pattern="/mock10/social/rest/**"
+			access="ROLE_USER,SCOPE_READ" />
+		<security:custom-filter ref="oauth2ProviderFilter"
+			before="FILTER_SECURITY_INTERCEPTOR" />
+		<security:custom-filter ref="oauthProtectedResourceFilter"
+			after="EXCEPTION_TRANSLATION_FILTER" />
+	</security:http>
 
 
-  <bean id="log4jInitialization"
-        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-    <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
-    <property name="targetMethod" value="initLogging"/>
-    <property name="arguments">
-      <list>
-        <value>classpath:log4j.xml</value>
-        <value>5000</value>
-      </list>
-    </property>
-  </bean>
 
-  <bean id="localeResolver"
-        class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-    <!-- Set the default Locale to English -->
-    <property name="defaultLocale" value="en_EN"/>
-  </bean>
 
-  <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-    <property name="messageConverters">
-      <list>
-        <bean id="messageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
-      </list>
-    </property>
-  </bean>
+	<!-- configuration interface -->
+	<security:http security="none" pattern="/configure/**" />
+	<!-- static stuff -->
+	<security:http security="none" pattern="/css/**" />
+	<security:http security="none" pattern="/favicon.ico" />
+	<security:http security="none" pattern="/images/**" />
 
-  <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-    <property name="driverClass" value="${coin-api.jdbc.driver}" />
-    <property name="jdbcUrl" value="${coin-api.jdbc.url}" />
-    <property name="user" value="${coin-api.jdbc.user}" />
-    <property name="password" value="${coin-api.jdbc.password}" />
-    <property name="initialPoolSize" value="1" />
-    <property name="maxPoolSize" value="20" />
-    <property name="minPoolSize" value="1" />
-    <property name="acquireIncrement" value="2" />
-    <property name="acquireRetryAttempts" value="15" />
-    <property name="idleConnectionTestPeriod" value="${coin-api.database.idleConnectionTestPeriod}" />
-    <property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
-  </bean>
+	<bean id="clientDetailsService" class="${clientDetailsServiceClass}" />
 
-  <bean id="ldapClient" class="${ldapClientClass}" />
-  <bean id="engineBlock" class="${engineblockClass}" />
-  <bean id="groupService" class="${groupServiceClass}" />
+	<bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
 
-  <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
-    <property name="contextSource">
-      <bean class="org.springframework.ldap.core.support.LdapContextSource">
-        <property name="url" value="${coin-api.ldap.url}" />
-        <property name="base" value="dc=surfconext,dc=nl" />
-        <property name="userDn" value="${coin-api.ldap.userDn}" />
-        <property name="password" value="${coin-api.ldap.password}" />
-      </bean>
-    </property>
-  </bean>
-  <bean id="ebJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-    <property name="dataSource">
-      <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="${coin-api.engineblock.jdbc.driver}" />
-        <property name="jdbcUrl" value="${coin-api.engineblock.jdbc.url}" />
-        <property name="user" value="${coin-api.engineblock.jdbc.user}" />
-        <property name="password" value="${coin-api.engineblock.jdbc.password}" />
-        <property name="initialPoolSize" value="1" />
-        <property name="maxPoolSize" value="20" />
-        <property name="minPoolSize" value="1" />
-        <property name="acquireIncrement" value="2" />
-        <property name="acquireRetryAttempts" value="15" />
-        <property name="idleConnectionTestPeriod" value="${coin-api.database.idleConnectionTestPeriod}" />
-        <property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
-      </bean>
-    </property>
-  </bean>
+	<bean id="shibbolethEntryPoint"
+		class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
+		<constructor-arg index="0"
+			value="${coin-api.shibboleth.login.url}" />
+		<property name="useForward" value="false" />
+	</bean>
+	<bean id="shibbolethAuthenticationManager"
+		class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
 
-  <bean id="grouperJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-    <property name="dataSource">
-      <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="${coin-api.grouper.jdbc.driver}" />
-        <property name="jdbcUrl" value="${coin-api.grouper.jdbc.url}" />
-        <property name="user" value="${coin-api.grouper.jdbc.user}" />
-        <property name="password" value="${coin-api.grouper.jdbc.password}" />
-        <property name="initialPoolSize" value="1" />
-        <property name="maxPoolSize" value="20" />
-        <property name="minPoolSize" value="1" />
-        <property name="acquireIncrement" value="2" />
-        <property name="acquireRetryAttempts" value="15" />
-        <property name="idleConnectionTestPeriod" value="${coin-api.database.idleConnectionTestPeriod}" />
-        <property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
-      </bean>
-    </property>
-  </bean>
 
-  <bean id="apiGrouperDao" class="nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl">
-    <property name="jdbcTemplate" ref="grouperJdbcTemplate" />
-  </bean>
+	<bean id="log4jInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>classpath:log4j.xml</value>
+				<value>5000</value>
+			</list>
+		</property>
+	</bean>
 
-  <bean id="groupProviderService" class="nl.surfnet.coin.teams.service.impl.GroupProviderServiceSQLImpl">
-    <constructor-arg ref="ebJdbcTemplate" />
-  </bean>
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<!-- Set the default Locale to English -->
+		<property name="defaultLocale" value="en_EN" />
+	</bean>
 
-  <bean class="com.googlecode.flyway.core.Flyway" init-method="migrate">
-    <property name="dataSource" ref="dataSource" />
-  </bean>
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<property name="messageConverters">
+			<list>
+				<bean id="messageConverter"
+					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${coin-api.jdbc.driver}" />
+		<property name="jdbcUrl" value="${coin-api.jdbc.url}" />
+		<property name="user" value="${coin-api.jdbc.user}" />
+		<property name="password" value="${coin-api.jdbc.password}" />
+		<property name="initialPoolSize" value="1" />
+		<property name="maxPoolSize" value="20" />
+		<property name="minPoolSize" value="1" />
+		<property name="acquireIncrement" value="2" />
+		<property name="acquireRetryAttempts" value="15" />
+		<property name="idleConnectionTestPeriod"
+			value="${coin-api.database.idleConnectionTestPeriod}" />
+		<property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
+	</bean>
+
+	<bean id="ldapClient" class="${ldapClientClass}" />
+	<bean id="engineBlock" class="${engineblockClass}" />
+	<bean id="groupService" class="${groupServiceClass}" />
+
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<property name="contextSource">
+			<bean class="org.springframework.ldap.core.support.LdapContextSource">
+				<property name="url" value="${coin-api.ldap.url}" />
+				<property name="base" value="dc=surfconext,dc=nl" />
+				<property name="userDn" value="${coin-api.ldap.userDn}" />
+				<property name="password" value="${coin-api.ldap.password}" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="ebJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+				destroy-method="close">
+				<property name="driverClass" value="${coin-api.engineblock.jdbc.driver}" />
+				<property name="jdbcUrl" value="${coin-api.engineblock.jdbc.url}" />
+				<property name="user" value="${coin-api.engineblock.jdbc.user}" />
+				<property name="password" value="${coin-api.engineblock.jdbc.password}" />
+				<property name="initialPoolSize" value="1" />
+				<property name="maxPoolSize" value="20" />
+				<property name="minPoolSize" value="1" />
+				<property name="acquireIncrement" value="2" />
+				<property name="acquireRetryAttempts" value="15" />
+				<property name="idleConnectionTestPeriod"
+					value="${coin-api.database.idleConnectionTestPeriod}" />
+				<property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="grouperJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+				destroy-method="close">
+				<property name="driverClass" value="${coin-api.grouper.jdbc.driver}" />
+				<property name="jdbcUrl" value="${coin-api.grouper.jdbc.url}" />
+				<property name="user" value="${coin-api.grouper.jdbc.user}" />
+				<property name="password" value="${coin-api.grouper.jdbc.password}" />
+				<property name="initialPoolSize" value="1" />
+				<property name="maxPoolSize" value="20" />
+				<property name="minPoolSize" value="1" />
+				<property name="acquireIncrement" value="2" />
+				<property name="acquireRetryAttempts" value="15" />
+				<property name="idleConnectionTestPeriod"
+					value="${coin-api.database.idleConnectionTestPeriod}" />
+				<property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="apiGrouperDao" class="nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl">
+		<property name="jdbcTemplate" ref="grouperJdbcTemplate" />
+	</bean>
+
+	<bean id="groupProviderService"
+		class="nl.surfnet.coin.teams.service.impl.GroupProviderServiceSQLImpl">
+		<constructor-arg ref="ebJdbcTemplate" />
+	</bean>
+
+	<bean class="com.googlecode.flyway.core.Flyway" init-method="migrate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 </beans>

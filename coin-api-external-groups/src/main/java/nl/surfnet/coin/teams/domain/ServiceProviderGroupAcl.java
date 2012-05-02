@@ -23,10 +23,15 @@ package nl.surfnet.coin.teams.domain;
  *
  */
 public class ServiceProviderGroupAcl {
+
   private boolean allowGroups;
   private boolean allowMembers;
   private String spEntityId;
   private long groupProviderId;
+
+  public ServiceProviderGroupAcl() {
+    super();
+  }
 
   public ServiceProviderGroupAcl(boolean allowGroups, boolean allowMembers,
       String spEntityId, long groupProviderId) {

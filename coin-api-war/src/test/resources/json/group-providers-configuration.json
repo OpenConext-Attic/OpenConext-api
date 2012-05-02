@@ -1,0 +1,162 @@
+[
+    {
+        "id": 4,
+        "identifier": "hz",
+        "name": "HZ",
+        "logoUrl": "http://farm8.staticflickr.com/7165/6459549075_1b1a9c1a45_s.jpg",
+        "groupProviderType": "OAUTH_THREELEGGED",
+        "allowedOptions": {
+            "auth.callbackUrl": "https://profile.test.surfconext.nl/profile/group-oauth/consume/hz",
+            "auth.accessTokenUrl": "https://rest.hz.nl/AccessToken.ashx",
+            "auth.authorizeUrl": "https://rest.hz.nl/UserAuthorize.aspx",
+            "auth.siteUrl": "https://rest.hz.nl",
+            "adapter": "EngineBlock_Http_Client_Adapter_Curl",
+            "auth.requestMethod": "GET",
+            "auth.signatureMethod": "HMAC-SHA1",
+            "password": "replaced_by_dummy_value",
+            "url": "https://rest.hz.nl/api",
+            "auth.consumerSecret": "replaced_by_dummy_value",
+            "auth.requestScheme": "QUERYSTRING",
+            "auth.rsaPublicKey": "",
+            "auth.userAuthorizationUrl": "https://rest.hz.nl/UserAuthorize.aspx",
+            "auth.consumerKey": "replaced_by_dummy_value",
+            "auth.rsaPrivateKey": "",
+            "auth.requestTokenUrl": "https://rest.hz.nl/RequestToken.ashx",
+            "user": "engine",
+            "timeout": "3"
+        },
+        "groupDecorators": [
+            {
+                "propertyName": "id",
+                "searchPattern": "urn:collab:group:hz.nl:(.+)",
+                "replaceWith": "$1"
+            }
+        ],
+        "groupFilters": [
+            {
+                "propertyName": "id",
+                "searchPattern": "(.+)",
+                "replaceWith": "urn:collab:group:hz.nl:$1"
+            }
+        ],
+        "personDecorators": [
+            {
+                "propertyName": "id",
+                "searchPattern": "urn:collab:person:hz.nl:(.+)",
+                "replaceWith": "$1"
+            }
+        ],
+        "personFilters": [
+            {
+                "propertyName": "id",
+                "searchPattern": "(.+)",
+                "replaceWith": "urn:collab:person:hz.nl:$1"
+            }
+        ],
+        "serviceProviderGroupAcls": [],
+        "userIdPrecondition": "urn:collab:person:hz.nl:(.+)"
+    },
+    {
+        "id": 5,
+        "identifier": "grouper",
+        "name": "SURFteams grouper",
+        "groupProviderType": "GROUPER",
+        "allowedOptions": {
+            "protocol": "https",
+            "host": "grouper.test.surfconext.nl",
+            "path": "/grouper-ws/servicesRest",
+            "ssl_verifyhost": "true",
+            "user": "engine",
+            "ssl_verifypeer": "false",
+            "password": "replaced_by_dummy_value",
+            "timeout": "10",
+            "version": "v1_6_000"
+        },
+        "groupDecorators": [
+            {
+                "propertyName": "id",
+                "searchPattern": "urn:collab:group:test.surfteams.nl:(.+)",
+                "replaceWith": "$1"
+            }
+        ],
+        "groupFilters": [
+            {
+                "propertyName": "id",
+                "searchPattern": "(.+)",
+                "replaceWith": "urn:collab:group:test.surfteams.nl:$1"
+            }
+        ],
+        "personDecorators": [],
+        "personFilters": [],
+        "serviceProviderGroupAcls": []
+    },
+    {
+        "id": 9,
+        "identifier": "avans",
+        "name": "Avans",
+        "logoUrl": "http://farm8.staticflickr.com/7165/6459549075_1b1a9c1a45_s.jpg",
+        "groupProviderType": "OAUTH_THREELEGGED",
+        "allowedOptions": {
+            "auth.callbackUrl": "https://profile.test.surfconext.nl/profile/group-oauth/consume/avans",
+            "auth.accessTokenUrl": "https://publicapi.avans.nl/oauth/access_token",
+            "auth.authorizeUrl": "https://publicapi.avans.nl/oauth/saml.php",
+            "auth.siteUrl": "https://publicapi.avans.nl",
+            "auth.requestMethod": "GET",
+            "auth.signatureMethod": "HMAC-SHA1",
+            "password": "replaced_by_dummy_value",
+            "url": "https://publicapi.avans.nl/oauth",
+            "auth.consumerSecret": "replaced_by_dummy_value",
+            "auth.requestScheme": "QUERYSTRING",
+            "auth.rsaPublicKey": "",
+            "auth.userAuthorizationUrl": "https://publicapi.avans.nl/oauth/saml.php",
+            "auth.consumerKey": "replaced_by_dummy_value",
+            "auth.rsaPrivateKey": "",
+            "auth.requestTokenUrl": "https://publicapi.avans.nl/oauth/request_token",
+            "user": "engine",
+            "timeout": "10"
+        },
+        "groupDecorators": [
+            {
+                "propertyName": "id",
+                "searchPattern": "urn:collab:group:avans.nl:(.+)",
+                "replaceWith": "$1"
+            }
+        ],
+        "groupFilters": [
+            {
+                "propertyName": "id",
+                "searchPattern": "(.+)",
+                "replaceWith": "urn:collab:group:avans.nl:$1"
+            }
+        ],
+        "personDecorators": [
+            {
+                "propertyName": "id",
+                "searchPattern": ".+",
+                "replaceWith": "tstidm7"
+            }
+        ],
+        "personFilters": [
+            {
+                "propertyName": "id",
+                "searchPattern": "(.+)",
+                "replaceWith": "urn:collab:person:avans.nl:$1"
+            }
+        ],
+        "serviceProviderGroupAcls": [
+            {
+                "allowGroups": true,
+                "allowMembers": true,
+                "spEntityId": "https://serviceregistry.test.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+                "groupProviderId": 9
+            },
+            {
+                "allowGroups": true,
+                "allowMembers": true,
+                "spEntityId": "https://teams.test.surfconext.nl/shibboleth",
+                "groupProviderId": 9
+            }
+        ],
+        "userIdPrecondition": "(.+)"
+    }
+]

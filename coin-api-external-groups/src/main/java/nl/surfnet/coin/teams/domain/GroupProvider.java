@@ -43,11 +43,19 @@ public class GroupProvider {
   private List<ServiceProviderGroupAcl> serviceProviderGroupAcls = new ArrayList<ServiceProviderGroupAcl>();
   private String userIdPrecondition;
 
+  public GroupProvider() {
+    super();
+  }
+
   public GroupProvider(Long id, String identifier, String name, String groupProviderType) {
+    this(id,identifier,name,GroupProviderType.fromString(groupProviderType));
+  }
+
+  public GroupProvider(Long id, String identifier, String name, GroupProviderType type) {
     this.id = id;
     this.identifier = identifier;
     this.name = name;
-    this.groupProviderType = GroupProviderType.fromString(groupProviderType);
+    this.groupProviderType = type;
     this.allowedOptions = new HashMap<String, Object>();
   }
 
