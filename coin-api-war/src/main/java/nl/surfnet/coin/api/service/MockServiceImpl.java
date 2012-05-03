@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import nl.surfnet.coin.api.GroupProviderConfiguration;
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group20;
@@ -42,12 +43,13 @@ import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 
 @Component(value = "mockService")
-public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider {
+public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider, GroupProviderConfiguration  {
 
   private Logger LOG = LoggerFactory.getLogger(MockServiceImpl.class);
 
@@ -298,6 +300,51 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     isActive = true;
     sleepMilliseconds = millSeconds;
 
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.GroupProviderConfiguration#isInternalGroup(java.lang.String)
+   */
+  @Override
+  public boolean isInternalGroup(String groupId) {
+    return true;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getAllowedGroupProviders(nl.surfnet.coin.api.GroupProviderConfiguration.Service, java.lang.String, java.util.List)
+   */
+  @Override
+  public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId,
+      List<GroupProvider> allGroupProviders) {
+    return allGroupProviders;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getAllGroupProviders()
+   */
+  @Override
+  public List<GroupProvider> getAllGroupProviders() {
+    List<GroupProvider> groupProviders = new ArrayList<GroupProvider>();
+    GroupProvider e = new GroupProvider(1L, "grouper", "grouper", GroupProviderType.GROUPER);
+    groupProviders.add(e );
+    return groupProviders;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.GroupProviderConfiguration#isGrouperCallsAllowed(nl.surfnet.coin.api.GroupProviderConfiguration.Service, java.lang.String, java.util.List)
+   */
+  @Override
+  public boolean isGrouperCallsAllowed(Service service, String spEntityId, List<GroupProvider> allGroupProviders) {
+    return true;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.surfnet.coin.teams.domain.GroupProvider, java.lang.String, java.lang.String, int, int)
+   */
+  @Override
+  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId,
+      int limit, int offset) {
+    throw new RuntimeException("This call is not supported (and should never be called as we don't support external group providers in mock modus)");
   }
 
 

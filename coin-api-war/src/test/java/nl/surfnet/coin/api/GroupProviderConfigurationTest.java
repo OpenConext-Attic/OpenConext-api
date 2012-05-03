@@ -20,17 +20,16 @@ package nl.surfnet.coin.api;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.ResultWrapper;
+import net.sf.ehcache.CacheException;
 import nl.surfnet.coin.teams.domain.GroupProvider;
-import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.service.GroupProviderService;
+import nl.surfnet.coin.teams.service.OauthGroupService;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -42,10 +41,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -54,7 +57,7 @@ import org.springframework.core.io.ClassPathResource;
  */
 @Configuration
 @ComponentScan(value = "nl.surfnet.coin.api", resourcePattern = "**/GroupProviderConfigurationImpl.class")
-@ImportResource("classpath:test-cache-context.xml")
+@EnableCaching
 public class GroupProviderConfigurationTest {
 
   private GroupProviderConfigurationImpl configuration;
@@ -130,5 +133,30 @@ public class GroupProviderConfigurationTest {
      */
     configuration.getAllGroupProviders();
   }
+  
+  /*
+   * All methods below are necessary for the ApplicationContext to be valid
+   */
+  
+  @Bean(name="oauthGroupService")
+  public OauthGroupService oauthGroupService(){
+    return mock(OauthGroupService.class);
+  }
+
+  @Bean(name="groupProviderService")
+  public GroupProviderService groupProviderService(){
+    return mock(GroupProviderService.class);
+  }
+  
+  @Bean(name="cacheManager")
+  public CacheManager cacheManager() throws CacheException, IOException {
+    EhCacheCacheManager cacheManager = new EhCacheCacheManager();
+    EhCacheManagerFactoryBean factoryBean = new EhCacheManagerFactoryBean();
+    factoryBean.setConfigLocation(new ClassPathResource("api-ehcache.xml"));
+    factoryBean.afterPropertiesSet();
+    cacheManager.setCacheManager(factoryBean.getObject());
+    return cacheManager; 
+  } 
+  
 
 }

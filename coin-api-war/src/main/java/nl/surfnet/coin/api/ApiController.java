@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -23,10 +24,14 @@ import javax.annotation.Resource;
 import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
+import nl.surfnet.coin.eb.EngineBlock;
+import nl.surfnet.coin.ldap.LdapClient;
 import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.service.OauthGroupService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +54,9 @@ public class ApiController extends AbstractApiController {
 
   protected GroupService groupService;
 
-  @Resource(name = "groupProviderConfiguration")
-  private GroupProviderConfiguration groupProviderConfiguration;
+  protected EngineBlock engineBlock;
+
+  protected GroupProviderConfiguration groupProviderConfiguration;
 
   @RequestMapping(method = RequestMethod.GET, value = "/people/{userId:.+}")
   @ResponseBody
@@ -73,28 +79,53 @@ public class ApiController extends AbstractApiController {
   Integer count, @RequestParam(value = "startIndex", required = false)
   Integer startIndex, @RequestParam(value = "sortBy", required = false)
   String sortBy) {
+    String onBehalfOf = getOnBehalfOf();
     if (PERSON_ID_SELF.equals(userId)) {
-      userId = getOnBehalfOf();
+      userId = onBehalfOf;
     }
     if (GROUP_ID_SELF.equals(groupId)) {
       // Backwards compatibility with os.surfconext.
       return getPerson(userId);
     }
+    if (onBehalfOf != null && !onBehalfOf.startsWith(LdapClient.URN_IDENTIFIER)) {
+      throw new RuntimeException("It is not allowed to use a different identifier (" + onBehalfOf
+          + ") then @me when retrieving groupMembers");
+    }
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
-        groupId, getOnBehalfOf() });
+        groupId, onBehalfOf });
     /*
      * Is the call to Grouper allowed?
      */
-    List<GroupProvider> groupProviders = groupProviderConfiguration.getAllowedGroupProviders(Service.People,
-        getClientMetaData().getAppEntityId());
-
-    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, getOnBehalfOf(), count, startIndex, sortBy);
+    List<GroupProvider> allGroupProviders = groupProviderConfiguration.getAllGroupProviders();
+    String spEntityId = getClientMetaData().getAppEntityId();
+    boolean grouperAllowed = groupProviderConfiguration.isGrouperCallsAllowed(Service.People, spEntityId,
+        allGroupProviders);
+    // sensible default
+    GroupMembersEntry groupMembers = new GroupMembersEntry(new ArrayList<Person>());
     /*
      * Is the call to Grouper necessary (e.g. is this an internal group)?
      */
-    /*
-     * Do we need to make calls to external group providers?
-     */
+    if (groupProviderConfiguration.isInternalGroup(groupId)) {
+      if (grouperAllowed) {
+        groupMembers = personService.getGroupMembers(groupId, onBehalfOf, count, startIndex, sortBy);
+      }
+    } else {
+      // external group. see which groupProvider can handle this call
+      List<GroupProvider> allowedGroupProviders = groupProviderConfiguration.getAllowedGroupProviders(Service.People,
+          spEntityId, allGroupProviders);
+      for (GroupProvider groupProvider : allowedGroupProviders) {
+        /*
+         * Do we need to make calls this external group provider?
+         */
+        if (groupProvider.isMeantForUser(onBehalfOf)) {
+          GroupMembersEntry externalGroupMembers = groupProviderConfiguration.getGroupMembersEntry(groupProvider,
+              onBehalfOf, groupId, count == null ? Integer.MAX_VALUE : count, startIndex == null ? 0 : startIndex);
+          List<Person> entry = externalGroupMembers.getEntry();
+          groupMembers.getEntry().addAll(entry);
+          groupMembers.setTotalResults(groupMembers.getTotalResults() + entry.size());
+        }
+      }
+    }
     return groupMembers;
   }
 

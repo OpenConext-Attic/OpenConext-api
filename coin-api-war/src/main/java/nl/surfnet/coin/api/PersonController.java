@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
+import nl.surfnet.coin.eb.EngineBlock;
 
 /**
  * Controller for the person REST interface..
@@ -40,5 +41,16 @@ public class PersonController extends ApiController {
   public void setGroupService(GroupService service) {
     this.groupService = service;
   }
+  
+  @Resource(name="engineBlock")
+  public void setEngineBlock(EngineBlock engineBlock) {
+    this.engineBlock = engineBlock;
+  }
+  
+  @Resource(name = "groupProviderConfiguration")
+  public void setGroupProviderConfiguration(GroupProviderConfiguration groupProviderConfiguration) {
+    this.groupProviderConfiguration = groupProviderConfiguration;
+  }
+
 
 }

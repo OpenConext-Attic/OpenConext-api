@@ -25,7 +25,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import nl.surfnet.coin.api.service.GroupService;
+import nl.surfnet.coin.api.service.MockServiceImpl;
 import nl.surfnet.coin.api.service.PersonService;
+import nl.surfnet.coin.eb.EngineBlock;
 
 /**
  * Controller for the mock REST interface.
@@ -40,6 +42,13 @@ public class MockApiController extends ApiController {
   @Value("${mock-api-enabled}")
   private boolean mockApiEnabled;
 
+  public MockApiController() {
+    MockServiceImpl impl = new MockServiceImpl();
+    this.personService = impl;
+    this.groupProviderConfiguration = impl;
+    this.groupService = impl;
+  }
+  
   @Override
   public void invariant() {
     if (!this.mockApiEnabled) {
@@ -47,14 +56,19 @@ public class MockApiController extends ApiController {
     }
   }
 
-  @Resource(name = "mockService")
-  public void setPersonService(PersonService personService) {
-    this.personService = personService;
-  }
-
-  @Resource(name = "mockService")
-  public void setGroupService(GroupService groupService) {
-    this.groupService = groupService;
+//  @Resource(name = "mockService")
+//  public void setPersonService(PersonService personService) {
+//    this.personService = personService;
+//  }
+//
+//  @Resource(name = "mockService")
+//  public void setGroupService(GroupService groupService) {
+//    this.groupService = groupService;
+//  }
+//
+  @Resource(name = "engineBlock")
+  public void setEngineBlock(EngineBlock engineBlock) {
+    this.engineBlock = engineBlock;
   }
 
   public void setMockApiEnabled(boolean mockApiEnabled) {

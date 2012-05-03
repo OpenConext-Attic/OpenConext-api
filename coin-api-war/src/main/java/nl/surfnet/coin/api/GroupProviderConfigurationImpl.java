@@ -20,22 +20,20 @@ package nl.surfnet.coin.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
+import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 import nl.surfnet.coin.teams.service.GroupProviderService;
+import nl.surfnet.coin.teams.service.OauthGroupService;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -45,9 +43,13 @@ import org.springframework.util.CollectionUtils;
 @Component(value = "groupProviderConfiguration")
 public class GroupProviderConfigurationImpl implements GroupProviderConfiguration {
 
-  @Resource
+  @Resource(name="groupProviderService")
   private GroupProviderService groupProviderService;
 
+  @Resource(name="oauthGroupService")
+  private OauthGroupService oauthGroupService;
+  
+  
   /*
    * (non-Javadoc)
    * 
@@ -69,11 +71,10 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    * java.lang.String)
    */
   @Override
-  public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId) {
-    List<GroupProvider> groupProviders = getAllGroupProviders();
+  public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId, List<GroupProvider> allGroupProviders) {
     List<GroupProvider> result = new ArrayList<GroupProvider>();
     // now see which groupProviders have the correct acl
-    for (GroupProvider groupProvider : groupProviders) {
+    for (GroupProvider groupProvider : allGroupProviders) {
       if (isAclConfiguredForGroupProvider(groupProvider, spEntityId, service))
         result.add(groupProvider);
     }
@@ -120,13 +121,26 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    * .util.List)
    */
   @Override
-  public boolean isGrouperCallsAllowed(List<GroupProvider> groupProviders) {
-    for (GroupProvider groupProvider : groupProviders) {
+  public boolean isGrouperCallsAllowed(Service service, String spEntityId, List<GroupProvider> allGroupProviders) {
+    for (GroupProvider groupProvider : allGroupProviders) {
       if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
-        return true;
+        return isAclConfiguredForGroupProvider(groupProvider, spEntityId, service);
       }
     }
     return false;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.surfnet.coin.teams.domain.GroupProvider, java.lang.String, int, int)
+   */
+  @Override
+  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId, int limit, int offset) {
+    GroupProviderUserOauth oauth = groupProviderService.getGroupProviderUserOauth(onBehalfOf, groupProvider.getIdentifier());
+    if (oauth != null) {
+      return oauthGroupService.getGroupMembersEntry(oauth, groupProvider, groupId, limit, offset);
+    }
+    //sensible default
+    return new GroupMembersEntry(new ArrayList<Person>());
   }
 
   /**
@@ -136,5 +150,13 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
   public void setGroupProviderService(GroupProviderService groupProviderService) {
     this.groupProviderService = groupProviderService;
   }
+
+  /**
+   * @param oauthGroupService the oauthGroupService to set
+   */
+  public void setOauthGroupService(OauthGroupService oauthGroupService) {
+    this.oauthGroupService = oauthGroupService;
+  }
+
 
 }

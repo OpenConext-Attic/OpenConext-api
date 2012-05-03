@@ -53,7 +53,7 @@ public class LdapService implements PersonService {
     /*
      * first get all members from grouper. Note that we don't support sortBy but
      * we do support count and startIndex. See
-     * https://jira.surfconext.nl/jira/br owse/BACKLOG-438
+     * https://jira.surfconext.nl/jira/browse/BACKLOG-438
      */
     GroupMembersEntry entry = apiGrouperDao.findAllMembers(groupId, startIndex, count);
     List<Person> persons = entry.getEntry();

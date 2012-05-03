@@ -29,6 +29,7 @@ import org.scribe.model.Token;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,7 +41,7 @@ import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ThreeLeggedOauth10aGroupProviderApi;
-import nl.surfnet.coin.teams.service.GroupService;
+import nl.surfnet.coin.teams.service.OauthGroupService;
 import nl.surfnet.coin.teams.util.GroupProviderOptionParameters;
 
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_DESCRIPTION;
@@ -52,10 +53,10 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
 
 /**
- * Implementation for a {@link GroupService} using 3-legged OAuth
+ * Implementation for a {@link OauthGroupService} using 3-legged OAuth
  */
-@Service
-public class GroupServiceThreeLeggedOAuth10a implements GroupService {
+@Component(value = "oauthGroupService")
+public class GroupServiceThreeLeggedOAuth10a implements OauthGroupService {
   private static Logger log = LoggerFactory.getLogger(GroupServiceThreeLeggedOAuth10a.class);
   private static final int MAX_ITEMS = 1000;
 

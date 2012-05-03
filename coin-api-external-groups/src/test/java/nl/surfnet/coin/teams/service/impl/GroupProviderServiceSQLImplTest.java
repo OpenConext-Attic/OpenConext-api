@@ -19,11 +19,13 @@
 package nl.surfnet.coin.teams.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
 import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
@@ -69,11 +71,31 @@ public class GroupProviderServiceSQLImplTest extends AbstractInMemoryDatabaseTes
       GroupProvider groupProvider = groupProviderServiceSQL.getGroupProviderByStringIdentifier("grouper");
       assertEquals("SURFteams grouper",groupProvider.getName());
   }
+  
+  @Test
+  public void testGetGroupProviderUserOauth() {
+    String userId = "urn:collab:person:test.surfguest.nl:tester2";
+    GroupProviderUserOauth groupProviderUserOauth = groupProviderServiceSQL.getGroupProviderUserOauth(userId, "avans");
+    assertEquals(userId,groupProviderUserOauth.getPersonId());
+
+    groupProviderUserOauth = groupProviderServiceSQL.getGroupProviderUserOauth("does-not-exist", "avans");
+    assertTrue(groupProviderUserOauth == null);
+}
 
   @Test
   public void testGetAllGroupProviders() throws Exception {
     List<GroupProvider> all = groupProviderServiceSQL.getAllGroupProviders();
     assertEquals(3,all.size());
+    //we need to ensure Grouper is also in here
+    boolean grouperPresent = false;
+    for (GroupProvider groupProvider : all) {
+      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
+        grouperPresent = true;
+        break;
+      }
+    }
+    assertTrue(grouperPresent);
+    
   }
   
   /**

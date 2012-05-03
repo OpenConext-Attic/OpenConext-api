@@ -36,6 +36,15 @@ public interface GroupProviderService {
   List<GroupProviderUserOauth> getGroupProviderUserOauths(String userId);
 
   /**
+   * Gets a List of {@link GroupProviderUserOauth}'s for a given user and given groupProvider
+   *
+   * @param userId unique identifier of the user
+   * @param groupProviderIdentifier
+   * @return GroupProviderUserOauth, can be null
+   */
+  GroupProviderUserOauth getGroupProviderUserOauth(String userId, String groupProviderIdentifier);
+
+  /**
    * Gets a {@link GroupProvider} by its String identifier
    *
    * @param identifier String identifier of the GroupProvider

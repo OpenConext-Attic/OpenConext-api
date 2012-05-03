@@ -137,6 +137,14 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     Response response = request.send();
     LOG.debug("Response: {}", response.getBody());
     assertTrue(response.getBody().contains("foo@example.com"));
+
+    //also test the mock 
+    request = new OAuthRequest(Verb.GET, restUrl.replace("/social/rest/", "/mock10/social/rest/"));
+    service.signRequest(aToken, request);
+    response = request.send();
+    LOG.debug("Response: {}", response.getBody());
+    assertTrue(response.getBody().contains("mnice@surfguest.nl"));
+
   }
 
 }

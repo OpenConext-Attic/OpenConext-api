@@ -40,6 +40,10 @@ import nl.surfnet.coin.teams.service.GroupProviderService;
  */
 public class GroupProviderServiceSQLImpl implements GroupProviderService {
 
+  private static final String SELECT_USER_OAUTH = "SELECT gp_user_oauth.user_id, gp_user_oauth.provider_id, gp_user_oauth.oauth_token, gp_user_oauth.oauth_secret " +
+      "FROM group_provider_user_oauth as gp_user_oauth " +
+      "WHERE gp_user_oauth.user_id = ?";
+
   private static final String SELECT_GROUP_PROVIDER_BY_IDENTIFIER =
       "SELECT gp.id, gp.identifier, gp.name, gp.classname, gp.logo_url FROM group_provider AS gp WHERE gp.identifier ";
 
@@ -61,29 +65,35 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
   public List<GroupProviderUserOauth> getGroupProviderUserOauths(String userId) {
     List<GroupProviderUserOauth> gpUserOauths;
 
-    Object[] args = new Object[1];
-    args[0] = userId;
-
     try {
+      RowMapper<GroupProviderUserOauth> rowMapper = new GroupProviderUserOauthRowMapper() ;
       gpUserOauths = this.jdbcTemplate.query(
-          "SELECT gp_user_oauth.user_id, gp_user_oauth.provider_id, gp_user_oauth.oauth_token, gp_user_oauth.oauth_secret " +
-              "FROM group_provider_user_oauth as gp_user_oauth " +
-              "WHERE gp_user_oauth.user_id = ?", args, new RowMapper<GroupProviderUserOauth>() {
-        @Override
-        public GroupProviderUserOauth mapRow(ResultSet rs, int rowNum) throws SQLException {
-          String userId = rs.getString("user_id");
-          String providerId = rs.getString("provider_id");
-          String token = rs.getString("oauth_token");
-          String secret = rs.getString("oauth_secret");
-          return new GroupProviderUserOauth(userId, providerId, token, secret);
-        }
-      });
+          SELECT_USER_OAUTH, new Object[] {userId}, rowMapper);
 
     } catch (EmptyResultDataAccessException e) {
       gpUserOauths = new ArrayList<GroupProviderUserOauth>();
     }
 
     return gpUserOauths;
+  }
+  
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.teams.service.GroupProviderService#getGroupProviderUserOauths(java.lang.String, java.lang.String)
+   */
+  @Override
+  public GroupProviderUserOauth getGroupProviderUserOauth(String userId, String groupProviderIdentifier) {
+    GroupProviderUserOauth gpUserOauth = null;
+
+    try {
+      RowMapper<GroupProviderUserOauth> rowMapper = new GroupProviderUserOauthRowMapper() ;
+      gpUserOauth = this.jdbcTemplate.queryForObject(
+          SELECT_USER_OAUTH + " and gp_user_oauth.provider_id = ?", new Object[] {userId, groupProviderIdentifier}, rowMapper);
+
+    } catch (EmptyResultDataAccessException e) {
+      //ignore, can happen
+    }
+
+    return gpUserOauth;
   }
 
   /**
@@ -316,6 +326,18 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
     }
   }
   
+  private class GroupProviderUserOauthRowMapper implements RowMapper<GroupProviderUserOauth> {
+    @Override
+    public GroupProviderUserOauth mapRow(ResultSet rs, int rowNum) throws SQLException {
+     String userId = rs.getString("user_id");
+     String providerId = rs.getString("provider_id");
+     String token = rs.getString("oauth_token");
+     String secret = rs.getString("oauth_secret");
+     return new GroupProviderUserOauth(userId, providerId, token, secret);
+    }
+   }
+
+  
   protected void execute(String sql) {
     this.jdbcTemplate.execute(sql);
   }
@@ -337,5 +359,7 @@ public class GroupProviderServiceSQLImpl implements GroupProviderService {
       return new ArrayList<GroupProvider>();
     }
   }
+
+  
 }
 

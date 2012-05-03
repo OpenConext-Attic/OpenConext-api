@@ -21,13 +21,18 @@ package nl.surfnet.coin.api;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 
 import org.springframework.cache.annotation.Cacheable;
 
 /**
- * Utility class to encapsulate all complexity regarding GroupProviders. 
- *
+ * Utility class to encapsulate all complexity regarding GroupProviders. It is
+ * very important that first all GroupProviders are selected and used in
+ * subsequent method calls (the signature of the methods demands this also),
+ * because we are caching the call getAllGroupProviders.
+ * 
  */
 public interface GroupProviderConfiguration {
 
@@ -56,27 +61,51 @@ public interface GroupProviderConfiguration {
    * <code>SecurityContextHolder.getContext().getAuthentication().getPrincipal()</code>
    * context
    * 
-   * @param Service
+   * @param service
    *          the ACL to check for
+   * @param spEntityId
+   *          the entity of the Service provider
+   * @param allGroupProviders
+   *          all of the Group Providers
    * @return All GroupProviders who are configured to
    */
-  List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId);
+  List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId, List<GroupProvider> allGroupProviders);
 
   /**
    * Get all group providers
    * 
    * @return all group providers
    */
-  @Cacheable(value = { "group-providers" }, key = "all-group-providers")
   List<GroupProvider> getAllGroupProviders();
 
   /**
    * We make the distinction between external group providers and the internal
    * SURFteams groups
    * 
-   * @param all of the GroupProviders that have valid acl's
+   * @param service
+   *          the ACL to check for
+   * @param spEntityId
+   *          the entity of the Service provider
+   * @param allGroupProviders
+   *          all of the Group Providers
    * @return true if Grouper is present
    */
-  boolean isGrouperCallsAllowed(List<GroupProvider> groupProviders);
+  boolean isGrouperCallsAllowed(Service service, String spEntityId, List<GroupProvider> allGroupProviders);
 
+  /**
+   * Gets group members with paginating information for the user's oauth
+   * configuration
+   * 
+   * @param groupProvider
+   *          {@link GroupProvider} for the settings
+   * @param groupId
+   *          the groupId as we know it in SURFconext context (e.g.
+   *          urn:collab:group:myuniversity.nl:testgroup)
+   * @param limit
+   *          maximum number of items
+   * @param offset
+   *          starting point for paging
+   * @return {@link GroupMembersEntry}, can be {@literal null}
+   */
+  GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId, int limit, int offset);
 }

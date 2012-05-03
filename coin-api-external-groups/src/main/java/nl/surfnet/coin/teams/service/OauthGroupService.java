@@ -28,7 +28,7 @@ import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 /**
  * Interface to get Group's
  */
-public interface GroupService {
+public interface OauthGroupService {
 
   /**
    * Gets a {@link Group20Entry} for the user's oauth configuration

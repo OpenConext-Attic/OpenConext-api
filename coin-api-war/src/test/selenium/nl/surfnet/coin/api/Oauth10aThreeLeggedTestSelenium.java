@@ -93,8 +93,20 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     LOG.debug("Signed resource request: {}", req.toString());
 
     Response response = req.send();
-    final String bodyText = response.getBody();
+    String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
     assertTrue("response body should contain correct json data", bodyText.contains("mock-shib-remote-user"));
+    
+    //also test the mock 
+    
+    req = new OAuthRequest(Verb.GET, (getApiBaseUrl() + OS_URL).replace("/social/rest/", "/mock10/social/rest/"));
+    service.signRequest(accessToken, req);
+    LOG.debug("Signed resource request: {}", req.toString());
+
+    response = req.send();
+    bodyText = response.getBody();
+    LOG.debug("Response body: {}", bodyText);
+    assertTrue(bodyText.contains("mnice@surfguest.nl"));
+
   }
 }
