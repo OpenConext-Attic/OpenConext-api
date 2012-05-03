@@ -17,8 +17,10 @@
 package nl.surfnet.coin.api;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
 import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.OAuthAuthenticationDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,35 +55,36 @@ public abstract class AbstractApiController {
     if (auth == null) {
       return null;
     } else {
-      if (auth.getPrincipal() instanceof ConsumerDetails) {
+      Object principal = auth.getPrincipal();
+      if (principal instanceof ConsumerDetails) {
         // Two legged, it does not have end user details
         return null;
-      } else if (auth.getPrincipal() instanceof String) {
-        return (String) auth.getPrincipal();
-      } else if (auth.getPrincipal() instanceof OAuthAuthenticationDetails) {
-        return ((OAuthAuthenticationDetails) auth.getPrincipal()).getConsumerDetails().getConsumerName();
+      } else if (principal instanceof String) {
+        return (String) principal;
+      } else if (principal instanceof OAuthAuthenticationDetails) {
+        return ((OAuthAuthenticationDetails) principal).getConsumerDetails().getConsumerName();
+      } else if (principal instanceof ClientMetaDataPrincipal) {
+        return ((ClientMetaDataPrincipal) principal).getRemoteUser();
       } else {
-        return ((UserDetails) auth.getPrincipal()).getUsername();
+        return ((UserDetails) principal).getUsername();
       }
     }
   }
 
   protected ClientMetaData getClientMetaData() {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    ClientMetaData clientMetaData;
-    if (principal instanceof ExtendedBaseClientDetails) {
-      ExtendedBaseClientDetails clientDetails = (ExtendedBaseClientDetails) principal;
-      clientMetaData = clientDetails.getClientMetaData();
-    } else if (principal instanceof ExtendedBaseConsumerDetails) {
-      ExtendedBaseConsumerDetails consumerDetails = (ExtendedBaseConsumerDetails) principal;
-      clientMetaData = consumerDetails.getClientMetaData();
-    } else {
-      throw new RuntimeException(
-          "The Principal from 'SecurityContextHolder.getContext().getAuthentication().getPrincipal()' is an unknown instance("
-              + (principal != null ? principal.getClass() : "null") + ")");
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    ClientMetaData metaData = null;
+    if (authentication instanceof OAuth2Authentication) {
+      OAuth2Authentication oauth2 = (OAuth2Authentication) authentication;
+      Authentication userAuthentication = oauth2.getUserAuthentication();
+      if (userAuthentication instanceof ShibbolethAuthenticationToken) {
+        ShibbolethAuthenticationToken shib = (ShibbolethAuthenticationToken) userAuthentication;
+        metaData = shib.getClientMetaData();
+      }
+
     }
-    Assert.notNull(clientMetaData, "ClientMetaData may not be null for checking ACL's");
-    return clientMetaData;
+    Assert.notNull(metaData, "ClientMetaData may not be null for checking ACL's");
+    return metaData;
   }
 
   /**

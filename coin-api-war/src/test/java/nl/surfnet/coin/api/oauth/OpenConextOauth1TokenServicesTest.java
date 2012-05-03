@@ -18,6 +18,9 @@ package nl.surfnet.coin.api.oauth;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+
+import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.FileUtils;
@@ -115,6 +118,9 @@ public class OpenConextOauth1TokenServicesTest {
     token.setSecret("ssh");
     token.setCallbackUrl("callbackurl");
     token.setConsumerKey("consumerkey");
+    ShibbolethAuthenticationToken userAuthentication = new ShibbolethAuthenticationToken(Collections.EMPTY_LIST);
+    userAuthentication.setClientMetaData(new ClientMetaData());
+    token.setUserAuthentication(userAuthentication);
     return token;
   }
 }

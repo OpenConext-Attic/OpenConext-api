@@ -23,6 +23,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+
 import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 import org.springframework.security.oauth.provider.token.RandomValueProviderTokenServices;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -60,7 +63,8 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
       token.setConsumerKey(rs.getString("consumerKey"));
       token.setAccessToken(rs.getBoolean("isAccessToken"));
       token.setTimestamp(rs.getLong("tokenTimestamp"));
-      token.setUserAuthentication((Authentication) SerializationUtils.deserialize(rs.getBlob("userAuthentication").getBinaryStream()));
+      token.setUserAuthentication((Authentication) SerializationUtils.deserialize(rs.getBlob("userAuthentication")
+          .getBinaryStream()));
       return token;
     }
   }
@@ -93,14 +97,27 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   protected void storeToken(String value, OAuthProviderTokenImpl token) {
     Assert.notNull(token, "Token cannot be null");
     Assert.notNull(value, "token value cannot be null");
+    Authentication userAuthentication = token.getUserAuthentication();
+    if (token.isAccessToken()) {
+      if (userAuthentication instanceof PreAuthenticatedAuthenticationToken) {
+        PreAuthenticatedAuthenticationToken pre = (PreAuthenticatedAuthenticationToken) userAuthentication;
+        Object principal = pre.getPrincipal();
+        if (principal instanceof ClientMetaDataUser) {
+          ClientMetaDataHolder.storeClientMetaData((ClientMetaDataUser) principal);
+        } else {
+          throw new RuntimeException("The principal on the PreAuthenticatedAuthenticationToken is of the type '"
+              + (principal != null ? principal.getClass() : "null")
+              + "'. Required is a (sub)class of ClientMetaDataUser");
+        }
+      } else {
+        throw new RuntimeException("The userAuthentication is of the type '"
+            + (userAuthentication != null ? userAuthentication.getClass() : "null")
+            + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken");
+      }
+    }
     jdbcTemplate.update(deleteTokenSql, value);
-    jdbcTemplate.update(insertTokenSql, value,
-        token.getCallbackUrl(),
-        token.getVerifier(),
-        token.getSecret(),
-        token.getConsumerKey(),
-        token.isAccessToken(),
-        token.getTimestamp(),
+    jdbcTemplate.update(insertTokenSql, value, token.getCallbackUrl(), token.getVerifier(), token.getSecret(),
+        token.getConsumerKey(), token.isAccessToken(), token.getTimestamp(),
         SerializationUtils.serialize(token.getUserAuthentication()));
   }
 

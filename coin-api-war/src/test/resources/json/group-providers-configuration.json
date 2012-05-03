@@ -88,7 +88,14 @@
         ],
         "personDecorators": [],
         "personFilters": [],
-        "serviceProviderGroupAcls": []
+        "serviceProviderGroupAcls": [
+            {
+                "allowGroups": true,
+                "allowMembers": true,
+                "spEntityId": "https://valid-grouper-sp-entity-id",
+                "groupProviderId": 5
+            }
+        ]
     },
     {
         "id": 9,
@@ -152,8 +159,8 @@
             },
             {
                 "allowGroups": true,
-                "allowMembers": true,
-                "spEntityId": "https://teams.test.surfconext.nl/shibboleth",
+                "allowMembers": false,
+                "spEntityId": "https://valid-grouper-sp-entity-id",
                 "groupProviderId": 9
             }
         ],

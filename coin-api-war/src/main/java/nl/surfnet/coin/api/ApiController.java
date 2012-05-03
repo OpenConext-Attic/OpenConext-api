@@ -120,9 +120,13 @@ public class ApiController extends AbstractApiController {
         if (groupProvider.isMeantForUser(onBehalfOf)) {
           GroupMembersEntry externalGroupMembers = groupProviderConfiguration.getGroupMembersEntry(groupProvider,
               onBehalfOf, groupId, count == null ? Integer.MAX_VALUE : count, startIndex == null ? 0 : startIndex);
-          List<Person> entry = externalGroupMembers.getEntry();
-          groupMembers.getEntry().addAll(entry);
-          groupMembers.setTotalResults(groupMembers.getTotalResults() + entry.size());
+          if (externalGroupMembers != null) {
+            List<Person> entry = externalGroupMembers.getEntry();
+            if (entry != null) {
+              groupMembers.getEntry().addAll(entry);
+              groupMembers.setTotalResults(groupMembers.getTotalResults() + entry.size());
+            }
+          }
         }
       }
     }

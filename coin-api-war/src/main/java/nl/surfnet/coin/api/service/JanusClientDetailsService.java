@@ -37,6 +37,7 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
 import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
@@ -67,10 +68,12 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
       return null;
     } 
       final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
-      clientDetails.setClientMetaData(ClientMetaData.fromMetaData(metadata));
+      ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata);
+      clientDetails.setClientMetaData(clientMetaData);
       clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
       clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
       clientDetails.setScope(Arrays.asList("read"));
+      ClientMetaDataHolder.setClientMetaData(clientMetaData);
       return clientDetails;
     
   }
@@ -101,7 +104,9 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     // even if additional metadata not found, set these properties.
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority> asList(new SimpleGrantedAuthority("ROLE_USER")));
-    consumerDetails.setClientMetaData(ClientMetaData.fromMetaData(metadata));
+    ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata);
+    consumerDetails.setClientMetaData(clientMetaData);
+    ClientMetaDataHolder.setClientMetaData(clientMetaData);
 
     // set to required by default
     consumerDetails.setRequiredToObtainAuthenticatedToken(true);

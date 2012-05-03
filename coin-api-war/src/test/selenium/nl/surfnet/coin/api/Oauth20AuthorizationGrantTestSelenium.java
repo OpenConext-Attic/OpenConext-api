@@ -57,6 +57,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
   private static final String USER_ID = "mock-shib-remote-user";
+  private static final String GROUP_ID = "mock-shib-remote-group";
 
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
@@ -77,8 +78,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
         return new MockHandler(server) {
           @Override
           public void handle(String target, Request baseRequest, HttpServletRequest request,
-                             HttpServletResponse response) throws IOException,
-              ServletException {
+              HttpServletResponse response) throws IOException, ServletException {
             if (request.getRequestURI().contains("favicon")) {
               LOG.debug("ignoring favicon-request.");
               return;
@@ -101,16 +101,11 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   @Test
   public void authorizationCodeGrant() throws Exception {
-    OAuthService service = new ServiceBuilder()
-        .provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
-        .apiKey(OAUTH_KEY)
-        .apiSecret(OAUTH_SECRET)
-        .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
-        .callback(OAUTH_CALLBACK_URL)
+    OAuthService service = new ServiceBuilder().provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
+        .apiKey(OAUTH_KEY).apiSecret(OAUTH_SECRET).scope(OAUTH_OPENCONEXT_API_READ_SCOPE).callback(OAUTH_CALLBACK_URL)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
-
 
     getWebDriver().get(authUrl);
 
@@ -125,7 +120,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     LOG.debug("authorizationCode is not null anymore: " + authorizationCode);
     Token aToken = service.getAccessToken(null, authorizationCode);
 
-    final String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID;
+    String restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID;
 
     // Verify that a normal request (without access token) fails now.
     getWebDriver().manage().deleteAllCookies();
@@ -135,15 +130,24 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     OAuthRequest request = new OAuthRequest(Verb.GET, restUrl);
     service.signRequest(aToken, request);
     Response response = request.send();
-    LOG.debug("Response: {}", response.getBody());
-    assertTrue(response.getBody().contains("foo@example.com"));
+    String body = response.getBody();
+    LOG.debug("Response: {}", body);
+    assertTrue(body.contains("foo@example.com"));
 
-    //also test the mock 
-    request = new OAuthRequest(Verb.GET, restUrl.replace("/social/rest/", "/mock10/social/rest/"));
+    restUrl = getApiBaseUrl() + "social/rest/people/" + USER_ID + "/" + GROUP_ID;
+    request = new OAuthRequest(Verb.GET, restUrl);
     service.signRequest(aToken, request);
     response = request.send();
-    LOG.debug("Response: {}", response.getBody());
-    assertTrue(response.getBody().contains("mnice@surfguest.nl"));
+    LOG.debug("Response: {}", body);
+    assertTrue(body.contains("foo@example.com"));
+
+    // also test the mock
+    restUrl = getApiBaseUrl() + "mock10/social/rest/people/" + USER_ID;
+    request = new OAuthRequest(Verb.GET, restUrl);
+    service.signRequest(aToken, request);
+    response = request.send();
+    LOG.debug("Response: {}", body);
+    assertTrue(body.contains("foo@example.com"));
 
   }
 

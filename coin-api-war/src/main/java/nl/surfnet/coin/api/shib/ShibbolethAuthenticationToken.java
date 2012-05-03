@@ -18,11 +18,16 @@ package nl.surfnet.coin.api.shib;
 
 import java.util.Collection;
 
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+@SuppressWarnings("serial")
 public class ShibbolethAuthenticationToken extends AbstractAuthenticationToken {
 
+  private ClientMetaData clientMetaData;
+  
   public ShibbolethAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
     super(authorities);
   }
@@ -39,5 +44,19 @@ public class ShibbolethAuthenticationToken extends AbstractAuthenticationToken {
   @Override
   public Object getPrincipal() {
     return getDetails();
+  }
+
+  /**
+   * @return the clientMetaData
+   */
+  public ClientMetaData getClientMetaData() {
+    return clientMetaData;
+  }
+
+  /**
+   * @param clientMetaData the clientMetaData to set
+   */
+  public void setClientMetaData(ClientMetaData clientMetaData) {
+    this.clientMetaData = clientMetaData;
   }
 }

@@ -112,7 +112,9 @@
 
   <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
     <property name="tokenStore" ref="tokenStore"/>
+    <property name="tokenEnhancer" ref="clientMetaDataTokenEnhancer"/>
   </bean>
+  
   <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
     <constructor-arg ref="dataSource"/>
   </bean>

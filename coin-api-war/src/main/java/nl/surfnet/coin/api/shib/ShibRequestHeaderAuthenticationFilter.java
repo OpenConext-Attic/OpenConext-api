@@ -18,6 +18,8 @@ package nl.surfnet.coin.api.shib;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
@@ -30,8 +32,9 @@ public class ShibRequestHeaderAuthenticationFilter extends RequestHeaderAuthenti
   @Override
   protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
 
-    if (StringUtils.isNotEmpty(request.getHeader("REMOTE_USER"))) {
-      return request.getHeader("REMOTE_USER");
+    String remoteUser = request.getHeader("REMOTE_USER");
+    if (StringUtils.isNotEmpty(remoteUser)) {
+      return new ClientMetaDataPrincipal(remoteUser);
     } else {
       return null;
     }
