@@ -87,6 +87,9 @@ public class ApiController extends AbstractApiController {
       // Backwards compatibility with os.surfconext.
       return getPerson(userId);
     }
+    if (onBehalfOf == null) {
+      onBehalfOf = userId;
+    }
     if (onBehalfOf != null && !onBehalfOf.startsWith(LdapClient.URN_IDENTIFIER)) {
       throw new RuntimeException("It is not allowed to use a different identifier (" + onBehalfOf
           + ") then @me when retrieving groupMembers");

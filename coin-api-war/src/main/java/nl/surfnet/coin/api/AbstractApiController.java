@@ -18,7 +18,7 @@ package nl.surfnet.coin.api;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
+import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
@@ -30,9 +30,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.OAuthAuthenticationDetails;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +76,7 @@ public abstract class AbstractApiController {
   protected ClientMetaData getClientMetaData() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     ClientMetaData metaData = null;
+    // oauth2
     if (authentication instanceof OAuth2Authentication) {
       OAuth2Authentication oauth2 = (OAuth2Authentication) authentication;
       Authentication userAuthentication = oauth2.getUserAuthentication();
@@ -81,7 +84,24 @@ public abstract class AbstractApiController {
         ShibbolethAuthenticationToken shib = (ShibbolethAuthenticationToken) userAuthentication;
         metaData = shib.getClientMetaData();
       }
+    }
+    // oauth1 3-legged
+    else if (authentication instanceof PreAuthenticatedAuthenticationToken) {
+      PreAuthenticatedAuthenticationToken preAuth = (PreAuthenticatedAuthenticationToken) authentication;
+      Object principal = preAuth.getPrincipal();
+      if (principal instanceof ClientMetaDataUser) {
+        ClientMetaDataUser user = (ClientMetaDataUser) principal;
+        metaData = user.getClientMetaData();
+      }
+    } // oauth1 2-legged
+    else if (authentication instanceof ConsumerAuthentication) {
+      ConsumerAuthentication conAuth = (ConsumerAuthentication) authentication;
+      ConsumerDetails consumerDetails = conAuth.getConsumerDetails();
+      if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
+        ExtendedBaseConsumerDetails details = (ExtendedBaseConsumerDetails) consumerDetails;
+        metaData = details.getClientMetaData();
 
+      }
     }
     Assert.notNull(metaData, "ClientMetaData may not be null for checking ACL's");
     return metaData;
