@@ -209,6 +209,7 @@
 	</bean>
 
 	<bean class="com.googlecode.flyway.core.Flyway" init-method="migrate">
+		<property name="baseDir" value="${coin-api.db.migrations.folder}"/>
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 </beans>

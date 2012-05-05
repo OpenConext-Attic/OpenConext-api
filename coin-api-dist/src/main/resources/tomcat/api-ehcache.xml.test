@@ -1,5 +1,5 @@
 <ehcache>
-	<diskStore path="java.io.tmpdir" />
+	<diskStore path="/tmp" />
 	<defaultCache name="default" />
 	<cache name="group-providers" maxElementsInMemory="100" eternal="false"
 		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"

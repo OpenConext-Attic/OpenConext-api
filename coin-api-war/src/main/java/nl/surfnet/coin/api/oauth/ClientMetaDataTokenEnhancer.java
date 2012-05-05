@@ -45,7 +45,6 @@ public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
     if (userAuthentication instanceof ShibbolethAuthenticationToken) {
       ShibbolethAuthenticationToken shib = (ShibbolethAuthenticationToken) userAuthentication;
       ClientMetaDataHolder.storeClientMetaData(shib);
-      //accessToken.getAdditionalInformation().put(ClientMetaDataHolder.CLIENT_META_DATA_KEY,ClientMetaDataHolder.getClientMetaData() );
     } else {
       throw new RuntimeException("The userAuthentication is of the type '"
           + (userAuthentication != null ? userAuthentication.getClass() : "null")

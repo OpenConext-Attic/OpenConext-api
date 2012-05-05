@@ -23,12 +23,9 @@ import java.util.regex.Pattern;
 
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
-import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
-
-import org.springframework.cache.annotation.Cacheable;
 
 /**
- * Utility class to encapsulate all complexity regarding GroupProviders. It is
+ * Compound strategy to encapsulate all complexity regarding GroupProviders. It is
  * very important that first all GroupProviders are selected and used in
  * subsequent method calls (the signature of the methods demands this also),
  * because we are caching the call getAllGroupProviders.

@@ -81,6 +81,7 @@
     <coin-test.version>2.3.0</coin-test.version>
     <commons-collections.version>3.2.1</commons-collections.version>
     <coin-master-test-dependencies.version>2.1.1</coin-master-test-dependencies.version>
+    <coin-shared.version>2.4.0</coin-shared.version>
     <!-- We develop against the SNAPSHOT awaiting a stable release/ milestone -->
     <!--spring-oauth.version>1.0.0.BUILD-SNAPSHOT<spring-oauth.version-->
     <spring-oauth.version>1.0.0.BUILD-20120430.SURFCONEXT</spring-oauth.version>
@@ -118,6 +119,12 @@
         <artifactId>spring-security-config</artifactId>
         <version>3.1.0.RELEASE</version>
       </dependency>
+      <dependency>
+        <groupId>org.surfnet.coin</groupId>
+        <artifactId>coin-shared</artifactId>
+	    <version>${coin-shared.version}</version>
+     </dependency>
+	  
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
