@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
@@ -57,11 +58,12 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   /*
    * All the meta data fields we need from Janus 
    */
-  private static final Metadata[] METADATA_TO_FETCH = { Metadata.OAUTH_SECRET, Metadata.OAUTH_CONSUMERKEY,
+  public static final Metadata[] METADATA_TO_FETCH = { Metadata.OAUTH_SECRET, Metadata.OAUTH_CONSUMERKEY,
       Metadata.OAUTH_CALLBACKURL, Metadata.OAUTH_TWOLEGGEDALLOWED, Metadata.OAUTH_APPTITLE,
       Metadata.OAUTH_APPDESCRIPTION, Metadata.OAUTH_APPTHUMBNAIL, Metadata.OAUTH_APPICON };
 
   @Override
+  @Cacheable(value = { "janus-meta-data" })
   public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
     Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
     if (metadata == null) {
@@ -93,6 +95,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
    * {@inheritDoc}
    */
   @Override
+  @Cacheable(value = { "janus-meta-data" })
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
     Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
 
@@ -118,5 +121,12 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     }
 
     return consumerDetails;
+  }
+
+  /**
+   * @param janus the janus to set
+   */
+  public void setJanus(Janus janus) {
+    this.janus = janus;
   }
 }

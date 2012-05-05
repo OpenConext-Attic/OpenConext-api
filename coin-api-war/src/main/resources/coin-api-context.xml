@@ -17,7 +17,7 @@
     http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
 
 	<mvc:annotation-driven />
-	<cache:annotation-driven />
+	<cache:annotation-driven key-generator="methodNameAwareCacheKeyGenerator"/>
 	<context:component-scan base-package="nl.surfnet.coin.api" />
 	<context:component-scan base-package="nl.surfnet.coin.teams" />
 
@@ -29,6 +29,9 @@
 		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="classpath:api-ehcache.xml" />
 	</bean>
+
+	<bean id="methodNameAwareCacheKeyGenerator"
+		class="nl.surfnet.coin.util.MethodNameAwareCacheKeyGenerator"/>
 
 	<!-- Authorization annotations on service methods -->
 	<security:global-method-security

@@ -34,6 +34,7 @@ import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
+import nl.surfnet.coin.util.MethodNameAwareCacheKeyGenerator;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -46,9 +47,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -62,7 +65,7 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 @ComponentScan(value = "nl.surfnet.coin.api", resourcePattern = "**/GroupProviderConfigurationImpl.class")
 @EnableCaching
-public class GroupProviderConfigurationTest {
+public class GroupProviderConfigurationTest  {
 
   private static final String GROUP_PROVIDERS_CONFIGURATION_JSON = "json/group-providers-configuration.json";
 
@@ -89,7 +92,8 @@ public class GroupProviderConfigurationTest {
   /**
    * Happy flow with pre-recorded json data
    * 
-   * @throws Exception unexpected
+   * @throws Exception
+   *           unexpected
    */
   @Test
   public void testGrouperConfigurationFlow() throws Exception {
@@ -100,22 +104,27 @@ public class GroupProviderConfigurationTest {
         allGroupProviders);
     assertTrue("In the json file " + GROUP_PROVIDERS_CONFIGURATION_JSON
         + " there must be valid ACL's configured for Grouper GroupProvider", grouperAllowed);
-    
-    List<GroupProvider> allowedGroupProviders = configuration.getAllowedGroupProviders(Service.Group, "https://valid-grouper-sp-entity-id", allGroupProviders);
+
+    List<GroupProvider> allowedGroupProviders = configuration.getAllowedGroupProviders(Service.Group,
+        "https://valid-grouper-sp-entity-id", allGroupProviders);
     assertEquals(2, allowedGroupProviders.size());
 
-    allowedGroupProviders = configuration.getAllowedGroupProviders(Service.People, "https://valid-grouper-sp-entity-id", allGroupProviders);
+    allowedGroupProviders = configuration.getAllowedGroupProviders(Service.People,
+        "https://valid-grouper-sp-entity-id", allGroupProviders);
     assertEquals(1, allowedGroupProviders.size());
-    
+
     GroupProvider groupProvider = allowedGroupProviders.get(0);
-    GroupProviderUserOauth userOauth = new GroupProviderUserOauth("onBehalfOf", groupProvider.getIdentifier(), "token", "secret");
-    when(groupProviderService.getGroupProviderUserOauth("onBehalfOf", groupProvider.getIdentifier())).thenReturn(userOauth);
+    GroupProviderUserOauth userOauth = new GroupProviderUserOauth("onBehalfOf", groupProvider.getIdentifier(), "token",
+        "secret");
+    when(groupProviderService.getGroupProviderUserOauth("onBehalfOf", groupProvider.getIdentifier())).thenReturn(
+        userOauth);
     GroupMembersEntry entry = new GroupMembersEntry();
     when(oauthGroupService.getGroupMembersEntry(userOauth, groupProvider, "groupId", 0, 0)).thenReturn(entry);
 
-    GroupMembersEntry groupMembersEntry = configuration.getGroupMembersEntry(groupProvider, "onBehalfOf", "groupId", 0, 0);
-    assertEquals(entry,groupMembersEntry);
-}
+    GroupMembersEntry groupMembersEntry = configuration.getGroupMembersEntry(groupProvider, "onBehalfOf", "groupId", 0,
+        0);
+    assertEquals(entry, groupMembersEntry);
+  }
 
   /*
    * Set up test data
@@ -185,13 +194,18 @@ public class GroupProviderConfigurationTest {
   }
 
   @Bean(name = "cacheManager")
-  public CacheManager cacheManager() throws CacheException, IOException {
+  public CacheManager cacheManager() {
     EhCacheCacheManager cacheManager = new EhCacheCacheManager();
     EhCacheManagerFactoryBean factoryBean = new EhCacheManagerFactoryBean();
     factoryBean.setConfigLocation(new ClassPathResource("api-ehcache.xml"));
-    factoryBean.afterPropertiesSet();
+    try {
+      factoryBean.afterPropertiesSet();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     cacheManager.setCacheManager(factoryBean.getObject());
     return cacheManager;
   }
+
 
 }

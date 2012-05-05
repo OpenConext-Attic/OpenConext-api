@@ -1,0 +1,9 @@
+{
+    "coin:gadgetbaseurl": "consumerkey3/.*",
+    "coin:oauth:app_description": "app-description",
+    "coin:oauth:app_icon": "app-icon",
+    "coin:oauth:app_thumbnail": "app-thumbnail",
+    "coin:oauth:app_title": "app-title",
+    "coin:oauth:secret": "secret",
+    "coin:oauth:two_legged_allowed": false
+}
