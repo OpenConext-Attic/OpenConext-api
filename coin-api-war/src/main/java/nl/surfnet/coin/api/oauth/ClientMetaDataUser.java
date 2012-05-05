@@ -20,13 +20,11 @@ package nl.surfnet.coin.api.oauth;
 
 import java.util.Collection;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-
-import com.sun.media.jai.codec.SeekableOutputStream;
-
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.Janus.Metadata;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * Encapsulated the {@link Metadata} from {@link Janus}
