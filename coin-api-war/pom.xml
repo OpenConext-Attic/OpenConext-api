@@ -190,6 +190,11 @@
         <version>1.3.1b</version>
         <scope>test</scope>
       </dependency>
+	<dependency>
+		<groupId>dumbster</groupId>
+		<artifactId>dumbster</artifactId>
+		<scope>test</scope>
+	  </dependency>
       <!-- End Selenium -->
       <dependency>
         <groupId>junit</groupId>

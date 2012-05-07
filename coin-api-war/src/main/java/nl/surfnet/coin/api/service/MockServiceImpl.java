@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -34,6 +35,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.GroupProviderConfiguration;
+import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group20;
@@ -47,11 +49,15 @@ import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 import nl.surfnet.coin.teams.service.GroupProviderService;
+import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
 
 @Component(value = "mockService")
-public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider, GroupProviderConfiguration  {
+public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider,
+    GroupProviderConfiguration {
 
   private Logger LOG = LoggerFactory.getLogger(MockServiceImpl.class);
+
+  private static final String GROUP_PROVIDERS_CONFIGURATION_JSON = "json/group-providers-configuration.json";
 
   private static boolean isActive;
   private static long sleepMilliseconds;
@@ -109,7 +115,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    */
   @Override
   public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex,
-                                    String sortBy) {
+      String sortBy) {
     if (isActive) {
       return getPreparedGroupMembers(groupId);
     }
@@ -174,6 +180,19 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   }
 
+  private Group20Entry getPreparedGroup20(String userId, String groupId) {
+    Group20Entry result = new Group20Entry(new ArrayList<Group20>());
+    Set<Entry<String, Group20>> entrySet = GROUPS_IN_MEMORY.entrySet();
+    for (Entry<String, Group20> entry : entrySet) {
+      if (entry.getValue().getId().equals(groupId)) {
+        result.getEntry().add(entry.getValue());
+        break;
+      }
+    }
+    result.setTotalResults(result.getEntry().size());
+    return result;
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -198,14 +217,23 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   @Override
   public GroupEntry getGroup(String userId, String groupId, String onBehalfOf) {
-    // TODO: implement
-    return null;
+    throw new RuntimeException("GetGroup is not supported. Use GroupService#getGroup20");
   }
 
   @Override
   public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
-    // TODO: implement
-    return null;
+    if (isActive) {
+      return getPreparedGroup20(userId, groupId);
+    }
+    ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, groupId, "group20"));
+    if (!pathResource.exists()) {
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "group20"));
+    }
+    try {
+      return parser.parseGroups20(pathResource.getInputStream());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public boolean isActive() {
@@ -236,20 +264,17 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     return true;
   }
 
-
   public void addPerson(Person person) {
     isActive = true;
     PERSONS_IN_MEMORY.put(person.getId(), person);
 
   }
 
-
   public void addGroup(Group20 group) {
     isActive = true;
     GROUPS_IN_MEMORY.put(group.getId(), group);
 
   }
-
 
   public void addPersonToGroup(String personId, String groupId) {
     isActive = true;
@@ -269,15 +294,22 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   /**
    * Filter/mangle a result set based on query parameters
-   * @param parent the root object; effectively this parameter is altered by setting the totalResults property
-   * @param count nr of records to fetch
-   * @param startIndex the start index
-   * @param sortBy field to sort by
-   * @param entry the result list of entries
+   * 
+   * @param parent
+   *          the root object; effectively this parameter is altered by setting
+   *          the totalResults property
+   * @param count
+   *          nr of records to fetch
+   * @param startIndex
+   *          the start index
+   * @param sortBy
+   *          field to sort by
+   * @param entry
+   *          the result list of entries
    * @return
    */
   protected List<? extends Object> processQueryOptions(AbstractEntry parent, Integer count, Integer startIndex,
-                                                       String sortBy, List<? extends Object> entry) {
+      String sortBy, List<? extends Object> entry) {
     parent.setTotalResults(entry.size());
     if (StringUtils.hasText(sortBy)) {
       BeanComparator comparator = new BeanComparator(sortBy);
@@ -302,16 +334,25 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.GroupProviderConfiguration#isInternalGroup(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#isInternalGroup(java.lang
+   * .String)
    */
   @Override
   public boolean isInternalGroup(String groupId) {
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getAllowedGroupProviders(nl.surfnet.coin.api.GroupProviderConfiguration.Service, java.lang.String, java.util.List)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#getAllowedGroupProviders
+   * (nl.surfnet.coin.api.GroupProviderConfiguration.Service, java.lang.String,
+   * java.util.List)
    */
   @Override
   public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId,
@@ -319,33 +360,124 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     return allGroupProviders;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see nl.surfnet.coin.api.GroupProviderConfiguration#getAllGroupProviders()
    */
   @Override
   public List<GroupProvider> getAllGroupProviders() {
-    List<GroupProvider> groupProviders = new ArrayList<GroupProvider>();
-    GroupProvider e = new GroupProvider(1L, "grouper", "grouper", GroupProviderType.GROUPER);
-    groupProviders.add(e );
-    return groupProviders;
+    try {
+      List<GroupProvider> groupProviders = parser.getObjectMapper().readValue(
+          new ClassPathResource(GROUP_PROVIDERS_CONFIGURATION_JSON).getInputStream(),
+          new TypeReference<List<GroupProvider>>() {
+          });
+      return groupProviders;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.GroupProviderConfiguration#isGrouperCallsAllowed(nl.surfnet.coin.api.GroupProviderConfiguration.Service, java.lang.String, java.util.List)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#isGrouperCallsAllowed(nl
+   * .surfnet.coin.api.GroupProviderConfiguration.Service, java.lang.String,
+   * java.util.List)
    */
   @Override
-  public boolean isGrouperCallsAllowed(Service service, String spEntityId, List<GroupProvider> allGroupProviders) {
-    return true;
+  public boolean isCallAllowed(Service service, String spEntityId, GroupProvider groupProvider) {
+    return !groupProvider.isExternalGroupProvider();
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.surfnet.coin.teams.domain.GroupProvider, java.lang.String, java.lang.String, int, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.
+   * surfnet.coin.teams.domain.GroupProvider, java.lang.String,
+   * java.lang.String, int, int)
    */
   @Override
   public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId,
       int limit, int offset) {
-    throw new RuntimeException("This call is not supported (and should never be called as we don't support external group providers in mock modus)");
+    throw new RuntimeException(
+        "This call is not supported (and should never be called as we don't support external group providers in mock modus)");
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroup20Entry(nl.surfnet
+   * .coin.teams.domain.GroupProvider, java.lang.String, int, int)
+   */
+  @Override
+  public Group20Entry getGroup20Entry(GroupProvider groupProvider, String userId, int limit, int offset) {
+    throw new RuntimeException(
+        "This call is not supported (and should never be called as we don't support external group providers in mock modus)");
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#cutOffUrnPartForGrouper(
+   * java.util.List, java.lang.String)
+   */
+  @Override
+  public String cutOffUrnPartForGrouper(List<GroupProvider> groupProviders, String groupId) {
+    for (GroupProvider groupProvider : groupProviders) {
+      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
+        return GroupProviderPropertyConverter.convertToExternalGroupId(groupId, groupProvider);
+      }
+    }
+    throw new RuntimeException("No Grouper groupProvider present in the list of groupProviders('" + groupProviders
+        + "') so we can't cut off the groupId('" + groupId + "')");
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroup20(nl.surfnet.coin
+   * .teams.domain.GroupProvider, java.lang.String, java.lang.String)
+   */
+  @Override
+  public Group20 getGroup20(GroupProvider groupProvider, String userId, String groupId) {
+    throw new RuntimeException(
+        "This call is not supported (and should never be called as we don't support external group providers in mock modus)");
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#addUrnPartForGrouper(java
+   * .util.List, nl.surfnet.coin.api.client.domain.Group20Entry)
+   */
+  @Override
+  public Group20Entry addUrnPartForGrouper(List<GroupProvider> groupProviders, Group20Entry group20Entry) {
+    Group20Entry result = new Group20Entry(new ArrayList<Group20>());
+    GroupProvider grouper = null;
+    for (GroupProvider groupProvider : groupProviders) {
+      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
+        grouper = groupProvider;
+        break;
+      }
+    }
+    if (grouper == null) {
+      throw new RuntimeException("No Grouper groupProvider present in the list of groupProviders('" + groupProviders
+          + "') so we can't add the surfconext urn part");
+    }
+    for (Group20 group : group20Entry.getEntry()) {
+      String convertToSurfConextGroupId = GroupProviderPropertyConverter.convertToSurfConextGroupId(group.getId(),
+          grouper);
+      group.setId(convertToSurfConextGroupId);
+      result.getEntry().add(group);
+    }
+    return result;
+  }
 
 }

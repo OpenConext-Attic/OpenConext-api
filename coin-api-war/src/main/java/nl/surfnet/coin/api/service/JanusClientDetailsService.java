@@ -70,7 +70,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
       return null;
     } 
       final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
-      ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata);
+      ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata, consumerKey);
       clientDetails.setClientMetaData(clientMetaData);
       clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
       clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
@@ -107,7 +107,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     // even if additional metadata not found, set these properties.
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority> asList(new SimpleGrantedAuthority("ROLE_USER")));
-    ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata);
+    ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata, consumerKey);
     consumerDetails.setClientMetaData(clientMetaData);
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
 

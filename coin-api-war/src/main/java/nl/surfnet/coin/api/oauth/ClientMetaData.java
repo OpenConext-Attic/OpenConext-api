@@ -39,14 +39,19 @@ public class ClientMetaData implements Serializable {
   private String appDescription;
   private String appThumbNail;
   private String appEntityId;
+  private String consumerKey;
 
-  public static ClientMetaData fromMetaData(Map<String, String> metaData) {
+  public static ClientMetaData fromMetaData(Map<String, String> metaData, String consumerKey) {
     ClientMetaData clientMetaData = new ClientMetaData();
     clientMetaData.setAppTitle(metaData.get(Metadata.OAUTH_APPTITLE.val()));
     clientMetaData.setAppIcon(metaData.get(Metadata.OAUTH_APPICON.val()));
     clientMetaData.setAppDescription(metaData.get(Metadata.OAUTH_APPDESCRIPTION.val()));
     clientMetaData.setAppThumbNail(metaData.get(Metadata.OAUTH_APPTHUMBNAIL.val()));
     clientMetaData.setAppEntityId(metaData.get(Metadata.ENTITY_ID.val()));
+    /*
+     * We dont want the key from janus, but we want the key that was actually used by the SP
+     */
+    clientMetaData.setConsumerKey(consumerKey);
     return clientMetaData;
   }
 
@@ -122,5 +127,19 @@ public class ClientMetaData implements Serializable {
 
   public String toString() {
     return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
+  }
+
+  /**
+   * @return the consumerKey
+   */
+  public String getConsumerKey() {
+    return consumerKey;
+  }
+
+  /**
+   * @param consumerKey the consumerKey to set
+   */
+  public void setConsumerKey(String consumerKey) {
+    this.consumerKey = consumerKey;
   }
 }

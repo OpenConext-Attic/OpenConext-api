@@ -21,12 +21,15 @@ package nl.surfnet.coin.api;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
+import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
 /**
- * Compound strategy to encapsulate all complexity regarding GroupProviders. It is
- * very important that first all GroupProviders are selected and used in
+ * Compound strategy to encapsulate all complexity regarding GroupProviders. It
+ * is very important that first all GroupProviders are selected and used in
  * subsequent method calls (the signature of the methods demands this also),
  * because we are caching the call getAllGroupProviders.
  * 
@@ -76,18 +79,18 @@ public interface GroupProviderConfiguration {
   List<GroupProvider> getAllGroupProviders();
 
   /**
-   * We make the distinction between external group providers and the internal
-   * SURFteams groups
+   * Is the call allowed? e.g. is there an {@link ServiceProviderGroupAcl} for
+   * the given {@link Service} and {@link GroupProvider}
    * 
    * @param service
    *          the ACL to check for
    * @param spEntityId
    *          the entity of the Service provider
-   * @param allGroupProviders
-   *          all of the Group Providers
+   * @param the
+   *          Group Provider
    * @return true if Grouper is present
    */
-  boolean isGrouperCallsAllowed(Service service, String spEntityId, List<GroupProvider> allGroupProviders);
+  boolean isCallAllowed(Service service, String spEntityId, GroupProvider groupProvider);
 
   /**
    * Gets group members with paginating information for the user's oauth
@@ -104,5 +107,57 @@ public interface GroupProviderConfiguration {
    *          starting point for paging
    * @return {@link GroupMembersEntry}, can be {@literal null}
    */
-  GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId, int limit, int offset);
+  GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId, int limit,
+      int offset);
+
+  /**
+   * 
+   * @param groupProvider
+   *          {@link GroupProvider} for the settings
+   * @param userId
+   *          the userId as we know it in SURFconext context (e.g.
+   *          urn:collab:person:myuniversity.nl:testuser)
+   * @param limit
+   *          maximum number of items
+   * @param offset
+   *          starting point for paging
+   * @return {@link Group20Entry}, can be {@literal null}
+   */
+  Group20Entry getGroup20Entry(GroupProvider groupProvider, String userId, int limit, int offset);
+
+  /**
+   * Strip the urn part off the groupId
+   * 
+   * @param groupProviders
+   *          all groupPrviders
+   * @param groupId
+   *          the long version with the urn part of the Group
+   * @return a GroupId that Grouper understands
+   */
+  String cutOffUrnPartForGrouper(List<GroupProvider> groupProviders, String groupId);
+
+  /**
+   * 
+   * Get a single group
+   * 
+   * @param groupProvider
+   *          the GroupProvider
+   * @param userId
+   *          the userId
+   * @param groupId
+   *          the groupId
+   * @return Group20 can be null
+   */
+  Group20 getGroup20(GroupProvider groupProvider, String userId, String groupId);
+
+  /**
+   * Add to all the groups the conext urn part for grouper
+   * 
+   * @param groupProviders
+   *          all groupProvider
+   * @param group20Entry
+   *          the group20Entry with Grouper id's
+   * @return group20Entry the same group20Entry but now with long conext urn's
+   */
+  Group20Entry addUrnPartForGrouper(List<GroupProvider> groupProviders, Group20Entry group20Entry);
 }

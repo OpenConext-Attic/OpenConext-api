@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
@@ -31,6 +33,7 @@ import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
+import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -43,13 +46,12 @@ import org.springframework.util.CollectionUtils;
 @Component(value = "groupProviderConfiguration")
 public class GroupProviderConfigurationImpl implements GroupProviderConfiguration {
 
-  @Resource(name="groupProviderService")
+  @Resource(name = "groupProviderService")
   private GroupProviderService groupProviderService;
 
-  @Resource(name="oauthGroupService")
+  @Resource(name = "oauthGroupService")
   private OauthGroupService oauthGroupService;
-  
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -71,12 +73,14 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    * java.lang.String)
    */
   @Override
-  public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId, List<GroupProvider> allGroupProviders) {
+  public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId,
+      List<GroupProvider> allGroupProviders) {
     List<GroupProvider> result = new ArrayList<GroupProvider>();
     // now see which groupProviders have the correct acl
     for (GroupProvider groupProvider : allGroupProviders) {
-      if (isAclConfiguredForGroupProvider(groupProvider, spEntityId, service))
+      if (isAclConfiguredForGroupProvider(groupProvider, spEntityId, service)) {
         result.add(groupProvider);
+      }
     }
     return result;
   }
@@ -96,6 +100,9 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    * Is there an Acl configured for the GroupProvider for the Service call
    */
   private boolean isAclConfiguredForGroupProvider(GroupProvider groupProvider, String spEntityId, Service service) {
+    if (groupProvider == null) {
+      return false;
+    }
     List<ServiceProviderGroupAcl> acls = groupProvider.getServiceProviderGroupAcls();
     if (CollectionUtils.isEmpty(acls)) {
       return false;
@@ -121,26 +128,98 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    * .util.List)
    */
   @Override
-  public boolean isGrouperCallsAllowed(Service service, String spEntityId, List<GroupProvider> allGroupProviders) {
-    for (GroupProvider groupProvider : allGroupProviders) {
-      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
-        return isAclConfiguredForGroupProvider(groupProvider, spEntityId, service);
-      }
-    }
-    return false;
+  public boolean isCallAllowed(Service service, String spEntityId, GroupProvider groupProvider) {
+    return isAclConfiguredForGroupProvider(groupProvider, spEntityId, service);
+
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.surfnet.coin.teams.domain.GroupProvider, java.lang.String, int, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.
+   * surfnet.coin.teams.domain.GroupProvider, java.lang.String, int, int)
    */
   @Override
-  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId, int limit, int offset) {
-    GroupProviderUserOauth oauth = groupProviderService.getGroupProviderUserOauth(onBehalfOf, groupProvider.getIdentifier());
+  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId,
+      int limit, int offset) {
+    GroupProviderUserOauth oauth = groupProviderService.getGroupProviderUserOauth(onBehalfOf,
+        groupProvider.getIdentifier());
     if (oauth != null) {
       return oauthGroupService.getGroupMembersEntry(oauth, groupProvider, groupId, limit, offset);
     }
-    //sensible default
+    // sensible default
     return new GroupMembersEntry(new ArrayList<Person>());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroup20Entry(nl.surfnet
+   * .coin.teams.domain.GroupProvider, java.lang.String, int, int)
+   */
+  @Override
+  public Group20Entry getGroup20Entry(GroupProvider groupProvider, String userId, int limit, int offset) {
+    GroupProviderUserOauth oauth = groupProviderService
+        .getGroupProviderUserOauth(userId, groupProvider.getIdentifier());
+    if (oauth != null) {
+      return oauthGroupService.getGroup20Entry(oauth, groupProvider, limit, offset);
+    }
+    // sensible default
+    return new Group20Entry(new ArrayList<Group20>());
+  }
+
+  @Override
+  public Group20 getGroup20(GroupProvider groupProvider, String userId, String groupId) {
+    GroupProviderUserOauth oauth = groupProviderService
+        .getGroupProviderUserOauth(userId, groupProvider.getIdentifier());
+    if (oauth != null) {
+      return oauthGroupService.getGroup20(oauth, groupProvider, groupId);
+    }
+    // can't think of a sensible default
+    return null;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.GroupProviderConfiguration#cutOffUrnPartForGrouper(
+   * java.util.List, java.lang.String)
+   */
+  @Override
+  public String cutOffUrnPartForGrouper(List<GroupProvider> groupProviders, String groupId) {
+    for (GroupProvider groupProvider : groupProviders) {
+      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
+        return GroupProviderPropertyConverter.convertToExternalGroupId(groupId, groupProvider);
+      }
+    }
+    throw new RuntimeException("No Grouper groupProvider present in the list of groupProviders('" + groupProviders
+        + "') so we can't cut off the groupId('" + groupId + "')");
+  }
+
+  @Override
+  public Group20Entry addUrnPartForGrouper(List<GroupProvider> groupProviders, Group20Entry group20Entry) {
+    Group20Entry result = new Group20Entry(new ArrayList<Group20>());
+    GroupProvider grouper = null;
+    for (GroupProvider groupProvider : groupProviders) {
+      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
+        grouper = groupProvider;
+        break;
+      }
+    }
+    if (grouper == null) {
+      throw new RuntimeException("No Grouper groupProvider present in the list of groupProviders('" + groupProviders
+          + "') so we can't add the surfconext urn part");
+    }
+    for (Group20 group : group20Entry.getEntry()) {
+      String convertToSurfConextGroupId = GroupProviderPropertyConverter.convertToSurfConextGroupId(group.getId(),
+          grouper);
+      group.setId(convertToSurfConextGroupId);
+      result.getEntry().add(group);
+    }
+    return result;
   }
 
   /**
@@ -152,11 +231,11 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
   }
 
   /**
-   * @param oauthGroupService the oauthGroupService to set
+   * @param oauthGroupService
+   *          the oauthGroupService to set
    */
   public void setOauthGroupService(OauthGroupService oauthGroupService) {
     this.oauthGroupService = oauthGroupService;
   }
-
 
 }

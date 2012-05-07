@@ -21,6 +21,8 @@ import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
 import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.shared.log.ApiCallLog;
+import nl.surfnet.coin.shared.log.ApiCallLogContextListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +75,13 @@ public abstract class AbstractApiController {
     }
   }
 
+  /*
+   * It was hell to make sure the ClientMetaData that we get from Janus is
+   * stored in both oauth1 & 2 access tokens (both authorization code and
+   * implicit grant) and thus is available when the client makes a call with an
+   * access token that was granted. For the 2-legged variant it was
+   * straightforward but the entire flow is complex.
+   */
   protected ClientMetaData getClientMetaData() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     ClientMetaData metaData = null;
@@ -83,6 +92,7 @@ public abstract class AbstractApiController {
       if (userAuthentication instanceof ShibbolethAuthenticationToken) {
         ShibbolethAuthenticationToken shib = (ShibbolethAuthenticationToken) userAuthentication;
         metaData = shib.getClientMetaData();
+        registerApiVersion("oauth2");
       }
     }
     // oauth1 3-legged
@@ -92,6 +102,18 @@ public abstract class AbstractApiController {
       if (principal instanceof ClientMetaDataUser) {
         ClientMetaDataUser user = (ClientMetaDataUser) principal;
         metaData = user.getClientMetaData();
+        if (metaData == null) {
+          Object details = preAuth.getDetails();
+          if (details instanceof OAuthAuthenticationDetails) {
+            OAuthAuthenticationDetails authDetails = (OAuthAuthenticationDetails) details;
+            ConsumerDetails consumerDetails = authDetails.getConsumerDetails();
+            if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
+              ExtendedBaseConsumerDetails base = (ExtendedBaseConsumerDetails) consumerDetails;
+              metaData = base.getClientMetaData();
+            }
+          }
+        }
+        registerApiVersion("oauth1-3legged");
       }
     } // oauth1 2-legged
     else if (authentication instanceof ConsumerAuthentication) {
@@ -100,11 +122,29 @@ public abstract class AbstractApiController {
       if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
         ExtendedBaseConsumerDetails details = (ExtendedBaseConsumerDetails) consumerDetails;
         metaData = details.getClientMetaData();
-
+        registerApiVersion("oauth1-2legged");
       }
+    } else if (authentication instanceof ShibbolethAuthenticationToken) {
+      ShibbolethAuthenticationToken shibToken = (ShibbolethAuthenticationToken) authentication;
+      metaData = shibToken.getClientMetaData();
+      registerApiVersion("oauth2");
+    } else {
+      throw new IllegalArgumentException("Authentication is of unknown class ('"
+          + (authentication != null ? authentication.getClass() : "null") + "')");
     }
-    Assert.notNull(metaData, "ClientMetaData may not be null for checking ACL's");
+    Assert.notNull(metaData, "ClientMetaData may not be null for checking ACL's. Authentication is of class ('"
+        + (authentication != null ? authentication.getClass() : "null") + "')");
     return metaData;
+  }
+
+  /*
+   * Set the version on the Log call
+   */
+  private void registerApiVersion(String version) {
+    ApiCallLog log = ApiCallLogContextListener.getApiCallLog();
+    if (log != null) {
+      log.setApiVersion(version);
+    }
   }
 
   /**

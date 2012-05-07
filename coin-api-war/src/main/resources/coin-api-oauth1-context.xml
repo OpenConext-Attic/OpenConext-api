@@ -14,7 +14,7 @@
 			position="PRE_AUTH_FILTER" />
 	</http>
 
-	<oauth:provider consumer-details-service-ref="clientDetailsService"
+	<oauth:provider consumer-details-service-ref="janusClientDetailsService"
 		token-services-ref="oauth1TokenServices" request-token-url="/oauth1/requestToken"
 		authenticate-token-url="/oauth1/authorize" token-id-param="oauth_token"
 		user-approval-url="/oauth1/confirm_access" access-token-url="/oauth1/accessToken"
@@ -49,7 +49,7 @@
 
 	<beans:bean id="clientDetailsUserDetailsService"
 		class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
-		<beans:constructor-arg ref="clientDetailsService" />
+		<beans:constructor-arg ref="janusClientDetailsService" />
 	</beans:bean>
 
 </beans:beans>

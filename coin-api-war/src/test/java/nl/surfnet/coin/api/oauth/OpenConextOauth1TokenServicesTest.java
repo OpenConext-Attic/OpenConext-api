@@ -16,48 +16,29 @@
 
 package nl.surfnet.coin.api.oauth;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-public class OpenConextOauth1TokenServicesTest {
+import java.util.Collections;
+
+import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
+
+public class OpenConextOauth1TokenServicesTest extends AbstractInMemoryDatabaseTest {
 
 
   private OpenConextOauth1TokenServices s;
-  private JdbcTemplate jdbcTemplate;
 
   @Before
   public void initWithDb() throws Exception {
-    BasicDataSource dataSource = new BasicDataSource();
-    dataSource.setPassword("");
-    dataSource.setUsername("sa");
-    dataSource.setUrl("jdbc:hsqldb:mem:coin_api");
-    dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-
-    jdbcTemplate = new JdbcTemplate(dataSource);
-    jdbcTemplate.execute(FileUtils.readFileToString(new ClassPathResource("coin-api-test-db.sql").getFile()));
-
     s = new OpenConextOauth1TokenServices();
-
-    s.setDataSource(dataSource);
+    s.setDataSource(getJdbcTemplate().getDataSource());
     s.afterPropertiesSet();
-
-
   }
 
   @Test
@@ -95,10 +76,10 @@ public class OpenConextOauth1TokenServicesTest {
     s.storeToken("footoken", buildToken());
 
     assertEquals("One token should be inserted",
-        1, jdbcTemplate.queryForInt("select count(*) from oauth1_tokens"));
+        1, getJdbcTemplate().queryForInt("select count(*) from oauth1_tokens"));
 
     assertEquals("token id should match inserted one",
-        "footoken", jdbcTemplate.queryForObject("select * from oauth1_tokens where token = ?",
+        "footoken", getJdbcTemplate().queryForObject("select * from oauth1_tokens where token = ?",
         new OpenConextOauth1TokenServices.OAuthProviderTokenRowMapper(), "footoken").getValue());
   }
 
@@ -108,7 +89,7 @@ public class OpenConextOauth1TokenServicesTest {
     s.removeToken("footoken");
 
     assertEquals("No tokens should be in store after removing the only one.",
-        0, jdbcTemplate.queryForInt("select count(*) from oauth1_tokens"));
+        0, getJdbcTemplate().queryForInt("select count(*) from oauth1_tokens"));
   }
 
   private OAuthProviderTokenImpl buildToken() {
@@ -122,5 +103,21 @@ public class OpenConextOauth1TokenServicesTest {
     userAuthentication.setClientMetaData(new ClientMetaData());
     token.setUserAuthentication(userAuthentication);
     return token;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.db.AbstractInMemoryDatabaseTest#getMockDataContentFilename()
+   */
+  @Override
+  public String getMockDataContentFilename() {
+    return "coin-api-test-db.sql";
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.db.AbstractInMemoryDatabaseTest#getMockDataCleanUpFilename()
+   */
+  @Override
+  public String getMockDataCleanUpFilename() {
+    return "coin-api-test-db-cleanup.sql";
   }
 }

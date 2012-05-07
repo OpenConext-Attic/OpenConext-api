@@ -18,23 +18,24 @@
  */
 package nl.surfnet.coin.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.ehcache.CacheException;
 import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
-import nl.surfnet.coin.util.MethodNameAwareCacheKeyGenerator;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -47,11 +48,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -65,7 +64,7 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 @ComponentScan(value = "nl.surfnet.coin.api", resourcePattern = "**/GroupProviderConfigurationImpl.class")
 @EnableCaching
-public class GroupProviderConfigurationTest  {
+public class GroupProviderConfigurationTest {
 
   private static final String GROUP_PROVIDERS_CONFIGURATION_JSON = "json/group-providers-configuration.json";
 
@@ -100,14 +99,19 @@ public class GroupProviderConfigurationTest  {
     when(groupProviderService.getAllGroupProviders()).thenReturn(getGroupProviders());
     List<GroupProvider> allGroupProviders = configuration.getAllGroupProviders();
     assertEquals(3, allGroupProviders.size());
-    boolean grouperAllowed = configuration.isGrouperCallsAllowed(Service.Group, "https://valid-grouper-sp-entity-id",
-        allGroupProviders);
-    assertTrue("In the json file " + GROUP_PROVIDERS_CONFIGURATION_JSON
-        + " there must be valid ACL's configured for Grouper GroupProvider", grouperAllowed);
 
     List<GroupProvider> allowedGroupProviders = configuration.getAllowedGroupProviders(Service.Group,
         "https://valid-grouper-sp-entity-id", allGroupProviders);
     assertEquals(2, allowedGroupProviders.size());
+
+    boolean grouper = false;
+    for (GroupProvider groupProvider : allowedGroupProviders) {
+      if (!groupProvider.isExternalGroupProvider()) {
+        grouper = true;
+      }
+    }
+    assertTrue("In the json file " + GROUP_PROVIDERS_CONFIGURATION_JSON
+        + " there must be valid ACL's configured for Grouper GroupProvider", grouper);
 
     allowedGroupProviders = configuration.getAllowedGroupProviders(Service.People,
         "https://valid-grouper-sp-entity-id", allGroupProviders);
@@ -124,6 +128,27 @@ public class GroupProviderConfigurationTest  {
     GroupMembersEntry groupMembersEntry = configuration.getGroupMembersEntry(groupProvider, "onBehalfOf", "groupId", 0,
         0);
     assertEquals(entry, groupMembersEntry);
+  }
+
+  @Test
+  public void testComplementGrouperUrns() throws Exception {
+    when(groupProviderService.getAllGroupProviders()).thenReturn(getGroupProviders());
+    List<GroupProvider> allGroupProviders = configuration.getAllGroupProviders();
+
+    Group20Entry group20Entry = new Group20Entry(new ArrayList<Group20>());
+    Group20 group20 = new Group20("nl:surfnet:diensten:hallo", "title", "description");
+    group20Entry.getEntry().add(group20);
+    group20Entry = configuration.addUrnPartForGrouper(allGroupProviders, group20Entry);
+    assertEquals("urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:hallo", group20Entry.getEntry().get(0).getId());
+  }
+
+  @Test
+  public void testStripGrouperUrns() throws Exception {
+    when(groupProviderService.getAllGroupProviders()).thenReturn(getGroupProviders());
+    List<GroupProvider> allGroupProviders = configuration.getAllGroupProviders();
+    String groupId = configuration.cutOffUrnPartForGrouper(allGroupProviders,
+        "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:hallo");
+    assertEquals("nl:surfnet:diensten:hallo", groupId);
   }
 
   /*
@@ -180,7 +205,8 @@ public class GroupProviderConfigurationTest  {
   }
 
   /*
-   * All methods below are necessary for the ApplicationContext to be valid
+   * All methods below are necessary for the ApplicationContext to be valid in
+   * order to test the caching
    */
 
   @Bean(name = "oauthGroupService")
@@ -206,6 +232,5 @@ public class GroupProviderConfigurationTest  {
     cacheManager.setCacheManager(factoryBean.getObject());
     return cacheManager;
   }
-
 
 }

@@ -89,18 +89,18 @@
 
   <bean id="clientDetailsUserService"
         class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
-    <constructor-arg ref="clientDetailsService"/>
+    <constructor-arg ref="janusClientDetailsService"/>
   </bean>
 
   <bean id="accessConfirmationController" class="nl.surfnet.coin.api.controller.AccessConfirmationController">
-    <property name="clientDetailsService" ref="clientDetailsService" />
+    <property name="clientDetailsService" ref="janusClientDetailsService" />
   </bean>
 
   <oauth2:authorization-server
       token-endpoint-url="/oauth2/token"
       authorization-endpoint-url="/oauth2/authorize"
       user-approval-handler-ref="approvalHandler"
-      client-details-service-ref="clientDetailsService"
+      client-details-service-ref="janusClientDetailsService"
       user-approval-page="redirect:/oauth2/confirm_access"
       token-services-ref="tokenServices">
     <oauth2:authorization-code/>

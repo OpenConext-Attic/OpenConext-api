@@ -24,6 +24,9 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>nl.surfnet.coin.shared.log.ApiCallLogContextListener</listener-class>
+  </listener>
 
 
   <!-- from selenium-web.xml ================================================ -->
@@ -122,8 +125,9 @@
     <param-name>contextConfigLocation</param-name>
     <param-value>
       classpath:coin-api-properties-context.xml,
-      classpath:coin-api-context.xml
-      classpath:coin-api-oauth1-context.xml
+      classpath:coin-api-context.xml,
+      classpath:coin-shared-context.xml,
+      classpath:coin-api-oauth1-context.xml,
       classpath:coin-api-oauth2-context.xml
     </param-value>
   </context-param>

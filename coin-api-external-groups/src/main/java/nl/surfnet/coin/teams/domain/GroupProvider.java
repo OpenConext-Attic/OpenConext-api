@@ -269,7 +269,10 @@ public class GroupProvider {
     this.logoUrl = logoUrl;
   }
 
-
+  public boolean isExternalGroupProvider() {
+    return !getGroupProviderType().equals(GroupProviderType.GROUPER);
+  }
+  
   @Override
   public boolean equals(Object o) {
     if (this == o) {

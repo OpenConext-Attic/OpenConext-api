@@ -18,38 +18,60 @@
  */
 package nl.surfnet.coin.api.oauth;
 
-import javax.sql.DataSource;
+import javax.annotation.Resource;
 
 import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.AuthorizationRequest;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
 
 /**
- * {@link TokenEnhancer} that stores the {@link ClientMetaData} within the Authentication object
- *
+ * {@link TokenEnhancer} that stores the {@link ClientMetaData} within the
+ * Authentication object
+ * 
  */
 @Component(value = "clientMetaDataTokenEnhancer")
 public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
 
-  /* (non-Javadoc)
-   * @see org.springframework.security.oauth2.provider.token.TokenEnhancer#enhance(org.springframework.security.oauth2.common.OAuth2AccessToken, org.springframework.security.oauth2.provider.OAuth2Authentication)
+  @Resource(name = "janusClientDetailsService")
+  private ClientDetailsService clientDetailsService;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.springframework.security.oauth2.provider.token.TokenEnhancer#enhance
+   * (org.springframework.security.oauth2.common.OAuth2AccessToken,
+   * org.springframework.security.oauth2.provider.OAuth2Authentication)
    */
   @Override
   public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-    Authentication userAuthentication = authentication.getUserAuthentication();
-    if (userAuthentication instanceof ShibbolethAuthenticationToken) {
-      ShibbolethAuthenticationToken shib = (ShibbolethAuthenticationToken) userAuthentication;
-      ClientMetaDataHolder.storeClientMetaData(shib);
-    } else {
-      throw new RuntimeException("The userAuthentication is of the type '"
-          + (userAuthentication != null ? userAuthentication.getClass() : "null")
-          + "'. Required is a (sub)class of ShibbolethAuthenticationToken");
+    AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
+    String clientId = authorizationRequest.getClientId();
+    ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
+    if (clientDetails instanceof ExtendedBaseClientDetails) {
+      ClientMetaData clientMetaData = ((ExtendedBaseClientDetails) clientDetails).getClientMetaData();
+      Authentication userAuthentication = authentication.getUserAuthentication();
+      if (userAuthentication instanceof ShibbolethAuthenticationToken) {
+        ((ShibbolethAuthenticationToken) userAuthentication).setClientMetaData(clientMetaData);
+      } else {
+        throw new RuntimeException("The userAuthentication is of the type '"
+            + (userAuthentication != null ? userAuthentication.getClass() : "null")
+            + "'. Required is a (sub)class of ShibbolethAuthenticationToken");
+      }
     }
+    /*
+     * Part of the method contract. We did however change the
+     * OAuth2Authentication and that is stored as a blob in the database, so the
+     * metadata is accessible later on when checking for ACL's against the SP
+     */
     return accessToken;
   }
 

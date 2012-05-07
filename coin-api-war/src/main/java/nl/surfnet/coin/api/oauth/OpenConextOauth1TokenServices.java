@@ -16,11 +16,10 @@
 
 package nl.surfnet.coin.api.oauth;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
@@ -34,6 +33,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth.provider.ConsumerDetails;
+import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
 import org.springframework.security.oauth.provider.token.RandomValueProviderTokenServices;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -52,6 +53,9 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   private final static String selectTokenSql = "select * from oauth1_tokens where token like ?";
   private final static String insertTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?, ?)";
   private final static String deleteTokenSql = "delete from oauth1_tokens where token like ?";
+
+  @Resource(name="janusClientDetailsService")
+  private ConsumerDetailsService consumerDetailsService;
 
   public static class OAuthProviderTokenRowMapper implements RowMapper<OAuthProviderTokenImpl> {
     public OAuthProviderTokenImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -99,26 +103,42 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
     Assert.notNull(value, "token value cannot be null");
     Authentication userAuthentication = token.getUserAuthentication();
     if (token.isAccessToken()) {
-      if (userAuthentication instanceof PreAuthenticatedAuthenticationToken) {
-        PreAuthenticatedAuthenticationToken pre = (PreAuthenticatedAuthenticationToken) userAuthentication;
-        Object principal = pre.getPrincipal();
-        if (principal instanceof ClientMetaDataUser) {
-          ClientMetaDataHolder.storeClientMetaData((ClientMetaDataUser) principal);
+      String consumerKey = token.getConsumerKey();
+      /*
+       * get the client detail from Janus as we are unable to store them
+       * somewhere along the 'road' and we cache this call anyway
+       */
+      ConsumerDetails consumerDetails = consumerDetailsService.loadConsumerByConsumerKey(consumerKey);
+      if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
+        ExtendedBaseConsumerDetails extendedBaseConsumerDetails = (ExtendedBaseConsumerDetails) consumerDetails;
+        if (userAuthentication instanceof PreAuthenticatedAuthenticationToken) {
+          PreAuthenticatedAuthenticationToken pre = (PreAuthenticatedAuthenticationToken) userAuthentication;
+          Object principal = pre.getPrincipal();
+          if (principal instanceof ClientMetaDataUser) {
+            ((ClientMetaDataUser) principal).setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
+          } else if (principal instanceof ShibbolethAuthenticationToken) {
+            ((ShibbolethAuthenticationToken) principal).setClientMetaData(extendedBaseConsumerDetails
+                .getClientMetaData());
+          } else {
+            throw new RuntimeException("The principal on the PreAuthenticatedAuthenticationToken is of the type '"
+                + (principal != null ? principal.getClass() : "null")
+                + "'. Required is a (sub)class of ClientMetaDataUser or a (sub)class of ShibbolethAuthenticationToken");
+          }
         } else {
-          throw new RuntimeException("The principal on the PreAuthenticatedAuthenticationToken is of the type '"
-              + (principal != null ? principal.getClass() : "null")
-              + "'. Required is a (sub)class of ClientMetaDataUser");
+          throw new RuntimeException("The userAuthentication is of the type '"
+              + (userAuthentication != null ? userAuthentication.getClass() : "null")
+              + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken");
         }
       } else {
-        throw new RuntimeException("The userAuthentication is of the type '"
-            + (userAuthentication != null ? userAuthentication.getClass() : "null")
-            + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken");
+        throw new RuntimeException("The consumerDetails is of the type '"
+            + (consumerDetails != null ? consumerDetails.getClass() : "null")
+            + "'. Required is a (sub)class of ExtendedBaseConsumerDetails");
       }
     }
     jdbcTemplate.update(deleteTokenSql, value);
     jdbcTemplate.update(insertTokenSql, value, token.getCallbackUrl(), token.getVerifier(), token.getSecret(),
         token.getConsumerKey(), token.isAccessToken(), token.getTimestamp(),
-        SerializationUtils.serialize(token.getUserAuthentication()));
+        SerializationUtils.serialize(userAuthentication));
   }
 
   @Override

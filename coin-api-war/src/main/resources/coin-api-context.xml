@@ -17,10 +17,10 @@
     http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
 
 	<mvc:annotation-driven />
-	<cache:annotation-driven key-generator="methodNameAwareCacheKeyGenerator"/>
+	<cache:annotation-driven key-generator="methodNameAwareCacheKeyGenerator" />
 	<context:component-scan base-package="nl.surfnet.coin.api" />
 	<context:component-scan base-package="nl.surfnet.coin.teams" />
-
+	
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
 		<property name="cacheManager" ref="ehcache" />
 	</bean>
@@ -30,8 +30,7 @@
 		<property name="configLocation" value="classpath:api-ehcache.xml" />
 	</bean>
 
-	<bean id="methodNameAwareCacheKeyGenerator"
-		class="nl.surfnet.coin.util.MethodNameAwareCacheKeyGenerator"/>
+	<bean id="methodNameAwareCacheKeyGenerator" class="nl.surfnet.coin.util.MethodNameAwareCacheKeyGenerator" />
 
 	<!-- Authorization annotations on service methods -->
 	<security:global-method-security
@@ -81,9 +80,6 @@
 			after="EXCEPTION_TRANSLATION_FILTER" />
 	</security:http>
 
-
-
-
 	<!-- configuration interface -->
 	<security:http security="none" pattern="/configure/**" />
 	<!-- static stuff -->
@@ -91,7 +87,7 @@
 	<security:http security="none" pattern="/favicon.ico" />
 	<security:http security="none" pattern="/images/**" />
 
-	<bean id="clientDetailsService" class="${clientDetailsServiceClass}" />
+	<bean id="janusClientDetailsService" class="${clientDetailsServiceClass}" />
 
 	<bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
 
@@ -147,6 +143,11 @@
 			value="${coin-api.database.idleConnectionTestPeriod}" />
 		<property name="maxIdleTime" value="${coin-api.database.maxIdleTime}" />
 	</bean>
+
+	<bean id="logService" class="nl.surfnet.coin.shared.log.ApiCallLogServiceImpl">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
 
 	<bean id="ldapClient" class="${ldapClientClass}" />
 	<bean id="engineBlock" class="${engineblockClass}" />
@@ -212,7 +213,7 @@
 	</bean>
 
 	<bean class="com.googlecode.flyway.core.Flyway" init-method="migrate">
-		<property name="baseDir" value="${coin-api.db.migrations.folder}"/>
+		<property name="baseDir" value="${coin-api.db.migrations.folder}" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 </beans>

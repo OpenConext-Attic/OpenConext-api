@@ -34,6 +34,7 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
 import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
@@ -54,6 +55,8 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     details.setScope(Arrays.asList("read"));
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
+    ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
+
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;
   }
@@ -61,7 +64,6 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
     final ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
-    SignatureSecret secret = new SharedConsumerSecret(defaultSecret);
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setConsumerName("Mock consumer name");
 
@@ -70,6 +72,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
     consumerDetails.setSignatureSecret(new SharedConsumerSecret(defaultSecret));
     consumerDetails.setClientMetaData(mockMetadata(consumerKey));
+    ClientMetaDataHolder.setClientMetaData(consumerDetails.getClientMetaData());
 
     LOG.debug("Got request loadClientByClientId({}), will return: {}", consumerKey, consumerDetails);
     return consumerDetails;
@@ -83,7 +86,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     map.put(Janus.Metadata.OAUTH_APPICON.val(), "mock-appicon.png");
     map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
     map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
-    return ClientMetaData.fromMetaData(map);
+    return ClientMetaData.fromMetaData(map, "consumerKey");
   }
 
   public void setDefaultSecret(String defaultSecret) {

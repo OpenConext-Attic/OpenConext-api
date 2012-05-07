@@ -51,7 +51,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   private Logger LOG = LoggerFactory.getLogger(Oauth20AuthorizationGrantTestSelenium.class);
 
-  private static final String OAUTH_KEY = "urn:collab:person:test.surfguest.nl:oharsta";
+  private static final String OAUTH_KEY = "https://testsp.dev.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
 
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
@@ -127,6 +127,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     getWebDriver().get(restUrl);
     assertFalse(getWebDriver().getPageSource().contains("mnice@surfguest.nl"));
 
+    getWebDriver().manage().deleteAllCookies();
     OAuthRequest request = new OAuthRequest(Verb.GET, restUrl);
     service.signRequest(aToken, request);
     Response response = request.send();
