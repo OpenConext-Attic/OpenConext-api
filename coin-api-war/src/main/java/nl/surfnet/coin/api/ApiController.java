@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
+import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
@@ -94,6 +95,7 @@ public class ApiController extends AbstractApiController {
       person = personService.getPerson(userId, onBehalfOf);
     }
     logApiCall(onBehalfOf);
+    setResultOptions(person, 0, 0, null);
     return person;
   }
 
@@ -152,13 +154,13 @@ public class ApiController extends AbstractApiController {
             List<Person> entry = externalGroupMembers.getEntry();
             if (entry != null) {
               groupMembers.getEntry().addAll(entry);
-              groupMembers.setTotalResults(groupMembers.getTotalResults() + entry.size());
             }
           }
         }
       }
     }
     logApiCall(onBehalfOf);
+    setResultOptions(groupMembers, count, startIndex, sortBy);
     return groupMembers;
   }
 
@@ -205,12 +207,12 @@ public class ApiController extends AbstractApiController {
           List<Group20> groups = externalGroups.getEntry();
           if (groups != null) {
             group20Entry.getEntry().addAll(groups);
-            group20Entry.setTotalResults(group20Entry.getTotalResults() + groups.size());
           }
         }
       }
     }
     logApiCall(onBehalfOf);
+    setResultOptions(group20Entry, count, startIndex, sortBy);
     return group20Entry;
   }
 
@@ -264,7 +266,20 @@ public class ApiController extends AbstractApiController {
 
     }
     logApiCall(onBehalfOf);
+    setResultOptions(group20Entry, 0, 0, null);
     return group20Entry;
+  }
+
+  /*
+   * Set the metadata for the result
+   */
+  private void setResultOptions(AbstractEntry entry, Integer count, Integer startIndex, String sortBy) {
+    entry.setFiltered(false);
+    entry.setItemsPerPage((count != null && count != 0) ? count : entry.getEntrySize());
+    entry.setSorted(sortBy != null ? true : false);
+    entry.setStartIndex((startIndex != null && startIndex != 0) ? startIndex : 0);
+    entry.setTotalResults(entry.getEntrySize());
+    entry.setUpdatedSince(false);
   }
 
   protected void invariant() {

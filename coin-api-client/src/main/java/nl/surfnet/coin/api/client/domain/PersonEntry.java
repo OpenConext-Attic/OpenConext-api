@@ -52,6 +52,14 @@ public class PersonEntry extends AbstractEntry {
   public void setEntry(Person entry) {
     this.entry = entry;
   }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntrySize()
+   */
+  @Override
+  public int getEntrySize() {
+    return this.entry != null ? 1 : 0;
+  }
   
 
 }

@@ -42,5 +42,13 @@ public class ExtendedBaseClientDetails extends BaseClientDetails {
   public void setClientMetaData(ClientMetaData clientMetaData) {
     this.clientMetaData = clientMetaData;
   }
+
+  /* (non-Javadoc)
+   * @see org.springframework.security.oauth2.provider.BaseClientDetails#getAccessTokenValiditySeconds()
+   */
+  @Override
+  public int getAccessTokenValiditySeconds() {
+    return 0;
+  }
   
 }

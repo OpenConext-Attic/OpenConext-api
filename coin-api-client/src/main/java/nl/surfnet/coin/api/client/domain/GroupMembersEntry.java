@@ -76,5 +76,13 @@ public class GroupMembersEntry extends AbstractEntry {
     }
     return found;
   }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntrySize()
+   */
+  @Override
+  public int getEntrySize() {
+    return this.entry != null ? this.entry.size() : 0;
+  }
   
 }

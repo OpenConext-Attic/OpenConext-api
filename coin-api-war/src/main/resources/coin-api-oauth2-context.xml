@@ -115,7 +115,7 @@
     <property name="tokenEnhancer" ref="clientMetaDataTokenEnhancer"/>
   </bean>
   
-  <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
+  <bean id="tokenStore" class="nl.surfnet.coin.api.oauth.OpenConextOauth2JdbcTokenStore">
     <constructor-arg ref="dataSource"/>
   </bean>
 

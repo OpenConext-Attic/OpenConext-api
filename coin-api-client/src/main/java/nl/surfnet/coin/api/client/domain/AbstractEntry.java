@@ -18,6 +18,8 @@ package nl.surfnet.coin.api.client.domain;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * 
  *
@@ -117,4 +119,11 @@ public abstract class AbstractEntry implements Serializable {
   public void setSorted(boolean sorted) {
     this.sorted = sorted;
   }
+  
+  /**
+   * 
+   * @return the size of the embedded entry
+   */
+  @JsonIgnore
+  public abstract int getEntrySize();
 }

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConextApiControllerTestIntegration extends IntegrationSupport {
 
-  private final String OAUTH_KEY = "the-person-i-am";
+  private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private final String OAUTH_SECRET = "mysecret";
 
   private final String USER_ID = "the-person-i-am";
@@ -71,9 +71,9 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   }
 
   @Test
-  @Ignore("not sure how to distinguish between OS 1.x and 2.0 requests server side")
+  //@Ignore("not sure how to distinguish between OS 1.x and 2.0 requests server side")
   public void getGroups() throws Exception {
-    final List<Group> groups = client.getGroups(USER_ID, null);
+    final List<Group20> groups = client.getGroups20(USER_ID, null);
     assertEquals(3, groups.size());
   }
 }

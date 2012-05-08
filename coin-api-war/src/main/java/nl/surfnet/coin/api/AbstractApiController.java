@@ -132,7 +132,7 @@ public abstract class AbstractApiController {
       throw new IllegalArgumentException("Authentication is of unknown class ('"
           + (authentication != null ? authentication.getClass() : "null") + "')");
     }
-    Assert.notNull(metaData, "ClientMetaData may not be null for checking ACL's. Authentication is of class ('"
+      Assert.notNull(metaData, "ClientMetaData may not be null for checking ACL's. Authentication is of class ('"
         + (authentication != null ? authentication.getClass() : "null") + "')");
     return metaData;
   }
