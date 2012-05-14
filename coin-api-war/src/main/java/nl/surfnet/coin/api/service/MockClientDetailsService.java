@@ -47,7 +47,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
   private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
   private String defaultSecret = "mysecret";
-  private static final String CALLBACK_URL = "http://localhost:8080/mock-callback-url";
+  private static final String CALLBACK_URL = "http://localhost/mock-callback-url";
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
