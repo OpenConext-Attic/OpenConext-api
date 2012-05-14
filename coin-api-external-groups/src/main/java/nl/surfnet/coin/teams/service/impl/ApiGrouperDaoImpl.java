@@ -39,12 +39,13 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.Assert;
 
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao {
 
   JdbcTemplate jdbcTemplate;
-
+  
   private static final Map<String, String> VALID_SORTS_FOR_TEAM_QUERY;
 
   static {
@@ -190,11 +191,16 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
           return ((Person) input).getId();
         }
       });
-      String join = StringUtils.join(personIds, ",");
-      this.jdbcTemplate.query(SQL_ROLES_BY_TEAM_AND_MEMBERS, new Object[] { groupId, join }, handler);
-      Map<String, Role> roles = handler.roles;
+      /*
+       * http://static.springsource.org/spring/docs/2.5.x/reference/jdbc.html#jdbc-in-clause
+       */
+      NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.jdbcTemplate);
+      Map<String, Object> params = new HashMap<String, Object>();
+      params.put("groupId", groupId);
+      params.put("identifiers", personIds);
+      template.query(SQL_ROLES_BY_TEAM_AND_MEMBERS, params, handler);
       for (Person person : persons) {
-        Role role = roles.get(person.getId());
+        Role role = handler.roles.get(person.getId());
         role = (role == null ? Role.Member : role);
         person.setVoot_membership_role(role.name().toLowerCase());
       }

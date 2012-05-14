@@ -141,8 +141,8 @@ public abstract class AbstractGrouperDaoImpl  {
   		"gf.name as fieldname, gg.name as groupname from grouper_memberships gms, " +
   		"grouper_groups gg, grouper_fields gf, grouper_stems gs, grouper_members gm " +
   		"where gms.field_id = gf.id and  gms.owner_group_id = gg.id and gms.member_id = gm.id " +
-  		"and gg.parent_stem = gs.id and gs.name != 'etc' and subject_id in (?) " +
-  		"and (gf.name = 'admins' or gf.name = 'updaters') and gg.name = ? ";
+  		"and gg.parent_stem = gs.id and gs.name != 'etc' and subject_id in (:identifiers) " +
+  		"and (gf.name = 'admins' or gf.name = 'updaters') and gg.name = :groupId";
 
   protected static final String SQL_MEMBERS_BY_TEAM = " select distinct gm.subject_id as subject_id " +
   		"from grouper_memberships gms, grouper_groups gg, grouper_stems gs, " +
