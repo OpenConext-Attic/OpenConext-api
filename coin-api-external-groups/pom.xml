@@ -29,7 +29,7 @@
   <description>External group provider interface.</description>
 
   <properties>
-    <coin-api-client.version>2.5.0-SNAPSHOT</coin-api-client.version>
+    <coin-api-client.version>${version}</coin-api-client.version>
     <coin-master.test-dependencies.version>2.1.1</coin-master.test-dependencies.version>
     <coin-test.version>2.3.0</coin-test.version>
   </properties>
