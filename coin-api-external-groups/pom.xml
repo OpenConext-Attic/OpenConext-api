@@ -40,6 +40,11 @@
       <artifactId>coin-api-client</artifactId>
       <version>${coin-api-client.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.surfnet.coin</groupId>
+      <artifactId>coin-shared</artifactId>
+      <version>${coin-shared.version}</version>
+    </dependency>
 	<dependency>
 		<groupId>commons-lang</groupId>
 		<artifactId>commons-lang</artifactId>
