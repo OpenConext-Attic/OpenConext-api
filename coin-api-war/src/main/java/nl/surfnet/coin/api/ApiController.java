@@ -54,6 +54,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 
+ * We wildcard all {@link RequestMapping} with ':.+' (see
+ * http://stackoverflow.com
+ * /questions/3526523/spring-mvc-pathvariable-getting-truncated)
+ * 
+ */
 public class ApiController extends AbstractApiController {
 
   private static Logger LOG = LoggerFactory.getLogger(ApiController.class);

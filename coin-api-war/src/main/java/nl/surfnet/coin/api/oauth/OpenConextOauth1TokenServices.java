@@ -124,10 +124,14 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
                 + (principal != null ? principal.getClass() : "null")
                 + "'. Required is a (sub)class of ClientMetaDataUser or a (sub)class of ShibbolethAuthenticationToken");
           }
+        } else if (userAuthentication instanceof ShibbolethAuthenticationToken) {
+          ShibbolethAuthenticationToken shibToken = (ShibbolethAuthenticationToken) userAuthentication;
+          shibToken.setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
+          
         } else {
           throw new RuntimeException("The userAuthentication is of the type '"
               + (userAuthentication != null ? userAuthentication.getClass() : "null")
-              + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken");
+              + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken or ShibbolethAuthenticationToken");
         }
       } else {
         throw new RuntimeException("The consumerDetails is of the type '"
