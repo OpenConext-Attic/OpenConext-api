@@ -39,6 +39,7 @@ import nl.surfnet.coin.mock.MockHtppServer;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test Person related queries with selenium
@@ -99,25 +100,37 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
         .provider(OpenConextApi20Implicit.class)
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
-        .callback(restUrl)
+        .callback("http://localhost:8080/mock-callback-url")
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
-
     getWebDriver().get(authUrl);
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();
 
     URI uri = URI.create(getWebDriver().getCurrentUrl());
-    callbackRequestFragment = uri.getFragment();
     LOG.debug("URL is: " + uri.toString());
+    LOG.debug("Response body is: " + getWebDriver().getPageSource());
+    callbackRequestFragment = uri.getFragment();
+    assertNotNull("redirect URL should contain fragment.", callbackRequestFragment);
     assertTrue("redirect URL fragment should contain access token", callbackRequestFragment.contains("access_token="));
 
     // Further tests are actually part of the coin-api-client... The server has issued an access_token so it works.
   }
 
 
+  @Test
+  public void implicitGrantWithoutRedirectUrl() {
+    getWebDriver().get("http://localhost:8095/oauth2/authorize?response_type=token&client_id=https://testsp.test.surfconext.nl/shibboleth&scope=read");
 
+    URI uri = URI.create(getWebDriver().getCurrentUrl());
+    LOG.debug("URL is: " + uri.toString());
+    LOG.debug("Response body is: " + getWebDriver().getPageSource());
+    callbackRequestFragment = uri.getFragment();
+    assertNotNull("redirect URL should contain fragment.", callbackRequestFragment);
+    assertTrue("redirect URL fragment should contain access token", callbackRequestFragment.contains("access_token="));
+
+  }
 }

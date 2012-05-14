@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
-import org.springframework.security.oauth.provider.BaseConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.provider.BaseClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
@@ -74,6 +73,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
       clientDetails.setClientMetaData(clientMetaData);
       clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
       clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
+      clientDetails.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(metadata.get(Metadata.OAUTH_CALLBACKURL.val()))));
       clientDetails.setScope(Arrays.asList("read"));
       ClientMetaDataHolder.setClientMetaData(clientMetaData);
       return clientDetails;
