@@ -65,13 +65,13 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   @Test
   public void getGroups20() throws Exception {
     final List<Group20> groups = client.getGroups20(USER_ID, null);
-    assertEquals(4, groups.size());
+    assertEquals(3, groups.size());
   }
 
   @Test
   //@Ignore("not sure how to distinguish between OS 1.x and 2.0 requests server side")
   public void getGroups() throws Exception {
     final List<Group20> groups = client.getGroups20(USER_ID, null);
-    assertEquals(4, groups.size());
+    assertEquals(3, groups.size());
   }
 }
