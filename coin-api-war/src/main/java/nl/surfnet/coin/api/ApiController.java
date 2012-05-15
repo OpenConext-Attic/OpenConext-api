@@ -238,8 +238,10 @@ public class ApiController extends AbstractApiController {
         }
       }
     }
-    final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId, grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
-    group20Entry.getEntry().addAll(linkedTeams.getEntry());
+    if (!grouperTeamIds.isEmpty()) {
+      final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId, grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
+      group20Entry.getEntry().addAll(linkedTeams.getEntry());
+    }
 
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, count, startIndex, sortBy);

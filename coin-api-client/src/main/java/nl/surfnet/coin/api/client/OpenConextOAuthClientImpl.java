@@ -240,7 +240,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     Response oAuthResponse = request.send();
     if (oAuthResponse.getCode() >= 400) {
       throw new RuntimeException(String.format("Error response: %d, body: %s", oAuthResponse.getCode(),
-          oAuthResponse.getBody()));
+          oAuthResponse.getStream() == null ? null : oAuthResponse.getBody()));
     }
     InputStream stream = oAuthResponse.getStream();
     if (LOG.isDebugEnabled()) {
