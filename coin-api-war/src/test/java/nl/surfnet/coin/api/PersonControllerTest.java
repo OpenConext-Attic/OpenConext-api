@@ -27,7 +27,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
-import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,18 +34,17 @@ import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.MockServiceImpl;
 import nl.surfnet.coin.api.service.PersonService;
-import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:coin-api-properties-context.xml", "classpath:coin-api-context.xml",
+@ContextConfiguration(locations = {"classpath:coin-api-properties-context.xml", "classpath:coin-api-context.xml",
     "classpath:coin-api-oauth1-context.xml", "classpath:coin-api-oauth2-context.xml",
-    "classpath:coin-shared-context.xml" })
+    "classpath:coin-shared-context.xml"})
 public class PersonControllerTest {
 
   @Autowired
@@ -56,18 +54,18 @@ public class PersonControllerTest {
   @Mock
   private PersonService personService;
 
+  @Mock
+  private GroupService groupService;
+
   @Before
   public void before() {
     MockitoAnnotations.initMocks(this);
     pc.groupProviderConfiguration = new MockServiceImpl();
+    SecurityContextHolder.getContext().setAuthentication(getAuthentication());
   }
 
   @Test
   public void getPerson() {
-    //final Authentication authentication = mock(Authentication.class);
-    SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-    //when(authentication.getPrincipal()).thenReturn("foo");
-
     Person p = new Person();
     p.setId("urn:collab:person:test.surfguest.nl:bar");
     PersonEntry entry = new PersonEntry();
@@ -81,13 +79,23 @@ public class PersonControllerTest {
 
   }
 
+/*
+ // This is a test for BACKLOG-479
+  @Test
+  public void getGroups() {
+  when(groupService.getGroups20(anyString(), anyString(), (Integer) eq(null),(Integer) eq(null),(String) eq(null)))
+      .thenReturn(new Group20Entry(new ArrayList<Group20>()));
+    final Group20Entry groups = pc.getGroups("urn:collab:person:test.surfguest.nl:foobar", null, null, null);
+    assertNotNull(groups);
+  }
+*/
+
   private Authentication getAuthentication() {
     ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
     consumerDetails.setClientMetaData(new ClientMetaData());
     ConsumerCredentials consumerCredentials = new ConsumerCredentials("consumerKey", "signature", "signatureMethod",
         "signatureBaseString", "token");
-    ConsumerAuthentication conAuth = new ConsumerAuthentication(consumerDetails, consumerCredentials);
-    return conAuth;
+    return new ConsumerAuthentication(consumerDetails, consumerCredentials);
   }
 
 }

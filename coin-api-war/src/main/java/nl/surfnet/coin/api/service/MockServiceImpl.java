@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -460,6 +461,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    */
   @Override
   public Group20Entry addUrnPartForGrouper(List<GroupProvider> groupProviders, Group20Entry group20Entry) {
+    Assert.notNull(group20Entry, "group20Entry cannot be null.");
+
     Group20Entry result = new Group20Entry(new ArrayList<Group20>());
     GroupProvider grouper = null;
     for (GroupProvider groupProvider : groupProviders) {
