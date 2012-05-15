@@ -101,8 +101,11 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   @Test
   public void authorizationCodeGrant() throws Exception {
-    OAuthService service = new ServiceBuilder().provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
-        .apiKey(OAUTH_KEY).apiSecret(OAUTH_SECRET).scope(OAUTH_OPENCONEXT_API_READ_SCOPE).callback(OAUTH_CALLBACK_URL)
+    OAuthService service = new ServiceBuilder()
+        .provider(new OpenConextApi20AuthorizationCode(getApiBaseUrl()))
+        .apiKey(OAUTH_KEY).apiSecret(OAUTH_SECRET)
+        .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
+        .callback(OAUTH_CALLBACK_URL)
         .build();
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);

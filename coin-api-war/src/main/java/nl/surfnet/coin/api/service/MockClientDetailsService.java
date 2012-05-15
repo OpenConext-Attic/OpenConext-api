@@ -18,7 +18,6 @@ package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -47,7 +46,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
   private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
   private String defaultSecret = "mysecret";
-  private static final String CALLBACK_URL = "http://localhost/mock-callback-url";
+//  private static final String CALLBACK_URL = "http://localhost/mock-callback-url";
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
@@ -57,7 +56,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
     ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
-    details.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(CALLBACK_URL)));
+//    details.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(CALLBACK_URL)));
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;
   }
@@ -86,7 +85,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     map.put(Janus.Metadata.OAUTH_APPICON.val(), "mock-appicon.png");
     map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
     map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
-    map.put(Janus.Metadata.OAUTH_CALLBACKURL.val(), CALLBACK_URL);
+//    map.put(Janus.Metadata.OAUTH_CALLBACKURL.val(), CALLBACK_URL);
     return ClientMetaData.fromMetaData(map, "consumerKey");
   }
 
