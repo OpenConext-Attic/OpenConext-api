@@ -19,7 +19,6 @@ package nl.surfnet.coin.api;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.scribe.model.Token;
 
@@ -28,7 +27,6 @@ import nl.surfnet.coin.api.client.OAuthEnvironment;
 import nl.surfnet.coin.api.client.OAuthRepository;
 import nl.surfnet.coin.api.client.OAuthVersion;
 import nl.surfnet.coin.api.client.OpenConextOAuthClientImpl;
-import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
 
@@ -67,13 +65,13 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   @Test
   public void getGroups20() throws Exception {
     final List<Group20> groups = client.getGroups20(USER_ID, null);
-    assertEquals(3, groups.size());
+    assertEquals(4, groups.size());
   }
 
   @Test
   //@Ignore("not sure how to distinguish between OS 1.x and 2.0 requests server side")
   public void getGroups() throws Exception {
     final List<Group20> groups = client.getGroups20(USER_ID, null);
-    assertEquals(3, groups.size());
+    assertEquals(4, groups.size());
   }
 }

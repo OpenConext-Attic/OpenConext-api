@@ -161,6 +161,33 @@ public abstract class AbstractGrouperDaoImpl  {
       + " where gmso.member_id = gmo.id and gmso.owner_group_id = ggo.id and gmo.subject_id = ?)   "
       + " group by gg.name  ";
 
+  protected static String SQL_FIND_TEAMS_LIKE_GROUPNAMES_ROWCOUNT =
+      "select count(distinct gg.name) as groupcount "
+          + "from grouper_groups gg, grouper_stems gs, grouper_members gm,"
+          + "grouper_memberships gms, "
+          + " grouper_fields gf, grouper_group_set ggs  "
+          + "where gg.parent_stem = gs.id and gms.member_id = gm.id and gms.owner_group_id = gg.id "
+          + " and gs.name != 'etc' "
+          + " and ggs.field_id = gf.id "
+          + " and gg.id = ggs.owner_group_id "
+          + "and gms.owner_id = ggs.member_id "
+          + " and gms.field_id = ggs.member_field_id "
+          + "and upper(gg.name) in (?)";
+
+  protected static String SQL_FIND_TEAMS_LIKE_GROUPNAMES =
+      "select distinct gg.name, gg.display_name ,gg.description, gs.name as stem_name, "
+          + "gs.display_name as stem_display_name, gs.description as stem_description "
+          + "from grouper_groups gg, grouper_stems gs, grouper_members gm,"
+          + "grouper_memberships gms, "
+          + " grouper_fields gf, grouper_group_set ggs  "
+          + "where gg.parent_stem = gs.id and gms.member_id = gm.id and gms.owner_group_id = gg.id "
+          + " and gs.name != 'etc' "
+          + " and ggs.field_id = gf.id "
+          + " and gg.id = ggs.owner_group_id "
+          + "and gms.owner_id = ggs.member_id "
+          + " and gms.field_id = ggs.member_field_id "
+          + "and upper(gg.name) in (?) order by gg.name limit ? offset ?";
+
   /**
    * Template method Row Mapper that only extracts the fields from the resultset, leaving creation
    *  of a concrete group to implementations.

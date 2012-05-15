@@ -19,14 +19,21 @@ package nl.surfnet.coin.api;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
-import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
@@ -44,15 +51,8 @@ import nl.surfnet.coin.shared.log.ApiCallLogService;
 import nl.surfnet.coin.shared.service.ErrorMessageMailer;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import nl.surfnet.coin.teams.domain.TeamExternalGroup;
+import nl.surfnet.coin.teams.service.TeamExternalGroupDao;
 
 /**
  * 
@@ -75,6 +75,9 @@ public class ApiController extends AbstractApiController {
   protected EngineBlock engineBlock;
 
   protected GroupProviderConfiguration groupProviderConfiguration;
+
+  @Autowired
+  protected TeamExternalGroupDao teamExternalGroupDao;
 
   @Resource(name = "errorMessageMailer")
   private ErrorMessageMailer errorMessageMailer;
@@ -202,6 +205,8 @@ public class ApiController extends AbstractApiController {
       group20Entry = groupService.getGroups20(userId, onBehalfOf, count, startIndex, sortBy);
       group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
     }
+
+    List<Group20> listOfAllExternalGroups = new ArrayList<Group20>();
     // Now see which external groupProvider can also handle this call
     for (GroupProvider groupProvider : allGroupProviders) {
       /*
@@ -213,11 +218,29 @@ public class ApiController extends AbstractApiController {
         if (externalGroups != null) {
           List<Group20> groups = externalGroups.getEntry();
           if (groups != null) {
-            group20Entry.getEntry().addAll(groups);
+            listOfAllExternalGroups.addAll(groups);
           }
         }
       }
     }
+    group20Entry.getEntry().addAll(listOfAllExternalGroups);
+
+
+    // Iterate all external groups. See if they're linked to one or more SURFTeams. Add those teams to the final list
+    // to return.
+    List<String> grouperTeamIds = new ArrayList<String>();
+    for (Group20 externalGroup : listOfAllExternalGroups) {
+      List<TeamExternalGroup> teamExternalGroups =
+          teamExternalGroupDao.getByExternalGroupIdentifier(externalGroup.getId());
+      if (!teamExternalGroups.isEmpty()) {
+        for (TeamExternalGroup teg : teamExternalGroups) {
+          grouperTeamIds.add(teg.getGrouperTeamId());
+        }
+      }
+    }
+    final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId, grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
+    group20Entry.getEntry().addAll(linkedTeams.getEntry());
+
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, count, startIndex, sortBy);
     return group20Entry;

@@ -27,11 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
@@ -42,11 +37,17 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.Assert;
 
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
+
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao {
 
   JdbcTemplate jdbcTemplate;
   
   private static final Map<String, String> VALID_SORTS_FOR_TEAM_QUERY;
+
 
   static {
     VALID_SORTS_FOR_TEAM_QUERY = new HashMap<String, String>();
@@ -68,7 +69,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     pageSize = correctPageSize(pageSize);
     offset = correctOffset(offset);
     try {
-      String sql = formatSQLWithSortByOption(sortBy);
+      String sql = formatAllTeamsSQLWithSortByOption(sortBy);
       groups = jdbcTemplate.query(sql, new Object[] { personId, pageSize, offset }, new OpenSocial20GroupRowMapper());
       addRolesToGroups(personId, groups);
     } catch (EmptyResultDataAccessException e) {
@@ -77,7 +78,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
   }
 
-  protected String formatSQLWithSortByOption(String sortBy) {
+  protected String formatAllTeamsSQLWithSortByOption(String sortBy) {
     String sql = SQL_FIND_ALL_TEAMS_BY_MEMBER_SORTED;
     if (!StringUtils.isBlank(sortBy)) {
       String sortByColumn = null;
@@ -179,6 +180,21 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     } catch (EmptyResultDataAccessException e) {
     }
     return new GroupMembersEntry(persons);
+  }
+
+  @Override
+  public Group20Entry findGroups20ByIds(String personId, String[] groupIds, Integer pageSize, Integer offset) {
+    int rowCount = this.jdbcTemplate.queryForInt(SQL_FIND_TEAMS_LIKE_GROUPNAMES_ROWCOUNT, groupIds);
+    List<Group20> groups = new ArrayList<Group20>();
+    pageSize = correctPageSize(pageSize);
+    offset = correctOffset(offset);
+    try {
+      String sql = SQL_FIND_TEAMS_LIKE_GROUPNAMES;
+      groups = jdbcTemplate.query(sql, new Object[] { groupIds, pageSize, offset }, new OpenSocial20GroupRowMapper());
+      addRolesToGroups(personId, groups);
+    } catch (EmptyResultDataAccessException e) {
+    }
+    return new Group20Entry(groups, pageSize, offset, null, rowCount);
   }
 
   @SuppressWarnings("unchecked")

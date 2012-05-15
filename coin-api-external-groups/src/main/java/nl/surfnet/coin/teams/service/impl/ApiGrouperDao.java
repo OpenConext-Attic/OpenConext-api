@@ -32,4 +32,6 @@ public interface ApiGrouperDao {
   Group20Entry findAllGroup20sByMember(String personId, Integer offset, Integer pageSize, String sortBy);
 
   GroupMembersEntry findAllMembers(String groupId, Integer offset, Integer pageSize);
+
+  Group20Entry findGroups20ByIds(String personId, String[] groupIds, Integer pageSize, Integer offset);
 }

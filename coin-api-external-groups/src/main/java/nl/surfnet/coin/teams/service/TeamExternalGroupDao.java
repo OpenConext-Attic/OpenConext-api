@@ -44,6 +44,14 @@ public interface TeamExternalGroupDao {
   List<TeamExternalGroup> getByTeamIdentifier(String identifier);
 
   /**
+   * Gets a List of links between a SURFteam and external groups by the identifier of the external group
+   *
+   * @param identifier id of the external group
+   * @return List of {@link TeamExternalGroup}, can be empty
+   */
+  List<TeamExternalGroup> getByExternalGroupIdentifier(String identifier);
+
+  /**
    * Gets a specific link between a SURFteam and an external group by their respective SURFconext identifiers
    *
    * @param teamId                  unique identifier of the SURFteam

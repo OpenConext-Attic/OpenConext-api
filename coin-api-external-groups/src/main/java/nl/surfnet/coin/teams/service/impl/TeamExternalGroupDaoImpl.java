@@ -96,6 +96,27 @@ public class TeamExternalGroupDaoImpl implements TeamExternalGroupDao {
   }
 
   @Override
+  public List<TeamExternalGroup> getByExternalGroupIdentifier(String identifier) {
+    Object[] args = {identifier};
+
+    try {
+      String s = "SELECT teg.id AS teg_id, teg.grouper_team_id, eg.id AS eg_id, eg.identifier, eg.name, eg.description, eg.group_provider " +
+          "          FROM team_external_groups AS teg " +
+          "          INNER JOIN external_groups AS eg " +
+          "          ON teg.external_groups_id = eg.id " +
+          "          WHERE eg.identifier = ? ";
+      return this.jdbcTemplate.query(s, args, new RowMapper<TeamExternalGroup>() {
+        @Override
+        public TeamExternalGroup mapRow(ResultSet rs, int rowNum) throws SQLException {
+          return mapRowToTeamExternalGroup(rs);
+        }
+      });
+    } catch (EmptyResultDataAccessException er) {
+      return null;
+    }
+  }
+
+  @Override
   public TeamExternalGroup getByTeamIdentifierAndExternalGroupIdentifier(String teamId, String externalGroupIdentifier) {
     Object[] args = {teamId, externalGroupIdentifier};
     String s = "SELECT teg.id AS teg_id, teg.grouper_team_id, eg.id AS eg_id, eg.identifier, eg.name, eg.description, eg.group_provider " +

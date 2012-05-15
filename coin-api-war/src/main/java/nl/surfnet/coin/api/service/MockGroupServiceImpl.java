@@ -51,6 +51,11 @@ public class MockGroupServiceImpl implements GroupService {
     return new Group20Entry(Arrays.asList(createGroup()), 1, 0, null, 1);
   }
 
+  @Override
+  public Group20Entry getGroups20ByIds(String personId, String[] ids, Integer count, Integer startIndex) {
+    return new Group20Entry(Arrays.asList(createGroup()), 1, 0, null, 1);
+  }
+
   protected static Group20 createGroup() {
     int thisGroupId = groupId.getAndIncrement();
     final Group20 group20 = new Group20("groupId-" + thisGroupId, "group title", "description for group " + thisGroupId);

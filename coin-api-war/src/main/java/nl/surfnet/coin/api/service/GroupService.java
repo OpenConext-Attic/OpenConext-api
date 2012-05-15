@@ -93,4 +93,14 @@ public interface GroupService {
   @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
   Group20Entry getGroup20(String userId, String groupId, String onBehalfOf);
 
+  /**
+   * Get a list of Group20's by the given list of group ids
+   *
+   * @param personId the personId
+   * @param ids the array of ids
+   * @param count nr of records to return
+   * @param startIndex first record of result set
+   * @return the list of groups.
+   */
+  Group20Entry getGroups20ByIds(String personId, String[] ids, Integer count, Integer startIndex);
 }

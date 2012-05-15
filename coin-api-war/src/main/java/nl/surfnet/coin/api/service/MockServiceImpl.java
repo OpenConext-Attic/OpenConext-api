@@ -35,7 +35,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.GroupProviderConfiguration;
-import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group20;
@@ -46,9 +45,6 @@ import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
-import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
-import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
-import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
 
 @Component(value = "mockService")
@@ -234,6 +230,11 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public Group20Entry getGroups20ByIds(String personId, String[] ids, Integer count, Integer startIndex) {
+    throw new UnsupportedOperationException("Not supported in mock mode.");
   }
 
   public boolean isActive() {

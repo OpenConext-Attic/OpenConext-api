@@ -62,4 +62,9 @@ public class GrouperServiceImpl implements GroupService {
     }
     return apiGrouperDao.findGroup20(userIdToUse, groupId);
   }
+
+  @Override
+  public Group20Entry getGroups20ByIds(String personId, String[] ids, Integer count, Integer startIndex) {
+    return apiGrouperDao.findGroups20ByIds(personId, ids, count, startIndex);
+  }
 }

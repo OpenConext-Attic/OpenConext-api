@@ -70,14 +70,14 @@ public class ApiGrouperDaoImplTest {
   @Test
   public void sortByOptions() {
     ApiGrouperDaoImpl daoImpl = new ApiGrouperDaoImpl();
-    String sql = daoImpl.formatSQLWithSortByOption(null);
+    String sql = daoImpl.formatAllTeamsSQLWithSortByOption(null);
     assertTrue(sql.endsWith("order by gg.name limit ? offset ?"));
     try {
-      daoImpl.formatSQLWithSortByOption("wtf");
+      daoImpl.formatAllTeamsSQLWithSortByOption("wtf");
       fail();
     } catch (RuntimeException e) {
     }
-    sql = daoImpl.formatSQLWithSortByOption("title");
+    sql = daoImpl.formatAllTeamsSQLWithSortByOption("title");
     assertTrue(sql.endsWith("order by gg.display_name limit ? offset ?"));
 
   }
