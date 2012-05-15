@@ -58,7 +58,7 @@ coin-mailserver=s01.dev.coin.surf.net
 coin-mailserver-port=25
 
 # Email address that recieves error notifications
-coin-errormail-to=surfconext-beheer@surfnet.nl
+coin-errormail-to=
 
 ####################################################################
 ##
@@ -79,6 +79,5 @@ mock-api-enabled=true
 
 #The directory (in the war) where the db migration scrips reside
 coin-api.db.migrations.folder=db/migration/mysql
-
 #Cache manager
 cacheManagerClass=nl.surfnet.coin.shared.cache.ConextNoOpCacheManager

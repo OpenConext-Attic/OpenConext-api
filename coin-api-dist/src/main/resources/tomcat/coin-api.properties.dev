@@ -58,7 +58,7 @@ coin-mailserver=s01.dev.coin.surf.net
 coin-mailserver-port=25
 
 # Email address that recieves error notifications
-coin-errormail-to=surfconext-beheer@surfnet.nl
+coin-errormail-to=
 
 ####################################################################
 ##

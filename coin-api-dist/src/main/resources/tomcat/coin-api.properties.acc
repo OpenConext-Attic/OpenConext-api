@@ -59,7 +59,7 @@ coin-mailserver=???
 coin-mailserver-port=25
 
 # Email address that recieves error notifications
-coin-errormail-to=surfconext-beheer@surfnet.nl
+coin-errormail-to=coin-logs@list.surfnet.nl
 
 
 ####################################################################
@@ -81,6 +81,5 @@ mock-api-enabled=false
 
 #The directory (in the war) where the db migration scrips reside
 coin-api.db.migrations.folder=db/migration/mysql
-
 #Cache manager
 cacheManagerClass=org.springframework.cache.ehcache.EhCacheCacheManager
