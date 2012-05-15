@@ -19,6 +19,7 @@ package nl.surfnet.coin.api;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -242,6 +243,9 @@ public class ApiController extends AbstractApiController {
       final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId, grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
       group20Entry.getEntry().addAll(linkedTeams.getEntry());
     }
+
+    // remove duplicates: convert to set and back.
+    group20Entry.setEntry(new ArrayList<Group20>(new HashSet<Group20>(group20Entry.getEntry())));
 
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, count, startIndex, sortBy);
