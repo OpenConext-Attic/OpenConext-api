@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.teams.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import nl.surfnet.coin.teams.domain.ExternalGroup;
@@ -50,6 +51,14 @@ public interface TeamExternalGroupDao {
    * @return List of {@link TeamExternalGroup}, can be empty
    */
   List<TeamExternalGroup> getByExternalGroupIdentifier(String identifier);
+
+  /**
+   * Gets a List of links between a SURFteam and external groups by the identifiers of the external groups
+   *
+   * @param identifiers ids of the external group
+   * @return List of {@link TeamExternalGroup}, can be empty
+   */
+  List<TeamExternalGroup> getByExternalGroupIdentifiers(Collection<String> identifiers);
 
   /**
    * Gets a specific link between a SURFteam and an external group by their respective SURFconext identifiers

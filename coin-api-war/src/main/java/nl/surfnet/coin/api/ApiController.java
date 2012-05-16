@@ -19,11 +19,14 @@ package nl.surfnet.coin.api;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,17 +145,16 @@ public class ApiController extends AbstractApiController {
     GroupProvider grouper = getGrouperProvider(allGroupProviders);
     String spEntityId = getClientMetaData().getAppEntityId();
     boolean grouperAllowed = groupProviderConfiguration.isCallAllowed(Service.People, spEntityId, grouper);
+    boolean internalGroup = groupProviderConfiguration.isInternalGroup(groupId);
     if (!grouperAllowed) {
       sendAclMissingMail(grouper, spEntityId, userId, Service.People);
     }
-    /*
-     * Is the call to Grouper necessary (e.g. is this an internal group)?
-     */
-    if (grouperAllowed && groupProviderConfiguration.isInternalGroup(groupId)) {
+    if (grouperAllowed && internalGroup) {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
       groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, count, startIndex, sortBy);
-    } else {
+    }
+    if (!internalGroup) {
       // external group. see which groupProvider can handle this call
       for (GroupProvider groupProvider : allGroupProviders) {
         /*
@@ -167,6 +169,16 @@ public class ApiController extends AbstractApiController {
               groupMembers.getEntry().addAll(entry);
             }
           }
+        }
+      }
+      /*
+       * Is this an external group that is linked to a SURFteams group?
+       */
+      Group20Entry grouperTeams = getGrouperTeamsLinkedToExternalGroup(userId, groupId);
+      if (grouperTeams != null && grouperTeams.getEntry() != null && !grouperTeams.getEntry().isEmpty()) {
+        for (Group20 group20 : grouperTeams.getEntry()) {
+          GroupMembersEntry members = personService.getGroupMembers(group20.getId(), userId, null, null, null);
+          groupMembers.getEntry().addAll(members.getEntry());
         }
       }
     }
@@ -224,31 +236,61 @@ public class ApiController extends AbstractApiController {
         }
       }
     }
-    group20Entry.getEntry().addAll(listOfAllExternalGroups);
-
-
-    // Iterate all external groups. See if they're linked to one or more SURFTeams. Add those teams to the final list
-    // to return.
-    List<String> grouperTeamIds = new ArrayList<String>();
-    for (Group20 externalGroup : listOfAllExternalGroups) {
-      List<TeamExternalGroup> teamExternalGroups =
-          teamExternalGroupDao.getByExternalGroupIdentifier(externalGroup.getId());
-      if (!teamExternalGroups.isEmpty()) {
-        for (TeamExternalGroup teg : teamExternalGroups) {
-          grouperTeamIds.add(teg.getGrouperTeamId());
-        }
-      }
+    if (!listOfAllExternalGroups.isEmpty()) {
+      group20Entry.getEntry().addAll(listOfAllExternalGroups);
+      group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, listOfAllExternalGroups);
     }
-    if (!grouperTeamIds.isEmpty()) {
-      final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId, grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
-      group20Entry.getEntry().addAll(linkedTeams.getEntry());
-    }
-
-    // remove duplicates: convert to set and back.
-    group20Entry.setEntry(new ArrayList<Group20>(new HashSet<Group20>(group20Entry.getEntry())));
 
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, count, startIndex, sortBy);
+    return group20Entry;
+  }
+
+  /*
+   * Get all SURFTeams groups for those external groups that linked to one or
+   * more SURFTeams. Add those teams to the final list to return.
+   */
+  @SuppressWarnings("unchecked")
+  private Group20Entry getGrouperTeamsLinkedToExternalGroup(String userId, String externalGroupId) {
+    // sensible default
+    Group20Entry groups20Entry = new Group20Entry(new ArrayList<Group20>());
+    List<TeamExternalGroup> linkedExternalGroups = teamExternalGroupDao.getByExternalGroupIdentifier(externalGroupId);
+    if (!CollectionUtils.isEmpty(linkedExternalGroups)) {
+      List<String> grouperTeamIds = new ArrayList<String>();
+      for (TeamExternalGroup teamExternalGroup : linkedExternalGroups) {
+        grouperTeamIds.add(teamExternalGroup.getGrouperTeamId());
+      }
+      groups20Entry = groupService.getGroups20ByIds(userId, grouperTeamIds.toArray(new String[grouperTeamIds.size()]),
+          0, 0);
+    }
+    return groups20Entry;
+  }
+
+  /*
+   * Get all SURFTeams groups for those external groups that linked to one or
+   * more SURFTeams. Add those teams to the final list to return.
+   */
+  @SuppressWarnings("unchecked")
+  private Group20Entry addLinkedSurfTeamGroupsForExternalGroups(String userId, Group20Entry group20Entry,
+      List<Group20> listOfAllExternalGroups) {
+    List<String> grouperTeamIds = new ArrayList<String>();
+    Collection<String> identifiers = CollectionUtils.collect(listOfAllExternalGroups, new Transformer() {
+      @Override
+      public Object transform(Object input) {
+        return ((Group20) input).getId();
+      }
+    });
+    List<TeamExternalGroup> externalGroupIdentifiers = teamExternalGroupDao.getByExternalGroupIdentifiers(identifiers);
+    for (TeamExternalGroup teamExternalGroup : externalGroupIdentifiers) {
+      grouperTeamIds.add(teamExternalGroup.getGrouperTeamId());
+    }
+    if (!grouperTeamIds.isEmpty()) {
+      final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId,
+          grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
+      group20Entry.getEntry().addAll(linkedTeams.getEntry());
+      // remove duplicates: convert to set and back.
+      group20Entry.setEntry(new ArrayList<Group20>(new HashSet<Group20>(group20Entry.getEntry())));
+    }
     return group20Entry;
   }
 
@@ -279,6 +321,7 @@ public class ApiController extends AbstractApiController {
     if (!grouperAllowed) {
       sendAclMissingMail(grouper, spEntityId, userId, Service.Group);
     }
+    List<Group20> externalGroups = new ArrayList<Group20>();
     /*
      * Is the call to Grouper necessary (e.g. is this an internal group)?
      */
@@ -295,9 +338,13 @@ public class ApiController extends AbstractApiController {
         if (groupProvider.isExternalGroupProvider() && groupProvider.isMeantForUser(onBehalfOf)) {
           Group20 group = groupProviderConfiguration.getGroup20(groupProvider, userId, groupId);
           if (group != null) {
-            group20Entry.getEntry().add(group);
+            externalGroups.add(group);
           }
         }
+      }
+      if (!CollectionUtils.isEmpty(externalGroups)) {
+        group20Entry.getEntry().addAll(externalGroups);
+        group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, externalGroups);
       }
 
     }

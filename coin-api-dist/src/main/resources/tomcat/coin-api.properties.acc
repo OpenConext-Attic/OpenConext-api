@@ -81,3 +81,6 @@ mock-api-enabled=false
 
 #The directory (in the war) where the db migration scrips reside
 coin-api.db.migrations.folder=db/migration/mysql
+
+#Cache manager
+cacheManagerClass=org.springframework.cache.ehcache.EhCacheCacheManager

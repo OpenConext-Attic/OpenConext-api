@@ -18,13 +18,18 @@ package nl.surfnet.coin.teams.service.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import nl.surfnet.coin.teams.domain.ExternalGroup;
@@ -112,7 +117,7 @@ public class TeamExternalGroupDaoImpl implements TeamExternalGroupDao {
         }
       });
     } catch (EmptyResultDataAccessException er) {
-      return null;
+      return new ArrayList<TeamExternalGroup>();
     }
   }
 
@@ -203,6 +208,31 @@ public class TeamExternalGroupDaoImpl implements TeamExternalGroupDao {
         "SELECT COUNT(id) FROM team_external_groups WHERE external_groups_id = ?;", args);
     if (linksToExternalGroup == 0) {
       this.jdbcTemplate.update("DELETE FROM external_groups WHERE id = ?;", args);
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.teams.service.TeamExternalGroupDao#getByExternalGroupIdentifiers(java.util.List)
+   */
+  @Override
+  public List<TeamExternalGroup> getByExternalGroupIdentifiers(Collection<String> identifiers) {
+    try {
+      NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.jdbcTemplate);
+      Map<String, Object> params = new HashMap<String, Object>();
+      params.put("identifiers", identifiers);
+      String s = "SELECT teg.id AS teg_id, teg.grouper_team_id, eg.id AS eg_id, eg.identifier, eg.name, eg.description, eg.group_provider " +
+          "FROM team_external_groups AS teg " +
+          "INNER JOIN external_groups AS eg " +
+          "ON teg.external_groups_id = eg.id " +
+          "WHERE eg.identifier in (:identifiers) ";
+      return template.query(s, params, new RowMapper<TeamExternalGroup>() {
+        @Override
+        public TeamExternalGroup mapRow(ResultSet rs, int rowNum) throws SQLException {
+          return mapRowToTeamExternalGroup(rs);
+        }
+      });
+    } catch (EmptyResultDataAccessException er) {
+      return new ArrayList<TeamExternalGroup>();
     }
   }
 }

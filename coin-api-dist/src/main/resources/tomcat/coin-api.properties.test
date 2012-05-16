@@ -79,3 +79,6 @@ mock-api-enabled=true
 
 #The directory (in the war) where the db migration scrips reside
 coin-api.db.migrations.folder=db/migration/mysql
+
+#Cache manager
+cacheManagerClass=nl.surfnet.coin.util.ConextNoOpCacheManager
