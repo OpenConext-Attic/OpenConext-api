@@ -31,6 +31,10 @@ import nl.surfnet.coin.eb.EngineBlock;
 
 /**
  * Controller for the mock REST interface.
+ * 
+ * TODO override the methods of ApiController to ensure there is only a call to
+ * the MockServiceImpl and not all the other steps (like going to grouper and
+ * checking acl's etc)
  */
 @Controller
 @RequestMapping(value = "mock10/social/rest")
@@ -48,7 +52,7 @@ public class MockApiController extends ApiController {
     this.groupProviderConfiguration = impl;
     this.groupService = impl;
   }
-  
+
   @Override
   public void invariant() {
     if (!this.mockApiEnabled) {
@@ -56,16 +60,6 @@ public class MockApiController extends ApiController {
     }
   }
 
-//  @Resource(name = "mockService")
-//  public void setPersonService(PersonService personService) {
-//    this.personService = personService;
-//  }
-//
-//  @Resource(name = "mockService")
-//  public void setGroupService(GroupService groupService) {
-//    this.groupService = groupService;
-//  }
-//
   @Resource(name = "engineBlock")
   public void setEngineBlock(EngineBlock engineBlock) {
     this.engineBlock = engineBlock;

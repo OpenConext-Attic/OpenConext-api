@@ -310,6 +310,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    *          the result list of entries
    * @return
    */
+  @SuppressWarnings("unchecked")
   protected List<? extends Object> processQueryOptions(AbstractEntry parent, Integer count, Integer startIndex,
       String sortBy, List<? extends Object> entry) {
     parent.setTotalResults(entry.size());
