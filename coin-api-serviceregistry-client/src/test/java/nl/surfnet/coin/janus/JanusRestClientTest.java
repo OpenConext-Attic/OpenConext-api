@@ -89,6 +89,22 @@ public class JanusRestClientTest {
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
         ("method=findIdentifiersByMetadata"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
+  }
 
+  @Test
+  public void getAllowedSps() {
+    ArgumentCaptor<URI> captor = ArgumentCaptor.forClass(URI.class);
+    final List<String> ids = new ArrayList<String>(Arrays.asList("id1", "id2"));
+    when(restTemplate.getForObject((URI) anyObject(), eq(List.class))).thenReturn(ids);
+    List<String> result = janusRestClient.getAllowedSps("boobaa");
+    assertEquals("id1", result.get(0));
+    assertEquals("id2", result.get(1));
+
+    verify(restTemplate).getForObject(captor.capture(), eq(List.class));
+    assertTrue("Query string should contain correct idpentityid",
+        captor.getValue().getQuery().contains("idpentityid=boobaa"));
+    assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
+        ("method=getAllowedSps"));
+    assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 }

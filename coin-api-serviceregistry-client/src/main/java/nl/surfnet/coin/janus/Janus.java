@@ -64,4 +64,18 @@ public interface Janus {
    * @return the entity id
    */
   List<String> getEntityIdsByMetaData(Metadata key, String value);
-  }
+
+  /**
+   * Refer to {@link Janus#getAllowedSps(String, String)} but without the revision parameter.
+   */
+  List<String> getAllowedSps(String idpentityid);
+
+  /**
+   * Get a list of SPs that are allowed for this IdP.
+   *
+   * @param idpentityid the IdPs entity id.
+   * @param revision the revision.
+   * @return TODO
+   */
+  List<String> getAllowedSps(String idpentityid, String revision);
+}

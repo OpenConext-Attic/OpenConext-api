@@ -143,6 +143,43 @@ public class JanusRestClient implements Janus {
 
   }
 
+  @Override
+  public List<String> getAllowedSps(String idpentityid) {
+    return getAllowedSps(idpentityid, null);
+  }
+
+  @Override
+  public List<String> getAllowedSps(String idpentityid, String revision) {
+
+    Assert.hasText(idpentityid, "idpentityid is a required parameter");
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("idpentityid", idpentityid);
+    if (!StringUtils.isBlank(revision)) {
+      parameters.put("idprevision", revision);
+    }
+
+    URI signedUri;
+    try {
+      signedUri = sign("getAllowedSps", parameters);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Signed Janus-request is: {}", signedUri);
+      }
+
+      final List<String> restResponse = restTemplate.getForObject(signedUri, List.class);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Janus-request returned: {}", restResponse.toString());
+      }
+
+      return restResponse;
+
+    } catch (IOException e) {
+      LOG.error("While doing Janus-request", e);
+    }
+    return null;
+  }
+
   /**
    * Sign the given method call.
    * 
