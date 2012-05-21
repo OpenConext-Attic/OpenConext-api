@@ -18,6 +18,8 @@ package nl.surfnet.coin.api.client.domain;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * 
  *
@@ -54,9 +56,9 @@ public class GroupMembersEntry extends AbstractEntry {
     this.entry = entry;
   }
 
-  
+  @JsonIgnore
   public boolean isEmpty() {
-    return entry != null && !entry.isEmpty();
+    return entry == null || entry.isEmpty();
   }
 
   /**

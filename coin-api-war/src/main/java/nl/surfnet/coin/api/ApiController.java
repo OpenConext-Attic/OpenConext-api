@@ -356,7 +356,7 @@ public class ApiController extends AbstractApiController {
   /*
    * Set the metadata for the result
    */
-  private void setResultOptions(AbstractEntry entry, Integer count, Integer startIndex, String sortBy) {
+  protected void setResultOptions(AbstractEntry entry, Integer count, Integer startIndex, String sortBy) {
     entry.setFiltered(false);
     entry.setItemsPerPage((count != null && count != 0) ? count : entry.getEntrySize());
     entry.setSorted(sortBy != null ? true : false);
@@ -405,7 +405,18 @@ public class ApiController extends AbstractApiController {
     log.setSpEntityId(clientMetaData.getAppEntityId());
     log.setConsumerKey(clientMetaData.getConsumerKey());
     log.setUserId(onBehalfOf);
+    addApiCallLogInfo(log);
     logService.saveApiCallLog(log);
+  }
+
+  /**
+   * Hook for subclasses to change the log record
+   * 
+   * @param log
+   */
+  protected void addApiCallLogInfo(ApiCallLog log) {
+
+    
   }
 
   private GroupProvider getGrouperProvider(List<GroupProvider> allGroupProviders) {

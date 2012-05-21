@@ -177,7 +177,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   }
 
-  private Group20Entry getPreparedGroup20(String userId, String groupId) {
+  private Group20Entry getPreparedGroup20(String groupId) {
     Group20Entry result = new Group20Entry(new ArrayList<Group20>());
     Set<Entry<String, Group20>> entrySet = GROUPS_IN_MEMORY.entrySet();
     for (Entry<String, Group20> entry : entrySet) {
@@ -220,7 +220,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
   @Override
   public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
     if (isActive) {
-      return getPreparedGroup20(userId, groupId);
+      return getPreparedGroup20(groupId);
     }
     ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, groupId, "group20"));
     if (!pathResource.exists()) {

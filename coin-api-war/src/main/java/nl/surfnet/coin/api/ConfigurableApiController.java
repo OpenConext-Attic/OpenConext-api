@@ -63,7 +63,7 @@ public class ConfigurableApiController {
     configurableGroupProvider.addGroup(group);
   }
 
-  @RequestMapping(value = { "/person/{userId}/{groupId}" }, method = RequestMethod.POST)
+  @RequestMapping(value = { "/person/{userId:.+}/{groupId:.+}" }, method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
   public void addPersonToGroup(@PathVariable("userId")
