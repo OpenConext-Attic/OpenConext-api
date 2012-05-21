@@ -17,7 +17,7 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -68,16 +68,18 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     if (metadata == null) {
       return null;
     } 
-      final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
-      ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata, consumerKey);
-      clientDetails.setClientMetaData(clientMetaData);
-      clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
-      clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
-      clientDetails.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(metadata.get(Metadata.OAUTH_CALLBACKURL.val()))));
-      clientDetails.setScope(Arrays.asList("read"));
-      ClientMetaDataHolder.setClientMetaData(clientMetaData);
-      return clientDetails;
-    
+    final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
+    ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata, consumerKey);
+    clientDetails.setClientMetaData(clientMetaData);
+    clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
+    clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
+    final String callbackUrl = metadata.get(Metadata.OAUTH_CALLBACKURL.val());
+    if (callbackUrl != null) {
+      clientDetails.setRegisteredRedirectUri(Collections.singleton(callbackUrl));
+    }
+    clientDetails.setScope(Arrays.asList("read"));
+    ClientMetaDataHolder.setClientMetaData(clientMetaData);
+    return clientDetails;
   }
 
   private Map<String, String> getJanusMetadataByConsumerKey(String consumerKey) {

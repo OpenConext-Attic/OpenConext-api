@@ -56,7 +56,6 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
     ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
-//    details.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(CALLBACK_URL)));
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;
   }
