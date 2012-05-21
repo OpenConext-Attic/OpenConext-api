@@ -89,7 +89,11 @@
 
 	<bean id="janusClientDetailsService" class="${clientDetailsServiceClass}" />
 
-	<bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient" />
+	<bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient">
+    <property name="janusUri" value="${janus.uri}" />
+    <property name="user" value="${janus.user}" />
+    <property name="secret" value="${janus.secret}" />
+  </bean>
 
 	<bean id="shibbolethEntryPoint"
 		class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
@@ -117,15 +121,6 @@
 		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
 		<!-- Set the default Locale to English -->
 		<property name="defaultLocale" value="en_EN" />
-	</bean>
-
-	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-		<property name="messageConverters">
-			<list>
-				<bean id="messageConverter"
-					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
-			</list>
-		</property>
 	</bean>
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"

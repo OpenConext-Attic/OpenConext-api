@@ -84,6 +84,11 @@
       </dependency>
       <dependency>
         <groupId>org.surfnet.coin</groupId>
+        <artifactId>coin-api-serviceregistry-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.surfnet.coin</groupId>
         <artifactId>coin-shared</artifactId>
      </dependency>
       <dependency>
