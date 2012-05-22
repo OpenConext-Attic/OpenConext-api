@@ -36,7 +36,13 @@ public interface Janus {
     OAUTH_APPTITLE("coin:oauth:app_title"),
     OAUTH_APPDESCRIPTION("coin:oauth:app_description"),
     OAUTH_APPTHUMBNAIL("coin:oauth:app_thumbnail"), 
-    OAUTH_APPICON("coin:oauth:app_icon");
+    OAUTH_APPICON("coin:oauth:app_icon"),
+    ORGANIZATION_URL("OrganizationURL:en"),
+    ORGANIZATION_NAME("OrganizationName:en"),
+    LOGO_URL("logo:0:url"),
+    NAMEIDFORMAT("NameIDFormat"),
+
+    ;
 
     private String val;
 

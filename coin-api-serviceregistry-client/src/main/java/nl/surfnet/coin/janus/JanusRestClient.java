@@ -17,7 +17,9 @@
 package nl.surfnet.coin.janus;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -65,7 +67,11 @@ public class JanusRestClient implements Janus {
   @Override
   public Map<String, String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("entityid", entityId);
+    try {
+      parameters.put("entityid", URLEncoder.encode(entityId, "utf-8"));
+    } catch (UnsupportedEncodingException e) {
+      throw new IllegalArgumentException("while url-encoding entityid '" + entityId + "'", e);
+    }
     final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
       @Override
       public Object transform(Object input) {
@@ -83,7 +89,8 @@ public class JanusRestClient implements Janus {
         LOG.debug("Signed Janus-request is: {}", signedUri);
       }
 
-      final Map<String, Object> restResponse = restTemplate.getForObject(signedUri, Map.class);
+
+      final Map<String, Object> restResponse = restTemplate.getForObject(signedUri,  Map.class);
 
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
