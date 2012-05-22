@@ -16,12 +16,6 @@
 
 package nl.surfnet.coin.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,14 +24,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.sf.ehcache.CacheException;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
-import nl.surfnet.coin.janus.Janus;
-import nl.surfnet.coin.janus.Janus.Metadata;
-import nl.surfnet.coin.janus.JanusRestClient;
-import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
-import nl.surfnet.coin.util.MethodNameAwareCacheKeyGenerator;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -48,7 +34,6 @@ import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
-import org.springframework.cache.interceptor.DefaultKeyGenerator;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -63,6 +48,19 @@ import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.web.client.RestTemplate;
+
+import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.janus.Janus;
+import nl.surfnet.coin.janus.Janus.Metadata;
+import nl.surfnet.coin.janus.JanusRestClient;
+import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
+import nl.surfnet.coin.shared.cache.MethodNameAwareCacheKeyGenerator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 @Configuration
 @EnableCaching

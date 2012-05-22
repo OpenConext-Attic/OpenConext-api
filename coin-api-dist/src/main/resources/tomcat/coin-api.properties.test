@@ -81,4 +81,4 @@ mock-api-enabled=true
 coin-api.db.migrations.folder=db/migration/mysql
 
 #Cache manager
-cacheManagerClass=nl.surfnet.coin.util.ConextNoOpCacheManager
+cacheManagerClass=nl.surfnet.coin.shared.cache.ConextNoOpCacheManager

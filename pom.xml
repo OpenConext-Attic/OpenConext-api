@@ -82,7 +82,7 @@
     <coin-test.version>2.5</coin-test.version>
     <commons-collections.version>3.2.1</commons-collections.version>
     <coin-master-test-dependencies.version>2.1.1</coin-master-test-dependencies.version>
-    <coin-shared.version>2.4.0</coin-shared.version>
+    <coin-shared.version>2.6.0-SNAPSHOT</coin-shared.version>
 	<dumbster.version>1.6</dumbster.version>
     <!-- We develop against the SNAPSHOT awaiting a stable release/ milestone -->
     <spring-oauth.version>1.0.0.M6a</spring-oauth.version>
