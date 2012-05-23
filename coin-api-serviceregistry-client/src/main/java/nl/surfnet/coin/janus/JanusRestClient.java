@@ -17,7 +17,6 @@
 package nl.surfnet.coin.janus;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
@@ -58,7 +57,8 @@ public class JanusRestClient implements Janus {
 
   public JanusRestClient() {
     this.restTemplate = new RestTemplate();
-    restTemplate.setMessageConverters(Arrays.<HttpMessageConverter<?>>asList(new MappingJacksonHttpMessageConverter()));
+    restTemplate
+        .setMessageConverters(Arrays.<HttpMessageConverter<?>> asList(new MappingJacksonHttpMessageConverter()));
   }
 
   /**
@@ -68,12 +68,6 @@ public class JanusRestClient implements Janus {
   public Map<String, String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", entityId);
-    //TODO ask geert why this was coded. It broke the tests...
-//    try {
-//      parameters.put("entityid", URLEncoder.encode(entityId, "utf-8"));
-//    } catch (UnsupportedEncodingException e) {
-//      throw new IllegalArgumentException("while url-encoding entityid '" + entityId + "'", e);
-//    }
     final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
       @Override
       public Object transform(Object input) {
@@ -91,14 +85,15 @@ public class JanusRestClient implements Janus {
         LOG.debug("Signed Janus-request is: {}", signedUri);
       }
 
-
-      final Map<String, Object> restResponse = restTemplate.getForObject(signedUri,  Map.class);
+      final Map<String, Object> restResponse = restTemplate.getForObject(signedUri, Map.class);
 
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
       final Map<String, String> returnMap = transformMetadataResponse(restResponse);
-      returnMap.put(Metadata.ENTITY_ID.val(), entityId); // put entity id as a metadata field as well.
+      returnMap.put(Metadata.ENTITY_ID.val(), entityId); // put entity id as a
+                                                         // metadata field as
+                                                         // well.
       return returnMap;
 
     } catch (IOException e) {
@@ -234,9 +229,10 @@ public class JanusRestClient implements Janus {
       if (url.length() > 0) {
         url.append("&");
       }
-      url.append(String.format("%s=%s", key, keys.get(key)));
+      url.append(String.format("%s=%s", key, URLEncoder.encode(keys.get(key), "utf-8")));
     }
-    return URI.create(janusUri + "?" + url.toString());
+    String uri = url.toString();
+    return URI.create(janusUri + "?" + uri);
   }
 
   /**
