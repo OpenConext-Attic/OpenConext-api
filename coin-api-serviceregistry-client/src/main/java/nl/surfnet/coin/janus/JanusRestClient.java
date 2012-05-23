@@ -67,11 +67,13 @@ public class JanusRestClient implements Janus {
   @Override
   public Map<String, String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
-    try {
-      parameters.put("entityid", URLEncoder.encode(entityId, "utf-8"));
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalArgumentException("while url-encoding entityid '" + entityId + "'", e);
-    }
+    parameters.put("entityid", entityId);
+    //TODO ask geert why this was coded. It broke the tests...
+//    try {
+//      parameters.put("entityid", URLEncoder.encode(entityId, "utf-8"));
+//    } catch (UnsupportedEncodingException e) {
+//      throw new IllegalArgumentException("while url-encoding entityid '" + entityId + "'", e);
+//    }
     final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
       @Override
       public Object transform(Object input) {
