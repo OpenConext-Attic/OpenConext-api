@@ -58,7 +58,7 @@ public class JanusRestClient implements Janus {
   public JanusRestClient() {
     this.restTemplate = new RestTemplate();
     restTemplate
-        .setMessageConverters(Arrays.<HttpMessageConverter<?>> asList(new MappingJacksonHttpMessageConverter()));
+        .setMessageConverters(Arrays.<HttpMessageConverter<?>>asList(new MappingJacksonHttpMessageConverter()));
   }
 
   /**
@@ -192,7 +192,6 @@ public class JanusRestClient implements Janus {
    * @param parameters
    *          additional parameters that need to be passed to Janus
    * @return URI with parameters janus_sig and janus_key
-   * @throws NoSuchAlgorithmException
    * @throws IOException
    */
   private URI sign(String method, Map<String, String> parameters) throws IOException {
@@ -211,14 +210,15 @@ public class JanusRestClient implements Janus {
       toSign.append(keys.get(key));
     }
 
-    MessageDigest digest = null;
+    MessageDigest digest;
     try {
       digest = MessageDigest.getInstance("SHA-512");
     } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Cannot use algorithm SHA-512", e);
     }
     digest.reset();
-    byte[] input = digest.digest(toSign.toString().getBytes("UTF-8"));
+    final String charsetName = "UTF-8";
+    byte[] input = digest.digest(toSign.toString().getBytes(charsetName));
     char[] value = Hex.encodeHex(input);
     String janus_sig = new String(value);
     keys.put("janus_sig", janus_sig);
@@ -227,9 +227,9 @@ public class JanusRestClient implements Janus {
     keySet = keys.keySet();
     for (String key : keySet) {
       if (url.length() > 0) {
-        url.append("&");
+        url.append('&');
       }
-      url.append(String.format("%s=%s", key, URLEncoder.encode(keys.get(key), "utf-8")));
+      url.append(key).append('=').append(URLEncoder.encode(keys.get(key), charsetName));
     }
     String uri = url.toString();
     return URI.create(janusUri + "?" + uri);

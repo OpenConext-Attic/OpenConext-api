@@ -41,7 +41,9 @@ public interface Janus {
     ORGANIZATION_NAME("OrganizationName:en"),
     LOGO_URL("logo:0:url"),
     NAMEIDFORMAT("NameIDFormat"),
-
+    DISPLAYNAME("displayName:en"),
+    NAME("name:en"),
+    DESCRIPTION("description:en")
     ;
 
     private String val;
