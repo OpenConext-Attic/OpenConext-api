@@ -172,7 +172,7 @@ public abstract class AbstractGrouperDaoImpl  {
           + " and gg.id = ggs.owner_group_id "
           + "and gms.owner_id = ggs.member_id "
           + " and gms.field_id = ggs.member_field_id "
-          + "and upper(gg.name) in (?)";
+          + "and gg.name in (:groupId)";
 
   protected static String SQL_FIND_TEAMS_LIKE_GROUPNAMES =
       "select distinct gg.name, gg.display_name ,gg.description, gs.name as stem_name, "
@@ -186,7 +186,7 @@ public abstract class AbstractGrouperDaoImpl  {
           + " and gg.id = ggs.owner_group_id "
           + "and gms.owner_id = ggs.member_id "
           + " and gms.field_id = ggs.member_field_id "
-          + "and upper(gg.name) in (?) order by gg.name limit ? offset ?";
+          + "and gg.name in (:groupId) order by gg.name limit :limit offset :offset";
 
   /**
    * Template method Row Mapper that only extracts the fields from the resultset, leaving creation
@@ -215,7 +215,7 @@ public abstract class AbstractGrouperDaoImpl  {
   }
 
   protected Integer correctPageSize(Integer pageSize) {
-    if (pageSize == null) {
+    if (pageSize == null || pageSize.intValue() == 0) {
       pageSize = Integer.MAX_VALUE;
     }
     return pageSize;

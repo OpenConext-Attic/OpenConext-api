@@ -185,17 +185,22 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
   @Override
   public Group20Entry findGroups20ByIds(String personId, String[] groupIds, Integer pageSize, Integer offset) {
-    int rowCount = this.jdbcTemplate.queryForInt(SQL_FIND_TEAMS_LIKE_GROUPNAMES_ROWCOUNT, groupIds);
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.jdbcTemplate);
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("groupId", Arrays.asList(groupIds));
+
     List<Group20> groups = new ArrayList<Group20>();
     pageSize = correctPageSize(pageSize);
     offset = correctOffset(offset);
+    params.put("limit", pageSize);
+    params.put("offset",offset);
     try {
       String sql = SQL_FIND_TEAMS_LIKE_GROUPNAMES;
-      groups = jdbcTemplate.query(sql, new Object[] { groupIds, pageSize, offset }, new OpenSocial20GroupRowMapper());
+      groups = template.query(sql, params, new OpenSocial20GroupRowMapper());
       addRolesToGroups(personId, groups);
     } catch (EmptyResultDataAccessException e) {
     }
-    return new Group20Entry(groups, pageSize, offset, null, rowCount);
+    return new Group20Entry(groups, pageSize, offset, null, groups.size());
   }
 
   @SuppressWarnings("unchecked")
