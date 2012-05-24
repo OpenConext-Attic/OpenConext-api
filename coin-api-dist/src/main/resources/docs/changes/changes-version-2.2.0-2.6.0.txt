@@ -1,9 +1,9 @@
-Added 
+Added a new property to the coin-api.properties file:
 
+For acc and prod:
 #Cache manager
 cacheManagerClass=org.springframework.cache.ehcache.EhCacheCacheManager
 
-to the coin-api.properties file. for dev and test we use:
-
+For dev and test:
 #Cache manager
-cacheManagerClass=nl.surfnet.coin.util.ConextNoOpCacheManager
+cacheManagerClass=nl.surfnet.coin.shared.cache.ConextNoOpCacheManager
