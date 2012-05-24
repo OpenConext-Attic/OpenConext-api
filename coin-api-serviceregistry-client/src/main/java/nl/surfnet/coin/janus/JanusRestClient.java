@@ -184,6 +184,43 @@ public class JanusRestClient implements Janus {
     return null;
   }
 
+  @Override
+  public Map<String, Map<String, String>> getSpList(Metadata... attributes) {
+
+    Map<String, String> parameters = new HashMap<String, String>();
+
+    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(attributes), new Transformer() {
+      @Override
+      public Object transform(Object input) {
+        return ((Metadata) input).val();
+      }
+    });
+
+    parameters.put("keys", StringUtils.join(metadataAsStrings, ','));
+
+
+    URI signedUri;
+    try {
+      signedUri = sign("getSpList", parameters);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Signed Janus-request is: {}", signedUri);
+      }
+
+      final Map<String, Map<String, String>> restResponse = restTemplate.getForObject(signedUri, Map.class);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Janus-request returned: {}", restResponse.toString());
+      }
+
+      return restResponse;
+
+    } catch (IOException e) {
+      LOG.error("While doing Janus-request", e);
+    }
+    return null;
+  }
+
   /**
    * Sign the given method call.
    * 

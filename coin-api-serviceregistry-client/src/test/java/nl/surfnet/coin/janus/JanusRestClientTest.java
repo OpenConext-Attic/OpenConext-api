@@ -32,6 +32,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
@@ -106,5 +107,24 @@ public class JanusRestClientTest {
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
         ("method=getAllowedSps"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
+  }
+
+  @Test
+  public void getSpList() {
+    ArgumentCaptor<URI> captor = ArgumentCaptor.forClass(URI.class);
+    final Map<String, Map<String, Object>> data = new HashMap<String, Map<String, Object>>();
+    data.put("entityid", new HashMap<String, Object>());
+    when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(data);
+    Map<String,Map<String, String>> result = janusRestClient.getSpList(Janus.Metadata.NAMEIDFORMAT);
+
+    assertNotNull(result.get("entityid"));
+
+    verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
+    assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
+        ("method=getSpList"));
+    assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
+    assertTrue("Query string should contain correct metadata field names", captor.getValue().getQuery().contains
+        ("keys=" + Janus.Metadata.NAMEIDFORMAT.val()));
+
   }
 }

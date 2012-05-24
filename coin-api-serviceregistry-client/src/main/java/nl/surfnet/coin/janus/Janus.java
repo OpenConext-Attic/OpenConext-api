@@ -86,4 +86,16 @@ public interface Janus {
    * @return TODO
    */
   List<String> getAllowedSps(String idpentityid, String revision);
+
+  /**
+   * Retrieves a list of all Service Providers.
+   * Note that if you do not pass along any attributes very
+   * little will be returned. You must specify the metadata you
+   * want to see.
+   *
+   * @param attributes the attributes to fetch
+   * @return for each SP (by entity id), a map of attributes and its values.
+   */
+  Map<String, Map<String, String>> getSpList(Metadata... attributes);
+
 }
