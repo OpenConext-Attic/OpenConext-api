@@ -52,7 +52,8 @@ public interface Janus {
     CONTACTS_1_TYPE("contacts:1:contactType"),
     CONTACTS_1_EMAIL("contacts:1:emailAddress"),
     CONTACTS_1_GIVENNAME("contacts:1:givenName"),
-    CONTACTS_1_SURNAME("contacts:1:surName")
+    CONTACTS_1_SURNAME("contacts:1:surName"),
+    SS_IDP_VISIBLE_ONLY("coin:ss:idp_visible_only"),
     ;
 
     private String val;

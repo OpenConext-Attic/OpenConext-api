@@ -50,6 +50,8 @@ public class EntityMetadata implements Serializable {
   private String appHomeUrl;
   private List<Contact> contacts = Collections.synchronizedList(new ArrayList<Contact>());
 
+  private boolean isIdpVisibleOnly;
+
   public static EntityMetadata fromMetadataMap(Map<String, Object> metadata) {
     EntityMetadata em = new EntityMetadata();
 
@@ -64,9 +66,15 @@ public class EntityMetadata implements Serializable {
 
     em.setAppHomeUrl((String) metadata.get(Janus.Metadata.ORGANIZATION_URL.val()));
     em.setAppLogoUrl((String) metadata.get(Janus.Metadata.LOGO_URL.val()));
+
     em.setTwoLeggedOauthAllowed(false);
     if (metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()) != null) {
       em.setTwoLeggedOauthAllowed((Boolean) metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()));
+    }
+
+    em.setIdpVisibleOnly(false);
+    if (metadata.get(Janus.Metadata.SS_IDP_VISIBLE_ONLY.val()) != null) {
+      em.setIdpVisibleOnly((Boolean) metadata.get(Janus.Metadata.SS_IDP_VISIBLE_ONLY.val()));
     }
 
     if (metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val()) != null) {
@@ -189,4 +197,13 @@ public class EntityMetadata implements Serializable {
   public List<Contact> getContacts() {
     return UnmodifiableList.decorate(contacts);
   }
+
+  public boolean isIdpVisibleOnly() {
+    return isIdpVisibleOnly;
+  }
+
+  public void setIdpVisibleOnly(boolean idpVisibleOnly) {
+    isIdpVisibleOnly = idpVisibleOnly;
+  }
+
 }
