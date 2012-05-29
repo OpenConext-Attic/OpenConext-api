@@ -31,6 +31,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
+import nl.surfnet.coin.janus.domain.EntityMetadata;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -63,7 +65,7 @@ public class JanusRestClientTest {
     map.put("coin:oauth:secret", "hissecret");
     map.put("coin:oauth:two_legged_allowed", Boolean.TRUE);
     when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(map);
-    String result = janusRestClient.getMetadataByEntityId("foo", Janus.Metadata.OAUTH_SECRET).get(Janus.Metadata.OAUTH_SECRET.val());
+    String result = janusRestClient.getMetadataByEntityId("foo", Janus.Metadata.OAUTH_SECRET).getOauthConsumerSecret();
     assertEquals("hissecret", result);
     verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
     assertTrue("Query string should contain correct entityid", captor.getValue().getQuery().contains("entityid=foo"));
@@ -115,9 +117,9 @@ public class JanusRestClientTest {
     final Map<String, Map<String, Object>> data = new HashMap<String, Map<String, Object>>();
     data.put("entityid", new HashMap<String, Object>());
     when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(data);
-    Map<String,Map<String, String>> result = janusRestClient.getSpList(Janus.Metadata.NAMEIDFORMAT);
+    List<EntityMetadata> result = janusRestClient.getSpList(Janus.Metadata.NAMEIDFORMAT);
 
-    assertNotNull(result.get("entityid"));
+    assertNotNull(result.get(0));
 
     verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains

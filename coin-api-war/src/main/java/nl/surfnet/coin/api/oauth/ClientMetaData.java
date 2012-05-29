@@ -18,128 +18,39 @@
  */
 package nl.surfnet.coin.api.oauth;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
-import nl.surfnet.coin.janus.Janus.Metadata;
 
 /**
- * Metadata from janus about the SP (which in OAuth1 terms is a consumer and in
- * OAuth2 terms a client)
- * 
+ * Interface of information about an OAuth1/2 client.
  */
-@SuppressWarnings("serial")
-public class ClientMetaData implements Serializable {
-
-  private String appTitle;
-  private String appIcon;
-  private String appDescription;
-  private String appThumbNail;
-  private String appEntityId;
-  private String consumerKey;
-
-  public static ClientMetaData fromMetaData(Map<String, String> metaData, String consumerKey) {
-    ClientMetaData clientMetaData = new ClientMetaData();
-    clientMetaData.setAppTitle(metaData.get(Metadata.OAUTH_APPTITLE.val()));
-    clientMetaData.setAppIcon(metaData.get(Metadata.OAUTH_APPICON.val()));
-    clientMetaData.setAppDescription(metaData.get(Metadata.OAUTH_APPDESCRIPTION.val()));
-    clientMetaData.setAppThumbNail(metaData.get(Metadata.OAUTH_APPTHUMBNAIL.val()));
-    clientMetaData.setAppEntityId(metaData.get(Metadata.ENTITY_ID.val()));
-    /*
-     * We dont want the key from janus, but we want the key that was actually used by the SP
-     */
-    clientMetaData.setConsumerKey(consumerKey);
-    return clientMetaData;
-  }
+public interface ClientMetaData {
 
   /**
    * @return the appTitle
    */
-  public String getAppTitle() {
-    return appTitle;
-  }
-
-  /**
-   * @param appTitle the appTitle to set
-   */
-  public void setAppTitle(String appTitle) {
-    this.appTitle = appTitle;
-  }
+  String getAppTitle();
 
   /**
    * @return the appIcon
    */
-  public String getAppIcon() {
-    return appIcon;
-  }
-
-  /**
-   * @param appIcon the appIcon to set
-   */
-  public void setAppIcon(String appIcon) {
-    this.appIcon = appIcon;
-  }
+  String getAppIcon();
 
   /**
    * @return the appDescription
    */
-  public String getAppDescription() {
-    return appDescription;
-  }
-
-  /**
-   * @param appDescription the appDescription to set
-   */
-  public void setAppDescription(String appDescription) {
-    this.appDescription = appDescription;
-  }
+  String getAppDescription();
 
   /**
    * @return the appThumbNail
    */
-  public String getAppThumbNail() {
-    return appThumbNail;
-  }
-
-  /**
-   * @param appThumbNail the appThumbNail to set
-   */
-  public void setAppThumbNail(String appThumbNail) {
-    this.appThumbNail = appThumbNail;
-  }
+  String getAppThumbNail();
 
   /**
    * @return the appEntityId
    */
-  public String getAppEntityId() {
-    return appEntityId;
-  }
-
-  /**
-   * @param appEntityId the appEntityId to set
-   */
-  public void setAppEntityId(String appEntityId) {
-    this.appEntityId = appEntityId;
-  }
-
-  public String toString() {
-    return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
-  }
+  String getAppEntityId();
 
   /**
    * @return the consumerKey
    */
-  public String getConsumerKey() {
-    return consumerKey;
+  String getConsumerKey();
   }
-
-  /**
-   * @param consumerKey the consumerKey to set
-   */
-  public void setConsumerKey(String consumerKey) {
-    this.consumerKey = consumerKey;
-  }
-}

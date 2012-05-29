@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +40,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
+
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
  * REST client implementation for Janus.
@@ -65,7 +68,7 @@ public class JanusRestClient implements Janus {
    * {@inheritDoc}
    */
   @Override
-  public Map<String, String> getMetadataByEntityId(String entityId, Metadata... metadatas) {
+  public EntityMetadata getMetadataByEntityId(String entityId, Metadata... metadatas) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", entityId);
     final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
@@ -90,11 +93,11 @@ public class JanusRestClient implements Janus {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
-      final Map<String, String> returnMap = transformMetadataResponse(restResponse);
-      returnMap.put(Metadata.ENTITY_ID.val(), entityId); // put entity id as a
-                                                         // metadata field as
-                                                         // well.
-      return returnMap;
+      return transformMetadataResponse(restResponse);
+      // FIXME: do this:
+//      returnMap.put(Metadata.ENTITY_ID.val(), entityId); // put entity id as a
+//                                                         // metadata field as
+//                                                         // well.
 
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);
@@ -109,13 +112,10 @@ public class JanusRestClient implements Janus {
    *          input map
    * @return transformed map
    */
-  private Map<String, String> transformMetadataResponse(Map<String, Object> metadata) {
+  private EntityMetadata transformMetadataResponse(Map<String, Object> metadata) {
+    // FIXME: remove this method?
     Assert.notNull(metadata, "input object should not be null");
-    Map<String, String> result = new HashMap<String, String>();
-    for (Map.Entry<String, Object> es : metadata.entrySet()) {
-      result.put(es.getKey(), es.getValue().toString());
-    }
-    return result;
+    return EntityMetadata.fromMetadataMap(metadata);
   }
 
   @Override
@@ -185,7 +185,7 @@ public class JanusRestClient implements Janus {
   }
 
   @Override
-  public Map<String, Map<String, String>> getSpList(Metadata... attributes) {
+  public List<EntityMetadata> getSpList(Metadata... attributes) {
 
     Map<String, String> parameters = new HashMap<String, String>();
 
@@ -207,13 +207,18 @@ public class JanusRestClient implements Janus {
         LOG.debug("Signed Janus-request is: {}", signedUri);
       }
 
-      final Map<String, Map<String, String>> restResponse = restTemplate.getForObject(signedUri, Map.class);
+      final Map<String, Map<String, Object>> restResponse = restTemplate.getForObject(signedUri, Map.class);
 
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
+      List<EntityMetadata> entities = new ArrayList<EntityMetadata>();
+      for (Map.Entry<String, Map<String, Object>> entry : restResponse.entrySet()) {
+        String entityId = entry.getKey();
+        entities.add(EntityMetadata.fromMetadataMap(entry.getValue()));
+      }
 
-      return restResponse;
+      return entities;
 
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);

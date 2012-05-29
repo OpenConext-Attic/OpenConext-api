@@ -19,9 +19,7 @@ package nl.surfnet.coin.api.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +38,10 @@ import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
 import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.Janus.Metadata;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
  * Client details service that uses Janus as backend. Implements both the oauth1
@@ -64,16 +64,16 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   @Override
   @Cacheable(value = { "janus-meta-data" })
   public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
-    Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
+    EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
     if (metadata == null) {
       return null;
     } 
     final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
-    ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata, consumerKey);
+    ClientMetaData clientMetaData = new JanusClientMetadata(metadata);
     clientDetails.setClientMetaData(clientMetaData);
-    clientDetails.setClientSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
-    clientDetails.setClientId(metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
-    final String callbackUrl = metadata.get(Metadata.OAUTH_CALLBACKURL.val());
+    clientDetails.setClientSecret(metadata.getOauthConsumerSecret());
+    clientDetails.setClientId(metadata.getOauthConsumerKey());
+    final String callbackUrl = metadata.getOauthCallbackUrl();
     if (callbackUrl != null) {
       clientDetails.setRegisteredRedirectUri(Collections.singleton(callbackUrl));
     }
@@ -82,7 +82,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     return clientDetails;
   }
 
-  private Map<String, String> getJanusMetadataByConsumerKey(String consumerKey) {
+  private EntityMetadata getJanusMetadataByConsumerKey(String consumerKey) {
     List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
     if (entityIds.size() != 1) {
       LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size(),
@@ -99,7 +99,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   @Override
   @Cacheable(value = { "janus-meta-data" })
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-    Map<String, String> metadata = getJanusMetadataByConsumerKey(consumerKey);
+    EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
 
     if (metadata == null) {
       return null;
@@ -109,15 +109,15 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     // even if additional metadata not found, set these properties.
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority> asList(new SimpleGrantedAuthority("ROLE_USER")));
-    ClientMetaData clientMetaData = ClientMetaData.fromMetaData(metadata, consumerKey);
+    ClientMetaData clientMetaData = new JanusClientMetadata(metadata);
     consumerDetails.setClientMetaData(clientMetaData);
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
 
+    consumerDetails.setSignatureSecret(new SharedConsumerSecret(metadata.getOauthConsumerSecret()));
+
     // set to required by default
     consumerDetails.setRequiredToObtainAuthenticatedToken(true);
-
-    consumerDetails.setSignatureSecret(new SharedConsumerSecret(metadata.get(Janus.Metadata.OAUTH_SECRET.val())));
-    if (StringUtils.equals("true", metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()))) {
+    if (metadata.isTwoLeggedOauthAllowed()) {
       // two legged allowed
       consumerDetails.setRequiredToObtainAuthenticatedToken(false);
     }

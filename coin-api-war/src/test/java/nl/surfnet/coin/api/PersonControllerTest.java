@@ -32,11 +32,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
-import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.MockServiceImpl;
 import nl.surfnet.coin.api.service.PersonService;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -92,7 +93,8 @@ public class PersonControllerTest {
 
   private Authentication getAuthentication() {
     ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
-    consumerDetails.setClientMetaData(new ClientMetaData());
+    final JanusClientMetadata clientMetaData = new JanusClientMetadata(new EntityMetadata());
+    consumerDetails.setClientMetaData(clientMetaData);
     ConsumerCredentials consumerCredentials = new ConsumerCredentials("consumerKey", "signature", "signatureMethod",
         "signatureBaseString", "token");
     return new ConsumerAuthentication(consumerDetails, consumerCredentials);

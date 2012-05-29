@@ -21,9 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -53,6 +51,7 @@ import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.Janus.Metadata;
 import nl.surfnet.coin.janus.JanusRestClient;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 import nl.surfnet.coin.shared.cache.MethodNameAwareCacheKeyGenerator;
 
@@ -129,7 +128,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenReturn(
         Collections.singletonList("sp-entity-id"));
     when(janus.getMetadataByEntityId("sp-entity-id", JanusClientDetailsService.METADATA_TO_FETCH)).thenReturn(
-        getMetaDataMap());
+        getMetadata());
     ClientDetails clientDetails = clientDetailsService.loadClientByClientId("consumerkey");
     assertEquals("secret", clientDetails.getClientSecret());
 
@@ -152,7 +151,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenReturn(
         Collections.singletonList("sp-entity-id"));
     when(janus.getMetadataByEntityId("sp-entity-id", JanusClientDetailsService.METADATA_TO_FETCH)).thenReturn(
-        getMetaDataMap());
+        getMetadata());
 
     ConsumerDetailsService consumerDetailsService = (ConsumerDetailsService) clientDetailsService;
     ConsumerDetails consumerDetails = consumerDetailsService.loadConsumerByConsumerKey("consumerkey");
@@ -163,10 +162,10 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     consumerDetailsService.loadConsumerByConsumerKey("consumerkey");
 }
 
-  private Map<String, String> getMetaDataMap() {
-    Map<String, String> values = new HashMap<String, String>();
-    values.put(Janus.Metadata.OAUTH_SECRET.val(), "secret");
-    return values;
+  private EntityMetadata getMetadata() {
+    EntityMetadata em = new EntityMetadata();
+    em.setOauthConsumerSecret("secret");
+    return em;
   }
 
   /*

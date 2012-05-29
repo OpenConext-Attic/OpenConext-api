@@ -17,7 +17,8 @@
 package nl.surfnet.coin.janus;
 
 import java.util.List;
-import java.util.Map;
+
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
  * Interface to Janus.
@@ -67,9 +68,8 @@ public interface Janus {
   /**
    * Get a client's metadata by his entityId.
    * @param entityId the entityId
-   * @return the secret
    */
-  Map<String, String> getMetadataByEntityId(String entityId, Metadata... attributes);
+  EntityMetadata getMetadataByEntityId(String entityId, Metadata... attributes);
 
   /**
    *
@@ -104,6 +104,6 @@ public interface Janus {
    * @param attributes the attributes to fetch
    * @return for each SP (by entity id), a map of attributes and its values.
    */
-  Map<String, Map<String, String>> getSpList(Metadata... attributes);
+  List<EntityMetadata> getSpList(Metadata... attributes);
 
 }

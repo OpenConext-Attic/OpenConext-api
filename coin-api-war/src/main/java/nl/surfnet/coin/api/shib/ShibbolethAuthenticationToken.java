@@ -18,10 +18,10 @@ package nl.surfnet.coin.api.shib;
 
 import java.util.Collection;
 
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+
+import nl.surfnet.coin.api.oauth.ClientMetaData;
 
 @SuppressWarnings("serial")
 public class ShibbolethAuthenticationToken extends AbstractAuthenticationToken {

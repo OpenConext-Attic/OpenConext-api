@@ -36,7 +36,9 @@ import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
 import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.janus.Janus;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
  * Mock details service. Replacement for JanusClientDetailsService.
@@ -78,14 +80,14 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
   }
 
   public static ClientMetaData mockMetadata(String entityId) {
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, Object> map = new HashMap<String, Object>();
     map.put(Janus.Metadata.OAUTH_APPDESCRIPTION.val(), "My mocked application description");
     map.put(Janus.Metadata.ENTITY_ID.val(), entityId);
     map.put(Janus.Metadata.OAUTH_APPICON.val(), "mock-appicon.png");
     map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
     map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
 //    map.put(Janus.Metadata.OAUTH_CALLBACKURL.val(), CALLBACK_URL);
-    return ClientMetaData.fromMetaData(map, "consumerKey");
+    return new JanusClientMetadata(EntityMetadata.fromMetadataMap(map));
   }
 
   public void setDefaultSecret(String defaultSecret) {
