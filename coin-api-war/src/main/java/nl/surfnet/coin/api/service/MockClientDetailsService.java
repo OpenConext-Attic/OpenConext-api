@@ -86,7 +86,9 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
     map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
 //    map.put(Janus.Metadata.OAUTH_CALLBACKURL.val(), CALLBACK_URL);
-    return new JanusClientMetadata(EntityMetadata.fromMetadataMap(map));
+    final EntityMetadata entityMetadata = EntityMetadata.fromMetadataMap(map);
+    entityMetadata.setAppEntityId(entityId);
+    return new JanusClientMetadata(entityMetadata);
   }
 
   public void setDefaultSecret(String defaultSecret) {
