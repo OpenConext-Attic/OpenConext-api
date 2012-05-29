@@ -40,7 +40,6 @@ import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.janus.Janus;
-import nl.surfnet.coin.janus.Janus.Metadata;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
@@ -53,13 +52,6 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
   
   @Autowired
   private Janus janus;
-
-  /*
-   * All the meta data fields we need from Janus 
-   */
-  public static final Metadata[] METADATA_TO_FETCH = { Metadata.OAUTH_SECRET, Metadata.OAUTH_CONSUMERKEY,
-      Metadata.OAUTH_CALLBACKURL, Metadata.OAUTH_TWOLEGGEDALLOWED, Metadata.OAUTH_APPTITLE,
-      Metadata.OAUTH_APPDESCRIPTION, Metadata.OAUTH_APPTHUMBNAIL, Metadata.OAUTH_APPICON };
 
   @Override
   @Cacheable(value = { "janus-meta-data" })
@@ -90,7 +82,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
       return null;
     }
     String entityId = entityIds.get(0);
-    return janus.getMetadataByEntityId(entityId, METADATA_TO_FETCH);
+    return janus.getMetadataByEntityId(entityId);
   }
 
   /**

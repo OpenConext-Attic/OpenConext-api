@@ -55,7 +55,7 @@ public class EntityMetadata implements Serializable {
 
     em.setOauthConsumerSecret((String) metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
     em.setOauthConsumerKey((String) metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
-    em.setAppDescription((String) metadata.get(Janus.Metadata.DESCRIPTION.val()));
+    em.setAppDescription((String) metadata.get(Janus.Metadata.OAUTH_APPDESCRIPTION.val()));
     em.setAppEntityId((String) metadata.get(Janus.Metadata.ENTITY_ID.val()));
     em.setAppIcon((String) metadata.get(Janus.Metadata.OAUTH_APPICON.val()));
     em.setAppThumbNail((String) metadata.get(Janus.Metadata.OAUTH_APPTHUMBNAIL.val()));

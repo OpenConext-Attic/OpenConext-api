@@ -68,10 +68,10 @@ public class JanusRestClient implements Janus {
    * {@inheritDoc}
    */
   @Override
-  public EntityMetadata getMetadataByEntityId(String entityId, Metadata... metadatas) {
+  public EntityMetadata getMetadataByEntityId(String entityId) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", entityId);
-    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(metadatas), new Transformer() {
+    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(Metadata.values()), new Transformer() {
       @Override
       public Object transform(Object input) {
         return ((Metadata) input).val();
@@ -185,11 +185,11 @@ public class JanusRestClient implements Janus {
   }
 
   @Override
-  public List<EntityMetadata> getSpList(Metadata... attributes) {
+  public List<EntityMetadata> getSpList() {
 
     Map<String, String> parameters = new HashMap<String, String>();
 
-    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(attributes), new Transformer() {
+    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(Metadata.values()), new Transformer() {
       @Override
       public Object transform(Object input) {
         return ((Metadata) input).val();

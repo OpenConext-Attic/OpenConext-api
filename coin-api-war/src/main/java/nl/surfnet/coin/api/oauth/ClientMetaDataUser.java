@@ -20,14 +20,13 @@ package nl.surfnet.coin.api.oauth;
 
 import java.util.Collection;
 
-import nl.surfnet.coin.janus.Janus;
-import nl.surfnet.coin.janus.Janus.Metadata;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import nl.surfnet.coin.janus.Janus;
+
 /**
- * Encapsulated the {@link Metadata} from {@link Janus}
+ * Encapsulated the {@link ClientMetaData} from {@link Janus}
  *
  */
 @SuppressWarnings("serial")

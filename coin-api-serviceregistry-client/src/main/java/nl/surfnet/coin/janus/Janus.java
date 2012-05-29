@@ -69,7 +69,7 @@ public interface Janus {
    * Get a client's metadata by his entityId.
    * @param entityId the entityId
    */
-  EntityMetadata getMetadataByEntityId(String entityId, Metadata... attributes);
+  EntityMetadata getMetadataByEntityId(String entityId);
 
   /**
    *
@@ -97,13 +97,9 @@ public interface Janus {
 
   /**
    * Retrieves a list of all Service Providers.
-   * Note that if you do not pass along any attributes very
-   * little will be returned. You must specify the metadata you
-   * want to see.
    *
-   * @param attributes the attributes to fetch
    * @return for each SP (by entity id), a map of attributes and its values.
    */
-  List<EntityMetadata> getSpList(Metadata... attributes);
+  List<EntityMetadata> getSpList();
 
 }

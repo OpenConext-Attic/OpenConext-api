@@ -65,13 +65,13 @@ public class JanusRestClientTest {
     map.put("coin:oauth:secret", "hissecret");
     map.put("coin:oauth:two_legged_allowed", Boolean.TRUE);
     when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(map);
-    String result = janusRestClient.getMetadataByEntityId("foo", Janus.Metadata.OAUTH_SECRET).getOauthConsumerSecret();
+    String result = janusRestClient.getMetadataByEntityId("foo").getOauthConsumerSecret();
     assertEquals("hissecret", result);
     verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
     assertTrue("Query string should contain correct entityid", captor.getValue().getQuery().contains("entityid=foo"));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains("method=getMetadata"));
     assertTrue("Query string should contain correct metadata field names", captor.getValue().getQuery().contains
-        ("keys=coin:oauth:secret"));
+        ("coin:oauth:secret"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 
@@ -117,7 +117,7 @@ public class JanusRestClientTest {
     final Map<String, Map<String, Object>> data = new HashMap<String, Map<String, Object>>();
     data.put("entityid", new HashMap<String, Object>());
     when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(data);
-    List<EntityMetadata> result = janusRestClient.getSpList(Janus.Metadata.NAMEIDFORMAT);
+    List<EntityMetadata> result = janusRestClient.getSpList();
 
     assertNotNull(result.get(0));
 
@@ -125,8 +125,9 @@ public class JanusRestClientTest {
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
         ("method=getSpList"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
+    System.out.println(captor.getValue().getQuery());
     assertTrue("Query string should contain correct metadata field names", captor.getValue().getQuery().contains
-        ("keys=" + Janus.Metadata.NAMEIDFORMAT.val()));
+        (Janus.Metadata.NAMEIDFORMAT.val()));
 
   }
 }

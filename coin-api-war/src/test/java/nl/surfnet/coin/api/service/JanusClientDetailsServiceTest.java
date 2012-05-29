@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.cache.CacheManager;
@@ -119,7 +117,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
    * 
    */
   @Test
-  public void testCache() throws JsonParseException, JsonMappingException, IOException {
+  public void testCache() throws IOException {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(this.getClass());
 
     ClientDetailsService clientDetailsService = (ClientDetailsService) ctx.getBean("janusClientDetailsService");
@@ -127,7 +125,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
 
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenReturn(
         Collections.singletonList("sp-entity-id"));
-    when(janus.getMetadataByEntityId("sp-entity-id", JanusClientDetailsService.METADATA_TO_FETCH)).thenReturn(
+    when(janus.getMetadataByEntityId("sp-entity-id")).thenReturn(
         getMetadata());
     ClientDetails clientDetails = clientDetailsService.loadClientByClientId("consumerkey");
     assertEquals("secret", clientDetails.getClientSecret());
@@ -150,7 +148,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     reset(janus);
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenReturn(
         Collections.singletonList("sp-entity-id"));
-    when(janus.getMetadataByEntityId("sp-entity-id", JanusClientDetailsService.METADATA_TO_FETCH)).thenReturn(
+    when(janus.getMetadataByEntityId("sp-entity-id")).thenReturn(
         getMetadata());
 
     ConsumerDetailsService consumerDetailsService = (ConsumerDetailsService) clientDetailsService;
