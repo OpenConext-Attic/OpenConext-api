@@ -93,12 +93,10 @@ public class JanusRestClient implements Janus {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
-      return transformMetadataResponse(restResponse);
-      // FIXME: do this:
-//      returnMap.put(Metadata.ENTITY_ID.val(), entityId); // put entity id as a
-//                                                         // metadata field as
-//                                                         // well.
 
+      final EntityMetadata entityMetadata = transformMetadataResponse(restResponse);
+      entityMetadata.setAppEntityId(entityId);
+      return entityMetadata;
     } catch (IOException e) {
       LOG.error("While doing Janus-request", e);
     }
@@ -215,7 +213,9 @@ public class JanusRestClient implements Janus {
       List<EntityMetadata> entities = new ArrayList<EntityMetadata>();
       for (Map.Entry<String, Map<String, Object>> entry : restResponse.entrySet()) {
         String entityId = entry.getKey();
-        entities.add(EntityMetadata.fromMetadataMap(entry.getValue()));
+        final EntityMetadata e = EntityMetadata.fromMetadataMap(entry.getValue());
+        e.setAppEntityId(entityId);
+        entities.add(e);
       }
 
       return entities;
