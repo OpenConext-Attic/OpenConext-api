@@ -40,6 +40,7 @@ import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupEntry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
@@ -246,6 +247,18 @@ public class ApiController extends AbstractApiController {
     setResultOptions(group20Entry, count, startIndex, sortBy);
     return group20Entry;
   }
+  
+  @RequestMapping(method = RequestMethod.GET, value = "/osgroups/{userId:.+}")
+  @ResponseBody
+  public GroupEntry getOsGroups(@PathVariable("userId")
+  String userId, @RequestParam(value = "count", required = false)
+  Integer count, @RequestParam(value = "startIndex", required = false)
+  Integer startIndex, @RequestParam(value = "sortBy", required = false)
+  String sortBy) {
+    return new GroupEntry(getGroups(userId, count, startIndex, sortBy));
+    
+  }
+ 
 
   /*
    * Get all SURFTeams groups for those external groups that linked to one or

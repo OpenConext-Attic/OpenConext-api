@@ -31,6 +31,7 @@ import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
+import nl.surfnet.coin.teams.service.BasicAuthGroupService;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
 import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
@@ -51,6 +52,9 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
 
   @Resource(name = "oauthGroupService")
   private OauthGroupService oauthGroupService;
+
+  @Resource(name = "basicAuthGroupService")
+  private BasicAuthGroupService basicAuthGroupService;
 
   /*
    * (non-Javadoc)
@@ -143,10 +147,21 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
   @Override
   public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId,
       int limit, int offset) {
-    GroupProviderUserOauth oauth = groupProviderService.getGroupProviderUserOauth(onBehalfOf,
-        groupProvider.getIdentifier());
-    if (oauth != null) {
-      return oauthGroupService.getGroupMembersEntry(oauth, groupProvider, groupId, limit, offset);
+    switch (groupProvider.getGroupProviderType()) {
+    case BASIC_AUTHENTICATION: {
+      return basicAuthGroupService.getGroupMembersEntry(groupProvider, onBehalfOf, groupId, limit, offset);
+    }
+    case OAUTH_THREELEGGED: {
+      GroupProviderUserOauth oauth = groupProviderService.getGroupProviderUserOauth(onBehalfOf,
+          groupProvider.getIdentifier());
+      if (oauth != null) {
+        return oauthGroupService.getGroupMembersEntry(oauth, groupProvider, groupId, limit, offset);
+      }
+      break;
+    }
+    default:
+      throw new RuntimeException(String.format("Not supported GroupProviderType(%s)",
+          groupProvider.getGroupProviderType()));
     }
     // sensible default
     return new GroupMembersEntry(new ArrayList<Person>());
@@ -161,10 +176,21 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    */
   @Override
   public Group20Entry getGroup20Entry(GroupProvider groupProvider, String userId, int limit, int offset) {
-    GroupProviderUserOauth oauth = groupProviderService
-        .getGroupProviderUserOauth(userId, groupProvider.getIdentifier());
-    if (oauth != null) {
-      return oauthGroupService.getGroup20Entry(oauth, groupProvider, limit, offset);
+    switch (groupProvider.getGroupProviderType()) {
+    case BASIC_AUTHENTICATION: {
+      return basicAuthGroupService.getGroup20Entry(groupProvider, userId, limit, offset);
+    }
+    case OAUTH_THREELEGGED: {
+      GroupProviderUserOauth oauth = groupProviderService
+          .getGroupProviderUserOauth(userId, groupProvider.getIdentifier());
+      if (oauth != null) {
+        return oauthGroupService.getGroup20Entry(oauth, groupProvider, limit, offset);
+      }
+      break;
+    }
+    default:
+      throw new RuntimeException(String.format("Not supported GroupProviderType(%s)",
+          groupProvider.getGroupProviderType()));
     }
     // sensible default
     return new Group20Entry(new ArrayList<Group20>());
@@ -172,10 +198,21 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
 
   @Override
   public Group20 getGroup20(GroupProvider groupProvider, String userId, String groupId) {
-    GroupProviderUserOauth oauth = groupProviderService
-        .getGroupProviderUserOauth(userId, groupProvider.getIdentifier());
-    if (oauth != null) {
-      return oauthGroupService.getGroup20(oauth, groupProvider, groupId);
+    switch (groupProvider.getGroupProviderType()) {
+    case BASIC_AUTHENTICATION: {
+      return basicAuthGroupService.getGroup20(groupProvider, userId, groupId);
+    }
+    case OAUTH_THREELEGGED: {
+      GroupProviderUserOauth oauth = groupProviderService
+          .getGroupProviderUserOauth(userId, groupProvider.getIdentifier());
+      if (oauth != null) {
+        return oauthGroupService.getGroup20(oauth, groupProvider, groupId);
+      }
+      break;
+    }
+    default:
+      throw new RuntimeException(String.format("Not supported GroupProviderType(%s)",
+          groupProvider.getGroupProviderType()));
     }
     // can't think of a sensible default
     return null;
@@ -236,6 +273,13 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
    */
   public void setOauthGroupService(OauthGroupService oauthGroupService) {
     this.oauthGroupService = oauthGroupService;
+  }
+
+  /**
+   * @param basicAuthGroupService the basicAuthGroupService to set
+   */
+  public void setBasicAuthGroupService(BasicAuthGroupService basicAuthGroupService) {
+    this.basicAuthGroupService = basicAuthGroupService;
   }
 
 }

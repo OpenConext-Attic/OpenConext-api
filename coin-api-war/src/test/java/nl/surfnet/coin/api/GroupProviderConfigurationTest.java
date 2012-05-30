@@ -34,6 +34,7 @@ import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
+import nl.surfnet.coin.teams.service.BasicAuthGroupService;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
 
@@ -79,6 +80,9 @@ public class GroupProviderConfigurationTest {
 
   @Mock
   private OauthGroupService oauthGroupService;
+  
+  @Mock
+  private BasicAuthGroupService basicAuthGroupService;
 
   @Before
   public void before() {
@@ -86,49 +90,9 @@ public class GroupProviderConfigurationTest {
     configuration = new GroupProviderConfigurationImpl();
     configuration.setGroupProviderService(groupProviderService);
     configuration.setOauthGroupService(oauthGroupService);
+    configuration.setBasicAuthGroupService(basicAuthGroupService);
   }
 
-  /**
-   * Happy flow with pre-recorded json data
-   * 
-   * @throws Exception
-   *           unexpected
-   */
-  @Test
-  public void testGrouperConfigurationFlow() throws Exception {
-    when(groupProviderService.getAllGroupProviders()).thenReturn(getGroupProviders());
-    List<GroupProvider> allGroupProviders = configuration.getAllGroupProviders();
-    assertEquals(3, allGroupProviders.size());
-
-    List<GroupProvider> allowedGroupProviders = configuration.getAllowedGroupProviders(Service.Group,
-        "https://valid-grouper-sp-entity-id", allGroupProviders);
-    assertEquals(2, allowedGroupProviders.size());
-
-    boolean grouper = false;
-    for (GroupProvider groupProvider : allowedGroupProviders) {
-      if (!groupProvider.isExternalGroupProvider()) {
-        grouper = true;
-      }
-    }
-    assertTrue("In the json file " + GROUP_PROVIDERS_CONFIGURATION_JSON
-        + " there must be valid ACL's configured for Grouper GroupProvider", grouper);
-
-    allowedGroupProviders = configuration.getAllowedGroupProviders(Service.People,
-        "https://valid-grouper-sp-entity-id", allGroupProviders);
-    assertEquals(1, allowedGroupProviders.size());
-
-    GroupProvider groupProvider = allowedGroupProviders.get(0);
-    GroupProviderUserOauth userOauth = new GroupProviderUserOauth("onBehalfOf", groupProvider.getIdentifier(), "token",
-        "secret");
-    when(groupProviderService.getGroupProviderUserOauth("onBehalfOf", groupProvider.getIdentifier())).thenReturn(
-        userOauth);
-    GroupMembersEntry entry = new GroupMembersEntry();
-    when(oauthGroupService.getGroupMembersEntry(userOauth, groupProvider, "groupId", 0, 0)).thenReturn(entry);
-
-    GroupMembersEntry groupMembersEntry = configuration.getGroupMembersEntry(groupProvider, "onBehalfOf", "groupId", 0,
-        0);
-    assertEquals(entry, groupMembersEntry);
-  }
 
   @Test
   public void testComplementGrouperUrns() throws Exception {
@@ -212,6 +176,11 @@ public class GroupProviderConfigurationTest {
   @Bean(name = "oauthGroupService")
   public OauthGroupService oauthGroupService() {
     return mock(OauthGroupService.class);
+  }
+
+  @Bean(name = "basicAuthGroupService")
+  public BasicAuthGroupService basicAuthGroupService() {
+    return mock(BasicAuthGroupService.class);
   }
 
   @Bean(name = "groupProviderService")

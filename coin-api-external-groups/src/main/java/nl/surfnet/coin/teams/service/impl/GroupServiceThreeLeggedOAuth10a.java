@@ -56,11 +56,12 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
  * Implementation for a {@link OauthGroupService} using 3-legged OAuth
  */
 @Component(value = "oauthGroupService")
-public class GroupServiceThreeLeggedOAuth10a implements OauthGroupService {
+public class GroupServiceThreeLeggedOAuth10a extends AbstractGroupService implements OauthGroupService {
   private static Logger log = LoggerFactory.getLogger(GroupServiceThreeLeggedOAuth10a.class);
+  
   private static final int MAX_ITEMS = 1000;
 
-  private OpenConextJsonParser parser = new OpenConextJsonParser();
+  protected OpenConextJsonParser parser = new OpenConextJsonParser();
 
   @Override
   public Group20Entry getGroup20Entry(GroupProviderUserOauth oauth, GroupProvider groupProvider,
@@ -83,7 +84,7 @@ public class GroupServiceThreeLeggedOAuth10a implements OauthGroupService {
 
     Response oAuthResponse = oAuthRequest.send();
     if (oAuthResponse.isSuccessful()) {
-      final Group20Entry entry = getGroup20EntryFromResponse(oAuthResponse, groupProvider);
+      final Group20Entry entry = getGroup20EntryFromResponse(oAuthResponse.getStream(), groupProvider);
       return entry;
     } else {
       log.info("Fetching external groups for user {} failed with status code {}",
@@ -115,7 +116,7 @@ public class GroupServiceThreeLeggedOAuth10a implements OauthGroupService {
     oAuthService.signRequest(accessToken, oAuthRequest);
     Response oAuthResponse = oAuthRequest.send();
     if (oAuthResponse.isSuccessful()) {
-      final Group20Entry group20Entry = getGroup20EntryFromResponse(oAuthResponse, groupProvider);
+      final Group20Entry group20Entry = getGroup20EntryFromResponse(oAuthResponse.getStream(), groupProvider);
       if (group20Entry == null) {
         return null;
       }
@@ -166,35 +167,13 @@ public class GroupServiceThreeLeggedOAuth10a implements OauthGroupService {
     Response oAuthResponse = oAuthRequest.send();
 
     if (oAuthResponse.isSuccessful()) {
-      return getGroupMembersEntryFromResponse(oAuthResponse, provider);
+      return getGroupMembersEntryFromResponse(oAuthResponse.getStream(), provider);
     } else {
       log.info("Fetching external groupmembers for user {} for group {} failed with status code {}",
           new Object[]{strippedPersonID, strippedPersonID, oAuthResponse.getCode()});
       log.trace(oAuthResponse.getBody());
     }
     return null;
-  }
-
-  private GroupMembersEntry getGroupMembersEntryFromResponse(Response oAuthResponse, GroupProvider provider) {
-    String body = oAuthResponse.getBody();
-    InputStream in = new ByteArrayInputStream(body.getBytes());
-    if (log.isDebugEnabled()) {
-      log.debug("Groupmember {} response {}", provider.getIdentifier(), body);
-    }
-    GroupMembersEntry groupMembersEntry = parser.parseTeamMembers(in);
-    List<Person> persons = groupMembersEntry.getEntry();
-    // iterator to prevent ConcurrentModificationException
-    for (Iterator<Person> iterator = persons.iterator(); iterator.hasNext(); ) {
-      Person person = iterator.next();
-      String id = person.getId();
-      if (StringUtils.hasText(id)) {
-        String collabId = convertToSurfConextPersonId(id, provider);
-        person.setId(collabId);
-      } else {
-        iterator.remove();
-      }
-    }
-    return groupMembersEntry;
   }
 
   private OAuthRequest getGroupListOAuthRequest(GroupProvider provider, final ThreeLeggedOauth10aGroupProviderApi api,
@@ -222,25 +201,6 @@ public class GroupServiceThreeLeggedOAuth10a implements OauthGroupService {
             provider.getAllowedOptionAsString(GroupProviderOptionParameters.URL),
             strippedPersonID, strippedGroupId));
     return oAuthRequest;
-  }
-
-  private Group20Entry getGroup20EntryFromResponse(Response oAuthResponse, GroupProvider groupProvider) {
-    Group20Entry entry = parser.parseGroups20(oAuthResponse.getStream());
-    for (Group20 group20 : entry.getEntry()) {
-      String scGroupId = convertToSurfConextGroupId(group20.getId(),
-          groupProvider);
-      group20.setId(scGroupId);
-
-      String scGroupName = convertProperty(PROPERTY_NAME,
-          group20.getTitle(), groupProvider.getGroupFilters());
-      group20.setTitle(scGroupName);
-
-      String scGroupDesc = convertProperty(PROPERTY_DESCRIPTION,
-          group20.getDescription(), groupProvider.getGroupFilters());
-
-      group20.setDescription(scGroupDesc);
-    }
-    return entry;
   }
 
 

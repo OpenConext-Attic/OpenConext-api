@@ -18,6 +18,8 @@ package nl.surfnet.coin.api;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 
 import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
@@ -26,6 +28,7 @@ import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -40,8 +43,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class MockExternalGroupProviderTestIntegration {
 
@@ -54,6 +60,7 @@ public class MockExternalGroupProviderTestIntegration {
   private static final String OAUTH_KEY = "key";
   private static final String OAUTH_SECRET = "mysecret";
   private static final String OS_URL = "mock10/social/rest/";
+  private static final String BASIC_URL = "mockbasic/social/rest/";
 
   @Before
   public void before() {
@@ -83,7 +90,7 @@ public class MockExternalGroupProviderTestIntegration {
   }
 
   @Test
-  public void testUserInjectionGroup() {
+  public void testUserInjectionGroup() throws UniformInterfaceException, ClientHandlerException, IOException {
     String personId = "allen.ripe";
     addPerson(createPerson(personId, "allen.ripe@example.com"));
 
@@ -98,6 +105,13 @@ public class MockExternalGroupProviderTestIntegration {
     OAuthRequest req = new OAuthRequest(Verb.GET, getApiBaseUrl().concat(OS_URL).concat("groups/".concat(personId)));
     String bodyText = getResult(req);
     assertTrue("response body should contain correct json data", bodyText.contains("itemsPerPage\":2"));
+
+    Client client = Client.create();
+    client.addFilter(new HTTPBasicAuthFilter("okke", "password"));
+    WebResource webResource = client.resource(getApiBaseUrl().concat(BASIC_URL).concat("groups/".concat(personId)));
+    String response = IOUtils.toString(webResource.get(InputStream.class));
+    assertTrue("response body should contain correct json data", response.contains("itemsPerPage\":2"));
+
   }
 
   @Test
@@ -105,13 +119,13 @@ public class MockExternalGroupProviderTestIntegration {
     String groupId = "urn:collab:group:example.com.group1";
     addGroup(new Group20(groupId, "title", "description"));
 
-    String[] personIds = {"person1","person2","person3"};
-     for (String personId : personIds) {
-       addPerson(createPerson(personId, personId.concat("@example.com")));
-       addPersonToGroup(personId, groupId);
+    String[] personIds = { "person1", "person2", "person3" };
+    for (String personId : personIds) {
+      addPerson(createPerson(personId, personId.concat("@example.com")));
+      addPersonToGroup(personId, groupId);
     }
-    OAuthRequest req = new OAuthRequest(Verb.GET, String.format(getApiBaseUrl().concat(OS_URL).concat(
-        "people/%s/%s"),personIds[0],groupId));
+    OAuthRequest req = new OAuthRequest(Verb.GET, String.format(getApiBaseUrl().concat(OS_URL).concat("people/%s/%s"),
+        personIds[0], groupId));
     String bodyText = getResult(req);
     assertTrue("response body should contain correct json data", bodyText.contains("itemsPerPage\":3"));
     assertTrue(bodyText.contains("person1@example.com"));

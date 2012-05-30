@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
+import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.service.MockServiceImpl;
 import nl.surfnet.coin.eb.EngineBlock;
 import nl.surfnet.coin.shared.log.ApiCallLog;
@@ -28,6 +29,9 @@ import nl.surfnet.coin.shared.log.ApiCallLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  */
 @Controller
-@RequestMapping(value = "mock10/social/rest")
-@SuppressWarnings("unchecked")
+@RequestMapping(value = { "mock10/social/rest", "mockbasic/social/rest" })
 public class MockApiController extends ApiController {
 
   private static Logger LOG = LoggerFactory.getLogger(MockApiController.class);
@@ -171,4 +174,29 @@ public class MockApiController extends ApiController {
   protected void addApiCallLogInfo(ApiCallLog log) {
     log.setApiVersion("MOCK");
   }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see nl.surfnet.coin.api.AbstractApiController#getClientMetaData()
+   */
+  @Override
+  protected ClientMetaData getClientMetaData() {
+    try {
+      return super.getClientMetaData();
+    } catch (IllegalArgumentException e) {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      // basic
+      if (authentication instanceof UsernamePasswordAuthenticationToken) {
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
+        ClientMetaData metaData = new ClientMetaData();
+        metaData.setAppEntityId("DUMMY-BASIC-AUTH");
+        metaData.setConsumerKey(token.getPrincipal() + ":" + token.getCredentials());
+        return metaData;
+      } else {
+        throw e;
+      }
+    }
+  }
+
 }

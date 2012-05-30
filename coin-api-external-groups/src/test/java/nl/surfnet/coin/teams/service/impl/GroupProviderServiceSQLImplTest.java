@@ -85,7 +85,7 @@ public class GroupProviderServiceSQLImplTest extends AbstractInMemoryDatabaseTes
   @Test
   public void testGetAllGroupProviders() throws Exception {
     List<GroupProvider> all = groupProviderServiceSQL.getAllGroupProviders();
-    assertEquals(3,all.size());
+    assertEquals(4,all.size());
     //we need to ensure Grouper is also in here
     boolean grouperPresent = false;
     for (GroupProvider groupProvider : all) {
@@ -96,6 +96,12 @@ public class GroupProviderServiceSQLImplTest extends AbstractInMemoryDatabaseTes
     }
     assertTrue(grouperPresent);
     
+  }
+  
+  @Test
+  public void testGetBasicAuthProvider() throws Exception {
+    GroupProvider groupProvider = groupProviderServiceSQL.getGroupProviderByStringIdentifier("mock");
+    assertEquals(GroupProviderType.BASIC_AUTHENTICATION, groupProvider.getGroupProviderType());
   }
   
   /**

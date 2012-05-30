@@ -88,6 +88,16 @@
 			after="EXCEPTION_TRANSLATION_FILTER" />
 	</security:http>
 
+	<security:http pattern="/mockbasic/social/rest/**" authentication-manager-ref="mockAuthenticationManager">
+		<security:http-basic />
+		<security:intercept-url pattern="/mockbasic/social/rest/**"
+			access="ROLE_USER" />
+	</security:http>
+	
+	<bean id="mockAuthenticationManager"
+		class="nl.surfnet.coin.api.basic.MockBasicAuthenticationManager" />
+
+
 	<!-- configuration interface -->
 	<security:http security="none" pattern="/configure/**" />
 	<!-- static stuff -->
@@ -109,6 +119,7 @@
 			value="${coin-api.shibboleth.login.url}" />
 		<property name="useForward" value="false" />
 	</bean>
+	
 	<bean id="shibbolethAuthenticationManager"
 		class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
 

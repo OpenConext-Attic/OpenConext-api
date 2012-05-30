@@ -23,7 +23,8 @@ package nl.surfnet.coin.teams.domain;
  */
 public enum GroupProviderType {
   GROUPER("EngineBlock_Group_Provider_Grouper"),
-  OAUTH_THREELEGGED("EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged");
+  OAUTH_THREELEGGED("EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged"),
+  BASIC_AUTHENTICATION("EngineBlock_Group_Provider_OpenSocial_HttpBasic");
 
   private final String groupProviderType;
 
