@@ -19,8 +19,8 @@
 
   <!-- Ant for replacing the property version in the spring config -->
   <target name="build" description="Replace the version token with the pom-version">
-    <copy file="${basedir}/src/main/resources/context/ROOT.xml"
-      tofile="${basedir}/target/resources/context/ROOT.xml" overwrite="true">
+    <copy file="${basedir}/src/main/resources/context/v1.xml"
+      tofile="${basedir}/target/resources/context/v1.xml" overwrite="true">
       <filterset>
         <filter token="VERSION" value="${coin-version}" />
       </filterset>
