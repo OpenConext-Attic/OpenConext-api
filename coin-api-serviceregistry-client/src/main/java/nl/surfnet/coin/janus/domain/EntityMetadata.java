@@ -48,6 +48,7 @@ public class EntityMetadata implements Serializable {
   private boolean twoLeggedOauthAllowed;
   private String appLogoUrl;
   private String appHomeUrl;
+  private String eula;
   private List<Contact> contacts = Collections.synchronizedList(new ArrayList<Contact>());
 
   private boolean isIdpVisibleOnly;
@@ -65,6 +66,7 @@ public class EntityMetadata implements Serializable {
 
     em.setAppHomeUrl((String) metadata.get(Janus.Metadata.ORGANIZATION_URL.val()));
     em.setAppLogoUrl((String) metadata.get(Janus.Metadata.LOGO_URL.val()));
+    em.setEula((String) metadata.get(Janus.Metadata.EULA.val()));
 
     em.setTwoLeggedOauthAllowed(false);
     if (metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()) != null) {
@@ -76,25 +78,67 @@ public class EntityMetadata implements Serializable {
       em.setIdpVisibleOnly((Boolean) metadata.get(Janus.Metadata.SS_IDP_VISIBLE_ONLY.val()));
     }
 
-    if (metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val()) != null) {
+    final Object c0Mail = metadata.get(Janus.Metadata.CONTACTS_0_EMAIL.val());
+    if (metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val()) != null &&
+        !emptyString(c0Mail)) {
       Contact contact = new Contact();
-      contact.setEmailAddress((String) metadata.get(Janus.Metadata.CONTACTS_0_EMAIL.val()));
+      contact.setEmailAddress((String) c0Mail);
       contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_0_GIVENNAME.val()));
       contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_0_SURNAME.val()));
+      Object phone = metadata.get(Janus.Metadata.CONTACTS_0_TELEPHONE.val());
+      contact.setTelephoneNumber(getPhoneAsString(phone));
       contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val())));
       em.addContact(contact);
     }
 
-    if (metadata.get(Janus.Metadata.CONTACTS_1_TYPE.val()) != null) {
+    final Object c1Mail = metadata.get(Janus.Metadata.CONTACTS_1_EMAIL.val());
+    if (metadata.get(Janus.Metadata.CONTACTS_1_TYPE.val()) != null &&
+        !emptyString(c1Mail)) {
       Contact contact = new Contact();
-      contact.setEmailAddress((String) metadata.get(Janus.Metadata.CONTACTS_1_EMAIL.val()));
+      contact.setEmailAddress((String) c1Mail);
       contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_1_GIVENNAME.val()));
       contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_1_SURNAME.val()));
+      Object phone = metadata.get(Janus.Metadata.CONTACTS_1_TELEPHONE.val());
+      contact.setTelephoneNumber(getPhoneAsString(phone));
       contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_1_TYPE.val())));
       em.addContact(contact);
     }
 
+    final Object c2Mail = metadata.get(Janus.Metadata.CONTACTS_2_EMAIL.val());
+    if (metadata.get(Janus.Metadata.CONTACTS_2_TYPE.val()) != null &&
+        !emptyString(c2Mail)) {
+      Contact contact = new Contact();
+      contact.setEmailAddress((String) c2Mail);
+      contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_2_GIVENNAME.val()));
+      contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_2_SURNAME.val()));
+      Object phone = metadata.get(Janus.Metadata.CONTACTS_2_TELEPHONE.val());
+      contact.setTelephoneNumber(getPhoneAsString(phone));
+      contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_2_TYPE.val())));
+      em.addContact(contact);
+    }
+
     return em;
+  }
+
+  private static boolean emptyString(Object o) {
+    return !(o instanceof String) || "".equals(((String) o).trim());
+  }
+
+  /**
+   * The value of the phone number sometimes autocasts to an Integer
+   *
+   * @param p Object that may contain the phone number
+   * @return String value of the phone number, can be {@literal null}
+   */
+  private static String getPhoneAsString(Object p) {
+    String phone = null;
+    if (p instanceof String) {
+      phone = (String) p;
+
+    } else if (p instanceof Integer) {
+      phone = p.toString();
+    }
+    return phone;
   }
 
   private void addContact(Contact contact) {
@@ -205,4 +249,11 @@ public class EntityMetadata implements Serializable {
     isIdpVisibleOnly = idpVisibleOnly;
   }
 
+  public String getEula() {
+    return eula;
+  }
+
+  public void setEula(String eula) {
+    this.eula = eula;
+  }
 }

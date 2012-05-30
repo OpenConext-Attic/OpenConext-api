@@ -48,10 +48,18 @@ public interface Janus {
     CONTACTS_0_EMAIL("contacts:0:emailAddress"),
     CONTACTS_0_GIVENNAME("contacts:0:givenName"),
     CONTACTS_0_SURNAME("contacts:0:surName"),
+    CONTACTS_0_TELEPHONE("contacts:0:telephoneNumber"),
     CONTACTS_1_TYPE("contacts:1:contactType"),
     CONTACTS_1_EMAIL("contacts:1:emailAddress"),
     CONTACTS_1_GIVENNAME("contacts:1:givenName"),
     CONTACTS_1_SURNAME("contacts:1:surName"),
+    CONTACTS_1_TELEPHONE("contacts:1:telephoneNumber"),
+    CONTACTS_2_TYPE("contacts:2:contactType"),
+    CONTACTS_2_EMAIL("contacts:2:emailAddress"),
+    CONTACTS_2_GIVENNAME("contacts:2:givenName"),
+    CONTACTS_2_SURNAME("contacts:2:surName"),
+    CONTACTS_2_TELEPHONE("contacts:2:telephoneNumber"),
+    EULA("coin:eula"),
     SS_IDP_VISIBLE_ONLY("coin:ss:idp_visible_only"),
     ;
 

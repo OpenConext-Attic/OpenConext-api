@@ -27,6 +27,7 @@ public class Contact {
   private String givenName;
   private String surName;
   private String emailAddress;
+  private String telephoneNumber;
 
   public Type getType() {
     return type;
@@ -58,5 +59,13 @@ public class Contact {
 
   public void setEmailAddress(String emailAddress) {
     this.emailAddress = emailAddress;
+  }
+
+  public String getTelephoneNumber() {
+    return telephoneNumber;
+  }
+
+  public void setTelephoneNumber(String telephoneNumber) {
+    this.telephoneNumber = telephoneNumber;
   }
 }
