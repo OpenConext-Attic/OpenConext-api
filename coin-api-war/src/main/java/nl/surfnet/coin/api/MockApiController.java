@@ -22,8 +22,10 @@ import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.api.service.MockServiceImpl;
 import nl.surfnet.coin.eb.EngineBlock;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
 import nl.surfnet.coin.shared.log.ApiCallLog;
 
 import org.slf4j.Logger;
@@ -189,10 +191,11 @@ public class MockApiController extends ApiController {
       // basic
       if (authentication instanceof UsernamePasswordAuthenticationToken) {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        ClientMetaData metaData = new ClientMetaData();
+        EntityMetadata metaData = new EntityMetadata();
         metaData.setAppEntityId("DUMMY-BASIC-AUTH");
-        metaData.setConsumerKey(token.getPrincipal() + ":" + token.getCredentials());
-        return metaData;
+        metaData.setOauthConsumerKey(token.getPrincipal() + ":" + token.getCredentials());
+        JanusClientMetadata clientMetadata = new JanusClientMetadata(metaData);
+        return clientMetadata;
       } else {
         throw e;
       }
