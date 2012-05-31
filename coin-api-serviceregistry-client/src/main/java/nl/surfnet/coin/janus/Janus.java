@@ -18,6 +18,7 @@ package nl.surfnet.coin.janus;
 
 import java.util.List;
 
+import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
@@ -109,5 +110,13 @@ public interface Janus {
    * @return for each SP (by entity id), a map of attributes and its values.
    */
   List<EntityMetadata> getSpList();
+
+  /**
+   * Retrieves the Attribute Release Policy for this entity
+   *
+   * @param entityId the identifier of the entity
+   * @return ARP
+   */
+  ARP getArp(String entityId);
 
 }

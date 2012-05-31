@@ -41,6 +41,7 @@ import org.springframework.http.converter.json.MappingJacksonHttpMessageConverte
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
+import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
@@ -224,6 +225,24 @@ public class JanusRestClient implements Janus {
       LOG.error("While doing Janus-request", e);
     }
     return null;
+  }
+
+  @Override
+  public ARP getArp(String entityId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("entityid", entityId);
+    URI signedUri = null;
+    try {
+      signedUri = sign("arp", parameters);
+      LOG.debug("Signed Janus-request is: {}", signedUri);
+    } catch (IOException e) {
+      LOG.error("Could not do ARP request to Janus", e);
+    }
+
+    final Map restResponse = restTemplate.getForObject(signedUri, Map.class);
+    LOG.debug("Janus-request returned {}", restResponse);
+
+    return restResponse == null ? null : ARP.fromRestResponse(restResponse);
   }
 
   /**
