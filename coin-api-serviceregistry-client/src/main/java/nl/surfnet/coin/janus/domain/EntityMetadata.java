@@ -33,8 +33,6 @@ import nl.surfnet.coin.janus.Janus;
  */
 public class EntityMetadata implements Serializable {
 
-
-
   private static final long serialVersionUID = 1L;
 
   private String oauthConsumerKey;

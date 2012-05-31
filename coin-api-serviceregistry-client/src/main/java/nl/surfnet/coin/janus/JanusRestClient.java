@@ -90,12 +90,14 @@ public class JanusRestClient implements Janus {
       }
 
       final Map<String, Object> restResponse = restTemplate.getForObject(signedUri, Map.class);
+      Assert.notNull(restResponse, "Rest response from Janus should not be null");
 
       if (LOG.isDebugEnabled()) {
         LOG.debug("Janus-request returned: {}", restResponse.toString());
       }
 
-      final EntityMetadata entityMetadata = transformMetadataResponse(restResponse);
+      final EntityMetadata entityMetadata = EntityMetadata.fromMetadataMap(restResponse);
+      
       entityMetadata.setAppEntityId(entityId);
       return entityMetadata;
     } catch (IOException e) {
@@ -104,20 +106,7 @@ public class JanusRestClient implements Janus {
     return null;
   }
 
-  /**
-   * Transform a Map&lt;String, Object&gt; to Map&lt;String, String&gt;.
-   * 
-   * @param metadata
-   *          input map
-   * @return transformed map
-   */
-  private EntityMetadata transformMetadataResponse(Map<String, Object> metadata) {
-    // FIXME: remove this method?
-    Assert.notNull(metadata, "input object should not be null");
-    return EntityMetadata.fromMetadataMap(metadata);
-  }
-
-  @Override
+   @Override
   public List<String> getEntityIdsByMetaData(Metadata key, String value) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("key", key.val());

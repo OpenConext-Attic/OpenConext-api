@@ -16,10 +16,13 @@
 
 package nl.surfnet.coin.janus.domain;
 
-public class Contact {
+import java.io.Serializable;
 
+public class Contact implements Serializable{
 
-  public enum Type {
+  private static final long serialVersionUID = 1L;
+
+  public enum Type implements Serializable {
     technical, administrative, support, billing, other
   }
 

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.cache.CacheManager;
@@ -61,24 +62,25 @@ import static org.mockito.Mockito.when;
 
 @Configuration
 @EnableCaching
-public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest implements CachingConfigurer{
+public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest implements CachingConfigurer {
 
   private JanusClientDetailsService service;
+  private JanusRestClient restClient;
 
   @Before
   public void init() throws URISyntaxException {
     service = new JanusClientDetailsService();
-    JanusRestClient janus = new JanusRestClient();
+    restClient = new JanusRestClient();
     RestTemplate restTemplate = new RestTemplate();
     List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
     converters.add(new MappingJacksonHttpMessageConverter());
     restTemplate.setMessageConverters(converters);
-    janus.setJanusUri(new URI("http://localhost:8088/janus/services/rest/"));
-    janus.setSecret("secret");
-    janus.setUser("user");
+    restClient.setJanusUri(new URI("http://localhost:8088/janus/services/rest/"));
+    restClient.setSecret("secret");
+    restClient.setUser("user");
 
-    janus.setRestTemplate(restTemplate);
-    service.setJanus(janus);
+    restClient.setRestTemplate(restTemplate);
+    service.setJanus(restClient);
   }
 
   @Test
@@ -110,6 +112,18 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     assertEquals("app-thumbnail", result.getClientMetaData().getAppThumbNail());
   }
 
+  /*
+   * We store the metaData serialized in the database (Spring mandates this). We
+   * want to ensure we can serialize the MetaData.
+   */
+  @Test
+  public void serializeMetaData() {
+    super.setResponseResource(new ClassPathResource("janus/janus-response-metadata.json"));
+    EntityMetadata metaData = restClient.getMetadataByEntityId("http://dummy-entity-id");
+    byte[] serialize = SerializationUtils.serialize(metaData);
+
+  }
+
   /**
    * Test to see if the cache works. Especially the fact that we store items in
    * the same cache with the same key for different return Objects:
@@ -125,8 +139,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
 
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenReturn(
         Collections.singletonList("sp-entity-id"));
-    when(janus.getMetadataByEntityId("sp-entity-id")).thenReturn(
-        getMetadata());
+    when(janus.getMetadataByEntityId("sp-entity-id")).thenReturn(getMetadata());
     ClientDetails clientDetails = clientDetailsService.loadClientByClientId("consumerkey");
     assertEquals("secret", clientDetails.getClientSecret());
 
@@ -148,8 +161,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     reset(janus);
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenReturn(
         Collections.singletonList("sp-entity-id"));
-    when(janus.getMetadataByEntityId("sp-entity-id")).thenReturn(
-        getMetadata());
+    when(janus.getMetadataByEntityId("sp-entity-id")).thenReturn(getMetadata());
 
     ConsumerDetailsService consumerDetailsService = (ConsumerDetailsService) clientDetailsService;
     ConsumerDetails consumerDetails = consumerDetailsService.loadConsumerByConsumerKey("consumerkey");
@@ -158,7 +170,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     when(janus.getEntityIdsByMetaData(Metadata.OAUTH_CONSUMERKEY, "consumerkey")).thenThrow(
         new RuntimeException("Cache did not kick in"));
     consumerDetailsService.loadConsumerByConsumerKey("consumerkey");
-}
+  }
 
   private EntityMetadata getMetadata() {
     EntityMetadata em = new EntityMetadata();
@@ -179,7 +191,6 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
   public Janus janus() {
     return mock(Janus.class);
   }
-
 
   @Bean
   public CacheManager cacheManager() {
