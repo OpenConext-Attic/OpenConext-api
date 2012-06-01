@@ -69,7 +69,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   @Override
   public PersonEntry getPerson(String userId, String loggedInUser) {
-    if (isActive) {
+    if (isActive()) {
       return getPreparedPerson(userId);
     }
     /*
@@ -113,7 +113,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
   @Override
   public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex,
       String sortBy) {
-    if (isActive) {
+    if (isActive()) {
       return getPreparedGroupMembers(groupId);
     }
     ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, groupId, "teammembers"));
@@ -198,7 +198,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    */
   @Override
   public Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
-    if (isActive) {
+    if (isActive()) {
       return getPreparedGroups20(userId);
     }
     ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, userId, "groups20"));
@@ -219,7 +219,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   @Override
   public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
-    if (isActive) {
+    if (isActive()) {
       return getPreparedGroup20(groupId);
     }
     ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, groupId, "group20"));
