@@ -217,8 +217,13 @@
 		</property>
 	</bean>
 
+	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg ref="grouperJdbcTemplate"/>
+	</bean>
+
 	<bean id="apiGrouperDao" class="nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl">
 		<property name="jdbcTemplate" ref="grouperJdbcTemplate" />
+		<property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
 	</bean>
 
 	<bean id="groupProviderService"

@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
@@ -37,14 +42,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.Assert;
 
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
-
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao {
 
-  JdbcTemplate jdbcTemplate;
+  private JdbcTemplate jdbcTemplate;
+  /*
+   * http://static.springsource.org/spring/docs/2.5.x/reference/jdbc.html#jdbc-in-clause
+   */
+  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
   
   private static final Map<String, String> VALID_SORTS_FOR_TEAM_QUERY;
 
@@ -185,7 +189,6 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
   @Override
   public Group20Entry findGroups20ByIds(String personId, String[] groupIds, Integer pageSize, Integer offset) {
-    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.jdbcTemplate);
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("groupId", Arrays.asList(groupIds));
 
@@ -196,7 +199,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     params.put("offset",offset);
     try {
       String sql = SQL_FIND_TEAMS_LIKE_GROUPNAMES;
-      groups = template.query(sql, params, new OpenSocial20GroupRowMapper());
+      groups = namedParameterJdbcTemplate.query(sql, params, new OpenSocial20GroupRowMapper());
       addRolesToGroups(personId, groups);
     } catch (EmptyResultDataAccessException e) {
     }
@@ -213,14 +216,10 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
           return ((Person) input).getId();
         }
       });
-      /*
-       * http://static.springsource.org/spring/docs/2.5.x/reference/jdbc.html#jdbc-in-clause
-       */
-      NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.jdbcTemplate);
       Map<String, Object> params = new HashMap<String, Object>();
       params.put("groupId", groupId);
       params.put("identifiers", personIds);
-      template.query(SQL_ROLES_BY_TEAM_AND_MEMBERS, params, handler);
+      namedParameterJdbcTemplate.query(SQL_ROLES_BY_TEAM_AND_MEMBERS, params, handler);
       for (Person person : persons) {
         Role role = handler.roles.get(person.getId());
         role = (role == null ? Role.Member : role);
@@ -242,5 +241,12 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
         roles.put(personName, permission.equals("admins") ? Role.Admin : Role.Manager);
       }
     }
+  }
+
+  /**
+   * @param namedParameterJdbcTemplate the namedParameterJdbcTemplate to set
+   */
+  public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
   }
 }
