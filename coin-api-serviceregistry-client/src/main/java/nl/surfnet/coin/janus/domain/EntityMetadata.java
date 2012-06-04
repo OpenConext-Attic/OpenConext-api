@@ -35,6 +35,7 @@ public class EntityMetadata implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  private String name;
   private String oauthConsumerKey;
   private String oauthConsumerSecret;
   private String appTitle;
@@ -54,6 +55,7 @@ public class EntityMetadata implements Serializable {
   public static EntityMetadata fromMetadataMap(Map<String, Object> metadata) {
     EntityMetadata em = new EntityMetadata();
 
+    em.setName((String) metadata.get(Janus.Metadata.NAME.val()));
     em.setOauthConsumerSecret((String) metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
     em.setOauthConsumerKey((String) metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
     em.setAppDescription((String) metadata.get(Janus.Metadata.OAUTH_APPDESCRIPTION.val()));
@@ -253,5 +255,13 @@ public class EntityMetadata implements Serializable {
 
   public void setEula(String eula) {
     this.eula = eula;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }
