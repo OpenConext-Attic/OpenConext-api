@@ -1,0 +1,6 @@
+We have moved the context-path from ROOT.xml to v1.xml. This implies that
+the application is available under https://api.acc.surfconext.nl/v1/
+
+The deployment descriptor in Tomcat has been changed, so please notice that we
+delete the ROOT.xml in /opt/tomcat/conf/Catalina/api.ENV.surfconext.nl/
+and use the new v1.xml file in resources/context/ 
