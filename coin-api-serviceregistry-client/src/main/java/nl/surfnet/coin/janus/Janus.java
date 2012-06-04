@@ -119,4 +119,13 @@ public interface Janus {
    */
   ARP getArp(String entityId);
 
+  /**
+   * Return {@literal true} or {@literal false} depending wether connection is allowed or not.
+   *
+   * @param spEntityId  identifier of the Service Provider
+   * @param idpEntityId identifier of the Identity Provider
+   * @return {@literal true} of the connection is allowed, otherwise {@literal false}
+   */
+  boolean isConnectionAllowed(String spEntityId, String idpEntityId);
+
 }

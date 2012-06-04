@@ -234,6 +234,25 @@ public class JanusRestClient implements Janus {
     return restResponse == null ? null : ARP.fromRestResponse(restResponse);
   }
 
+  @Override
+  public boolean isConnectionAllowed(String spEntityId, String idpEntityId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("spentityid", spEntityId);
+    parameters.put("idpentityid", idpEntityId);
+    URI signedUri = null;
+    try {
+      signedUri = sign("isConnectionAllowed", parameters);
+      LOG.debug("Signed Janus-request is: {}", signedUri);
+    } catch (IOException e) {
+      LOG.error("Could not do isConnectionAllowed request to Janus", e);
+    }
+
+    final List restResponse = restTemplate.getForObject(signedUri, List.class);
+    LOG.debug("Janus-request returned {}", restResponse);
+
+    return CollectionUtils.isEmpty(restResponse) ? false : (Boolean) restResponse.get(0);
+  }
+
   /**
    * Sign the given method call.
    * 
