@@ -19,15 +19,11 @@
 package nl.surfnet.coin.api.basic;
 
 import java.util.Arrays;
-import java.util.Collection;
-
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
@@ -44,7 +40,6 @@ public class MockBasicAuthenticationManager implements AuthenticationManager {
    * org.springframework.security.authentication.AuthenticationManager#authenticate
    * (org.springframework.security.core.Authentication)
    */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
