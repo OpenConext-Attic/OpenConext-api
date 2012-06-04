@@ -41,7 +41,11 @@
 
   <dependencyManagement>
     <dependencies>
-
+		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp</artifactId>
+			<version>0.7.1.RELEASE</version>
+		</dependency>
       <!-- transitive dependencies of spring-security-taglibs. These depend 
         on 3.0.6. -->
       <dependency>
@@ -73,6 +77,10 @@
   </dependencyManagement>
 
   <dependencies>
+  		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp</artifactId>
+		</dependency>
       <dependency>
         <groupId>org.surfnet.coin</groupId>
         <artifactId>coin-test</artifactId>
