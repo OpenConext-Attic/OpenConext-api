@@ -49,14 +49,14 @@ public class GroupServiceBasicAuthentication10aTest extends
   @Test
   public void testGetGroupMembersAvans() {
     super.setResponseResource(new ClassPathResource("avans-teammembers.json"));
-    GroupMembersEntry entry = groupService.getGroupMembersEntry(provider, "personId", "urn:collab:group:avans.nl:testgroup",123456,0);
+    GroupMembersEntry entry = groupService.getGroupMembersEntry(provider, "personId", "urn:collab:group:avans.nl:testgroup",2147483647,0);
     assertEquals(12, entry.getEntry().size());
   }
 
   @Test
   public void testGetGroup20EntryHz() {
     super.setResponseResource(new ClassPathResource("hz-groups.json"));
-    final Group20Entry group20Entry = groupService.getGroup20Entry(provider,"person", 123456, 0);
+    final Group20Entry group20Entry = groupService.getGroup20Entry(provider,"person", 2147483647, 0);
     final List<Group20> group20s = group20Entry.getEntry();
     assertEquals(3, group20Entry.getTotalResults());
     assertEquals(3, group20s.size());

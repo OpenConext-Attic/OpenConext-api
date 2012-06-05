@@ -108,7 +108,7 @@ public class MockExternalGroupProviderTestIntegration {
 
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("okke", "password"));
-    WebResource webResource = client.resource(getApiBaseUrl().concat(BASIC_URL).concat("groups/".concat(personId)));
+    WebResource webResource = client.resource(getApiBaseUrl().concat(BASIC_URL).concat("groups/".concat(personId).concat("?startIndex=0&count=2147483647")));
     String response = IOUtils.toString(webResource.get(InputStream.class));
     assertTrue("response body should contain correct json data", response.contains("itemsPerPage\":2"));
 
