@@ -1,0 +1,6 @@
+No database changes, no property files changes
+
+Implemented:
+
+https://jira.surfconext.nl/jira/browse/BACKLOG-481
+https://jira.surfconext.nl/jira/browse/BACKLOG-511
