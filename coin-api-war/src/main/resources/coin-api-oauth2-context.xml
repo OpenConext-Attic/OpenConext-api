@@ -47,7 +47,7 @@
 
   <security:http pattern="/oauth/**" authentication-manager-ref="shibbolethAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
-       entry-point-ref="shibbolethEntryPoint"
+       entry-point-ref="shibbolethEntryPoint" 
       >
     <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
@@ -96,6 +96,8 @@
   <bean id="accessConfirmationController" class="nl.surfnet.coin.api.controller.AccessConfirmationController">
     <property name="clientDetailsService" ref="janusClientDetailsService" />
   </bean>
+  
+  <bean id="implicitGrantExplicitRedirectResolver" class="nl.surfnet.coin.api.oauth.ImplicitGrantExplicitRedirectResolver"/>
 
   <oauth2:authorization-server
       token-endpoint-url="/oauth2/token"
@@ -103,7 +105,9 @@
       user-approval-handler-ref="approvalHandler"
       client-details-service-ref="janusClientDetailsService"
       user-approval-page="redirect:/oauth2/confirm_access"
-      token-services-ref="tokenServices">
+      token-services-ref="tokenServices"
+      redirect-resolver-ref="implicitGrantExplicitRedirectResolver"
+      >
     <oauth2:authorization-code/>
     <oauth2:implicit/>
   </oauth2:authorization-server>
