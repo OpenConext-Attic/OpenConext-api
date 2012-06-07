@@ -45,6 +45,7 @@ public class EntityMetadata implements Serializable {
   private String appEntityId;
   private String oauthCallbackUrl;
   private boolean twoLeggedOauthAllowed;
+  private boolean consentNotRequired;
   private String appLogoUrl;
   private String appHomeUrl;
   private String eula;
@@ -73,6 +74,11 @@ public class EntityMetadata implements Serializable {
       em.setTwoLeggedOauthAllowed((Boolean) metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()));
     }
 
+    em.setConsentNotRequired(false);
+    if (metadata.get(Janus.Metadata.OAUTH_CONSENTNOTREQUIRED.val()) != null) {
+      em.setConsentNotRequired((Boolean) metadata.get(Janus.Metadata.OAUTH_CONSENTNOTREQUIRED.val()));
+    }
+    
     em.setIdpVisibleOnly(false);
     if (metadata.get(Janus.Metadata.SS_IDP_VISIBLE_ONLY.val()) != null) {
       em.setIdpVisibleOnly((Boolean) metadata.get(Janus.Metadata.SS_IDP_VISIBLE_ONLY.val()));
@@ -264,4 +270,20 @@ public class EntityMetadata implements Serializable {
   public void setName(String name) {
     this.name = name;
   }
+
+  /**
+   * @return the consentNotRequired
+   */
+  public boolean isConsentNotRequired() {
+    return consentNotRequired;
+  }
+
+  /**
+   * @param consentNotRequired the consentNotRequired to set
+   */
+  public void setConsentNotRequired(boolean consentNotRequired) {
+    this.consentNotRequired = consentNotRequired;
+  }
+
+ 
 }

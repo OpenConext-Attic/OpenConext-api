@@ -18,7 +18,6 @@
  */
 package nl.surfnet.coin.api.oauth;
 
-
 /**
  * Interface of information about an OAuth1/2 client.
  */
@@ -53,4 +52,9 @@ public interface ClientMetaData {
    * @return the consumerKey
    */
   String getConsumerKey();
-  }
+
+  /**
+   * @return is consent is required
+   */
+  boolean isConsentRequired();
+}

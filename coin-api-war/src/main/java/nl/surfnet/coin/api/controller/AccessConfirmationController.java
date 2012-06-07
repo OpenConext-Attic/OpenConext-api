@@ -18,7 +18,14 @@ package nl.surfnet.coin.api.controller;
 
 import java.util.TreeMap;
 
+import javax.annotation.Resource;
+
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
+import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -53,4 +60,5 @@ public class AccessConfirmationController {
   public void setClientDetailsService(ClientDetailsService clientDetailsService) {
     this.clientDetailsService = clientDetailsService;
   }
+
 }

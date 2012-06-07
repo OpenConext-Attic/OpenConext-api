@@ -74,8 +74,9 @@
     <property name="authenticationManager" ref="shibbolethAuthenticationManager" />
   </bean>
 
-  <bean id="approvalHandler" class="org.springframework.security.oauth2.provider.approval.TokenServicesUserApprovalHandler">
+  <bean id="approvalHandler" class="nl.surfnet.coin.api.oauth.ConfigurableTokenServicesUserApprovalHandler">
     <property name="tokenServices" ref="tokenServices" />
+    <property name="clientDetailsService" ref="janusClientDetailsService" />
   </bean>
 
   <bean id="clientCredentialsTokenEndpointFilter"

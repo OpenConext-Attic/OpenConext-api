@@ -18,11 +18,17 @@ package nl.surfnet.coin.api.controller;
 
 import java.util.TreeMap;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetailsService;
+import org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter;
 import org.springframework.security.oauth.provider.token.OAuthProviderToken;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenServices;
 import org.springframework.stereotype.Controller;
@@ -30,8 +36,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Controller for retrieving the model for and displaying the confirmation page for access to a protected resource.
- *
+ * Controller for retrieving the model for and displaying the confirmation page
+ * for access to a protected resource.
+ * 
  * @author Ryan Heaton
  * @author Dave Syer
  */
@@ -44,17 +51,18 @@ public class Oauth1AccessConfirmationController {
   @Autowired
   private ConsumerDetailsService clientDetailsService;
 
+  @Resource(name = "oauthAuthenticateTokenFilter")
+  private UserAuthorizationProcessingFilter userAuthorizationProcessingFilter;
+
   @RequestMapping("/oauth1/confirm_access")
-  public ModelAndView getAccessConfirmation(HttpServletRequest request)
-      throws Exception {
+  public ModelAndView getAccessConfirmation(HttpServletRequest request, HttpServletResponse response) throws Exception {
     String token = request.getParameter("oauth_token");
     if (token == null) {
       throw new IllegalArgumentException("A request token to authorize must be provided.");
     }
 
     OAuthProviderToken providerToken = tokenServices.getToken(token);
-    ConsumerDetails client = clientDetailsService
-        .loadConsumerByConsumerKey(providerToken.getConsumerKey());
+    ConsumerDetails client = clientDetailsService.loadConsumerByConsumerKey(providerToken.getConsumerKey());
 
     String callback = request.getParameter("oauth_callback");
     TreeMap<String, Object> model = new TreeMap<String, Object>();
@@ -63,6 +71,18 @@ public class Oauth1AccessConfirmationController {
       model.put("oauth_callback", callback);
     }
     model.put("client", client);
+
+    if (client instanceof ExtendedBaseConsumerDetails) {
+      ClientMetaData clientMetaData = ((ExtendedBaseConsumerDetails) client).getClientMetaData();
+      if (!clientMetaData.isConsentRequired()) {
+        /*
+         * We skip the consent screen, but to ensure that we hit all the filters and keep
+         * the user flow intact we have implemented this using a javascript POST
+         */
+        return new ModelAndView("access_confirmation_oauth1_skip_consent", model);
+      }
+    }
+
     return new ModelAndView("access_confirmation_oauth1", model);
   }
 
@@ -70,8 +90,15 @@ public class Oauth1AccessConfirmationController {
     this.tokenServices = tokenServices;
   }
 
-
   public void setClientDetailsService(ConsumerDetailsService clientDetailsService) {
     this.clientDetailsService = clientDetailsService;
+  }
+
+  /**
+   * @param userAuthorizationProcessingFilter
+   *          the userAuthorizationProcessingFilter to set
+   */
+  public void setUserAuthorizationProcessingFilter(UserAuthorizationProcessingFilter userAuthorizationProcessingFilter) {
+    this.userAuthorizationProcessingFilter = userAuthorizationProcessingFilter;
   }
 }
