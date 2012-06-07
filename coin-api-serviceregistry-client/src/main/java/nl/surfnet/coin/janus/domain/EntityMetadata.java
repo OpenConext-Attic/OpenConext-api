@@ -49,6 +49,7 @@ public class EntityMetadata implements Serializable {
   private String appLogoUrl;
   private String appHomeUrl;
   private String eula;
+  private String description;
   private List<Contact> contacts = Collections.synchronizedList(new ArrayList<Contact>());
 
   private boolean isIdpVisibleOnly;
@@ -57,6 +58,7 @@ public class EntityMetadata implements Serializable {
     EntityMetadata em = new EntityMetadata();
 
     em.setName((String) metadata.get(Janus.Metadata.NAME.val()));
+    em.setDescription((String) metadata.get(Janus.Metadata.DESCRIPTION.val()));
     em.setOauthConsumerSecret((String) metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
     em.setOauthConsumerKey((String) metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
     em.setAppDescription((String) metadata.get(Janus.Metadata.OAUTH_APPDESCRIPTION.val()));
@@ -269,6 +271,14 @@ public class EntityMetadata implements Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   /**
