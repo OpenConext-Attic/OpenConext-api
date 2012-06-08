@@ -46,6 +46,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
 
+  private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
   private Logger LOG = LoggerFactory.getLogger(Oauth20ImplicitGrantTestSelenium.class);
 
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
@@ -100,7 +101,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
         .provider(OpenConextApi20Implicit.class)
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
-        .callback("http://localhost/mock-callback-url")
+        .callback(OAUTH_CALLBACK_URL)
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
         .build();
     String authUrl = service.getAuthorizationUrl(null);

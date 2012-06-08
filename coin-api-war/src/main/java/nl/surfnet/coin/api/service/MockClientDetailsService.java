@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
   private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
   private String defaultSecret = "mysecret";
-//  private static final String CALLBACK_URL = "http://localhost/mock-callback-url";
+  private static final String CALLBACK_URL = "http://localhost:8083/";
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
@@ -58,6 +59,8 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
     ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
+    details.setRegisteredRedirectUri(Collections.singleton(CALLBACK_URL));
+
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;
   }
@@ -74,6 +77,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     consumerDetails.setSignatureSecret(new SharedConsumerSecret(defaultSecret));
     consumerDetails.setClientMetaData(mockMetadata(consumerKey));
     ClientMetaDataHolder.setClientMetaData(consumerDetails.getClientMetaData());
+
     LOG.debug("Got request loadClientByClientId({}), will return: {}", consumerKey, consumerDetails);
     return consumerDetails;
 
@@ -85,7 +89,6 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     map.put(Janus.Metadata.OAUTH_APPICON.val(), "mock-appicon.png");
     map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
     map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
-//    map.put(Janus.Metadata.OAUTH_CALLBACKURL.val(), CALLBACK_URL);
     final EntityMetadata entityMetadata = EntityMetadata.fromMetadataMap(map);
     entityMetadata.setAppEntityId(entityId);
     return new JanusClientMetadata(entityMetadata);
