@@ -1,9 +1,3 @@
-<%@ page import="org.springframework.security.core.AuthenticationException" %>
-<%@ page import="org.springframework.security.web.WebAttributes" %>
-<%@ page import="org.springframework.security.oauth2.common.exceptions.UnapprovedClientAuthenticationException" %>
-<%@ taglib prefix="authz" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%--
   ~ Copyright 2012 SURFnet bv, The Netherlands
   ~
@@ -19,77 +13,49 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>OAuth Authorization</title>
-  <link type="text/css" rel="stylesheet" href="<c:url value="/css/oauth.css"/>"/>
-  <!--[if lt IE 8 ]><link href="<c:url value="/css/oauth_ie.css"/>" rel="stylesheet" type="text/css" media="screen" /><![endif]-->
-</head>
-<body class="index">
-<div id="wrapper">
-  <div id="header"><img class="app-icon" src="${client.clientMetaData.appIcon}"/> <strong><c:out value="${client.clientMetaData.appEntityId}" default="No Title"/></strong> is trying to access your information</div>
-  <div id="main">
-    <ul class="nav">
-      <li class="active"><a href="#">EN</a></li>
-    </ul>
+<%@ taglib prefix="authz" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="client" scope="request" type="nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails"/>
+<c:set scope="request" var="clientAppTitle" value="${client.clientMetaData.appTitle}" />
+<c:set scope="request" var="clientAppIcon" value="${client.clientMetaData.appIcon}" />
+<c:set scope="request" var="clientAppEulaUrl" value="${client.clientMetaData.eulaUrl}"/>
+<c:set scope="request" var="userSchacHomeOrganization" value="${client.clientMetaData.appEntityId}"/>
 
-    <h1>Do you want to grant access to <c:out value="${client.consumerName}" default="No Title"/>?</h1>
+<jsp:include page="header.jsp" />
 
-    <% if (session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) != null && !(session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) instanceof UnapprovedClientAuthenticationException)) { %>
-    <div class="error">
-      <h2>Woops!</h2>
+<authz:authorize ifAllGranted="ROLE_USER">
 
-      <p>Access could not be granted. (<%= ((AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION)).getMessage() %>)</p>
-    </div>
-    <% } %>
-    <c:remove scope="session" var="SPRING_SECURITY_LAST_EXCEPTION"/>
-
-    <authz:authorize ifAllGranted="ROLE_USER">
-
-    <p>The application below is trying to access your group information. This application will be able to access your groups and information about your group members.</p>
-    <div class="main-top"></div>
-    <div class="main">
-      <span class="category top"><strong>You are logged in as:</strong></span>
-      <div class="column-container">
-        <div class="column first-column">
-          <dl>
-            <dt>Display Name:</dt>
-            <dd><c:out value="${header.displayName}" default="No Display Name provided" /></dd>
-            <dt>User ID:</dt>
-            <dd class="last user-id" id="UserId">${header.REMOTE_USER}</dd>
-          </dl>
-        </div>
-        <div class="column">
-          <dl>
-            <dt>Home Organization:</dt>
-            <dd class="last"><c:out value="${header.schacHomeOrganization}" default="No Home Organization provided" /></dd>
-          </dl>
-        </div>
-      </div>
-      <span class="category"><strong>Application Details:</strong></span>
-      <img class="app-thumb" src="${client.clientMetaData.appThumbNail}" align="right" alt="application thumbnail" />
-      <span class="description"><c:out value="${client.clientMetaData.appDescription}"
-                                       default="This application has no description."/></span>
-      <div class="form">
-        <form name="authZFormGrant" action="<%=request.getContextPath()%>/oauth1/authorize" method="POST">
+  <div id="approve">
+    <!-- YES -->
+    <form id="accept" method="post" action="<%=request.getContextPath()%>/oauth1/authorize">
+      <p>
+        <input name="authorize" value="true" type="hidden"/>
         <input name="oauth_token" value="<c:out value="${oauth_token}"/>" type="hidden"/>
         <c:if test="${!empty oauth_callback}">
           <input name="callbackURL" value="<c:out value="${oauth_callback}"/>" type="hidden"/>
         </c:if>
-        <label><input name="authorize" value="Authorize" type="submit"></label>
-        </form>
+        <input id="accept_terms_button"
+               class="submit bigbutton"
+               type="submit"
+               value="Allow"
+               style="font-weight: bold;" />
+      </p>
+    </form>
 
-      </div>
-    </div>
-    <div class="main-bottom"></div>
-    <div class="bottom">
-      <p>This service is made possible by <a href='http://www.surfnet.nl/'>SURFnet</a>.</p>
-    </div>
+    <!-- NO -->
+    <form id="reject" method="post" action="<%=request.getContextPath()%>">
+      <p>
+        <input name="user_oauth_approval" value="false" type="hidden"/>
+
+        <input id="decline_terms_button" class="submit bigbutton"
+               type="submit" value="Deny" />
+      </p>
+    </form>
   </div>
-  </authz:authorize>
 
-</div>
-</body>
-</html>
+  <p>This message only appears when you log in at a new service or when the information, passed to the service, is changed.</p>
+  </div>
+
+</authz:authorize>
+
+<jsp:include page="footer.jsp" />

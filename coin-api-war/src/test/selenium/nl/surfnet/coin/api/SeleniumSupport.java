@@ -102,8 +102,7 @@ public class SeleniumSupport {
     WebElement authorizeButton = null;
     try {
       authorizeButton = getWebDriver()
-          .findElement(By.name("authZFormGrant"))
-          .findElement(By.name("Authorize"));
+          .findElement(By.id("accept_terms_button"));
     } catch (RuntimeException e) {
       LOG.debug("No consent form found, probably no consent needed anymore.");
     }

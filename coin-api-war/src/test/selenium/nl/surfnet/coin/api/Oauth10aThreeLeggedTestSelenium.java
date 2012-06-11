@@ -77,7 +77,7 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     // direct user to verification url.
     getWebDriver().get(authUrl);
     LOG.debug("Confirm-URL: {}", getWebDriver().getCurrentUrl());
-    getWebDriver().findElement(By.name("authorize")).click();
+    getWebDriver().findElement(By.id("accept_terms_button")).click();
     LOG.debug("after-Confirm-URL: {}", getWebDriver().getCurrentUrl());
 
     final String redirectUrl = getWebDriver().getCurrentUrl();

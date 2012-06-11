@@ -24,8 +24,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>OAuth Authorization</title>
-  <link type="text/css" rel="stylesheet" href="<c:url value="/css/oauth.css"/>"/>
-  <!--[if lt IE 8 ]><link href="<c:url value="/css/oauth_ie.css"/>" rel="stylesheet" type="text/css" media="screen" /><![endif]-->
 </head>
 <body onLoad="doLogin();" class="index">
 	<script type="text/javascript">
@@ -46,6 +44,5 @@
 
       </div>
   </authz:authorize>
-
 </body>
 </html>
