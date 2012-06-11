@@ -57,4 +57,10 @@ public interface ClientMetaData {
    * @return is consent is required
    */
   boolean isConsentRequired();
+
+  /**
+   * Get the EULA URL
+   * @return String representing the EULA URL
+   */
+  String getEulaUrl();
 }

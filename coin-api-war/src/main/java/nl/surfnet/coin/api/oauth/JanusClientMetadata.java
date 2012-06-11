@@ -33,6 +33,7 @@ public class JanusClientMetadata implements ClientMetaData, Serializable {
   private final static long serialVersionUid = 1L;
 
   private EntityMetadata metadata;
+  private String eulaUrl;
 
   public JanusClientMetadata() {
   }
@@ -85,4 +86,7 @@ public class JanusClientMetadata implements ClientMetaData, Serializable {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(metadata).toString();
   }
 
+  public String getEulaUrl() {
+    return metadata.getEula();
+  }
 }

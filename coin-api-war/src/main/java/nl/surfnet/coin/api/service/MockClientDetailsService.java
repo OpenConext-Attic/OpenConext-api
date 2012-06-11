@@ -89,6 +89,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     map.put(Janus.Metadata.OAUTH_APPICON.val(), "mock-appicon.png");
     map.put(Janus.Metadata.OAUTH_APPTHUMBNAIL.val(), "mock-appthumbnail");
     map.put(Janus.Metadata.OAUTH_APPTITLE.val(), "My mocked application");
+    map.put(Janus.Metadata.EULA.val(), "http://eula-url-of-a-mocked-application.example.com/");
     final EntityMetadata entityMetadata = EntityMetadata.fromMetadataMap(map);
     entityMetadata.setAppEntityId(entityId);
     return new JanusClientMetadata(entityMetadata);
