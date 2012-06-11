@@ -26,6 +26,7 @@ import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter;
@@ -51,6 +52,9 @@ public class Oauth1AccessConfirmationController {
   @Autowired
   private ConsumerDetailsService clientDetailsService;
 
+  @Value("${staticContentBasePath}")
+  private String staticContentBasePath;
+
   @Resource(name = "oauthAuthenticateTokenFilter")
   private UserAuthorizationProcessingFilter userAuthorizationProcessingFilter;
 
@@ -71,6 +75,7 @@ public class Oauth1AccessConfirmationController {
       model.put("oauth_callback", callback);
     }
     model.put("client", client);
+    model.put("staticContentBasePath", staticContentBasePath);
 
     if (client instanceof ExtendedBaseConsumerDetails) {
       ClientMetaData clientMetaData = ((ExtendedBaseConsumerDetails) client).getClientMetaData();

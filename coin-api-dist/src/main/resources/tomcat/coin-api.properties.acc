@@ -83,3 +83,6 @@ mock-api-enabled=false
 coin-api.db.migrations.folder=db/migration/mysql
 #Cache manager
 cacheManagerClass=org.springframework.cache.ehcache.EhCacheCacheManager
+
+staticContentBasePath=https://static.acc.surfconext.nl
+

@@ -18,14 +18,8 @@ package nl.surfnet.coin.api.controller;
 
 import java.util.TreeMap;
 
-import javax.annotation.Resource;
-
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth.provider.filter.UserAuthorizationProcessingFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -47,12 +41,16 @@ public class AccessConfirmationController {
 
   private ClientDetailsService clientDetailsService;
 
+  @Value("${staticContentBasePath}")
+  private String staticContentBasePath;
+
   @RequestMapping("/oauth2/confirm_access")
   public ModelAndView getAccessConfirmation(@ModelAttribute AuthorizationRequest clientAuth) throws Exception {
     ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
     TreeMap<String, Object> model = new TreeMap<String, Object>();
     model.put("auth_request", clientAuth);
     model.put("client", client);
+    model.put("staticContentBasePath", staticContentBasePath);
     return new ModelAndView("access_confirmation", model);
   }
 
