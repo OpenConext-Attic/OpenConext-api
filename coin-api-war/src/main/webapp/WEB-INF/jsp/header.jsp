@@ -86,7 +86,7 @@
 
       <ul class="attributes">
         <li>Groups</li>
-        <li>information about group members</li>
+        <li>Group memberships</li>
       </ul>
 
       <p>
