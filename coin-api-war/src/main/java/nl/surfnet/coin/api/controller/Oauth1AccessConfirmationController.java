@@ -35,6 +35,7 @@ import org.springframework.security.oauth.provider.token.OAuthProviderTokenServi
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * Controller for retrieving the model for and displaying the confirmation page
@@ -75,6 +76,7 @@ public class Oauth1AccessConfirmationController {
       model.put("oauth_callback", callback);
     }
     model.put("client", client);
+    model.put("locale", RequestContextUtils.getLocale(request).toString());
     model.put("staticContentBasePath", staticContentBasePath);
 
     if (client instanceof ExtendedBaseConsumerDetails) {

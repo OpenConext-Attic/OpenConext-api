@@ -15,6 +15,7 @@
   --%>
 <%@ taglib prefix="authz" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <jsp:useBean id="client" scope="request" type="nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails"/>
 <c:set scope="request" var="clientAppTitle" value="${client.clientMetaData.appTitle}" />
 <c:set scope="request" var="clientAppIcon" value="${client.clientMetaData.appIcon}" />
@@ -24,7 +25,10 @@
 
 <authz:authorize ifAllGranted="ROLE_USER">
 
-<div id="approve">
+<spring:message var="acceptButtonText" code="consent.button.accept" />
+<spring:message var="denyButtonText" code="consent.button.deny" />
+
+  <div id="approve">
         <!-- YES -->
         <form id="accept" method="post" action="<%=request.getContextPath()%>/oauth/authorize">
           <p>
@@ -33,7 +37,7 @@
             <input id="accept_terms_button"
                    class="submit bigbutton"
                    type="submit"
-                   value="Allow"
+                   value="${acceptButtonText}"
                    style="font-weight: bold;" />
           </p>
         </form>
@@ -44,12 +48,12 @@
             <input name="user_oauth_approval" value="false" type="hidden"/>
 
             <input id="decline_terms_button" class="submit bigbutton"
-                   type="submit" value="Deny" />
+                   type="submit" value="${denyButtonText}" />
           </p>
         </form>
       </div>
 
-      <p>This message only appears when you log in at a new service or when the information, passed to the service, is changed.</p>
+      <p><spring:message code="consent.only-new-or-changed" /></p>
     </div>
 
   </authz:authorize>

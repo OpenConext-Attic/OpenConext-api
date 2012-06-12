@@ -18,6 +18,8 @@ package nl.surfnet.coin.api.controller;
 
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -28,12 +30,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * Controller for retrieving the model for and displaying the confirmation page for access to a protected resource.
- * 
- * @author Ryan Heaton
- * @author Dave Syer
  */
 @Controller
 @SessionAttributes(types = AuthorizationRequest.class)
@@ -45,11 +45,13 @@ public class AccessConfirmationController {
   private String staticContentBasePath;
 
   @RequestMapping("/oauth2/confirm_access")
-  public ModelAndView getAccessConfirmation(@ModelAttribute AuthorizationRequest clientAuth) throws Exception {
+  public ModelAndView getAccessConfirmation(HttpServletRequest request,
+                                            @ModelAttribute AuthorizationRequest clientAuth) throws Exception {
     ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
     TreeMap<String, Object> model = new TreeMap<String, Object>();
     model.put("auth_request", clientAuth);
     model.put("client", client);
+    model.put("locale", RequestContextUtils.getLocale(request).toString());
     model.put("staticContentBasePath", staticContentBasePath);
     return new ModelAndView("access_confirmation", model);
   }

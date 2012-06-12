@@ -15,18 +15,16 @@
   --%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="authz" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <jsp:useBean id="staticContentBasePath" scope="request" type="java.lang.String"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="robots" content="noindex, nofollow"/>
 
-  <title>SURFconext - ${clientAppTitle} requests your information</title>
+  <title><spring:message code="consent.window-title" arguments="${clientAppTitle}"/></title>
   <meta name="viewport" content="width=device-width"/>
 
-  <link href="${staticContentBasePath}/css/ext/jqueryjscrollpane/jquery.jscrollpane.css" rel="stylesheet"
-        type="text/css"
-      />
   <link href="${staticContentBasePath}/css/responsive/screen.css" rel="stylesheet" type="text/css" media="screen"/>
   <link href="<c:url value="/css/access_confirmation.css"/>" rel="stylesheet" type="text/css" media="screen"/>
   <link href="<c:url value="/css/font-awesome.css"/>" rel="stylesheet" type="text/css" media="screen"/>
@@ -38,26 +36,26 @@
   <div id="main">
 
     <!-- Language selection -->
-    <form id="LangForm" action="" method="post">
-      <div>
-        <input type="hidden" name="lang" id="LangVar" />
-        <input type="hidden" name="show-help" id="showHelp" />
-      </div>
+      <c:url var="urlNL" scope="request" value="${requestScope.requestURL}">
+        <c:param name="lang" value="nl" />
+      </c:url>
+      <c:url var="urlEN" scope="request" value="${requestScope.requestURL}">
+        <c:param name="lang" value="en" />
+      </c:url>
       <ul class="nav">
         <li id="help_nav">
-          <a href="#">help</a>
+          <a id="helpLink" href="#"><spring:message code="consent.help-link" /></a>
         </li>
-        <li class="active">
-          <a id="SubmitEnForm" href="#">en</a>
+        <li class="<c:out value="${locale eq 'en' ? 'active' : ''}" />">
+          <a href="${urlEN}"><spring:message code="consent.change-locale-en" /></a>
         </li>
-        <li class="">
-          <a id="SubmitNlForm" href="#">nl</a>
+        <li class="<c:out value="${locale eq 'nl' ? 'active' : ''}" />">
+          <a href="${urlNL}"><spring:message code="consent.change-locale-nl" /></a>
         </li>
       </ul>
-    </form>
 
     <!-- Subheader -->
-    <h1>${clientAppTitle} requests your information</h1>
+    <h1><spring:message code="consent.page-title" arguments="${clientAppTitle}"/></h1>
 
     <c:remove scope="session" var="SPRING_SECURITY_LAST_EXCEPTION"/>
     <authz:authorize ifAllGranted="ROLE_USER">
@@ -65,8 +63,8 @@
     <!-- Main content -->
     <div id="content">
       <p class="introstrong">
-          ${clientAppTitle}  requests this information that <c:out value="${userSchacHomeOrganization}"
-                                                                   default="No Home Organization provided" /> has stored for you:</p>
+        <spring:message code="consent.intro-paragraph" arguments="${clientAppTitle}, ${userSchacHomeOrganization}" />
+      </p>
 
       <div class="logos">
 
@@ -85,17 +83,15 @@
       </div>
 
       <ul class="attributes">
-        <li>Groups</li>
-        <li>Group memberships</li>
+        <li><spring:message code="consent.attributes.groups" /></li>
+        <li><spring:message code="consent.attributes.group-members" /></li>
       </ul>
 
+      <c:set var="newWindowImage" value="<img src=\"${staticContentBasePath}/media/new_window_icon.gif\"
+      alt=\"(opens in a new window)\" class=\"newwindow\"/>" />
+      <c:set var="conextTermsUrl" value="https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+(EN)" />
       <p>
-        This information will be stored in SURFconext and passed on to ${clientAppTitle}. Terms of service of
-        <a href="https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+(EN)" target="_blank">SURFconext</a>
-        <img src="${staticContentBasePath}/media/new_window_icon.gif"
-             alt="(opens in a new window)" class="newwindow"/> and <a
-          href="${clientEulaUrl}">${clientAppTitle}</a> <img
-          src="${staticContentBasePath}/media/new_window_icon.gif"
-          alt="(opens in a new window)" class="newwindow"/> apply.
+        <spring:message code="consent.terms.paragraph"
+        arguments="${clientAppTitle}, ${conextTermsUrl}, ${newWindowImage}, ${clientEulaUrl}, ${clientAppTitle}, ${newWindowImage}" />
       </p>
   </authz:authorize>

@@ -139,10 +139,28 @@
 	<bean id="localeResolver"
 		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
 		<!-- Set the default Locale to English -->
-		<property name="defaultLocale" value="en_EN" />
-	</bean>
+    <property name="defaultLocale" value="${coin-api.locale-default}"/>
+  </bean>
 
-	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+  <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+    <property name="paramName" value="lang" />
+  </bean>
+
+<mvc:interceptors>
+  <ref bean="localeChangeInterceptor" />
+</mvc:interceptors>
+
+  <bean id="messageSource"
+        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basename" value="classpath:messages"/>
+    <property name="defaultEncoding" value="UTF-8"/>
+  </bean>
+
+
+
+
+
+  <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
 	   <property name="driverClass" value="${coin-api.jdbc.driver}" />
 	   <property name="jdbcUrl" value="${coin-api.jdbc.url}" />
 	   <property name="username" value="${coin-api.jdbc.user}"/>
