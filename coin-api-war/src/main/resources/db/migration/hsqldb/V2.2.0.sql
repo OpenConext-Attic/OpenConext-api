@@ -15,3 +15,7 @@ create table oauth1_tokens (
 
   primary key (token)
 );
+
+INSERT INTO oauth1_tokens (token, callbackUrl, verifier, secret, consumerKey, isAccessToken, tokenTimestamp, userAuthentication)
+VALUES
+	('dummy', NULL, NULL, 'vgjbYn7jGSlWiCVqvjcpkUET2SBiA0DAzl/fBfq49CFuHzQug21dLkgnMfMuIB6kl8kajoWmpc0Ob8OdvOH3rELxgb5Ax4CBL1EKGjKgmd4=', 'https://testsp.dev.surfconext.nl/shibboleth', 1, 1339591034217, null);

@@ -58,11 +58,14 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
 
 /**
- * Implementation for a {@link OauthGroupService} using 3-legged OAuth
+ * Implementation for {@link BasicAuthGroupService} to supply external group
+ * providers based on basic auth
  */
 @Component(value = "basicAuthGroupService")
 public class GroupServiceBasicAuthentication extends AbstractGroupService implements BasicAuthGroupService {
 
+  private Client client = Client.create();
+  
   @Override
   public Group20Entry getGroup20Entry(GroupProvider groupProvider, String personId, int limit, int offset) {
 
@@ -102,15 +105,16 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
   }
 
   @Override
-  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider,String personId, String groupId,
+  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String personId, String groupId,
       int limit, int offset) {
-    
+
     String strippedPersonID = convertToExternalPersonId(personId, groupProvider);
     String strippedGroupId = convertToExternalGroupId(groupId, groupProvider);
 
     Client client = getClient(groupProvider);
-    String url = String.format("%s/people/%s/%s?startIndex=%s&count=%s&sortBy=familyName",
-        groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID,strippedGroupId, offset, limit);
+    String url = String.format("%s/people/%s/%s?startIndex=%s&count=%s&sortBy=name.familyName",
+        groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupId,
+        offset, limit);
     WebResource webResource = client.resource(url);
 
     String response = webResource.get(String.class);
@@ -123,12 +127,9 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
   private Client getClient(GroupProvider groupProvider) {
     String user = groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.USERNAME);
     String password = groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.PASSWORD);
-
-    Client client = Client.create();
+    client.removeAllFilters();
     client.addFilter(new HTTPBasicAuthFilter(user, password));
     return client;
   }
-
-
 
 }
