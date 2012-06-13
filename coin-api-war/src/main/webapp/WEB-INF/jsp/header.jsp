@@ -47,10 +47,10 @@
           <a id="helpLink" href="#"><spring:message code="consent.help-link" /></a>
         </li>
         <li class="<c:out value="${locale eq 'en' ? 'active' : ''}" />">
-          <a href="${urlEN}"><spring:message code="consent.change-locale-en" /></a>
+          <a id="enLink" href="${urlEN}"><spring:message code="consent.change-locale-en" /></a>
         </li>
         <li class="<c:out value="${locale eq 'nl' ? 'active' : ''}" />">
-          <a href="${urlNL}"><spring:message code="consent.change-locale-nl" /></a>
+          <a id="nlLink" href="${urlNL}"><spring:message code="consent.change-locale-nl" /></a>
         </li>
       </ul>
 
