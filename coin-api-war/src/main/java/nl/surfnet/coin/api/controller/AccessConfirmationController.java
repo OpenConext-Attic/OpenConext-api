@@ -16,15 +16,21 @@
 
 package nl.surfnet.coin.api.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +59,10 @@ public class AccessConfirmationController {
     model.put("client", client);
     model.put("locale", RequestContextUtils.getLocale(request).toString());
     model.put("staticContentBasePath", staticContentBasePath);
+    Map<String, String> languageLinks = new HashMap<String, String>();
+    languageLinks.put("en", getUrlWithLanguageParam(request, "en"));
+    languageLinks.put("nl", getUrlWithLanguageParam(request, "nl"));
+    model.put("languageLinks", languageLinks);
     return new ModelAndView("access_confirmation", model);
   }
 
@@ -61,4 +71,32 @@ public class AccessConfirmationController {
     this.clientDetailsService = clientDetailsService;
   }
 
+  /**
+   * get a new URL based on the given request, with a lang= parameter set to the given language
+   *
+   * @param request HttpServletRequest
+   * @param lang    the language
+   * @return String
+   */
+  public static String getUrlWithLanguageParam(HttpServletRequest request, String lang) {
+    String querystring;
+    if (StringUtils.isBlank(request.getQueryString())) {
+      querystring = "lang=" + lang;
+    } else {
+
+      String q = request.getQueryString();
+      List<String> newParams = new ArrayList<String>();
+      String[] params = q.split("&");
+      for (String param : params) {
+        String[] keyvalue = param.split("=");
+        if ( ! StringUtils.equals(keyvalue[0], "lang")) {
+          newParams.add(keyvalue[0] + "=" + keyvalue[1]);
+        }
+      }
+      newParams.add("lang="+lang);
+      querystring = StringUtils.join(newParams, "&");
+    }
+
+    return "?" + querystring;
+  }
 }

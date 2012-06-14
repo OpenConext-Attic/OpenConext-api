@@ -34,23 +34,16 @@
 <div id="wrapper">
   <!-- MAIN BOX -->
   <div id="main">
-
     <!-- Language selection -->
-      <c:url var="urlNL" scope="request" value="${requestScope.requestURL}">
-        <c:param name="lang" value="nl" />
-      </c:url>
-      <c:url var="urlEN" scope="request" value="${requestScope.requestURL}">
-        <c:param name="lang" value="en" />
-      </c:url>
       <ul class="nav">
         <li id="help_nav">
           <a id="helpLink" href="#"><spring:message code="consent.help-link" /></a>
         </li>
         <li class="<c:out value="${locale eq 'en' ? 'active' : ''}" />">
-          <a id="enLink" href="${urlEN}"><spring:message code="consent.change-locale-en" /></a>
+          <a id="enLink" href="<c:out value="${languageLinks.en}" />"><spring:message code="consent.change-locale-en" /></a>
         </li>
         <li class="<c:out value="${locale eq 'nl' ? 'active' : ''}" />">
-          <a id="nlLink" href="${urlNL}"><spring:message code="consent.change-locale-nl" /></a>
+          <a id="nlLink" href="<c:out value="${languageLinks.nl}" />"><spring:message code="consent.change-locale-nl" /></a>
         </li>
       </ul>
 

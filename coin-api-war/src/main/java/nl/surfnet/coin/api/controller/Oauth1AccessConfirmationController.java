@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.api.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.Resource;
@@ -36,6 +38,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import static nl.surfnet.coin.api.controller.AccessConfirmationController.getUrlWithLanguageParam;
 
 /**
  * Controller for retrieving the model for and displaying the confirmation page
@@ -78,6 +82,10 @@ public class Oauth1AccessConfirmationController {
     model.put("client", client);
     model.put("locale", RequestContextUtils.getLocale(request).toString());
     model.put("staticContentBasePath", staticContentBasePath);
+    Map<String, String> languageLinks = new HashMap<String, String>();
+    languageLinks.put("en", getUrlWithLanguageParam(request, "en"));
+    languageLinks.put("nl", getUrlWithLanguageParam(request, "nl"));
+    model.put("languageLinks", languageLinks);
 
     if (client instanceof ExtendedBaseConsumerDetails) {
       ClientMetaData clientMetaData = ((ExtendedBaseConsumerDetails) client).getClientMetaData();
