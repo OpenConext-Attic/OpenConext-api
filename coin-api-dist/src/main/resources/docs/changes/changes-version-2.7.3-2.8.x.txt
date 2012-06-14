@@ -1,2 +1,3 @@
 New property in  /opt/tomcat/conf/classpath_properties/coin-api.properties:
+
 coin-api.locale-default
