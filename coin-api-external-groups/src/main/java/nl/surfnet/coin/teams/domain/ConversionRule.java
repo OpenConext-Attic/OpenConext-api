@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import java.io.Serializable;
+
 import nl.surfnet.coin.teams.util.PHPRegexConverter;
 
 /**
@@ -24,8 +26,9 @@ import nl.surfnet.coin.teams.util.PHPRegexConverter;
  * Institutions provide the person id "s123456", for SURFconext we need to convert that into
  * urn:collab:person:nl.myuniversity:s123456 (and the other way around).
  */
-public class ConversionRule {
+public class ConversionRule implements Serializable{
 
+  private static final long serialVersionUID = 1L;
   private String propertyName;
   private String searchPattern;
   private String replaceWith;

@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,10 @@ import nl.surfnet.coin.teams.util.PHPRegexConverter;
 /**
  * Domain object for a Group provider
  */
-public class GroupProvider {
+public class GroupProvider implements Serializable {
 
+   private static final long serialVersionUID = 1L;
+  
   private Long id;
   private String identifier;
   private String name;

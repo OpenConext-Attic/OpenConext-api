@@ -18,12 +18,15 @@
  */
 package nl.surfnet.coin.teams.domain;
 
+import java.io.Serializable;
+
 /**
  * 
  *
  */
-public class ServiceProviderGroupAcl {
+public class ServiceProviderGroupAcl implements Serializable{
 
+  private static final long serialVersionUID = 1L;
   private boolean allowGroups;
   private boolean allowMembers;
   private String spEntityId;

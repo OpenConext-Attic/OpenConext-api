@@ -16,12 +16,14 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import java.io.Serializable;
+
 /**
  * Enum with the supported types of Group providers
  * <p/>
  * Needed for conversion of PHP class names from Engine block
  */
-public enum GroupProviderType {
+public enum GroupProviderType implements Serializable{
   GROUPER("EngineBlock_Group_Provider_Grouper"),
   OAUTH_THREELEGGED("EngineBlock_Group_Provider_OpenSocial_Oauth_ThreeLegged"),
   BASIC_AUTHENTICATION("EngineBlock_Group_Provider_OpenSocial_HttpBasic");

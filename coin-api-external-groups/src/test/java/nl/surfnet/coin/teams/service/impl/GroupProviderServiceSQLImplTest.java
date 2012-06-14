@@ -21,6 +21,7 @@ package nl.surfnet.coin.teams.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serializable;
 import java.util.List;
 
 import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
@@ -29,9 +30,7 @@ import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.apache.commons.lang.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -96,6 +95,16 @@ public class GroupProviderServiceSQLImplTest extends AbstractInMemoryDatabaseTes
     }
     assertTrue(grouperPresent);
     
+  }
+  
+  /**
+   * The {@link GroupProvider} are placed in the session and therefore need to be {@link Serializable}
+   */
+  @Test
+  public void serializeGroupProvider() { 
+    List<GroupProvider> all = groupProviderServiceSQL.getAllGroupProviders();
+    byte[] serialize = SerializationUtils.serialize((Serializable)all);
+
   }
   
   @Test
