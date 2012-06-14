@@ -30,10 +30,8 @@ import nl.surfnet.coin.janus.domain.EntityMetadata;
  */
 public class JanusClientMetadata implements ClientMetaData, Serializable {
 
-  private final static long serialVersionUid = 1L;
-
+  private static final long serialVersionUID = 1L;
   private EntityMetadata metadata;
-  private String eulaUrl;
 
   public JanusClientMetadata() {
   }
