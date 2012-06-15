@@ -97,11 +97,11 @@ public interface Janus {
   List<String> getAllowedSps(String idpentityid);
 
   /**
-   * Get a list of SPs that are allowed for this IdP.
+   * Get a list of SP entity ID's that are allowed for this IdP.
    *
    * @param idpentityid the IdPs entity id.
    * @param revision the revision.
-   * @return TODO
+   * @return List of entity id's from service providers the idp is linked to
    */
   List<String> getAllowedSps(String idpentityid, String revision);
 
