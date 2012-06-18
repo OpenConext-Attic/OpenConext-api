@@ -1,6 +1,6 @@
 {
     "coin:gadgetbaseurl": "consumerkey3/.*",
-    "coin:oauth:callback_url" : "http://localhost/callback1",
+    "coin:oauth:callback_url" : "http://localhost/callback1 , http://localhost/callback2",
     "coin:oauth:app_description": "app-description",
     "coin:oauth:app_icon": "app-icon",
     "coin:oauth:app_thumbnail": "app-thumbnail",

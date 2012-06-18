@@ -100,8 +100,10 @@
 
 	<!-- configuration interface -->
 	<security:http security="none" pattern="/configure/**" />
+	<security:http security="none" pattern="/test/**" />
 	<!-- static stuff -->
 	<security:http security="none" pattern="/css/**" />
+	<security:http security="none" pattern="/js/**" />
 	<security:http security="none" pattern="/favicon.ico" />
 	<security:http security="none" pattern="/images/**" />
 

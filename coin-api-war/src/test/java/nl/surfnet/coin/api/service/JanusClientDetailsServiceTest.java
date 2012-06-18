@@ -21,7 +21,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.SerializationUtils;
 import org.junit.Before;
@@ -46,6 +48,7 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.web.client.RestTemplate;
 
+import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
 import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.Janus.Metadata;
@@ -110,6 +113,31 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     assertEquals("service should return whether client is required to authenticate (so two legged NOT allowed)", true,
         result.isRequiredToObtainAuthenticatedToken());
     assertEquals("app-thumbnail", result.getClientMetaData().getAppThumbNail());
+  }
+
+  @Test
+  public void loadClientByConsumerKeyHappy() {
+    super.setResponseResource(new Resource[] {
+        new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
+        new ClassPathResource("janus/janus-response-consumerkey3-metadata.json") });
+    ExtendedBaseClientDetails result = (ExtendedBaseClientDetails) service.loadClientByClientId("consumerkey3");
+    Set<String> registeredRedirectUris = result.getRegisteredRedirectUri();
+    assertEquals(1, registeredRedirectUris.size());
+    assertEquals("http://localhost/callback1", registeredRedirectUris.iterator().next());
+  }
+
+  @Test
+  public void loadClientByConsumerKeyMultipleCallbacks() {
+    super.setResponseResource(new Resource[] {
+        new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
+        new ClassPathResource("janus/janus-response-multiple-callback-metadata.json") });
+    ExtendedBaseClientDetails result = (ExtendedBaseClientDetails) service
+        .loadClientByClientId("consumerkey3");
+    Set<String> registeredRedirectUris = result.getRegisteredRedirectUri();
+    assertEquals(2, registeredRedirectUris.size());
+    Iterator<String> iterator = registeredRedirectUris.iterator();
+    assertEquals("http://localhost/callback1", iterator.next());
+    assertEquals("http://localhost/callback2", iterator.next());
   }
 
   /*

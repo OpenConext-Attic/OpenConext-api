@@ -18,7 +18,10 @@ package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,7 @@ import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
@@ -65,13 +69,32 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     clientDetails.setClientMetaData(clientMetaData);
     clientDetails.setClientSecret(metadata.getOauthConsumerSecret());
     clientDetails.setClientId(metadata.getOauthConsumerKey());
-    final String callbackUrl = metadata.getOauthCallbackUrl();
-    if (callbackUrl != null) {
-      clientDetails.setRegisteredRedirectUri(Collections.singleton(callbackUrl));
-    }
+    clientDetails.setRegisteredRedirectUri(getCallbackUrlCollection(metadata));
     clientDetails.setScope(Arrays.asList("read"));
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
     return clientDetails;
+  }
+
+  /*
+   * In janus we can set the callback url as a comma separated list which we need to convert
+   */
+  private Set<String> getCallbackUrlCollection(final EntityMetadata metadata) {
+    final String callbackUrl = metadata.getOauthCallbackUrl();
+    //sensible default
+    Set<String> result = Collections.emptySet();
+    if (callbackUrl != null) {
+      if (callbackUrl.contains(",")) {
+        //need to trim, therefore more code then calling StringUtils#commaDelimitedListToSet
+        String[] callbacksArray = StringUtils.commaDelimitedListToStringArray(callbackUrl);
+        result = new HashSet<String>();
+        for (String callback : callbacksArray) {
+          result.add(callback.trim());
+        }
+      } else {
+        result = Collections.singleton(callbackUrl.trim());
+      }
+    }
+    return result;
   }
 
   private EntityMetadata getJanusMetadataByConsumerKey(String consumerKey) {

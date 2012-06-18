@@ -60,6 +60,9 @@ coin-mailserver-port=25
 # Email address that recieves error notifications
 coin-errormail-to=
 
+# Callback URL of the OAuth client
+coin-api.oauth.callback.url=https://api.test.surfconext.nl/v1/test/oauth-callback.shtml
+
 ####################################################################
 ##
 ## The following properties are the responsibility of the developers

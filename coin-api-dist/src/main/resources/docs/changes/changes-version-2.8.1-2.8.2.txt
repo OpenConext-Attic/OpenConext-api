@@ -1,0 +1,4 @@
+New property in  /opt/tomcat/conf/classpath_properties/coin-api.properties:
+
+# Callback URL of the OAuth client
+coin-api.oauth.callback.url=http://api.XXX.surfconext.nl/v1/test/oauth-callback.shtml
