@@ -56,5 +56,12 @@
     <property name="suffix" value=".jsp" />
   </bean>
 
-
+  <bean class="nl.surfnet.coin.util.ExclusionExceptionResolver">
+    <property name="excludedClasses" value="org.springframework.security.core.AuthenticationException"/>
+    <property name="exceptionMappings">
+      <props>
+        <prop key="java.lang.Throwable">error</prop>
+      </props>
+    </property>
+  </bean>
 </beans>
