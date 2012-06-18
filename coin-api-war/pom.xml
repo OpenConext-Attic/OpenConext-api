@@ -29,7 +29,7 @@
     <jetty.version>8.0.4.v20111024</jetty.version>
     <apacheds.version>1.5.5</apacheds.version>
     <ehcache.version>2.2.0</ehcache.version>
-    <selenium.version>2.20.0</selenium.version>
+    <selenium.version>2.23.1</selenium.version>
     <selenium.test.url>http://localhost:8095/</selenium.test.url>
     <jetty.port>8095</jetty.port>
 
