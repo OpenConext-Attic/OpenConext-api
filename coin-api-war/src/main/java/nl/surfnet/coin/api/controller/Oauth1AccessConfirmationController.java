@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,8 +87,8 @@ public class Oauth1AccessConfirmationController {
     languageLinks.put("nl", getUrlWithLanguageParam(request, "nl"));
     model.put("languageLinks", languageLinks);
 
-    if (client instanceof ExtendedBaseConsumerDetails) {
-      ClientMetaData clientMetaData = ((ExtendedBaseConsumerDetails) client).getClientMetaData();
+    if (client instanceof OpenConextConsumerDetails) {
+      ClientMetaData clientMetaData = ((OpenConextConsumerDetails) client).getClientMetaData();
       if (!clientMetaData.isConsentRequired()) {
         /*
          * We skip the consent screen, but to ensure that we hit all the filters and keep

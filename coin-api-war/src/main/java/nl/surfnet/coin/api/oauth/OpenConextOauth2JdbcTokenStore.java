@@ -63,8 +63,8 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
       if (shibAuth.getClientMetaData() == null) {
         String clientId = authorizationRequest.getClientId();
         ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
-        if (clientDetails instanceof ExtendedBaseClientDetails) {
-          ClientMetaData clientMetaData = ((ExtendedBaseClientDetails) clientDetails).getClientMetaData();
+        if (clientDetails instanceof OpenConextClientDetails) {
+          ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
           shibAuth.setClientMetaData(clientMetaData);
         } else {
           throw new RuntimeException("The clientDetails is of the type '"

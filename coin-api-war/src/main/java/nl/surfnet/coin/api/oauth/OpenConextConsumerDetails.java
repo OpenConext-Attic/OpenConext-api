@@ -18,16 +18,18 @@
  */
 package nl.surfnet.coin.api.oauth;
 
-import org.springframework.security.oauth2.provider.BaseClientDetails;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.security.oauth.provider.BaseConsumerDetails;
 
 /**
- * {@link BaseClientDetails} with extra info for SURFconext
- *
+ * {@link BaseConsumerDetails} with extra info for SURFconext
+ * 
  */
 @SuppressWarnings("serial")
-public class ExtendedBaseClientDetails extends BaseClientDetails {
+public class OpenConextConsumerDetails extends BaseConsumerDetails {
 
-  private ClientMetaData clientMetaData ;
+  private ClientMetaData clientMetaData;
 
   /**
    * @return the clientMetaData
@@ -37,18 +39,14 @@ public class ExtendedBaseClientDetails extends BaseClientDetails {
   }
 
   /**
-   * @param clientMetaData the clientMetaData to set
+   * @param clientMetaData
+   *          the clientMetaData to set
    */
   public void setClientMetaData(ClientMetaData clientMetaData) {
     this.clientMetaData = clientMetaData;
   }
 
-  /* (non-Javadoc)
-   * @see org.springframework.security.oauth2.provider.BaseClientDetails#getAccessTokenValiditySeconds()
-   */
-  @Override
-  public int getAccessTokenValiditySeconds() {
-    return 0;
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(clientMetaData).toString();
   }
-  
 }

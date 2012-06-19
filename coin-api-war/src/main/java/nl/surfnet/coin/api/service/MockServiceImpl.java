@@ -68,7 +68,7 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
   private static Map<String, List<String>> MEMBERSHIPS_IN_MEMORY = new HashMap<String, List<String>>();
 
   @Override
-  public PersonEntry getPerson(String userId, String loggedInUser) {
+  public PersonEntry getPerson(String userId, String loggedInUser, String spEntityId) {
     if (isActive()) {
       return getPreparedPerson(userId);
     }
@@ -111,7 +111,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex,
+  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, String spEntityId, Integer count,
+                                           Integer startIndex,
       String sortBy) {
     if (isActive()) {
       return getPreparedGroupMembers(groupId);

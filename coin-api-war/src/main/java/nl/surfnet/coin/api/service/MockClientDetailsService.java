@@ -28,23 +28,22 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
 import org.springframework.security.oauth.provider.ConsumerDetails;
-import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.api.oauth.JanusClientMetadata;
+import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
+import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
  * Mock details service. Replacement for JanusClientDetailsService.
  */
-public class MockClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
+public class MockClientDetailsService implements OpenConextClientDetailsService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
@@ -53,7 +52,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
-    final ExtendedBaseClientDetails details = new ExtendedBaseClientDetails();
+    final OpenConextClientDetails details = new OpenConextClientDetails();
     details.setClientId(clientId);
     details.setScope(Arrays.asList("read"));
     details.setClientSecret(defaultSecret);
@@ -67,7 +66,7 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
 
   @Override
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-    final ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
+    final OpenConextConsumerDetails consumerDetails = new OpenConextConsumerDetails();
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setConsumerName("Mock consumer name");
 
@@ -99,4 +98,12 @@ public class MockClientDetailsService implements ClientDetailsService, ConsumerD
     this.defaultSecret = defaultSecret;
   }
 
+  @Override
+  public ARP getArp(String spEntityId) {
+    ARP a = new ARP();
+    a.setDescription("Mocked arp description");
+    a.setName("mocked-arp-name");
+    a.getAttributes().put("boo", Arrays.<Object>asList("Foo", "Bar"));
+    return a;
+  }
 }

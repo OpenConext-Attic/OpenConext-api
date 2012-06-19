@@ -19,7 +19,7 @@ package nl.surfnet.coin.api;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
 import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 import nl.surfnet.coin.shared.log.ApiCallLog;
 import nl.surfnet.coin.shared.log.ApiCallLogContextListener;
@@ -107,8 +107,8 @@ public abstract class AbstractApiController {
           if (details instanceof OAuthAuthenticationDetails) {
             OAuthAuthenticationDetails authDetails = (OAuthAuthenticationDetails) details;
             ConsumerDetails consumerDetails = authDetails.getConsumerDetails();
-            if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
-              ExtendedBaseConsumerDetails base = (ExtendedBaseConsumerDetails) consumerDetails;
+            if (consumerDetails instanceof OpenConextConsumerDetails) {
+              OpenConextConsumerDetails base = (OpenConextConsumerDetails) consumerDetails;
               metaData = base.getClientMetaData();
             }
           }
@@ -119,8 +119,8 @@ public abstract class AbstractApiController {
     else if (authentication instanceof ConsumerAuthentication) {
       ConsumerAuthentication conAuth = (ConsumerAuthentication) authentication;
       ConsumerDetails consumerDetails = conAuth.getConsumerDetails();
-      if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
-        ExtendedBaseConsumerDetails details = (ExtendedBaseConsumerDetails) consumerDetails;
+      if (consumerDetails instanceof OpenConextConsumerDetails) {
+        OpenConextConsumerDetails details = (OpenConextConsumerDetails) consumerDetails;
         metaData = details.getClientMetaData();
         registerApiVersion("oauth1-2legged");
       }

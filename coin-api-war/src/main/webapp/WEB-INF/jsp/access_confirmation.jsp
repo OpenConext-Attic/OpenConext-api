@@ -16,7 +16,7 @@
 <%@ taglib prefix="authz" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<jsp:useBean id="client" scope="request" type="nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails"/>
+<jsp:useBean id="client" scope="request" type="nl.surfnet.coin.api.oauth.OpenConextClientDetails"/>
 <c:set scope="request" var="clientAppTitle" value="${client.clientMetaData.appTitle}" />
 <c:set scope="request" var="clientAppIcon" value="${client.clientMetaData.appIcon}" />
 <c:set scope="request" var="clientAppEulaUrl" value="${client.clientMetaData.eulaUrl}"/>

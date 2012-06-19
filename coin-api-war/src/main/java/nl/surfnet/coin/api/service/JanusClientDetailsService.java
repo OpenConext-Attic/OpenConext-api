@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,25 +31,24 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth.common.OAuthException;
 import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
 import org.springframework.security.oauth.provider.ConsumerDetails;
-import org.springframework.security.oauth.provider.ConsumerDetailsService;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
 import nl.surfnet.coin.api.oauth.JanusClientMetadata;
+import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
+import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 /**
  * Client details service that uses Janus as backend. Implements both the oauth1
  * and oauth2 interface.
  */
-public class JanusClientDetailsService implements ClientDetailsService, ConsumerDetailsService {
+public class JanusClientDetailsService implements OpenConextClientDetailsService {
 
   private final static Logger LOG = LoggerFactory.getLogger(JanusClientDetailsService.class);
   
@@ -63,8 +61,8 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
     if (metadata == null) {
       return null;
-    } 
-    final ExtendedBaseClientDetails clientDetails = new ExtendedBaseClientDetails();
+    }
+    final OpenConextClientDetails clientDetails = new OpenConextClientDetails();
     ClientMetaData clientMetaData = new JanusClientMetadata(metadata);
     clientDetails.setClientMetaData(clientMetaData);
     clientDetails.setClientSecret(metadata.getOauthConsumerSecret());
@@ -73,6 +71,11 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
     clientDetails.setScope(Arrays.asList("read"));
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
     return clientDetails;
+  }
+
+  @Cacheable(value = { "janus-meta-data" })
+  public ARP getArp(String clientId) {
+    return janus.getArp(clientId);
   }
 
   /*
@@ -120,8 +123,7 @@ public class JanusClientDetailsService implements ClientDetailsService, Consumer
       return null;
     }
 
-    final ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
-    // even if additional metadata not found, set these properties.
+    final OpenConextConsumerDetails consumerDetails = new OpenConextConsumerDetails();
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority> asList(new SimpleGrantedAuthority("ROLE_USER")));
     ClientMetaData clientMetaData = new JanusClientMetadata(metadata);

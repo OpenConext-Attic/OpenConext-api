@@ -113,7 +113,7 @@ public class ApiController extends AbstractApiController {
     if (!groupProviderConfiguration.isCallAllowed(Service.People, spEntityId, grouper)) {
       sendAclMissingMail(grouper, spEntityId, userId, Service.People);
     } else {
-      person = personService.getPerson(userId, onBehalfOf);
+      person = personService.getPerson(userId, onBehalfOf, spEntityId);
     }
     logApiCall(onBehalfOf);
     setResultOptions(person, 0, 0, null);
@@ -136,9 +136,10 @@ public class ApiController extends AbstractApiController {
       // Backwards compatibility with os.surfconext.
       return getPerson(userId);
     }
+    String spEntityId = getClientMetaData().getAppEntityId();
     if (!userId.startsWith(LdapClient.URN_IDENTIFIER)) {
       // persistent identifier, need urn to query
-      PersonEntry person = personService.getPerson(userId, onBehalfOf);
+      PersonEntry person = personService.getPerson(userId, onBehalfOf, spEntityId);
       userId = person.getEntry().getId();
     }
     if (onBehalfOf == null) {
@@ -150,7 +151,6 @@ public class ApiController extends AbstractApiController {
     // sensible default
     GroupMembersEntry groupMembers = new GroupMembersEntry(new ArrayList<Person>());
     GroupProvider grouper = getGrouperProvider(allGroupProviders);
-    String spEntityId = getClientMetaData().getAppEntityId();
     boolean grouperAllowed = groupProviderConfiguration.isCallAllowed(Service.People, spEntityId, grouper);
     boolean internalGroup = groupProviderConfiguration.isInternalGroup(groupId);
     if (!grouperAllowed) {
@@ -159,7 +159,7 @@ public class ApiController extends AbstractApiController {
     if (grouperAllowed && internalGroup) {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
-      groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, count, startIndex, sortBy);
+      groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, spEntityId, count, startIndex, sortBy);
     }
     if (!internalGroup) {
       // external group. see which groupProvider can handle this call
@@ -184,7 +184,8 @@ public class ApiController extends AbstractApiController {
       Group20Entry grouperTeams = getGrouperTeamsLinkedToExternalGroup(userId, groupId);
       if (grouperTeams != null && grouperTeams.getEntry() != null && !grouperTeams.getEntry().isEmpty()) {
         for (Group20 group20 : grouperTeams.getEntry()) {
-          GroupMembersEntry members = personService.getGroupMembers(group20.getId(), userId, null, null, null);
+          GroupMembersEntry members = personService.getGroupMembers(group20.getId(), userId, spEntityId, null, null,
+              null);
           groupMembers.getEntry().addAll(members.getEntry());
         }
       }
@@ -203,11 +204,12 @@ public class ApiController extends AbstractApiController {
   String sortBy) {
     invariant();
     String onBehalfOf = getOnBehalfOf();
+    String spEntityId = getClientMetaData().getAppEntityId();
     if (PERSON_ID_SELF.equals(userId)) {
       userId = onBehalfOf;
     } else if (!userId.startsWith(LdapClient.URN_IDENTIFIER)) {
       // persistent identifier, need urn to query
-      PersonEntry person = personService.getPerson(userId, onBehalfOf);
+      PersonEntry person = personService.getPerson(userId, onBehalfOf, spEntityId);
       userId = person.getEntry().getId();
     }
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'", new Object[] { userId, onBehalfOf });
@@ -217,7 +219,6 @@ public class ApiController extends AbstractApiController {
     Group20Entry group20Entry = new Group20Entry(new ArrayList<Group20>());
 
     GroupProvider grouper = getGrouperProvider(allGroupProviders);
-    String spEntityId = getClientMetaData().getAppEntityId();
     boolean grouperAllowed = groupProviderConfiguration.isCallAllowed(Service.Group, spEntityId, grouper);
     if (!grouperAllowed) {
       sendAclMissingMail(grouper, spEntityId, userId, Service.People);
@@ -321,11 +322,12 @@ public class ApiController extends AbstractApiController {
   String groupId) {
     invariant();
     String onBehalfOf = getOnBehalfOf();
+    String spEntityId = getClientMetaData().getAppEntityId();
     if (PERSON_ID_SELF.equals(userId)) {
       userId = onBehalfOf;
     } else if (!userId.startsWith(LdapClient.URN_IDENTIFIER)) {
       // persistent identifier, need urn to query
-      PersonEntry person = personService.getPerson(userId, userId);
+      PersonEntry person = personService.getPerson(userId, userId, spEntityId);
       userId = person.getEntry().getId();
     }
     if (onBehalfOf == null) {
@@ -336,7 +338,6 @@ public class ApiController extends AbstractApiController {
     Group20Entry group20Entry = new Group20Entry(new ArrayList<Group20>());
 
     GroupProvider grouper = getGrouperProvider(allGroupProviders);
-    String spEntityId = getClientMetaData().getAppEntityId();
     boolean grouperAllowed = groupProviderConfiguration.isCallAllowed(Service.Group, spEntityId, grouper);
     if (!grouperAllowed) {
       sendAclMissingMail(grouper, spEntityId, userId, Service.Group);
@@ -383,6 +384,7 @@ public class ApiController extends AbstractApiController {
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
   @ExceptionHandler(RuntimeException.class)
+  @SuppressWarnings("unused")
   public Object handleException(RuntimeException e) {
     DateTime date = new DateTime();
     LOG.error("Handling error, will respond with the exception message. Current date: " +  date +
@@ -400,7 +402,7 @@ public class ApiController extends AbstractApiController {
   protected void setResultOptions(AbstractEntry entry, Integer count, Integer startIndex, String sortBy) {
     entry.setFiltered(false);
     entry.setItemsPerPage((count != null && count != 0) ? count : entry.getEntrySize());
-    entry.setSorted(sortBy != null ? true : false);
+    entry.setSorted(sortBy != null);
     entry.setStartIndex((startIndex != null && startIndex != 0) ? startIndex : 0);
     entry.setTotalResults(entry.getEntrySize());
     entry.setUpdatedSince(false);
@@ -453,7 +455,7 @@ public class ApiController extends AbstractApiController {
   /**
    * Hook for subclasses to change the log record
    * 
-   * @param log
+   * @param log the log record
    */
   protected void addApiCallLogInfo(ApiCallLog log) {
 

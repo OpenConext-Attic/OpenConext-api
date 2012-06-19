@@ -30,25 +30,26 @@ public interface PersonService {
    * Get the OpenSocial Person. Note that the onBehalfOf can be null.
    *
    * @param userId     the unique identifier
-   * @param onBehalfOf the unique identifier of the user that is going to make the
-   *                   request
+   * @param onBehalfOf the unique identifier of the user on behalf of whom the request is made.
+   * @param spEntityId the entity that performs the request
    * @return the {@link PersonEntry}
    */
   @PreAuthorize("#onBehalfOf == null or #userId.equals(#onBehalfOf)")
-  PersonEntry getPerson(String userId, String onBehalfOf);
+  PersonEntry getPerson(String userId, String onBehalfOf, String spEntityId);
+
 
   /**
    * Get the group members of the given group. Note that the onBehalfOf can be null.
    *
    * @param groupId    {@link String} the unique identifier for the group
-   * @param onBehalfOf {@link String} the unique identifier of the user that is going to
-   *                   make the request
+   * @param onBehalfOf the unique identifier of the user on behalf of whom the request is made.
+   * @param spEntityId the entity that performs the request
    * @param count      nr of records to fetch
    * @param startIndex first record nr.
    * @param sortBy     field to sort by.
    * @return an {@link java.util.ArrayList} containing {@link Person}'s
    */
   @PostAuthorize("#onBehalf == null or returnObject.isMember(#onBehalfOf)")
-  GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, Integer count, Integer startIndex,
-                                    String sortBy);
+  GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, String spEntityId, Integer count,
+                                    Integer startIndex, String sortBy);
 }

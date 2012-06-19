@@ -18,16 +18,6 @@ package nl.surfnet.coin.api;
 
 import javax.annotation.Resource;
 
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.PersonEntry;
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.JanusClientMetadata;
-import nl.surfnet.coin.api.service.MockServiceImpl;
-import nl.surfnet.coin.eb.EngineBlock;
-import nl.surfnet.coin.janus.domain.EntityMetadata;
-import nl.surfnet.coin.shared.log.ApiCallLog;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +30,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.PersonEntry;
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.JanusClientMetadata;
+import nl.surfnet.coin.api.service.MockServiceImpl;
+import nl.surfnet.coin.eb.EngineBlock;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
+import nl.surfnet.coin.shared.log.ApiCallLog;
 
 /**
  * Controller for the mock REST interface.
@@ -112,7 +112,8 @@ public class MockApiController extends ApiController {
     if (PERSON_ID_SELF.equals(userId)) {
       userId = onBehalfOf;
     }
-    PersonEntry person = personService.getPerson(userId, onBehalfOf);
+    String spEntityId = getClientMetaData().getAppEntityId();
+    PersonEntry person = personService.getPerson(userId, onBehalfOf, spEntityId);
     logApiCall(onBehalfOf);
     setResultOptions(person, 0, 0, null);
     return person;
@@ -161,7 +162,10 @@ public class MockApiController extends ApiController {
     }
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, onBehalfOf });
-    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, onBehalfOf, count, startIndex, sortBy);
+    String spEntityId = getClientMetaData().getAppEntityId();
+
+    GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, onBehalfOf, spEntityId, count, startIndex,
+        sortBy);
     logApiCall(onBehalfOf);
     setResultOptions(groupMembers, count, startIndex, sortBy);
     return groupMembers;

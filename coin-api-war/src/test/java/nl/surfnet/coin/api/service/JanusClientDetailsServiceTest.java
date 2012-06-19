@@ -48,8 +48,8 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.web.client.RestTemplate;
 
-import nl.surfnet.coin.api.oauth.ExtendedBaseClientDetails;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.Janus.Metadata;
 import nl.surfnet.coin.janus.JanusRestClient;
@@ -105,7 +105,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     super.setResponseResource(new Resource[] {
         new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
         new ClassPathResource("janus/janus-response-consumerkey3-metadata.json") });
-    ExtendedBaseConsumerDetails result = (ExtendedBaseConsumerDetails) service
+    OpenConextConsumerDetails result = (OpenConextConsumerDetails) service
         .loadConsumerByConsumerKey("consumerkey3");
     assertEquals("service should return correct key", "consumerkey3", result.getConsumerKey());
     assertEquals("service should return correct secret", "secret",
@@ -120,7 +120,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     super.setResponseResource(new Resource[] {
         new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
         new ClassPathResource("janus/janus-response-consumerkey3-metadata.json") });
-    ExtendedBaseClientDetails result = (ExtendedBaseClientDetails) service.loadClientByClientId("consumerkey3");
+    OpenConextClientDetails result = (OpenConextClientDetails) service.loadClientByClientId("consumerkey3");
     Set<String> registeredRedirectUris = result.getRegisteredRedirectUri();
     assertEquals(1, registeredRedirectUris.size());
     assertEquals("http://localhost/callback1", registeredRedirectUris.iterator().next());
@@ -131,7 +131,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     super.setResponseResource(new Resource[] {
         new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
         new ClassPathResource("janus/janus-response-multiple-callback-metadata.json") });
-    ExtendedBaseClientDetails result = (ExtendedBaseClientDetails) service
+    OpenConextClientDetails result = (OpenConextClientDetails) service
         .loadClientByClientId("consumerkey3");
     Set<String> registeredRedirectUris = result.getRegisteredRedirectUri();
     assertEquals(2, registeredRedirectUris.size());

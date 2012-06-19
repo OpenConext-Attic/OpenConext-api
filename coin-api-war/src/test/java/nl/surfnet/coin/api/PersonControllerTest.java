@@ -32,7 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
-import nl.surfnet.coin.api.oauth.ExtendedBaseConsumerDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.MockServiceImpl;
@@ -71,7 +71,7 @@ public class PersonControllerTest {
     p.setId("urn:collab:person:test.surfguest.nl:bar");
     PersonEntry entry = new PersonEntry();
     entry.setEntry(p);
-    when(personService.getPerson("foo", null)).thenReturn(entry);
+    when(personService.getPerson("foo", null, null)).thenReturn(entry);
     Person personReturned = pc.getPerson("foo").getEntry();
     assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
 
@@ -92,7 +92,7 @@ public class PersonControllerTest {
 */
 
   private Authentication getAuthentication() {
-    ExtendedBaseConsumerDetails consumerDetails = new ExtendedBaseConsumerDetails();
+    OpenConextConsumerDetails consumerDetails = new OpenConextConsumerDetails();
     final JanusClientMetadata clientMetaData = new JanusClientMetadata(new EntityMetadata());
     consumerDetails.setClientMetaData(clientMetaData);
     ConsumerCredentials consumerCredentials = new ConsumerCredentials("consumerKey", "signature", "signatureMethod",

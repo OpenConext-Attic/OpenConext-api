@@ -109,8 +109,8 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
        * somewhere along the 'road' and we cache this call anyway
        */
       ConsumerDetails consumerDetails = consumerDetailsService.loadConsumerByConsumerKey(consumerKey);
-      if (consumerDetails instanceof ExtendedBaseConsumerDetails) {
-        ExtendedBaseConsumerDetails extendedBaseConsumerDetails = (ExtendedBaseConsumerDetails) consumerDetails;
+      if (consumerDetails instanceof OpenConextConsumerDetails) {
+        OpenConextConsumerDetails extendedBaseConsumerDetails = (OpenConextConsumerDetails) consumerDetails;
         if (userAuthentication instanceof PreAuthenticatedAuthenticationToken) {
           PreAuthenticatedAuthenticationToken pre = (PreAuthenticatedAuthenticationToken) userAuthentication;
           Object principal = pre.getPrincipal();

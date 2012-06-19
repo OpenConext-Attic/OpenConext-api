@@ -107,7 +107,7 @@ public class JanusRestClient implements Janus {
   }
 
    @Override
-  public List<String> getEntityIdsByMetaData(Metadata key, String value) {
+   public List<String> getEntityIdsByMetaData(Metadata key, String value) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("key", key.val());
     parameters.put("value", value);

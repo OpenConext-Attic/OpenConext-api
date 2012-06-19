@@ -22,7 +22,6 @@ import javax.annotation.Resource;
 
 import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -56,8 +55,8 @@ public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
     AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
     String clientId = authorizationRequest.getClientId();
     ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
-    if (clientDetails instanceof ExtendedBaseClientDetails) {
-      ClientMetaData clientMetaData = ((ExtendedBaseClientDetails) clientDetails).getClientMetaData();
+    if (clientDetails instanceof OpenConextClientDetails) {
+      ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
       Authentication userAuthentication = authentication.getUserAuthentication();
       if (userAuthentication instanceof ShibbolethAuthenticationToken) {
         ((ShibbolethAuthenticationToken) userAuthentication).setClientMetaData(clientMetaData);

@@ -46,8 +46,8 @@ public class ConfigurableTokenServicesUserApprovalHandler extends TokenServicesU
   public boolean isApproved(AuthorizationRequest authorizationRequest, Authentication userAuthentication) {
     String clientId = authorizationRequest.getClientId();
     ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
-    if (clientDetails instanceof ExtendedBaseClientDetails) {
-      ClientMetaData clientMetaData = ((ExtendedBaseClientDetails) clientDetails).getClientMetaData();
+    if (clientDetails instanceof OpenConextClientDetails) {
+      ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
       if (!clientMetaData.isConsentRequired()) {
         return userAuthentication.isAuthenticated(); 
       }
