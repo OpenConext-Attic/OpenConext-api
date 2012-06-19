@@ -63,7 +63,7 @@ public interface Janus {
     CONTACTS_2_TELEPHONE("contacts:2:telephoneNumber"),
     EULA("coin:eula"),
     SS_IDP_VISIBLE_ONLY("coin:ss:idp_visible_only"),
-    ;
+    WORKFLOWSTATE("workflowState");
 
     private String val;
 

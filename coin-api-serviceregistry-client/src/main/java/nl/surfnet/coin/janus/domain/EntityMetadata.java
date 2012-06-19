@@ -50,9 +50,9 @@ public class EntityMetadata implements Serializable {
   private String appHomeUrl;
   private String eula;
   private String description;
-  private List<Contact> contacts = Collections.synchronizedList(new ArrayList<Contact>());
-
   private boolean isIdpVisibleOnly;
+  private String workflowState;
+  private List<Contact> contacts = Collections.synchronizedList(new ArrayList<Contact>());
 
   public static EntityMetadata fromMetadataMap(Map<String, Object> metadata) {
     EntityMetadata em = new EntityMetadata();
@@ -70,7 +70,7 @@ public class EntityMetadata implements Serializable {
     em.setAppHomeUrl((String) metadata.get(Janus.Metadata.ORGANIZATION_URL.val()));
     em.setAppLogoUrl((String) metadata.get(Janus.Metadata.LOGO_URL.val()));
     em.setEula((String) metadata.get(Janus.Metadata.EULA.val()));
-
+    em.setWorkflowState((String) metadata.get(Janus.Metadata.WORKFLOWSTATE.val()));
     em.setTwoLeggedOauthAllowed(false);
     if (metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()) != null) {
       em.setTwoLeggedOauthAllowed((Boolean) metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()));
@@ -295,5 +295,12 @@ public class EntityMetadata implements Serializable {
     this.consentNotRequired = consentNotRequired;
   }
 
- 
+
+  public String getWorkflowState() {
+    return workflowState;
+  }
+
+  public void setWorkflowState(String workflowState) {
+    this.workflowState = workflowState;
+  }
 }

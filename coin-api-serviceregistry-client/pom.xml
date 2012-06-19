@@ -26,10 +26,6 @@
   <artifactId>coin-api-serviceregistry-client</artifactId>
   <description>Client for Service Registry (JANUS)</description>
 
-  <properties>
-    <coin-api-client.version>2.8.2-SNAPSHOT</coin-api-client.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>commons-collections</groupId>
