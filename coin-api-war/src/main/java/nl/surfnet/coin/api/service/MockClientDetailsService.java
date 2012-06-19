@@ -100,10 +100,6 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
 
   @Override
   public ARP getArp(String spEntityId) {
-    ARP a = new ARP();
-    a.setDescription("Mocked arp description");
-    a.setName("mocked-arp-name");
-    a.getAttributes().put("boo", Arrays.<Object>asList("Foo", "Bar"));
-    return a;
+    return null;
   }
 }
