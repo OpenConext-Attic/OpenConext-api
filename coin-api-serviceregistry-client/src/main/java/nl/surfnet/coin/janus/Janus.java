@@ -20,6 +20,7 @@ import java.util.List;
 
 import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
+import nl.surfnet.coin.janus.domain.JanusEntity;
 
 /**
  * Interface to Janus.
@@ -129,4 +130,11 @@ public interface Janus {
    */
   boolean isConnectionAllowed(String spEntityId, String idpEntityId);
 
+  /**
+   * Gets the Janus Entity information for the given entityId
+   *
+   * @param entityId unique identifier of a Janus entity
+   * @return {@link JanusEntity}
+   */
+  JanusEntity getEntity(String entityId);
 }

@@ -43,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 
 import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
+import nl.surfnet.coin.janus.domain.JanusEntity;
 
 /**
  * REST client implementation for Janus.
@@ -251,6 +252,24 @@ public class JanusRestClient implements Janus {
     LOG.debug("Janus-request returned {}", restResponse);
 
     return CollectionUtils.isEmpty(restResponse) ? false : (Boolean) restResponse.get(0);
+  }
+
+  @Override
+  public JanusEntity getEntity(String entityId) {
+    Map<String, String> parameters = new HashMap<String, String>();
+    parameters.put("entityid", entityId);
+    URI signedUri = null;
+    try {
+      signedUri = sign("getEntity", parameters);
+      LOG.debug("Signed Janus-request is: {}", signedUri);
+    } catch (IOException e) {
+      LOG.error("Could not do getEntity request to Janus", e);
+    }
+
+    @SuppressWarnings("unchecked") final Map<String, Object> restResponse = restTemplate.getForObject(signedUri, Map.class);
+    LOG.debug("Janus-request returned {}", restResponse);
+
+    return restResponse == null ? null : JanusEntity.fromJanusResponse(restResponse);
   }
 
   /**
