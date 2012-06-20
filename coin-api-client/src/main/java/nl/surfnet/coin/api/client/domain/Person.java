@@ -237,4 +237,19 @@ public class Person {
     this.error = error;
   }
 
+  @Override
+  public int hashCode() {
+    return this.id.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof Person)) {
+      return false;
+    }
+    return id.equals(((Person)other).id);
+  }
 }
