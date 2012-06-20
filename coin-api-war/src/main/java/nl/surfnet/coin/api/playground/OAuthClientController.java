@@ -33,6 +33,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -53,23 +54,16 @@ public class OAuthClientController {
   @Value("${coin-api.oauth.callback.url}")
   private String oauthCallbackUrl;
 
+  @Autowired
+  private StringBuffer versionIdentifier;
+  
   private final Token EMPTY_TOKEN = new Token("", "");
-//
-//  public OAuthClientController() {
-//    super();
-//    Properties properties = new Properties();
-//    try {
-//      properties.load(new ClassPathResource("mujina-sp.properties").getInputStream());
-//    } catch (IOException e) {
-//      throw new RuntimeException(e);
-//    }
-//    oauthCallbackUrl = properties.getProperty("coin-api.oauth.callback.url");
-//  }
 
   @RequestMapping(value = { "/test" }, method = RequestMethod.GET)
   public String socialQueries(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     setupModelMap(new ApiSettings(), "step1", request, modelMap, null);
+    modelMap.addAttribute("versionIdentifier", versionIdentifier);
     return "oauth-client";
   }
 

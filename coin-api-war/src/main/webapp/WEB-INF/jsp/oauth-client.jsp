@@ -50,7 +50,7 @@
 		<div class="span11 columns">
 			<p>Play with the different OAuth versions and API scenario's and
 				see the subsequent request and responses from the SURFconext
-				OpenSocial API.</p>
+				OpenSocial API (version <c:out value="${versionIdentifier}" />).</p>
 		</div>
 	</div>
 

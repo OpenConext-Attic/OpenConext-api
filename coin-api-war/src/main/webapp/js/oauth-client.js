@@ -34,7 +34,7 @@ $(function() {
 	if ($('#parseAnchorForAccesstoken').val() == 'true') {
 		value = window.location.hash.replace("#", "");
 		$('#parseAnchorForAccesstoken').val('');
-		$.get('parseAnchor.shtml?' + value, function(data) {
+		$.get('/v1/test/parseAnchor.shtml?' + value, function(data) {
 			$('#responseInfo').html(data);
 			$.each(data.split("&"), function(i, value) {
 				param = value.split("=");

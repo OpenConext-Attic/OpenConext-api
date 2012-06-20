@@ -248,4 +248,8 @@
 		<property name="baseDir" value="${coin-api.db.migrations.folder}" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	<bean id="versionIdentifier" class="java.lang.StringBuffer">
+		<constructor-arg value="@VERSION@"/>
+	</bean>
 </beans>
