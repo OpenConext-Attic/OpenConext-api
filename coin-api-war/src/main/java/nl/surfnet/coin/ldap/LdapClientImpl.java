@@ -130,7 +130,7 @@ public class LdapClientImpl implements LdapClient {
    */
   protected Person convertLdapProperties(Person person, Attributes attributes) {
     person.setId(getAttribute("collabpersonid", attributes));
-    person.addTag(Boolean.valueOf(getAttribute("collabpersonisguest", attributes)) ? "member" : "guest");
+    person.addTag(Boolean.valueOf(getAttribute("collabpersonisguest", attributes)) ? "guest" : "member");
     String uid = getAttribute("uid", attributes);
     if (StringUtils.hasText(uid)) {
       person.addAccount(new Account(uid, uid));

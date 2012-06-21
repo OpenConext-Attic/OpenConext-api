@@ -59,6 +59,7 @@ import nl.surfnet.coin.shared.cache.MethodNameAwareCacheKeyGenerator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -89,15 +90,21 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
   @Test
   public void loadConsumerByConsumerKeyNoSecretFound() {
     setResponseResource(new ClassPathResource("janus/janus-empty-result.json"));
-    ConsumerDetails result = service.loadConsumerByConsumerKey("consumerkey");
-    assertNull("service should return null in case consumer key not found.", result);
+    try {
+      ConsumerDetails result = service.loadConsumerByConsumerKey("consumerkey");
+      fail("service should throw exception in case consumer key not found.");
+    } catch (RuntimeException e) {
+    }
   }
 
   @Test
   public void loadClientByConsumerKeyNoSecretFound() {
     super.setResponseResource(new ClassPathResource("janus/janus-empty-result.json"));
-    ClientDetails result = service.loadClientByClientId("consumerkey");
-    assertNull("service should return null when no  metadata found for consumer.", result);
+    try {
+      ClientDetails result = service.loadClientByClientId("consumerkey");
+      fail("service should throw exception in case consumer key not found.");
+    } catch (RuntimeException e) {
+    }
   }
 
   @Test
@@ -105,8 +112,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     super.setResponseResource(new Resource[] {
         new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
         new ClassPathResource("janus/janus-response-consumerkey3-metadata.json") });
-    OpenConextConsumerDetails result = (OpenConextConsumerDetails) service
-        .loadConsumerByConsumerKey("consumerkey3");
+    OpenConextConsumerDetails result = (OpenConextConsumerDetails) service.loadConsumerByConsumerKey("consumerkey3");
     assertEquals("service should return correct key", "consumerkey3", result.getConsumerKey());
     assertEquals("service should return correct secret", "secret",
         ((SharedConsumerSecret) result.getSignatureSecret()).getConsumerSecret());
@@ -131,8 +137,7 @@ public class JanusClientDetailsServiceTest extends AbstractMockHttpServerTest im
     super.setResponseResource(new Resource[] {
         new ClassPathResource("janus/janus-response-consumerkey3-entityid.json"),
         new ClassPathResource("janus/janus-response-multiple-callback-metadata.json") });
-    OpenConextClientDetails result = (OpenConextClientDetails) service
-        .loadClientByClientId("consumerkey3");
+    OpenConextClientDetails result = (OpenConextClientDetails) service.loadClientByClientId("consumerkey3");
     Set<String> registeredRedirectUris = result.getRegisteredRedirectUri();
     assertEquals(2, registeredRedirectUris.size());
     Iterator<String> iterator = registeredRedirectUris.iterator();

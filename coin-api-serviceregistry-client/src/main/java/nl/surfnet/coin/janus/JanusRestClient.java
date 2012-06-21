@@ -63,7 +63,7 @@ public class JanusRestClient implements Janus {
   public JanusRestClient() {
     this.restTemplate = new RestTemplate();
     restTemplate
-        .setMessageConverters(Arrays.<HttpMessageConverter<?>>asList(new MappingJacksonHttpMessageConverter()));
+        .setMessageConverters(Arrays.<HttpMessageConverter<?>> asList(new MappingJacksonHttpMessageConverter()));
   }
 
   /**
@@ -98,7 +98,7 @@ public class JanusRestClient implements Janus {
       }
 
       final EntityMetadata entityMetadata = EntityMetadata.fromMetadataMap(restResponse);
-      
+
       entityMetadata.setAppEntityId(entityId);
       return entityMetadata;
     } catch (IOException e) {
@@ -107,8 +107,8 @@ public class JanusRestClient implements Janus {
     return null;
   }
 
-   @Override
-   public List<String> getEntityIdsByMetaData(Metadata key, String value) {
+  @Override
+  public List<String> getEntityIdsByMetaData(Metadata key, String value) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("key", key.val());
     parameters.put("value", value);
@@ -187,7 +187,6 @@ public class JanusRestClient implements Janus {
 
     parameters.put("keys", StringUtils.join(metadataAsStrings, ','));
 
-
     URI signedUri;
     try {
       signedUri = sign("getSpList", parameters);
@@ -232,7 +231,7 @@ public class JanusRestClient implements Janus {
     final Map restResponse = restTemplate.getForObject(signedUri, Map.class);
     LOG.debug("Janus-request returned {}", restResponse);
 
-    return restResponse == null ? null : ARP.fromRestResponse(restResponse);
+    return (restResponse == null || restResponse.isEmpty()) ? null : ARP.fromRestResponse(restResponse);
   }
 
   @Override

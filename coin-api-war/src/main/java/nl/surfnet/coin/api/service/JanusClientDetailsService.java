@@ -59,9 +59,7 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
   @Cacheable(value = { "janus-meta-data" })
   public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
     EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
-    if (metadata == null) {
-      return null;
-    }
+    vaildateMetaData(consumerKey, metadata);
     final OpenConextClientDetails clientDetails = new OpenConextClientDetails();
     ClientMetaData clientMetaData = new JanusClientMetadata(metadata);
     clientDetails.setClientMetaData(clientMetaData);
@@ -71,6 +69,13 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
     clientDetails.setScope(Arrays.asList("read"));
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
     return clientDetails;
+  }
+
+  private void vaildateMetaData(String consumerKey, EntityMetadata metadata) {
+    if (metadata == null) {
+      String format = String.format("No unique consumer found by consumer key '%s'.",consumerKey);
+      throw new RuntimeException(format);
+    }
   }
 
   @Cacheable(value = { "janus-meta-data" })
@@ -103,9 +108,9 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
   private EntityMetadata getJanusMetadataByConsumerKey(String consumerKey) {
     List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
     if (entityIds.size() != 1) {
-      LOG.info("Not a unique consumer (but {}) found by consumer key '{}'. Will return null.", entityIds.size(),
+      String format = String.format("Not a unique consumer (but %s) found by consumer key '%s'.",entityIds.size(),
           consumerKey);
-      return null;
+      throw new RuntimeException(format);
     }
     String entityId = entityIds.get(0);
     return janus.getMetadataByEntityId(entityId);
@@ -118,11 +123,7 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
   @Cacheable(value = { "janus-meta-data" })
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
     EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
-
-    if (metadata == null) {
-      return null;
-    }
-
+    vaildateMetaData(consumerKey, metadata);
     final OpenConextConsumerDetails consumerDetails = new OpenConextConsumerDetails();
     consumerDetails.setConsumerKey(consumerKey);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority> asList(new SimpleGrantedAuthority("ROLE_USER")));
