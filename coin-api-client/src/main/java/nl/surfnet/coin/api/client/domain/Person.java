@@ -19,6 +19,9 @@ package nl.surfnet.coin.api.client.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * Person representation
  * 
@@ -235,6 +238,11 @@ public class Person {
    */
   public void setError(String error) {
     this.error = error;
+  }
+
+  @Override
+  public String toString() {
+    return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
   }
 
   @Override

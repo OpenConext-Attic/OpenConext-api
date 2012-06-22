@@ -19,7 +19,6 @@ package nl.surfnet.coin.api.client;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
@@ -43,22 +42,6 @@ public interface OpenConextOAuthClient {
   boolean isAccessTokenGranted(String userId);
 
   /**
-   * 
-   * Clients who wants to make three-legged calls, but who do not have an access
-   * token yet for an user can redirect to the authorization URL. Note that the
-   * Response will be used to actually redirect to.
-   * 
-   * @param version
-   *          the OAuth protocol version to use
-   * @param request
-   *          the HTTP request for obtaining the request token
-   * @param response
-   *          the HTTP response for redirecting to the authorization url
-   */
-  void redirectToAuthorizationUrl(OAuthVersion version,
-      HttpServletRequest request, HttpServletResponse response);
-
-  /**
    * Get the authorization url
    * 
    * @param version
@@ -71,13 +54,12 @@ public interface OpenConextOAuthClient {
    * Clients who have requested a redirect to the authorization URL will be
    * notified on the registered callback URL. For extracting the oauth access
    * token they will need to 'forward' the call back request to this method.
-   * 
-   * @param version
-   *          the OAuth protocol version to use
-   * @param request
-   *          the HTTP request for obtaining the request token
+   *
+   * @param version    the OAuth protocol version to use
+   * @param request    the HTTP request for obtaining the request token
+   * @param onBehalfOf the userId of the end user
    */
-  void oauthCallback(OAuthVersion version, HttpServletRequest request);
+  void oauthCallback(OAuthVersion version, HttpServletRequest request, String onBehalfOf);
 
   /**
    * Get the OpenSocial Person. Note that the onBehalfOf is only necessary if

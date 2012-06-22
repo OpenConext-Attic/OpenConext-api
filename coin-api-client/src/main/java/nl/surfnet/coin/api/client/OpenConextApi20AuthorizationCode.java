@@ -21,6 +21,7 @@ import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.extractors.JsonTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
+import org.scribe.utils.OAuthEncoder;
 
 public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
 
@@ -40,11 +41,12 @@ public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
+
     StringBuilder url = new StringBuilder(String.format(baseUrl + "oauth2/authorize?response_type=code&client_id=%s", config.getApiKey()));
     if (config.hasScope()) {
-      url.append("&scope=").append(config.getScope());
+      url.append("&scope=").append(OAuthEncoder.encode(config.getScope()));
     }
-    url.append("&redirect_uri=").append(config.getCallback());
+    url.append("&redirect_uri=").append(OAuthEncoder.encode(config.getCallback()));
     return url.toString();
   }
 

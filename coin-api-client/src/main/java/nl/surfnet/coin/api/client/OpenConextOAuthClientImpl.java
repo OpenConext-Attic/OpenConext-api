@@ -18,12 +18,9 @@ package nl.surfnet.coin.api.client;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.scribe.builder.ServiceBuilder;
@@ -74,30 +71,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return repository.getToken(userId) != null;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#redirectToAuthorizationUrl
-   * (javax.servlet.http.HttpServletRequest,
-   * javax.servlet.http.HttpServletResponse)
-   */
-  @Override
-  public void redirectToAuthorizationUrl(OAuthVersion version,
-                                         HttpServletRequest request, HttpServletResponse response) {
-    String authUrl = doGetAuthorizationUrl(version, request);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Redirecting to authorization URL: {}", authUrl);
-    }
-    try {
-      response.sendRedirect(authUrl);
-    } catch (IOException e) {
-      throw new RuntimeException("IOexception occured when redirecting to :"
-          + authUrl, e);
-    }
-
-  }
-
   private String doGetAuthorizationUrl(OAuthVersion version,
                                        HttpServletRequest request) {
     OAuthService service = getService(version, OAuthProtocol.threelegged);
@@ -110,8 +83,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     } else {
       requestToken = null;
     }
-    String authUrl = service.getAuthorizationUrl(requestToken);
-    return authUrl;
+    return service.getAuthorizationUrl(requestToken);
   }
 
   /*
@@ -126,15 +98,8 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return doGetAuthorizationUrl(version, null);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#oauthCallback(javax.servlet
-   * .http.HttpServletRequest)
-   */
   @Override
-  public void oauthCallback(OAuthVersion version, HttpServletRequest request) {
+  public void oauthCallback(OAuthVersion version, HttpServletRequest request, String onBehalfOf) {
     String oAuthVerifier;
     Token requestToken = null;
     if (OAuthVersion.v10a.equals(version)) {
@@ -144,24 +109,13 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
       oAuthVerifier = request.getParameter("code");
     }
     Verifier verifier = new Verifier(oAuthVerifier);
-    String userId = request.getParameter("user_id");
-    try {
-      userId = URLDecoder.decode(userId, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+
     OAuthService service = getService(version, OAuthProtocol.threelegged);
     Token accessToken = service.getAccessToken(requestToken, verifier);
-    repository.storeToken(accessToken, userId, version);
+    repository.storeToken(accessToken, onBehalfOf, version);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getPerson(java.lang.String
-   * , java.lang.String)
-   */
+
   @Override
   public Person getPerson(String userId, String onBehalfOf) {
     OAuthRequest request = new OAuthRequest(Verb.GET,
@@ -170,13 +124,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return parser.parsePerson(in).getEntry();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getGroupMembers(java.lang.String
-   * , java.lang.String)
-   */
   @Override
   public List<Person> getGroupMembers(String groupId, String onBehalfOf) {
     if (!StringUtils.hasText(onBehalfOf)) {
@@ -190,13 +137,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return parser.parseTeamMembers(in).getEntry();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getGroups(java.lang.String
-   * , java.lang.String)
-   */
   @Override
   public List<Group> getGroups(String userId, String onBehalfOf) {
     OAuthRequest request = new OAuthRequest(Verb.GET,
@@ -205,13 +145,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return parser.parseGroups(in).getEntry();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getGroups(java.lang.String
-   * , java.lang.String)
-   */
   @Override
   public List<Group20> getGroups20(String userId, String onBehalfOf) {
     OAuthRequest request = new OAuthRequest(Verb.GET,
@@ -219,7 +152,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     InputStream in = execute(onBehalfOf, request);
     return parser.parseGroups20(in).getEntry();
   }
-  
+
   private InputStream execute(String onBehalfOf, OAuthRequest request) {
     Token token;
     OAuthService service;
@@ -273,6 +206,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
 
     OAuthService service = new ServiceBuilder().provider(api)
         .apiKey(environment.getOauthKey())
+        .scope("read")
         .apiSecret(environment.getOauthSecret())
         .callback(environment.getCallbackUrl()).build();
     return service;

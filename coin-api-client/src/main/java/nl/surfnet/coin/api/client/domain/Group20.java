@@ -16,6 +16,9 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * Group representation
  * 
@@ -94,5 +97,13 @@ public class Group20 {
    */
   public void setVoot_membership_role(String voot_membership_role) {
     this.voot_membership_role = voot_membership_role;
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append(id)
+        .append(title)
+        .toString();
   }
 }

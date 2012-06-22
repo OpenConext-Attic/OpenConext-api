@@ -48,8 +48,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
     environment.setOauthSecret("secret");
     environment.setCallbackUrl("http://notneededyet");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
-    repository.storeToken(new Token("token", "secret"), USER_ID,
-        OAuthVersion.v2);
+    repository.storeToken(new Token("key", "secret"), USER_ID, OAuthVersion.v10a);
     client = new OpenConextOAuthClientImpl(environment, repository);
   }
 
