@@ -33,6 +33,7 @@ public class JanusEntity {
   private String type;
   private boolean allowAll;
   private int eid;
+  private String prettyName;
 
   private JanusEntity() {
 
@@ -57,6 +58,8 @@ public class JanusEntity {
     janusEntity.setWorkflowStatus((String) janusResponse.get("workflow"));
     janusEntity.setAllowAll((String) janusResponse.get("allowedall"));
     janusEntity.setEid((String) janusResponse.get("eid"));
+    janusEntity.setPrettyName((String) janusResponse.get("prettyname"));
+
     return janusEntity;
   }
 
@@ -120,4 +123,11 @@ public class JanusEntity {
     this.eid = Integer.parseInt(eid);
   }
 
+  public String getPrettyName() {
+    return prettyName;
+  }
+
+  public void setPrettyName(String prettyName) {
+    this.prettyName = prettyName;
+  }
 }
