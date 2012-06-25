@@ -37,7 +37,7 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.surfnet.coin.api.client.OpenConextApi20AuthorizationCode;
+import nl.surfnet.coin.api.client.internal.OpenConextApi20AuthorizationCode;
 import nl.surfnet.coin.mock.MockHandler;
 import nl.surfnet.coin.mock.MockHtppServer;
 

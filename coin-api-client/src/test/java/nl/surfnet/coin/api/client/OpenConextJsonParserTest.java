@@ -16,25 +16,19 @@
 
 package nl.surfnet.coin.api.client;
 
-import java.io.InputStream;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
-import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.domain.ResultWrapper;
+import nl.surfnet.coin.api.client.internal.OpenConextJsonParser;
 
 import static junit.framework.Assert.assertEquals;
 
 /**
- * Test for {@link OpenConextJsonParser}
+ * Test for {@link nl.surfnet.coin.api.client.internal.OpenConextJsonParser}
  */
 public class OpenConextJsonParserTest {
   private OpenConextJsonParser parser = new OpenConextJsonParser();

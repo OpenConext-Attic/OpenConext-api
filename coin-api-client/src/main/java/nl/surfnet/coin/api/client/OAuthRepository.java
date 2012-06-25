@@ -18,6 +18,8 @@ package nl.surfnet.coin.api.client;
 
 import org.scribe.model.Token;
 
+import nl.surfnet.coin.api.client.internal.OAuthToken;
+
 /**
  * Repository for Tokens
  *

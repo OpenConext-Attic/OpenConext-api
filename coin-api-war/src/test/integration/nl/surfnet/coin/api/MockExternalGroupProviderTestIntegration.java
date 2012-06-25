@@ -22,10 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 
-import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 import nl.surfnet.coin.api.client.domain.Email;
 import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
 
 import org.apache.commons.io.IOUtils;
@@ -35,12 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;

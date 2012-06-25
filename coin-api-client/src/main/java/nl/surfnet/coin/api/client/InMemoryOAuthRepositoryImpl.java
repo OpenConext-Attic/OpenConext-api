@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.scribe.model.Token;
 
+import nl.surfnet.coin.api.client.internal.OAuthToken;
+
 /**
  * InMemory Repository for Tokens
  * 

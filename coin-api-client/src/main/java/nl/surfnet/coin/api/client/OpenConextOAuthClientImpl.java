@@ -40,6 +40,12 @@ import org.springframework.util.StringUtils;
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.client.internal.OAuthProtocol;
+import nl.surfnet.coin.api.client.internal.OAuthToken;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aThreeLegged;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
+import nl.surfnet.coin.api.client.internal.OpenConextApi20AuthorizationCode;
+import nl.surfnet.coin.api.client.internal.OpenConextJsonParser;
 
 /**
  * Implementation of OpenConextOAuthClient

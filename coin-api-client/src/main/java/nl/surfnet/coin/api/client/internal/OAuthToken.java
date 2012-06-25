@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api.client;
+package nl.surfnet.coin.api.client.internal;
 
 import org.scribe.model.Token;
+
+import nl.surfnet.coin.api.client.OAuthVersion;
 
 /**
  * 

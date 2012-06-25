@@ -24,12 +24,11 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertP
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextGroupId;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.surfnet.coin.api.client.OpenConextJsonParser;
+import nl.surfnet.coin.api.client.internal.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;

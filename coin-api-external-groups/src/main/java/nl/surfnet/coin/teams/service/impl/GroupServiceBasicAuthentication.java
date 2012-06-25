@@ -18,44 +18,23 @@ package nl.surfnet.coin.teams.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.oauth.OAuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
-import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
-import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
-import nl.surfnet.coin.teams.domain.ThreeLeggedOauth10aGroupProviderApi;
 import nl.surfnet.coin.teams.service.BasicAuthGroupService;
-import nl.surfnet.coin.teams.service.OauthGroupService;
 import nl.surfnet.coin.teams.util.GroupProviderOptionParameters;
 
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_DESCRIPTION;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_NAME;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertProperty;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToExternalGroupId;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToExternalPersonId;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextGroupId;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
 
 /**
  * Implementation for {@link BasicAuthGroupService} to supply external group

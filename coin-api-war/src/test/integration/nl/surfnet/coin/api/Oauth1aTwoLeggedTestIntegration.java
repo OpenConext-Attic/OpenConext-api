@@ -27,7 +27,7 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api.client;
+package nl.surfnet.coin.api.client.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

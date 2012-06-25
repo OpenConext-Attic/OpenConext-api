@@ -34,7 +34,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
-import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertNotNull;

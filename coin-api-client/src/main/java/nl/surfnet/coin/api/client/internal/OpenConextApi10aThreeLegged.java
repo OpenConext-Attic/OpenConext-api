@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api.client;
+package nl.surfnet.coin.api.client.internal;
 
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
+import org.scribe.model.Verb;
 
 /**
- * Two legged Api. The key and secret are provided out-of-band and no request
- * token (and/ or access token) is needed. Hence the empty returns.
+ * Thrre legged Api. 
  * 
  */
-public class OpenConextApi10aTwoLegged extends DefaultApi10a {
+public class OpenConextApi10aThreeLegged extends DefaultApi10a {
+
+  private String baseUrl;
+  
+  public OpenConextApi10aThreeLegged(String baseUrl) {
+    super();
+    this.baseUrl = withEndingSlash(baseUrl);
+  }
+
+  private String withEndingSlash(String path) {
+    return path.endsWith("/") ? path : path + "/";
+  }
 
   /*
    * (non-Javadoc)
@@ -33,7 +44,7 @@ public class OpenConextApi10aTwoLegged extends DefaultApi10a {
    */
   @Override
   public String getRequestTokenEndpoint() {
-    return "";
+    return baseUrl + "oauth1/requestToken";
   }
 
   /*
@@ -43,7 +54,7 @@ public class OpenConextApi10aTwoLegged extends DefaultApi10a {
    */
   @Override
   public String getAccessTokenEndpoint() {
-    return "";
+    return baseUrl + "oauth1/accessToken";
   }
 
   /*
@@ -55,7 +66,11 @@ public class OpenConextApi10aTwoLegged extends DefaultApi10a {
    */
   @Override
   public String getAuthorizationUrl(Token requestToken) {
-    return "";
+    return baseUrl + "oauth1/confirm_access?oauth_token=" + requestToken.getToken();
   }
 
+  @Override
+  public Verb getRequestTokenVerb() {
+    return Verb.GET;
+  }
 }

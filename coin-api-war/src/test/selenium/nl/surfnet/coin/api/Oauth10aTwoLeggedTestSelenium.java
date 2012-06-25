@@ -17,20 +17,16 @@
 package nl.surfnet.coin.api;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
-import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.surfnet.coin.api.client.OpenConextApi10aThreeLegged;
-import nl.surfnet.coin.api.client.OpenConextApi10aTwoLegged;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
