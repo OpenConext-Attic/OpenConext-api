@@ -46,7 +46,6 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
     client.setEndpointBaseUrl("http://localhost:8088/whatever");
     client.setConsumerKey("key");
     client.setConsumerSecret("secret");
-    client.setCallbackUrl("http://notneededyet");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
     repository.storeToken(new Token("key", "secret"), USER_ID, OAuthVersion.v10a);
     client.setRepository(repository);
