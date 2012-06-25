@@ -44,22 +44,19 @@ public interface OpenConextOAuthClient {
   /**
    * Get the authorization url
    * 
-   * @param version
-   *          the oauth version
    * @return the authorization url
    */
-  String getAuthorizationUrl(OAuthVersion version);
+  String getAuthorizationUrl();
 
   /**
    * Clients who have requested a redirect to the authorization URL will be
    * notified on the registered callback URL. For extracting the oauth access
    * token they will need to 'forward' the call back request to this method.
    *
-   * @param version    the OAuth protocol version to use
    * @param request    the HTTP request for obtaining the request token
    * @param onBehalfOf the userId of the end user
    */
-  void oauthCallback(OAuthVersion version, HttpServletRequest request, String onBehalfOf);
+  void oauthCallback(HttpServletRequest request, String onBehalfOf);
 
   /**
    * Get the OpenSocial Person. Note that the onBehalfOf is only necessary if

@@ -71,8 +71,8 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return repository.getToken(userId) != null;
   }
 
-  private String doGetAuthorizationUrl(OAuthVersion version,
-                                       HttpServletRequest request) {
+  private String doGetAuthorizationUrl(HttpServletRequest request) {
+    final OAuthVersion version = environment.getVersion();
     OAuthService service = getService(version, OAuthProtocol.threelegged);
     Token requestToken;
     if (OAuthVersion.v10a.equals(version)) {
@@ -86,22 +86,16 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
     return service.getAuthorizationUrl(requestToken);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#getAuthorizationUrl(nl
-   * .surfnet.coin.api.client.OAuthVersion)
-   */
   @Override
-  public String getAuthorizationUrl(OAuthVersion version) {
-    return doGetAuthorizationUrl(version, null);
+  public String getAuthorizationUrl() {
+    return doGetAuthorizationUrl(null);
   }
 
   @Override
-  public void oauthCallback(OAuthVersion version, HttpServletRequest request, String onBehalfOf) {
+  public void oauthCallback(HttpServletRequest request, String onBehalfOf) {
     String oAuthVerifier;
     Token requestToken = null;
+    OAuthVersion version = environment.getVersion();
     if (OAuthVersion.v10a.equals(version)) {
       oAuthVerifier = request.getParameter("oauth_verifier");
       requestToken = (Token) request.getSession().getAttribute(REQUEST_TOKEN);
@@ -204,12 +198,12 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
       api = new OpenConextApi20AuthorizationCode(baseUrl);
     }
 
-    OAuthService service = new ServiceBuilder().provider(api)
+    return new ServiceBuilder()
+        .provider(api)
         .apiKey(environment.getOauthKey())
         .scope("read")
         .apiSecret(environment.getOauthSecret())
         .callback(environment.getCallbackUrl()).build();
-    return service;
   }
 
 }
