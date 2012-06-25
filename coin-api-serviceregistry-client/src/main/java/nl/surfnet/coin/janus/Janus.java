@@ -41,12 +41,17 @@ public interface Janus {
     OAUTH_APPICON("coin:oauth:app_icon"),
     OAUTH_CONSENTNOTREQUIRED("coin:oauth:consent_not_required"),
     ORGANIZATION_URL("OrganizationURL:en"),
+    ORGANIZATION_URL_NL("OrganizationURL:nl"),
     ORGANIZATION_NAME("OrganizationName:en"),
+    ORGANIZATION_NAME_NL("OrganizationName:nl"),
     LOGO_URL("logo:0:url"),
     NAMEIDFORMAT("NameIDFormat"),
     DISPLAYNAME("displayName:en"),
+    DISPLAYNAME_NL("displayName:nl"),
     NAME("name:en"),
+    NAME_NL("name:nl"),
     DESCRIPTION("description:en"),
+    DESCRIPTION_NL("description:nl"),
     CONTACTS_0_TYPE("contacts:0:contactType"),
     CONTACTS_0_EMAIL("contacts:0:emailAddress"),
     CONTACTS_0_GIVENNAME("contacts:0:givenName"),
@@ -64,7 +69,9 @@ public interface Janus {
     CONTACTS_2_TELEPHONE("contacts:2:telephoneNumber"),
     EULA("coin:eula"),
     SS_IDP_VISIBLE_ONLY("coin:ss:idp_visible_only"),
-    WORKFLOWSTATE("workflowState");
+    WORKFLOWSTATE("workflowState"),
+    URL_EN("url:en"),
+    URL_NL("url:nl");
 
     private String val;
 

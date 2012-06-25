@@ -18,11 +18,10 @@ package nl.surfnet.coin.janus.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -33,9 +32,11 @@ import nl.surfnet.coin.janus.Janus;
  */
 public class EntityMetadata implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -7846074224939621423L;
+  private static final String LANG_EN = "en";
+  private static final String LANG_NL = "nl";
 
-  private String name;
+  private Map<String, String> names = new HashMap<String, String>();
   private String oauthConsumerKey;
   private String oauthConsumerSecret;
   private String appTitle;
@@ -47,18 +48,22 @@ public class EntityMetadata implements Serializable {
   private boolean twoLeggedOauthAllowed;
   private boolean consentNotRequired;
   private String appLogoUrl;
-  private String appHomeUrl;
+  private Map<String, String> appHomeUrls = new HashMap<String, String>();
   private String eula;
-  private String description;
+  private Map<String, String> descriptions = new HashMap<String, String>();
+  private Map<String, String> urls = new HashMap<String, String>();
   private boolean isIdpVisibleOnly;
   private String workflowState;
-  private List<Contact> contacts = Collections.synchronizedList(new ArrayList<Contact>());
+  private List<Contact> contacts = new ArrayList<Contact>();
 
   public static EntityMetadata fromMetadataMap(Map<String, Object> metadata) {
     EntityMetadata em = new EntityMetadata();
 
-    em.setName((String) metadata.get(Janus.Metadata.NAME.val()));
-    em.setDescription((String) metadata.get(Janus.Metadata.DESCRIPTION.val()));
+    em.addName(LANG_EN, (String) metadata.get(Janus.Metadata.NAME.val()));
+    em.addName(LANG_NL, (String) metadata.get(Janus.Metadata.NAME_NL.val()));
+    em.addDescription(LANG_EN, (String) metadata.get(Janus.Metadata.DESCRIPTION.val()));
+    em.addDescription(LANG_NL, (String) metadata.get(Janus.Metadata.DESCRIPTION_NL.val()));
+
     em.setOauthConsumerSecret((String) metadata.get(Janus.Metadata.OAUTH_SECRET.val()));
     em.setOauthConsumerKey((String) metadata.get(Janus.Metadata.OAUTH_CONSUMERKEY.val()));
     em.setAppDescription((String) metadata.get(Janus.Metadata.OAUTH_APPDESCRIPTION.val()));
@@ -67,9 +72,11 @@ public class EntityMetadata implements Serializable {
     em.setAppTitle((String) metadata.get(Janus.Metadata.OAUTH_APPTITLE.val()));
     em.setOauthCallbackUrl((String) metadata.get(Janus.Metadata.OAUTH_CALLBACKURL.val()));
 
-    em.setAppHomeUrl((String) metadata.get(Janus.Metadata.ORGANIZATION_URL.val()));
+    em.addAppHomeUrl(LANG_EN, (String) metadata.get(Janus.Metadata.ORGANIZATION_URL.val()));
+    em.addAppHomeUrl(LANG_NL, (String) metadata.get(Janus.Metadata.ORGANIZATION_URL_NL.val()));
     em.setAppLogoUrl((String) metadata.get(Janus.Metadata.LOGO_URL.val()));
     em.setEula((String) metadata.get(Janus.Metadata.EULA.val()));
+
     em.setWorkflowState((String) metadata.get(Janus.Metadata.WORKFLOWSTATE.val()));
     em.setTwoLeggedOauthAllowed(false);
     if (metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()) != null) {
@@ -89,39 +96,21 @@ public class EntityMetadata implements Serializable {
     final Object c0Mail = metadata.get(Janus.Metadata.CONTACTS_0_EMAIL.val());
     if (metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val()) != null &&
         !emptyString(c0Mail)) {
-      Contact contact = new Contact();
-      contact.setEmailAddress((String) c0Mail);
-      contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_0_GIVENNAME.val()));
-      contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_0_SURNAME.val()));
-      Object phone = metadata.get(Janus.Metadata.CONTACTS_0_TELEPHONE.val());
-      contact.setTelephoneNumber(getPhoneAsString(phone));
-      contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val())));
+      Contact contact = getContact0(metadata, (String) c0Mail);
       em.addContact(contact);
     }
 
     final Object c1Mail = metadata.get(Janus.Metadata.CONTACTS_1_EMAIL.val());
     if (metadata.get(Janus.Metadata.CONTACTS_1_TYPE.val()) != null &&
         !emptyString(c1Mail)) {
-      Contact contact = new Contact();
-      contact.setEmailAddress((String) c1Mail);
-      contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_1_GIVENNAME.val()));
-      contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_1_SURNAME.val()));
-      Object phone = metadata.get(Janus.Metadata.CONTACTS_1_TELEPHONE.val());
-      contact.setTelephoneNumber(getPhoneAsString(phone));
-      contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_1_TYPE.val())));
+      Contact contact = getContact1(metadata, (String) c1Mail);
       em.addContact(contact);
     }
 
     final Object c2Mail = metadata.get(Janus.Metadata.CONTACTS_2_EMAIL.val());
     if (metadata.get(Janus.Metadata.CONTACTS_2_TYPE.val()) != null &&
         !emptyString(c2Mail)) {
-      Contact contact = new Contact();
-      contact.setEmailAddress((String) c2Mail);
-      contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_2_GIVENNAME.val()));
-      contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_2_SURNAME.val()));
-      Object phone = metadata.get(Janus.Metadata.CONTACTS_2_TELEPHONE.val());
-      contact.setTelephoneNumber(getPhoneAsString(phone));
-      contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_2_TYPE.val())));
+      Contact contact = getContact2(metadata, (String) c2Mail);
       em.addContact(contact);
     }
 
@@ -130,6 +119,39 @@ public class EntityMetadata implements Serializable {
 
   private static boolean emptyString(Object o) {
     return !(o instanceof String) || "".equals(((String) o).trim());
+  }
+
+  private static Contact getContact0(Map<String, Object> metadata, String c0Mail) {
+    Contact contact = new Contact();
+    contact.setEmailAddress(c0Mail);
+    contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_0_GIVENNAME.val()));
+    contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_0_SURNAME.val()));
+    Object phone = metadata.get(Janus.Metadata.CONTACTS_0_TELEPHONE.val());
+    contact.setTelephoneNumber(getPhoneAsString(phone));
+    contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_0_TYPE.val())));
+    return contact;
+  }
+
+  private static Contact getContact1(Map<String, Object> metadata, String c1Mail) {
+    Contact contact = new Contact();
+    contact.setEmailAddress(c1Mail);
+    contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_1_GIVENNAME.val()));
+    contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_1_SURNAME.val()));
+    Object phone = metadata.get(Janus.Metadata.CONTACTS_1_TELEPHONE.val());
+    contact.setTelephoneNumber(getPhoneAsString(phone));
+    contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_1_TYPE.val())));
+    return contact;
+  }
+
+  private static Contact getContact2(Map<String, Object> metadata, String c2Mail) {
+    Contact contact = new Contact();
+    contact.setEmailAddress(c2Mail);
+    contact.setGivenName((String) metadata.get(Janus.Metadata.CONTACTS_2_GIVENNAME.val()));
+    contact.setSurName((String) metadata.get(Janus.Metadata.CONTACTS_2_SURNAME.val()));
+    Object phone = metadata.get(Janus.Metadata.CONTACTS_2_TELEPHONE.val());
+    contact.setTelephoneNumber(getPhoneAsString(phone));
+    contact.setType(Contact.Type.valueOf((String) metadata.get(Janus.Metadata.CONTACTS_2_TYPE.val())));
+    return contact;
   }
 
   /**
@@ -233,20 +255,26 @@ public class EntityMetadata implements Serializable {
     return appLogoUrl;
   }
 
-  public String getAppHomeUrl() {
-    return appHomeUrl;
-  }
-
   public void setAppLogoUrl(String appLogoUrl) {
     this.appLogoUrl = appLogoUrl;
   }
 
+  /**
+   * @deprecated use #getAppHomeUrls with the language code as key
+   */
+  public String getAppHomeUrl() {
+    return this.getAppHomeUrls().get(LANG_EN);
+  }
+
+  /**
+   * @deprecated use #setAppHomeUrls with the language code as key
+   */
   public void setAppHomeUrl(String appHomeUrl) {
-    this.appHomeUrl = appHomeUrl;
+    addAppHomeUrl(LANG_EN, appHomeUrl);
   }
 
   public List<Contact> getContacts() {
-    return UnmodifiableList.decorate(contacts);
+    return contacts;
   }
 
   public boolean isIdpVisibleOnly() {
@@ -265,20 +293,32 @@ public class EntityMetadata implements Serializable {
     this.eula = eula;
   }
 
+  /**
+   * @deprecated use #getNames with the language code as key
+   */
   public String getName() {
-    return name;
+    return names.get(LANG_EN);
   }
 
+  /**
+   * @deprecated use #setNames with the language code as key
+   */
   public void setName(String name) {
-    this.name = name;
+    addName(LANG_EN, name);
   }
 
+  /**
+   * @deprecated use #setDescriptions with the language code as key
+   */
   public String getDescription() {
-    return description;
+    return this.descriptions.get(LANG_EN);
   }
 
+  /**
+   * @deprecated use #getDescriptions with the language code as key
+   */
   public void setDescription(String description) {
-    this.description = description;
+    addDescription(LANG_EN, description);
   }
 
   /**
@@ -303,4 +343,53 @@ public class EntityMetadata implements Serializable {
   public void setWorkflowState(String workflowState) {
     this.workflowState = workflowState;
   }
+
+  public Map<String, String> getNames() {
+    return names;
+  }
+
+  public void setNames(Map<String, String> names) {
+    this.names = names;
+  }
+
+  public void addName(String language, String value) {
+    this.names.put(language, value);
+  }
+
+  public Map<String, String> getAppHomeUrls() {
+    return appHomeUrls;
+  }
+
+  public void setAppHomeUrls(Map<String, String> appHomeUrls) {
+    this.appHomeUrls = appHomeUrls;
+  }
+
+  public void addAppHomeUrl(String language, String value) {
+    this.appHomeUrls.put(language, value);
+  }
+
+  public Map<String, String> getDescriptions() {
+    return descriptions;
+  }
+
+  public void setDescriptions(Map<String, String> descriptions) {
+    this.descriptions = descriptions;
+  }
+
+  public void addDescription(String language, String value) {
+    this.descriptions.put(language, value);
+  }
+
+  public Map<String, String> getUrls() {
+    return urls;
+  }
+
+  public void setUrls(Map<String, String> urls) {
+    this.urls = urls;
+  }
+
+  public void addUrl(String language, String value) {
+    this.urls.put(language, value);
+  }
+
 }
