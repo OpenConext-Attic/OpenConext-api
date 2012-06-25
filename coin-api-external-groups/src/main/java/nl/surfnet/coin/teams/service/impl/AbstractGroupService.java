@@ -18,24 +18,24 @@
  */
 package nl.surfnet.coin.teams.service.impl;
 
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_DESCRIPTION;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_NAME;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertProperty;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextGroupId;
-import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
-
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.surfnet.coin.api.client.internal.OpenConextJsonParser;
+import org.springframework.util.StringUtils;
+
+import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 
-import org.springframework.util.StringUtils;
+import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_DESCRIPTION;
+import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_NAME;
+import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertProperty;
+import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextGroupId;
+import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
 
 /**
  * Base class for {@link GroupServiceBasicAuthentication} and {@link GroupServiceThreeLeggedOAuth10a}

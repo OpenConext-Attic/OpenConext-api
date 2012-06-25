@@ -23,12 +23,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.internal.OpenConextJsonParser;
 
 import static junit.framework.Assert.assertEquals;
 
 /**
- * Test for {@link nl.surfnet.coin.api.client.internal.OpenConextJsonParser}
+ * Test for {@link OpenConextJsonParser}
  */
 public class OpenConextJsonParserTest {
   private OpenConextJsonParser parser = new OpenConextJsonParser();
