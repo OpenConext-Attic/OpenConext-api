@@ -26,7 +26,7 @@ public class OAuthEnvironment {
   private String oauthKey;
   private String oauthSecret;
   private String endpointBaseUrl;
-  private String callbackUrl;
+  private String callbackUrl = OUT_OF_BOUND_CALLBACK;
   private OAuthVersion version;
 
   /**

@@ -33,6 +33,8 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.client.domain.Group;
@@ -42,30 +44,23 @@ import nl.surfnet.coin.api.client.domain.Person;
 /**
  * Implementation of OpenConextOAuthClient
  */
-public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
+public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, InitializingBean {
 
-  private static final Logger LOG = LoggerFactory
-      .getLogger(OpenConextOAuthClientImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OpenConextOAuthClientImpl.class);
 
   private static final String REQUEST_TOKEN = "REQUEST_TOKEN";
   private OAuthEnvironment environment;
   private OAuthRepository repository;
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
-  public OpenConextOAuthClientImpl(OAuthEnvironment environment,
-                                   OAuthRepository repository) {
-    super();
-    this.environment = environment;
-    this.repository = repository;
+  public OpenConextOAuthClientImpl() {
+    this.environment = new OAuthEnvironment();
+
+    environment.setVersion(OAuthVersion.v2);
+
+    this.repository = new InMemoryOAuthRepositoryImpl();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * nl.surfnet.coin.api.client.OpenConextOAuthClient#isAccessTokenGranted(java
-   * .lang.String)
-   */
   @Override
   public boolean isAccessTokenGranted(String userId) {
     return repository.getToken(userId) != null;
@@ -164,6 +159,9 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
       service = getService(oAuthToken.getVersion(), OAuthProtocol.threelegged);
     }
     service.signRequest(token, request);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Will send request '{}'", request.toString());
+    }
     Response oAuthResponse = request.send();
     if (oAuthResponse.getCode() >= 400) {
       throw new RuntimeException(String.format("Error response: %d, body: %s", oAuthResponse.getCode(),
@@ -198,6 +196,7 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
       api = new OpenConextApi20AuthorizationCode(baseUrl);
     }
 
+
     return new ServiceBuilder()
         .provider(api)
         .apiKey(environment.getOauthKey())
@@ -206,4 +205,30 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient {
         .callback(environment.getCallbackUrl()).build();
   }
 
+  public void setCallbackUrl(String url) {
+    environment.setCallbackUrl(url);
+  }
+  public void setConsumerSecret(String secret) {
+    environment.setOauthSecret(secret);
+  }
+  public void setConsumerKey(String key) {
+    environment.setOauthKey(key);
+  }
+  public void setEndpointBaseUrl(String url) {
+    environment.setEndpointBaseUrl(url);
+  }
+  public void setVersion(OAuthVersion v) {
+    environment.setVersion(v);
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    Assert.notNull(environment);
+    Assert.notNull(environment.getEndpointBaseUrl(), "endpoint base url cannot be null");
+    Assert.notNull(repository);
+  }
+
+  public void setRepository(OAuthRepository repository) {
+    this.repository = repository;
+  }
 }

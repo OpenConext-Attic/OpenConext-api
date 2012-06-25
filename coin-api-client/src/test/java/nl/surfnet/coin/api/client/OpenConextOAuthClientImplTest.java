@@ -42,14 +42,14 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
 
   @Before
   public void initialize() throws Exception {
-    OAuthEnvironment environment = new OAuthEnvironment();
-    environment.setEndpointBaseUrl("http://localhost:8088/whatever");
-    environment.setOauthKey("key");
-    environment.setOauthSecret("secret");
-    environment.setCallbackUrl("http://notneededyet");
+    client = new OpenConextOAuthClientImpl();
+    client.setEndpointBaseUrl("http://localhost:8088/whatever");
+    client.setConsumerKey("key");
+    client.setConsumerSecret("secret");
+    client.setCallbackUrl("http://notneededyet");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
     repository.storeToken(new Token("key", "secret"), USER_ID, OAuthVersion.v10a);
-    client = new OpenConextOAuthClientImpl(environment, repository);
+    client.setRepository(repository);
   }
 
   /**

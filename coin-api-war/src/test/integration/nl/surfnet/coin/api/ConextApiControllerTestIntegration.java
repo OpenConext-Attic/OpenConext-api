@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.scribe.model.Token;
 
 import nl.surfnet.coin.api.client.InMemoryOAuthRepositoryImpl;
-import nl.surfnet.coin.api.client.OAuthEnvironment;
 import nl.surfnet.coin.api.client.OAuthRepository;
 import nl.surfnet.coin.api.client.OAuthVersion;
 import nl.surfnet.coin.api.client.OpenConextOAuthClientImpl;
@@ -46,14 +45,14 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
 
   @Before
   public void initialize() throws Exception {
-    OAuthEnvironment environment = new OAuthEnvironment();
-    environment.setEndpointBaseUrl(URL_UNDER_TEST);
-    environment.setOauthKey(OAUTH_KEY);
-    environment.setOauthSecret(OAUTH_SECRET);
-    environment.setCallbackUrl("http://not-used/");
+    client = new OpenConextOAuthClientImpl();
+    client.setEndpointBaseUrl(URL_UNDER_TEST);
+    client.setConsumerKey(OAUTH_KEY);
+    client.setConsumerSecret(OAUTH_SECRET);
+    client.setCallbackUrl("http://not-used/");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
     repository.storeToken(new Token(OAUTH_KEY, OAUTH_SECRET), USER_ID, OAuthVersion.v2);
-    client = new OpenConextOAuthClientImpl(environment, repository);
+    client.setRepository(repository);
   }
 
   @Test
