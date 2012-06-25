@@ -77,6 +77,9 @@ public class EntityMetadata implements Serializable {
     em.setAppLogoUrl((String) metadata.get(Janus.Metadata.LOGO_URL.val()));
     em.setEula((String) metadata.get(Janus.Metadata.EULA.val()));
 
+    em.addUrl(LANG_EN, (String) metadata.get(Janus.Metadata.URL_EN.val()));
+    em.addUrl(LANG_NL, (String) metadata.get(Janus.Metadata.URL_NL.val()));
+
     em.setWorkflowState((String) metadata.get(Janus.Metadata.WORKFLOWSTATE.val()));
     em.setTwoLeggedOauthAllowed(false);
     if (metadata.get(Janus.Metadata.OAUTH_TWOLEGGEDALLOWED.val()) != null) {
