@@ -147,6 +147,20 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
     return parser.parseGroups20(in).getEntry();
   }
 
+  @Override
+  public Group20 getGroup20(String userId, String groupId, String onBehalfOf) {
+    final String url = String.format("%ssocial/rest/groups/%s/%s",
+        environment.getEndpointBaseUrl(), userId, groupId);
+    OAuthRequest request = new OAuthRequest(Verb.GET,
+        url);
+    InputStream in = execute(onBehalfOf, request);
+    final List<Group20> entry = parser.parseGroups20(in).getEntry();
+    if (entry != null && entry.size() > 0) {
+      return entry.get(0);
+    }
+    return null;
+  }
+
   private InputStream execute(String onBehalfOf, OAuthRequest request) {
     Token token;
     OAuthService service;

@@ -110,4 +110,13 @@ public interface OpenConextOAuthClient {
    */
   List<Group20> getGroups20(String userId, String onBehalfOf);
 
+  /**
+   * Get group information about the given group, for the given user.
+   *
+   * @param userId the userId that is a member of the given group
+   * @param groupId the groupId of the group
+   * @param onBehalfOf id of the end user on whose behalf this call is done.
+   * @return Group object
+   */
+  Group20 getGroup20(String userId, String groupId, String onBehalfOf);
 }
