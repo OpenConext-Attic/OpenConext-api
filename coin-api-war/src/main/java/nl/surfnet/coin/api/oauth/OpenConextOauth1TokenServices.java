@@ -22,8 +22,6 @@ import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
-
 import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,8 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+
 /**
  * Token store for Oauth1 tokens.
  */
@@ -51,7 +51,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
   private JdbcTemplate jdbcTemplate;
 
   private final static String selectTokenSql = "select * from oauth1_tokens where token like ?";
-  private final static String insertTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?, ?)";
+  private final static String insertTokenSql = "insert into oauth1_tokens values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
   private final static String deleteTokenSql = "delete from oauth1_tokens where token like ?";
 
   @Resource(name="janusClientDetailsService")
@@ -102,6 +102,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
     Assert.notNull(token, "Token cannot be null");
     Assert.notNull(value, "token value cannot be null");
     Authentication userAuthentication = token.getUserAuthentication();
+    String userId = null;
     if (token.isAccessToken()) {
       String consumerKey = token.getConsumerKey();
       /*
@@ -116,9 +117,11 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
           Object principal = pre.getPrincipal();
           if (principal instanceof ClientMetaDataUser) {
             ((ClientMetaDataUser) principal).setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
+            userId = ((ClientMetaDataUser) principal).getUsername();
           } else if (principal instanceof ShibbolethAuthenticationToken) {
             ((ShibbolethAuthenticationToken) principal).setClientMetaData(extendedBaseConsumerDetails
                 .getClientMetaData());
+            userId = ((ShibbolethAuthenticationToken) principal).getName();
           } else {
             throw new RuntimeException("The principal on the PreAuthenticatedAuthenticationToken is of the type '"
                 + (principal != null ? principal.getClass() : "null")
@@ -127,7 +130,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
         } else if (userAuthentication instanceof ShibbolethAuthenticationToken) {
           ShibbolethAuthenticationToken shibToken = (ShibbolethAuthenticationToken) userAuthentication;
           shibToken.setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
-          
+          userId = shibToken.getName();
         } else {
           throw new RuntimeException("The userAuthentication is of the type '"
               + (userAuthentication != null ? userAuthentication.getClass() : "null")
@@ -141,7 +144,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
     }
     jdbcTemplate.update(deleteTokenSql, value);
     jdbcTemplate.update(insertTokenSql, value, token.getCallbackUrl(), token.getVerifier(), token.getSecret(),
-        token.getConsumerKey(), token.isAccessToken(), token.getTimestamp(),
+        token.getConsumerKey(), userId, token.isAccessToken(), token.getTimestamp(),
         SerializationUtils.serialize(userAuthentication));
   }
 

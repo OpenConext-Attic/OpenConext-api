@@ -6,6 +6,7 @@ create table oauth1_tokens (
   verifier varchar(255) not null,
   secret varchar(255) not null,
   consumerKey varchar(255) not null,
+  userId varchar(255),
   isAccessToken bit(1) not null,
   tokenTimestamp bigint,
   userAuthentication blob(1M),
