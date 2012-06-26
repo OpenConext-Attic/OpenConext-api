@@ -56,7 +56,7 @@
 
 	<div class="row">
 		<div class="span7 columns">
-			<form:form action="/v1/test" commandName="settings"
+			<form:form action="${pageContext.request.contextPath}/test" commandName="settings"
 				method="post" class="form-horizontal">
 				<div class="accordion" id="mainOptions">
 					<div class="accordion-group">
