@@ -17,8 +17,8 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -48,7 +48,10 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
   private static final Logger LOG = LoggerFactory.getLogger(MockClientDetailsService.class);
 
   private String defaultSecret = "mysecret";
-  private static final String CALLBACK_URL = "http://localhost:8083/";
+  private static final String[] CALLBACK_URLS = new String[] {
+      "http://localhost:8083/",
+      "http://localhost:8095/test/oauth-callback.shtml"
+  };
 
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
@@ -58,7 +61,7 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
     ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
-    details.setRegisteredRedirectUri(Collections.singleton(CALLBACK_URL));
+    details.setRegisteredRedirectUri(new HashSet(Arrays.asList(CALLBACK_URLS)));
 
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;

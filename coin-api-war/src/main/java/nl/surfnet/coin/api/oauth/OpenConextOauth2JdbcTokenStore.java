@@ -18,18 +18,25 @@
  */
 package nl.surfnet.coin.api.oauth;
 
+import java.sql.Types;
+
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
-
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
+import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.JdbcTokenStore;
+
+import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
 /**
  * {@link JdbcTokenStore} that add the ClientMetaData from Janus if it is not
@@ -46,12 +53,14 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
   @Resource(name = "janusClientDetailsService")
   private ClientDetailsService clientDetailsService;
 
+  private JdbcTemplate jdbcTemplate;
+
   /**
    * @param dataSource
    */
   public OpenConextOauth2JdbcTokenStore(DataSource dataSource) {
     super(dataSource);
-
+    this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
 
   @Override
@@ -72,13 +81,38 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
               + "'. Required is a (sub)class of ExtendedBaseClientDetails");
         }
         
-      }    
+      }
+
+      String refreshToken = null;
+      if (token.getRefreshToken() != null) {
+        refreshToken = token.getRefreshToken().getValue();
+      }
+
+
+      jdbcTemplate.update(
+          ACCESS_TOKEN_INSERT_STATEMENT,
+          new Object[] { token.getValue(), new SqlLobValue(SerializationUtils.serialize(token)),
+              authenticationKeyGenerator.extractKey(authentication),
+              authentication.isClientOnly() ? null : authentication.getName(),
+              authentication.getAuthorizationRequest().getClientId(),
+              shibAuth.getClientMetaData().getAppEntityId(),
+              new SqlLobValue(SerializationUtils.serialize(authentication)), refreshToken }, new int[] {
+          Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB,
+          Types.VARCHAR });
+
+
     } else {
       throw new RuntimeException("The userAuthentication is of the type '"
           + (userAuthentication != null ? userAuthentication.getClass() : "null")
           + "'. Required is a (sub)class of ShibbolethAuthenticationToken");
-    }    
-    super.storeAccessToken(token, authentication);
+    }
+
   }
+
+  private AuthenticationKeyGenerator authenticationKeyGenerator = new DefaultAuthenticationKeyGenerator();
+
+  public static final String ACCESS_TOKEN_INSERT_STATEMENT = "insert into oauth_access_token " +
+      "(token_id, token, authentication_id, user_name, client_id, client_entity_id, authentication, refresh_token) " +
+      "values (?, ?, ?, ?, ?, ?, ?, ?)";
 
 }
