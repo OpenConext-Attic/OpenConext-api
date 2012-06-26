@@ -27,11 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +36,11 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.Assert;
+
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
 
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao {
 
@@ -61,9 +61,14 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
   }
 
   public Group20Entry findGroup20(String personId, String groupName) {
-    final Group20Entry group20Entry = new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(
-        SQL_FIND_TEAMS_LIKE_GROUPNAME, new Object[] { personId, groupName, 1, 0 }, new OpenSocial20GroupRowMapper())));
-    addRolesToGroups(personId, group20Entry.getEntry());
+    Group20Entry group20Entry;
+    try {
+      group20Entry = new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(
+          SQL_FIND_TEAMS_LIKE_GROUPNAME, new Object[]{personId, groupName, 1, 0}, new OpenSocial20GroupRowMapper())));
+      addRolesToGroups(personId, group20Entry.getEntry());
+    } catch (EmptyResultDataAccessException ignored) {
+      group20Entry = new Group20Entry();
+    }
     return group20Entry;
   }
 
