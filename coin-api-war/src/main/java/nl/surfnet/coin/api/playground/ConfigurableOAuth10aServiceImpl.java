@@ -26,6 +26,7 @@ import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
+import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth10aServiceImpl;
 import org.scribe.oauth.OAuthService;
@@ -61,8 +62,12 @@ public class ConfigurableOAuth10aServiceImpl implements OAuthService {
   }
 
   public OAuthRequest getOAuthRequest() {
+    return getOAuthRequest(Verb.POST.toString());
+  }
+
+  public OAuthRequest getOAuthRequest(String verb) {
     config.log("obtaining request token from " + api.getRequestTokenEndpoint());
-    OAuthRequest request = new OAuthRequest(api.getRequestTokenVerb(), api.getRequestTokenEndpoint());
+    OAuthRequest request = new OAuthRequest(Verb.valueOf(verb), api.getRequestTokenEndpoint());
 
     config.log("setting oauth_callback to " + config.getCallback());
     request.addOAuthParameter(OAuthConstants.CALLBACK, config.getCallback());
@@ -99,8 +104,9 @@ public class ConfigurableOAuth10aServiceImpl implements OAuthService {
     request.addOAuthParameter(OAuthConstants.CONSUMER_KEY, config.getApiKey());
     request.addOAuthParameter(OAuthConstants.SIGN_METHOD, api.getSignatureService().getSignatureMethod());
     request.addOAuthParameter(OAuthConstants.VERSION, getVersion());
-    if (config.hasScope())
+    if (config.hasScope()) {
       request.addOAuthParameter(OAuthConstants.SCOPE, config.getScope());
+    }
     request.addOAuthParameter(OAuthConstants.SIGNATURE, getSignature(request, token));
 
     config.log("appended additional OAuth parameters: " + MapUtils.toString(request.getOauthParameters()));

@@ -19,6 +19,7 @@
 package nl.surfnet.coin.api.playground;
 
 import org.scribe.model.Token;
+import org.scribe.model.Verb;
 
 /**
  * Backing form object for all OAuth calls from the Test Framework
@@ -27,6 +28,7 @@ import org.scribe.model.Token;
 public class ApiSettings {
   private String version = OAuthVersion.VERSION10A.getVersion();// "1.0a"
   private String requestTokenEndPoint;
+  private String requestTokenVerb = Verb.POST.toString();
   private String accessTokenEndPoint;
   private String accessTokenEndPoint2;
   private boolean twoLegged;
@@ -224,6 +226,20 @@ public class ApiSettings {
    */
   public void setAccessTokenRequestOption(String accessTokenRequestOption) {
     this.accessTokenRequestOption = accessTokenRequestOption;
+  }
+
+  /**
+   * @return the requestTokenVerb
+   */
+  public String getRequestTokenVerb() {
+    return requestTokenVerb;
+  }
+
+  /**
+   * @param requestTokenVerb the requestTokenVerb to set
+   */
+  public void setRequestTokenVerb(String requestTokenVerb) {
+    this.requestTokenVerb = requestTokenVerb;
   }
 
 }

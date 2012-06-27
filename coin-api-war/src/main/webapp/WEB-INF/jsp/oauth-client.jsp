@@ -120,6 +120,14 @@
 												</div>
 											</div>
 											<div class="control-group">
+												<label class="control-label" for="requestTokenVerb">RequestToken
+													HTTP Verb</label>
+												<div class="controls">
+													<form:select id="requestTokenVerb" path="requestTokenVerb" items="${requestTokenVerbs}" />
+													<p class="help-block">The HTTP method to obtain the Request Token</p>
+												</div>
+											</div>
+											<div class="control-group">
 												<label class="control-label" for="accessTokenEndPoint">AccessToken
 													URL</label>
 												<div class="controls">

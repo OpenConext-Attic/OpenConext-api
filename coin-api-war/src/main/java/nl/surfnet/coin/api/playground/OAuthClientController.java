@@ -91,7 +91,7 @@ public class OAuthClientController {
     String authorizationUrl;
     if (settings.isOAuth10a()) {
       ConfigurableOAuth10aServiceImpl service10a = (ConfigurableOAuth10aServiceImpl) service;
-      OAuthRequest oAuthRequest = service10a.getOAuthRequest();
+      OAuthRequest oAuthRequest = service10a.getOAuthRequest(settings.getRequestTokenVerb());
       Response oauthResponse = service10a.getOauthResponse(oAuthRequest);
       Token requestToken = service10a.getRequestToken(oauthResponse);
       authorizationUrl = service.getAuthorizationUrl(requestToken);
@@ -275,6 +275,11 @@ public class OAuthClientController {
   @ModelAttribute("versions")
   public Collection<String> populateOAuthVersions() {
     return Arrays.asList(new String[] { OAuthVersion.VERSION10A.getVersion(), OAuthVersion.VERSION20.getVersion() });
+  }
+  
+  @ModelAttribute("requestTokenVerbs")
+  public Collection<String> populateRequestTokenVerbs() {
+    return Arrays.asList(new String[] { Verb.POST.toString(), Verb.GET.toString() });
   }
 
   @ModelAttribute("accessTokenRequestOptions")
