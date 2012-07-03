@@ -247,7 +247,6 @@ public class ApiController extends AbstractApiController {
     if (!listOfAllExternalGroups.isEmpty()) {
       group20Entry.getEntry().addAll(listOfAllExternalGroups);
       group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, listOfAllExternalGroups);
-      group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
     }
 
     logApiCall(onBehalfOf);
