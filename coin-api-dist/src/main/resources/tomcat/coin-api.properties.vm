@@ -1,0 +1,92 @@
+#
+# Copyright 2012 SURFnet bv, The Netherlands
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+####################################################################
+##
+## The following properties are the responsibility of the owners
+## of the machine. The developers do not know the values.
+##
+####################################################################
+
+janus.user=engine
+janus.secret=engineblock
+janus.uri=https://serviceregistry.demo.openconext.org/simplesaml/module.php/janus/services/rest/
+
+coin-api.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.jdbc.url=jdbc:mysql://localhost:3306/api
+coin-api.jdbc.user=root
+coin-api.jdbc.password=c0n3xt
+
+coin-api.ldap.url=ldap://localhost:389
+coin-api.ldap.password=ks97THqW2m3BN
+coin-api.ldap.userDn=cn=ro,dc=surfconext,dc=nl
+
+coin-api.engineblock.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.engineblock.jdbc.password=c0n3xt
+coin-api.engineblock.jdbc.url=jdbc:mysql://localhost:3306/engineblock
+coin-api.engineblock.jdbc.user=root
+
+coin-api.grouper.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.grouper.jdbc.url=jdbc:mysql://localhost:3306/teams
+coin-api.grouper.jdbc.user=root
+coin-api.grouper.jdbc.password=c0n3xt
+
+# global configuration of database properties, used for all data sources
+# in seconds
+coin-api.database.idleConnectionTestPeriod=900
+# in seconds
+coin-api.database.maxIdleTime=900
+
+# The login url of Shibboleth
+coin-api.shibboleth.login.url=https://api.demo.openconext.org/Shibboleth.sso/Login
+
+# SMTP server settings for notifications
+coin-mailserver=localhost
+coin-mailserver-port=25
+
+# Email address that recieves error notifications
+coin-errormail-to=
+
+# Callback URL of the OAuth client
+coin-api.oauth.callback.url=https://api.demo.openconext.org/v1/test/oauth-callback.shtml
+
+####################################################################
+##
+## The following properties are the responsibility of the developers
+##
+####################################################################
+
+#Choose either mockClientDetailsService or janusClientDetailsService
+clientDetailsServiceClass=nl.surfnet.coin.api.service.JanusClientDetailsService
+
+#For future purposes we might mock them
+ldapClientClass=nl.surfnet.coin.ldap.LdapClientImpl
+engineblockClass=nl.surfnet.coin.eb.EngineBlockImpl
+groupServiceClass=nl.surfnet.coin.api.service.GroupServiceImpl
+
+#Is the mock API enabled?
+mock-api-enabled=true
+
+#The directory (in the war) where the db migration scrips reside
+coin-api.db.migrations.folder=db/migration/mysql
+
+#Cache manager
+cacheManagerClass=nl.surfnet.coin.shared.cache.ConextNoOpCacheManager
+
+staticContentBasePath=https://static.demo.openconext.org
+
+# Default locale for consent screen
+coin-api.locale-default=nl
