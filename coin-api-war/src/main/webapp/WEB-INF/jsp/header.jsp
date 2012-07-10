@@ -85,6 +85,6 @@
       <c:set var="conextTermsUrl" value="https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+(EN)" />
       <p>
         <spring:message code="consent.terms.paragraph"
-        arguments="${clientAppTitle}, ${conextTermsUrl}, ${newWindowImage}, ${clientEulaUrl}, ${clientAppTitle}, ${newWindowImage}" />
+        arguments="${conextTermsUrl}, ${newWindowImage}, ${clientEulaUrl}, ${clientAppTitle}, ${newWindowImage}" />
       </p>
   </authz:authorize>
