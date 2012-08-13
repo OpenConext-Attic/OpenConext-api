@@ -46,12 +46,12 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
   private JdbcTemplate jdbcTemplate;
   /*
-   * http://static.springsource.org/spring/docs/2.5.x/reference/jdbc.html#jdbc-in-clause
+   * http://static.springsource.org/spring/docs/2.5.x/reference/jdbc.html#jdbc-in
+   * -clause
    */
   private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-  
-  private static final Map<String, String> VALID_SORTS_FOR_TEAM_QUERY;
 
+  private static final Map<String, String> VALID_SORTS_FOR_TEAM_QUERY;
 
   static {
     VALID_SORTS_FOR_TEAM_QUERY = new HashMap<String, String>();
@@ -62,9 +62,12 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
 
   public Group20Entry findGroup20(String personId, String groupName) {
     Group20Entry group20Entry;
+    Assert.notNull(personId, "The personId can not be null");
+    Assert.notNull(groupName, "The groupName can not be null");
     try {
       group20Entry = new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(
-          SQL_FIND_TEAMS_LIKE_GROUPNAME, new Object[]{personId, groupName, 1, 0}, new OpenSocial20GroupRowMapper())));
+          SQL_FIND_TEAM_BY_MEMBER_AND_BY_GROUPNAME, new Object[] { personId, groupName.toUpperCase() },
+          new OpenSocial20GroupRowMapper())));
       addRolesToGroups(personId, group20Entry.getEntry());
     } catch (EmptyResultDataAccessException ignored) {
       group20Entry = new Group20Entry();
@@ -187,7 +190,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
       persons = jdbcTemplate.query(SQL_MEMBERS_BY_TEAM, new Object[] { groupId, pageSize, offset }, mapper);
       addPersonRolesToGroup(persons, groupId);
     } catch (EmptyResultDataAccessException e) {
-      //ignore as we have a sensible default
+      // ignore as we have a sensible default
     }
     return new GroupMembersEntry(persons);
   }
@@ -201,7 +204,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     pageSize = correctPageSize(pageSize);
     offset = correctOffset(offset);
     params.put("limit", pageSize);
-    params.put("offset",offset);
+    params.put("offset", offset);
     try {
       String sql = SQL_FIND_TEAMS_LIKE_GROUPNAMES;
       groups = namedParameterJdbcTemplate.query(sql, params, new OpenSocial20GroupRowMapper());
@@ -249,7 +252,8 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
   }
 
   /**
-   * @param namedParameterJdbcTemplate the namedParameterJdbcTemplate to set
+   * @param namedParameterJdbcTemplate
+   *          the namedParameterJdbcTemplate to set
    */
   public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
     this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;

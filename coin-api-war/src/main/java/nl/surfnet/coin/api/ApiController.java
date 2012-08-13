@@ -349,6 +349,7 @@ public class ApiController extends AbstractApiController {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
       group20Entry = groupService.getGroup20(userId, grouperGroupId, onBehalfOf);
+      group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
     } else {
       // external group. see which groupProvider can handle this call
       for (GroupProvider groupProvider : allGroupProviders) {
@@ -365,7 +366,6 @@ public class ApiController extends AbstractApiController {
       if (!CollectionUtils.isEmpty(externalGroups)) {
         group20Entry.getEntry().addAll(externalGroups);
         group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, externalGroups);
-        group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
 
       }
 

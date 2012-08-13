@@ -19,32 +19,30 @@ package nl.surfnet.coin.teams.util;
 /**
  * Constants for allowed options key of a {@link nl.surfnet.coin.teams.domain.GroupProvider}
  */
-public final class GroupProviderOptionParameters {
-  private GroupProviderOptionParameters() {
-  }
+public interface GroupProviderOptionParameters {
 
-  public static final String ADAPTER = "adapter";
-  public static final String URL = "url";
-  public static final String PROTOCOL = "protocol";
-  public static final String HOST = "host";
-  public static final String VERSION = "version";
-  public static final String PATH = "path";
-  public static final String USERNAME = "user";
-  public static final String PASSWORD = "password";
-  public static final String CONSUMER_KEY = "auth.consumerKey";
-  public static final String CONSUMER_SECRET = "auth.consumerSecret";
-  public static final String SIGNATURE_METHOD = "auth.signatureMethod";
-  public static final String CALLBACK_URL = "auth.callbackUrl";
-  public static final String SITE_URL = "auth.siteUrl";
-  public static final String REQUEST_TOKEN_URL = "auth.requestTokenUrl";
-  public static final String ACCESS_TOKEN_URL = "auth.accessTokenUrl";
-  public static final String AUTHORIZE_URL = "auth.authorizeUrl";
-  public static final String USER_AUTHORIZATION_URL = "auth.userAuthorizationUrl";
-  public static final String REQUEST_METHOD = "auth.requestMethod";
-  public static final String RSA_PUBLIC_KEY = "auth.rsaPublicKey";
-  public static final String RSA_PRIVATE_KEY = "auth.rsaPrivateKey";
-  public static final String REQUEST_SCHEME = "auth.requestScheme";
-  public static final String TIMEOUT = "timeout";
-  public static final String SSL_VERIFY_HOST = "ssl_verifyhost";
-  public static final String SSL_VERIFY_PEER = "ssl_verifypeer";
+  String ADAPTER = "adapter";
+  String URL = "url";
+  String PROTOCOL = "protocol";
+  String HOST = "host";
+  String VERSION = "version";
+  String PATH = "path";
+  String USERNAME = "user";
+  String PASSWORD = "password";
+  String CONSUMER_KEY = "auth.consumerKey";
+  String CONSUMER_SECRET = "auth.consumerSecret";
+  String SIGNATURE_METHOD = "auth.signatureMethod";
+  String CALLBACK_URL = "auth.callbackUrl";
+  String SITE_URL = "auth.siteUrl";
+  String REQUEST_TOKEN_URL = "auth.requestTokenUrl";
+  String ACCESS_TOKEN_URL = "auth.accessTokenUrl";
+  String AUTHORIZE_URL = "auth.authorizeUrl";
+  String USER_AUTHORIZATION_URL = "auth.userAuthorizationUrl";
+  String REQUEST_METHOD = "auth.requestMethod";
+  String RSA_PUBLIC_KEY = "auth.rsaPublicKey";
+  String RSA_PRIVATE_KEY = "auth.rsaPrivateKey";
+  String REQUEST_SCHEME = "auth.requestScheme";
+  String TIMEOUT = "timeout";
+  String SSL_VERIFY_HOST = "ssl_verifyhost";
+  String SSL_VERIFY_PEER = "ssl_verifypeer";
 }
