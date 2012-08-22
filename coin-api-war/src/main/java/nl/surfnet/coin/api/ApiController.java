@@ -224,7 +224,9 @@ public class ApiController extends AbstractApiController {
       sendAclMissingMail(grouper, spEntityId, userId, Service.People);
     } else {
       group20Entry = groupService.getGroups20(userId, onBehalfOf, count, startIndex, sortBy);
-      group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
+      if (group20Entry != null && !group20Entry.getEntry().isEmpty()) {
+        group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
+      }
     }
 
     List<Group20> listOfAllExternalGroups = new ArrayList<Group20>();
@@ -351,7 +353,9 @@ public class ApiController extends AbstractApiController {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
       group20Entry = groupService.getGroup20(userId, grouperGroupId, onBehalfOf);
-      group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
+      if (group20Entry != null && !group20Entry.getEntry().isEmpty()) {
+        group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
+      }
     } else {
       // external group. see which groupProvider can handle this call
       for (GroupProvider groupProvider : allGroupProviders) {
