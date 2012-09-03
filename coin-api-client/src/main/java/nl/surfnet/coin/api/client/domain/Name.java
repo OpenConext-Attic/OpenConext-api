@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import org.springframework.util.StringUtils;
+
 /**
  * 
  *
@@ -77,5 +79,32 @@ public class Name {
    */
   public void setGivenName(String givenName) {
     this.givenName = givenName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    /*
+     * "name":{"formatted":"Winny Smits","familyName":"Smits","givenName":"Winny"
+     */
+    if (StringUtils.hasText(formatted)) {
+      return formatted;
+    }
+    boolean givenNameText = StringUtils.hasText(givenName);
+    boolean familyNameText = StringUtils.hasText(familyName);
+    if (givenNameText && familyNameText) {
+      return givenName + " " + familyName;
+    }
+    if (familyNameText) {
+      return familyName;
+    }
+    if (givenNameText) {
+      return givenName;
+    }
+    return "";
   }
 }
