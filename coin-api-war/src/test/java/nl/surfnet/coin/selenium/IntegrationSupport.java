@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api;
+package nl.surfnet.coin.selenium;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class IntegrationSupport {
   protected Logger LOG = LoggerFactory.getLogger(IntegrationSupport.class);
 
   public static final String URL_UNDER_TEST = withEndingSlash(System
-      .getProperty("integration.test.url", "http://localhost:8095"));
+      .getProperty("selenium.test.url", "http://localhost:8095"));
 
   private static String withEndingSlash(String path) {
     return path.endsWith("/") ? path : path + "/";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api;
+package nl.surfnet.coin.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.By;

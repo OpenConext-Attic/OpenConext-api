@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api;
+package nl.surfnet.coin.selenium;
 
 import java.io.IOException;
 import java.net.URI;
@@ -117,7 +117,6 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     callbackRequestFragment = uri.getFragment();
     assertNotNull("redirect URL should contain fragment.", callbackRequestFragment);
     assertTrue("redirect URL fragment should contain access token", callbackRequestFragment.contains("access_token="));
-
     // Further tests are actually part of the coin-api-client... The server has issued an access_token so it works.
   }
 }

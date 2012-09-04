@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api;
-
-import static org.junit.Assert.assertTrue;
+package nl.surfnet.coin.selenium;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
-import nl.surfnet.coin.api.client.domain.Email;
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Person;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
@@ -38,12 +38,12 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import nl.surfnet.coin.api.client.domain.Email;
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
+
+import static org.junit.Assert.assertTrue;
 
 public class MockExternalGroupProviderTestIntegration {
 
@@ -63,12 +63,18 @@ public class MockExternalGroupProviderTestIntegration {
     /*
      * We choose to use two-legged oauth for testing the Mock Provider because
      * the setup is much simpler. In the actual selenium tests (this is an
-     * integration test, we test the three-legged variant but not the underlying
+     * integration test), we test the three-legged variant but not the underlying
      * inject functionality
      */
     service = new ServiceBuilder().provider(new OpenConextApi10aTwoLegged()).apiKey(OAUTH_KEY).apiSecret(OAUTH_SECRET)
         .debug().build();
     token = new Token("", "");
+    reset();
+  }
+
+  @After
+  public void cleanup() {
+    // Reset the mock service, for potential other tests against the same running container
     reset();
   }
 

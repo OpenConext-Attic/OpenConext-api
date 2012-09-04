@@ -293,26 +293,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.5</version>
-        <executions>
-          <execution>
-            <id>add-test-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${basedir}/src/test/integration</source>
-                <source>${basedir}/src/test/selenium</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
@@ -371,27 +351,13 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.10</version>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.12</version>
             <executions>
               <execution>
-                <id>default-test</id>
-                <phase>test</phase>
                 <goals>
-                  <goal>test</goal>
-                </goals>
-                <configuration>
-                  <excludes>
-                    <exclude>**/*Test*.java</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-              <execution>
-                <id>selenium-test</id>
-                <phase>integration-test</phase>
-                <goals>
-                  <goal>test</goal>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
                 </goals>
                 <configuration>
                   <excludes>
@@ -399,6 +365,7 @@
                   </excludes>
                   <includes>
                     <include>**/*TestSelenium.java</include>
+                    <include>**/*TestIntegration.java</include>
                   </includes>
                   <systemProperties>
                     <property>
@@ -408,92 +375,6 @@
                     <property>
                       <name>selenium.webdriver</name>
                       <value>${selenium.webdriver}</value>
-                    </property>
-                  </systemProperties>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty-maven-plugin</artifactId>
-            <version>${jetty.version}</version>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-              <webAppConfig>
-                <descriptor>${basedir}/src/test/resources/selenium-web.xml</descriptor>
-                <contextPath>/</contextPath>
-                <extraClasspath>${basedir}/src/test/resources/</extraClasspath>
-              </webAppConfig>
-              <connectors>
-                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                  <port>${jetty.port}</port>
-                  <maxIdleTime>60000</maxIdleTime>
-                </connector>
-              </connectors>
-              <daemon>true</daemon>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-              <stopKey>foo</stopKey>
-              <stopPort>9966</stopPort>
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-jetty</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop-jetty</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>integration</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.10</version>
-            <executions>
-              <execution>
-                <id>default-test</id>
-                <phase>test</phase>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-                <configuration>
-                  <excludes>
-                    <exclude>**/*Test*.java</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-              <execution>
-                <id>integration-test</id>
-                <phase>integration-test</phase>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-                <configuration>
-                  <excludes>
-                    <exclude>none</exclude>
-                  </excludes>
-                  <includes>
-                    <include>**/*TestIntegration.java</include>
-                  </includes>
-                  <systemProperties>
-                    <property>
-                      <name>integration.test.url</name>
-                      <value>${selenium.test.url}</value>
                     </property>
                   </systemProperties>
                 </configuration>

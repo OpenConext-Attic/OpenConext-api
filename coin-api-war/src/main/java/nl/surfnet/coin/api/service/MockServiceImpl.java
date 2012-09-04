@@ -56,6 +56,12 @@ public class MockServiceImpl implements PersonService, GroupService,
 
   private static final String GROUP_PROVIDERS_CONFIGURATION_JSON = "json/group-providers-configuration.json";
 
+  /**
+   * isActive means: instrumented by the public methods.
+   * If active, only persons and groups are returned that are added by the add** methods.
+   * If not active, a file lookup (json files) will be done instead.
+   * Reset by calling {@link MockServiceImpl#reset()}
+   */
   private static boolean isActive;
   private static long sleepMilliseconds;
 
