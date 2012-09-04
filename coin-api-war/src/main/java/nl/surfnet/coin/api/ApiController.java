@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api;
 
+import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -24,9 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.joda.time.DateTime;
@@ -353,7 +351,7 @@ public class ApiController extends AbstractApiController {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
       group20Entry = groupService.getGroup20(userId, grouperGroupId, onBehalfOf);
-      if (group20Entry != null && !group20Entry.getEntry().isEmpty()) {
+      if (group20Entry != null && group20Entry.getEntry() != null && group20Entry.getEntry().isEmpty()) {
         group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
       }
     } else {
