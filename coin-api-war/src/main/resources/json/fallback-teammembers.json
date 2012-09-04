@@ -11,7 +11,7 @@
                 }
             ],
             "voot_membership_role": "member",
-            "id": "urn:collab:person:surfnet.nl:arts",
+            "id": "no_arts",
             "name": {
                 "formatted": "Jan Arts",
                 "familyName": "Arts",
@@ -42,7 +42,7 @@
                 }
             ],
             "voot_membership_role": "manager",
-            "id": "urn:collab:person:test.surfguest.nl:gvanderploeg",
+            "id": "no_gvanderploeg",
             "name": {
                 "formatted": "Geert van der Ploeg",
                 "familyName": "van der Ploeg",
@@ -73,7 +73,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfguest.nl:oharsta",
+            "id": "vo_oharsta",
             "name": {
                 "formatted": "Okke Harsta",
                 "familyName": "Harsta",
@@ -104,7 +104,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:morsch",
+            "id": "no_morsch",
             "name": {
                 "formatted": "Femke Morsch",
                 "familyName": "Morsch",
@@ -135,7 +135,7 @@
                 }
             ],
             "voot_membership_role": "member",
-            "id": "urn:collab:person:surfnet.nl:poortinga",
+            "id": "no_poortinga",
             "name": {
                 "formatted": "Remco Poortinga",
                 "familyName": "Poortinga",
@@ -166,7 +166,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:francois",
+            "id": "no_francois",
             "name": {
                 "formatted": "Francois Kooman",
                 "familyName": "Kooman",
@@ -197,7 +197,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:test.surfguest.nl:jjoachimsthal",
+            "id": "no_jjoachimsthal",
             "name": {
                 "formatted": "Jasha Joachimsthal TEST account",
                 "familyName": "Joachimsthal TEST account",
@@ -228,7 +228,7 @@
                 }
             ],
             "voot_membership_role": "manager",
-            "id": "urn:collab:person:test.surfguest.nl:alle.veenstra",
+            "id": "no_alle.veenstra",
             "name": {
                 "formatted": "Alle Veenstra",
                 "familyName": "Veenstra",
@@ -259,7 +259,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:paulvd",
+            "id": "no_paulvd",
             "name": {
                 "formatted": "Paul van Dijk",
                 "familyName": "van Dijk",
@@ -290,7 +290,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:okke",
+            "id": "no_okke",
             "name": {
                 "formatted": "Okke Harsta",
                 "familyName": "Harsta",
@@ -321,7 +321,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:henny",
+            "id": "no_henny",
             "name": {
                 "formatted": "Henny Bekker",
                 "familyName": "Bekker",
@@ -352,7 +352,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:test.surfguest.nl:smibuildings",
+            "id": "no_smibuildings",
             "name": {
                 "formatted": "Surfmedia Ibuildings",
                 "familyName": "Ibuildings",
@@ -383,7 +383,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:niels",
+            "id": "no_niels",
             "name": {
                 "formatted": "Niels van Dijk",
                 "familyName": "van Dijk",
@@ -414,7 +414,7 @@
                 }
             ],
             "voot_membership_role": "member",
-            "id": "urn:collab:person:surfnet.nl:abeelen",
+            "id": "no_abeelen",
             "name": {
                 "formatted": "Ivo van den Abeelen",
                 "familyName": "van den Abeelen",
@@ -445,7 +445,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:pieter",
+            "id": "no_pieter",
             "name": {
                 "formatted": "Pieter van der Meulen",
                 "familyName": "van der  Meulen",
@@ -476,7 +476,7 @@
                 }
             ],
             "voot_membership_role": "manager",
-            "id": "urn:collab:person:surfguest.nl:relax",
+            "id": "no_relax",
             "name": {
                 "formatted": "Boy Baukema",
                 "familyName": "Baukema",
@@ -507,7 +507,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:test.surfguest.nl:peterclijsters",
+            "id": "no_peterclijsters",
             "name": {
                 "formatted": "Peter Clijsters",
                 "familyName": "Clijsters",
@@ -538,7 +538,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:surfnet.nl:maarten",
+            "id": "no_maarten",
             "name": {
                 "formatted": "Maarten Kremers",
                 "familyName": "Kremers",
@@ -569,7 +569,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:google.com:oharsta_zilverline.com",
+            "id": "vo_oharsta_zilverline_com",
             "name": {
                 "formatted": "Okke Harsta",
                 "familyName": "Harsta",
@@ -600,7 +600,7 @@
                 }
             ],
             "voot_membership_role": "member",
-            "id": "urn:collab:person:surfnet.nl:jeffrey",
+            "id": "no_jeffrey",
             "name": {
                 "formatted": "Jeffrey Everling",
                 "familyName": "Everling",
@@ -631,7 +631,7 @@
                 }
             ],
             "voot_membership_role": "admin",
-            "id": "urn:collab:person:test.surfguest.nl:oharsta",
+            "id": "no_oharsta",
             "name": {
                 "formatted": "Okke Harsta",
                 "familyName": "Harsta",
@@ -662,7 +662,7 @@
                 }
             ],
             "voot_membership_role": "manager",
-            "id": "urn:collab:person:surfnet.nl:bas",
+            "id": "no_bas",
             "name": {
                 "formatted": "Bas Zoetekouw",
                 "familyName": "Zoetekouw",

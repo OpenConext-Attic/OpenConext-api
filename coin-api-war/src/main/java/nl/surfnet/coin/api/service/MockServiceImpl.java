@@ -49,8 +49,8 @@ import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
 
 @Component(value = "mockService")
-public class MockServiceImpl implements PersonService, GroupService, ConfigurableGroupProvider,
-    GroupProviderConfiguration {
+public class MockServiceImpl implements PersonService, GroupService,
+    ConfigurableGroupProvider, GroupProviderConfiguration {
 
   private Logger LOG = LoggerFactory.getLogger(MockServiceImpl.class);
 
@@ -68,7 +68,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
   private static Map<String, List<String>> MEMBERSHIPS_IN_MEMORY = new HashMap<String, List<String>>();
 
   @Override
-  public PersonEntry getPerson(String userId, String loggedInUser, String spEntityId) {
+  public PersonEntry getPerson(String userId, String loggedInUser,
+      String spEntityId) {
     if (isActive()) {
       return getPreparedPerson(userId);
     }
@@ -83,7 +84,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
     LOG.debug("filename: {}", filename);
     ClassPathResource pathResource = new ClassPathResource(filename);
     if (!pathResource.exists()) {
-      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "person"));
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
+          "person"));
     }
     try {
       return parser.parsePerson(pathResource.getInputStream());
@@ -111,18 +113,20 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, String spEntityId, Integer count,
-                                           Integer startIndex,
-      String sortBy) {
+  public GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf,
+      String spEntityId, Integer count, Integer startIndex, String sortBy) {
     if (isActive()) {
       return getPreparedGroupMembers(groupId);
     }
-    ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, groupId, "teammembers"));
+    ClassPathResource pathResource = new ClassPathResource(String.format(
+        JSON_PATH, groupId, "teammembers"));
     if (!pathResource.exists()) {
-      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "teammembers"));
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
+          "teammembers"));
     }
     try {
-      GroupMembersEntry entry = parser.parseTeamMembers(pathResource.getInputStream());
+      GroupMembersEntry entry = parser.parseTeamMembers(pathResource
+          .getInputStream());
       processQueryOptions(entry, count, startIndex, sortBy, entry.getEntry());
       return entry;
     } catch (IOException e) {
@@ -151,10 +155,13 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public GroupEntry getGroups(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
-    ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, userId, "groups"));
+  public GroupEntry getGroups(String userId, String onBehalfOf, Integer count,
+      Integer startIndex, String sortBy) {
+    ClassPathResource pathResource = new ClassPathResource(String.format(
+        JSON_PATH, userId, "groups"));
     if (!pathResource.exists()) {
-      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "groups"));
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
+          "groups"));
     }
     try {
       return parser.parseGroups(pathResource.getInputStream());
@@ -165,7 +172,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   private Group20Entry getPreparedGroups20(String userId) {
     Group20Entry result = new Group20Entry();
-    Set<Entry<String, List<String>>> entrySet = MEMBERSHIPS_IN_MEMORY.entrySet();
+    Set<Entry<String, List<String>>> entrySet = MEMBERSHIPS_IN_MEMORY
+        .entrySet();
     List<Group20> groups20 = new ArrayList<Group20>();
     for (Entry<String, List<String>> entry : entrySet) {
       if (entry.getValue().contains(userId)) {
@@ -198,13 +206,16 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String)
    */
   @Override
-  public Group20Entry getGroups20(String userId, String onBehalfOf, Integer count, Integer startIndex, String sortBy) {
+  public Group20Entry getGroups20(String userId, String onBehalfOf,
+      Integer count, Integer startIndex, String sortBy) {
     if (isActive()) {
       return getPreparedGroups20(userId);
     }
-    ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, userId, "groups20"));
+    ClassPathResource pathResource = new ClassPathResource(String.format(
+        JSON_PATH, userId, "groups20"));
     if (!pathResource.exists()) {
-      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "groups20"));
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
+          "groups20"));
     }
     try {
       return parser.parseGroups20(pathResource.getInputStream());
@@ -215,17 +226,21 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
 
   @Override
   public GroupEntry getGroup(String userId, String groupId, String onBehalfOf) {
-    throw new RuntimeException("GetGroup is not supported. Use GroupService#getGroup20");
+    throw new RuntimeException(
+        "GetGroup is not supported. Use GroupService#getGroup20");
   }
 
   @Override
-  public Group20Entry getGroup20(String userId, String groupId, String onBehalfOf) {
+  public Group20Entry getGroup20(String userId, String groupId,
+      String onBehalfOf) {
     if (isActive()) {
       return getPreparedGroup20(groupId);
     }
-    ClassPathResource pathResource = new ClassPathResource(String.format(JSON_PATH, groupId, "group20"));
+    ClassPathResource pathResource = new ClassPathResource(String.format(
+        JSON_PATH, groupId, "group20"));
     if (!pathResource.exists()) {
-      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK, "group20"));
+      pathResource = new ClassPathResource(String.format(JSON_PATH, FALLBACK,
+          "group20"));
     }
     try {
       return parser.parseGroups20(pathResource.getInputStream());
@@ -235,7 +250,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
   }
 
   @Override
-  public Group20Entry getGroups20ByIds(String personId, String[] ids, Integer count, Integer startIndex) {
+  public Group20Entry getGroups20ByIds(String personId, String[] ids,
+      Integer count, Integer startIndex) {
     throw new UnsupportedOperationException("Not supported in mock mode.");
   }
 
@@ -261,7 +277,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
       try {
         Thread.sleep(sleepMilliseconds);
       } catch (InterruptedException e) {
-        throw new RuntimeException("InterruptedException in MockService#sleep", e);
+        throw new RuntimeException("InterruptedException in MockService#sleep",
+            e);
       }
     }
     return true;
@@ -312,19 +329,21 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * @return
    */
   @SuppressWarnings("unchecked")
-  protected List<? extends Object> processQueryOptions(AbstractEntry parent, Integer count, Integer startIndex,
-      String sortBy, List<? extends Object> entry) {
+  protected List<? extends Object> processQueryOptions(AbstractEntry parent,
+      Integer count, Integer startIndex, String sortBy,
+      List<? extends Object> entry) {
     parent.setTotalResults(entry.size());
     if (StringUtils.hasText(sortBy)) {
       BeanComparator comparator = new BeanComparator(sortBy);
       Collections.sort(entry, comparator);
       parent.setSorted(true);
     }
-    if (startIndex != null) {
-      entry = entry.subList(startIndex, entry.size());
+    int size = entry.size();
+    if (startIndex != null && startIndex.intValue() != 0 && startIndex < size) {
+      entry = entry.subList(startIndex, size);
       parent.setStartIndex(startIndex);
     }
-    if (count != null) {
+    if (count != null && count.intValue() != 0 && count < size) {
       entry = entry.subList(0, count);
       parent.setItemsPerPage(count);
     }
@@ -359,8 +378,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.util.List)
    */
   @Override
-  public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId,
-      List<GroupProvider> allGroupProviders) {
+  public List<GroupProvider> getAllowedGroupProviders(Service service,
+      String spEntityId, List<GroupProvider> allGroupProviders) {
     return allGroupProviders;
   }
 
@@ -372,10 +391,13 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
   @Override
   public List<GroupProvider> getAllGroupProviders() {
     try {
-      List<GroupProvider> groupProviders = parser.getObjectMapper().readValue(
-          new ClassPathResource(GROUP_PROVIDERS_CONFIGURATION_JSON).getInputStream(),
-          new TypeReference<List<GroupProvider>>() {
-          });
+      List<GroupProvider> groupProviders = parser
+          .getObjectMapper()
+          .readValue(
+              new ClassPathResource(GROUP_PROVIDERS_CONFIGURATION_JSON)
+                  .getInputStream(),
+              new TypeReference<List<GroupProvider>>() {
+              });
       return groupProviders;
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -391,7 +413,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.util.List)
    */
   @Override
-  public boolean isCallAllowed(Service service, String spEntityId, GroupProvider groupProvider) {
+  public boolean isCallAllowed(Service service, String spEntityId,
+      GroupProvider groupProvider) {
     return !groupProvider.isExternalGroupProvider();
   }
 
@@ -404,8 +427,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.lang.String, int, int)
    */
   @Override
-  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId,
-      int limit, int offset) {
+  public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider,
+      String onBehalfOf, String groupId, int limit, int offset) {
     throw new RuntimeException(
         "This call is not supported (and should never be called as we don't support external group providers in mock modus)");
   }
@@ -418,7 +441,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * .coin.teams.domain.GroupProvider, java.lang.String, int, int)
    */
   @Override
-  public Group20Entry getGroup20Entry(GroupProvider groupProvider, String userId, int limit, int offset) {
+  public Group20Entry getGroup20Entry(GroupProvider groupProvider,
+      String userId, int limit, int offset) {
     throw new RuntimeException(
         "This call is not supported (and should never be called as we don't support external group providers in mock modus)");
   }
@@ -431,14 +455,19 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * java.util.List, java.lang.String)
    */
   @Override
-  public String cutOffUrnPartForGrouper(List<GroupProvider> groupProviders, String groupId) {
+  public String cutOffUrnPartForGrouper(List<GroupProvider> groupProviders,
+      String groupId) {
     for (GroupProvider groupProvider : groupProviders) {
-      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
-        return GroupProviderPropertyConverter.convertToExternalGroupId(groupId, groupProvider);
+      if (groupProvider.getGroupProviderType()
+          .equals(GroupProviderType.GROUPER)) {
+        return GroupProviderPropertyConverter.convertToExternalGroupId(groupId,
+            groupProvider);
       }
     }
-    throw new RuntimeException("No Grouper groupProvider present in the list of groupProviders('" + groupProviders
-        + "') so we can't cut off the groupId('" + groupId + "')");
+    throw new RuntimeException(
+        "No Grouper groupProvider present in the list of groupProviders('"
+            + groupProviders + "') so we can't cut off the groupId('" + groupId
+            + "')");
   }
 
   /*
@@ -449,7 +478,8 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * .teams.domain.GroupProvider, java.lang.String, java.lang.String)
    */
   @Override
-  public Group20 getGroup20(GroupProvider groupProvider, String userId, String groupId) {
+  public Group20 getGroup20(GroupProvider groupProvider, String userId,
+      String groupId) {
     throw new RuntimeException(
         "This call is not supported (and should never be called as we don't support external group providers in mock modus)");
   }
@@ -462,24 +492,27 @@ public class MockServiceImpl implements PersonService, GroupService, Configurabl
    * .util.List, nl.surfnet.coin.api.client.domain.Group20Entry)
    */
   @Override
-  public Group20Entry addUrnPartForGrouper(List<GroupProvider> groupProviders, Group20Entry group20Entry) {
+  public Group20Entry addUrnPartForGrouper(List<GroupProvider> groupProviders,
+      Group20Entry group20Entry) {
     Assert.notNull(group20Entry, "group20Entry cannot be null.");
 
     Group20Entry result = new Group20Entry(new ArrayList<Group20>());
     GroupProvider grouper = null;
     for (GroupProvider groupProvider : groupProviders) {
-      if (groupProvider.getGroupProviderType().equals(GroupProviderType.GROUPER)) {
+      if (groupProvider.getGroupProviderType()
+          .equals(GroupProviderType.GROUPER)) {
         grouper = groupProvider;
         break;
       }
     }
     if (grouper == null) {
-      throw new RuntimeException("No Grouper groupProvider present in the list of groupProviders('" + groupProviders
-          + "') so we can't add the surfconext urn part");
+      throw new RuntimeException(
+          "No Grouper groupProvider present in the list of groupProviders('"
+              + groupProviders + "') so we can't add the surfconext urn part");
     }
     for (Group20 group : group20Entry.getEntry()) {
-      String convertToSurfConextGroupId = GroupProviderPropertyConverter.convertToSurfConextGroupId(group.getId(),
-          grouper);
+      String convertToSurfConextGroupId = GroupProviderPropertyConverter
+          .convertToSurfConextGroupId(group.getId(), grouper);
       group.setId(convertToSurfConextGroupId);
       result.getEntry().add(group);
     }

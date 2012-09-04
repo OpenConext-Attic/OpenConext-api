@@ -3,9 +3,9 @@
     "totalResults": 1,
     "entry": [
         {
-            "id": "urn:collab:group:test.surfteams.nl:etc:probe",
-            "title": "probe",
-            "description": "Super users",
+            "id": "fallback-group1",
+            "title": "fallback-group1-title",
+            "description": "fallback-group1-description",
             "voot_membership_role": "member"
         }
     ],

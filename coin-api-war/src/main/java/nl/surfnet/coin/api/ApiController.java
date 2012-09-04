@@ -246,7 +246,7 @@ public class ApiController extends AbstractApiController {
     }
     if (!listOfAllExternalGroups.isEmpty()) {
       group20Entry.getEntry().addAll(listOfAllExternalGroups);
-      group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, listOfAllExternalGroups);
+      group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, listOfAllExternalGroups, allGroupProviders);
     }
 
     logApiCall(onBehalfOf);
@@ -292,7 +292,7 @@ public class ApiController extends AbstractApiController {
    */
   @SuppressWarnings("unchecked")
   private Group20Entry addLinkedSurfTeamGroupsForExternalGroups(String userId, Group20Entry group20Entry,
-      List<Group20> listOfAllExternalGroups) {
+      List<Group20> listOfAllExternalGroups, List<GroupProvider> allGroupProviders) {
     List<String> grouperTeamIds = new ArrayList<String>();
     Collection<String> identifiers = CollectionUtils.collect(listOfAllExternalGroups, new Transformer() {
       @Override
@@ -305,8 +305,10 @@ public class ApiController extends AbstractApiController {
       grouperTeamIds.add(teamExternalGroup.getGrouperTeamId());
     }
     if (!grouperTeamIds.isEmpty()) {
-      final Group20Entry linkedTeams = groupService.getGroups20ByIds(userId,
+      Group20Entry linkedTeams = groupService.getGroups20ByIds(userId,
           grouperTeamIds.toArray(new String[grouperTeamIds.size()]), 0, 0);
+      linkedTeams = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, linkedTeams);
+
       group20Entry.getEntry().addAll(linkedTeams.getEntry());
       // remove duplicates: convert to set and back.
       group20Entry.setEntry(new ArrayList<Group20>(new HashSet<Group20>(group20Entry.getEntry())));
@@ -365,7 +367,7 @@ public class ApiController extends AbstractApiController {
       }
       if (!CollectionUtils.isEmpty(externalGroups)) {
         group20Entry.getEntry().addAll(externalGroups);
-        group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, externalGroups);
+        group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, externalGroups, allGroupProviders);
 
       }
 

@@ -3,16 +3,16 @@
     "totalResults": 2,
     "entry": [
         {
-            "id": "urn:collab:group:test.surfteams.nl:etc:probe",
-            "title": "probe",
-            "description": "Super users",
+            "id": "fallback-group1",
+            "title": "fallback-group1-title",
+            "description": "fallback-group1-description",
             "voot_membership_role": "member"
         },
         {
-            "id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:demo3",
-            "title": "demo sprint 3",
-            "description": "demo sprint 3",
-            "voot_membership_role": "admin"
+            "id": "fallback-group2",
+            "title": "fallback-group2-title",
+            "description": "fallback-group2-description",
+            "voot_membership_role": "member"
         }
     ],
     "itemsPerPage": 2
