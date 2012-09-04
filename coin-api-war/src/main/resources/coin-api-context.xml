@@ -49,7 +49,7 @@
 		an Authentication object in the Security Context) the request will be rejected. -->
 	<security:http pattern="/social/rest/**"
 		authentication-manager-ref="shibbolethAuthenticationManager"
-		access-decision-manager-ref="accessDecisionManager" entry-point-ref="shibbolethEntryPoint">
+		access-decision-manager-ref="accessDecisionManager" entry-point-ref="unauthorizedEntryPoint">
 
 		<security:anonymous enabled="true" />
 
@@ -114,6 +114,9 @@
     <property name="user" value="${janus.user}" />
     <property name="secret" value="${janus.secret}" />
   </bean>
+
+	<bean id="unauthorizedEntryPoint"
+		class="nl.surfnet.coin.api.oauth.Http401UnauthorizedEntryPoint"/>
 
 	<bean id="shibbolethEntryPoint"
 		class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
