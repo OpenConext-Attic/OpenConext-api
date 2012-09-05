@@ -31,26 +31,19 @@ public class InMemoryOAuthRepositoryImpl implements OAuthRepository {
 
   private Map<String, OAuthToken> tokens = new HashMap<String, OAuthToken>();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see nl.surfnet.coin.api.client.OAuthRepository#getToken(java.lang.String)
-   */
   @Override
   public OAuthToken getToken(String userId) {
     return tokens.get(userId);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.OAuthRepository#storeToken(org.scribe.model.
-   * Token, java.lang.String)
-   */
   @Override
   public void storeToken(Token accessToken, String userId, OAuthVersion version) {
     tokens.put(userId, new OAuthToken(accessToken, version));
+  }
+
+  @Override
+  public void removeToken(String onBehalfOf) {
+    tokens.put(onBehalfOf, null);
   }
 
 }

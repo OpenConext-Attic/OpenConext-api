@@ -16,19 +16,8 @@
 
 package nl.surfnet.coin.api.client;
 
-import org.scribe.model.Token;
-
-import nl.surfnet.coin.api.client.internal.OAuthToken;
-
-/**
- * Repository for Tokens
- *
- */
-public interface OAuthRepository {
-
-  OAuthToken getToken(String userId);
-  
-  void storeToken(Token accessToken, String userId, OAuthVersion version);
-
-  void removeToken(String onBehalfOf);
+public class InvalidTokenException extends RuntimeException {
+  public InvalidTokenException(String message) {
+    super(message);
+  }
 }

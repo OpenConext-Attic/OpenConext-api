@@ -182,10 +182,20 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
       LOG.debug("Will send request '{}'", request.toString());
     }
     Response oAuthResponse = request.send();
+
     if (oAuthResponse.getCode() >= 400) {
-      throw new RuntimeException(String.format("Error response: %d, body: %s", oAuthResponse.getCode(),
-          oAuthResponse.getStream() == null ? null : oAuthResponse.getBody()));
+      if (oAuthResponse.getCode() == 401
+        && oAuthResponse.getStream() != null
+        && oAuthResponse.getBody().contains("invalid_token")) {
+        repository.removeToken(onBehalfOf);
+        throw new InvalidTokenException(oAuthResponse.getBody());
+      } else {
+        // This could be refined to include other cases, and throw according exceptions.
+        throw new RuntimeException(String.format("Error response: %d, body: %s", oAuthResponse.getCode(),
+            oAuthResponse.getStream() == null ? null : oAuthResponse.getBody()));
+      }
     }
+
     InputStream stream = oAuthResponse.getStream();
     if (LOG.isDebugEnabled()) {
       stream = logInputStream(stream);
