@@ -118,6 +118,8 @@
   <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
     <property name="tokenStore" ref="tokenStore"/>
     <property name="tokenEnhancer" ref="clientMetaDataTokenEnhancer"/>
+    <!-- non expiring tokens -->
+    <property name="accessTokenValiditySeconds" value="0" />
   </bean>
   
   <bean id="tokenStore" class="nl.surfnet.coin.api.oauth.OpenConextOauth2JdbcTokenStore">
