@@ -16,25 +16,28 @@
 
 package nl.surfnet.coin.teams.service.impl;
 
+import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.PASSWORD;
+import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.URL;
+import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.USERNAME;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
+import javax.servlet.http.HttpServletResponse;
 
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
-import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 
-import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.*;
-import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.CONSUMER_SECRET;
-import static nl.surfnet.coin.teams.util.GroupProviderOptionParameters.URL;
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * More then junit test, but does not depend on any external resources
@@ -68,6 +71,36 @@ public class GroupServiceBasicAuthentication10aTest extends
     super.setResponseResource(new ClassPathResource("hz-group.json"));
     Group20 group20 = groupService.getGroup20(provider,"personId", "HZG-1042");
     assertEquals("HZG-1042", group20.getId());
+  }
+
+  @Test
+  public void testGetGroupFaultyJsonResponse() {
+    super.setResponseResource(new ByteArrayResource("not-even-valid-json".getBytes()));
+    Group20 group20 = groupService.getGroup20(provider,"personId", "whatever");
+    assertNull(group20);
+  }
+
+  @Test
+  public void testGetGroupFaultyHttpResponse() {
+    super.setResponseResource(new ByteArrayResource("not-even-valid-json".getBytes()));
+    super.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    Group20 group20 = groupService.getGroup20(provider,"personId", "whatever");
+    assertNull(group20);
+  }
+
+  @Test
+  public void testGetGroupMembersEntryFaultyJsonResponse() {
+    super.setResponseResource(new ByteArrayResource("not-even-valid-json".getBytes()));
+    GroupMembersEntry groupMembersEntry = groupService.getGroupMembersEntry(provider,"personId", "whatever", 0, 0);
+    assertTrue(groupMembersEntry.getEntry().isEmpty());
+  }
+
+  @Test
+  public void testGetGroupMembersEntryFaultyHttpResponse() {
+    super.setResponseResource(new ByteArrayResource("not-even-valid-json".getBytes()));
+    super.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    GroupMembersEntry groupMembersEntry = groupService.getGroupMembersEntry(provider,"personId", "whatever", 0, 0);
+    assertTrue(groupMembersEntry.getEntry().isEmpty());
   }
 
   @Before

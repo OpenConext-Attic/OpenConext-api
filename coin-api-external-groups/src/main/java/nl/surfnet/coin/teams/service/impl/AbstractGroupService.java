@@ -19,9 +19,12 @@
 package nl.surfnet.coin.teams.service.impl;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
@@ -38,14 +41,30 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToSurfConextPersonId;
 
 /**
- * Base class for {@link GroupServiceBasicAuthentication} and {@link GroupServiceThreeLeggedOAuth10a}
- *
+ * Base class for {@link GroupServiceBasicAuthentication} and
+ * {@link GroupServiceThreeLeggedOAuth10a}
+ * 
  */
 public abstract class AbstractGroupService {
 
   private final static OpenConextJsonParser parser = new OpenConextJsonParser();
+  
+  protected final static Logger log = LoggerFactory.getLogger(AbstractGroupService.class);
 
-  protected GroupMembersEntry getGroupMembersEntryFromResponse(InputStream in, GroupProvider provider) {
+  protected GroupMembersEntry getGroupMembersEntryFromResponse(InputStream in,
+      GroupProvider provider) {
+    try {
+      return doGetGroupMembersEntryFromResponse(in, provider);
+    /*
+     * normally an antipattern, but we don't want to terminate the flow as we may have multiple GroupProviders 
+     */
+    } catch (Exception e) {
+      return new GroupMembersEntry(new ArrayList<Person>());
+    }
+  }
+
+  private GroupMembersEntry doGetGroupMembersEntryFromResponse(InputStream in,
+      GroupProvider provider) {
     GroupMembersEntry groupMembersEntry = parser.parseTeamMembers(in);
     List<Person> persons = groupMembersEntry.getEntry();
     // iterator to prevent ConcurrentModificationException
@@ -62,21 +81,36 @@ public abstract class AbstractGroupService {
     return groupMembersEntry;
   }
 
-  protected Group20Entry getGroup20EntryFromResponse(InputStream in, GroupProvider groupProvider) {
+  protected Group20Entry getGroup20EntryFromResponse(InputStream in,
+      GroupProvider groupProvider) {
+    try {
+      return doGetGroup20EntryFromResponse(in, groupProvider);
+    /*
+     * normally an antipattern, but we don't want to terminate the flow as we may have multiple GroupProviders 
+     */
+    } catch (Exception e) {
+      return new Group20Entry(new ArrayList<Group20>());
+    }
+  }
+
+ private Group20Entry doGetGroup20EntryFromResponse(InputStream in,
+      GroupProvider groupProvider) {
     Group20Entry entry = parser.parseGroups20(in);
     for (Group20 group20 : entry.getEntry()) {
-      String scGroupId = convertToSurfConextGroupId(group20.getId(), groupProvider);
+      String scGroupId = convertToSurfConextGroupId(group20.getId(),
+          groupProvider);
       group20.setId(scGroupId);
 
-      String scGroupName = convertProperty(PROPERTY_NAME, group20.getTitle(), groupProvider.getGroupFilters());
+      String scGroupName = convertProperty(PROPERTY_NAME, group20.getTitle(),
+          groupProvider.getGroupFilters());
       group20.setTitle(scGroupName);
 
-      String scGroupDesc = convertProperty(PROPERTY_DESCRIPTION, group20.getDescription(),
-          groupProvider.getGroupFilters());
+      String scGroupDesc = convertProperty(PROPERTY_DESCRIPTION,
+          group20.getDescription(), groupProvider.getGroupFilters());
 
       group20.setDescription(scGroupDesc);
     }
     return entry;
   }
-  
+
 }

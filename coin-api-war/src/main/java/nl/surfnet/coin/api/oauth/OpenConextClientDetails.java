@@ -29,6 +29,10 @@ public class OpenConextClientDetails extends BaseClientDetails {
 
   private ClientMetaData clientMetaData;
 
+  public OpenConextClientDetails() {
+    super();
+  }
+
   /**
    * @return the clientMetaData
    */
@@ -47,8 +51,8 @@ public class OpenConextClientDetails extends BaseClientDetails {
    * @see org.springframework.security.oauth2.provider.BaseClientDetails#getAccessTokenValiditySeconds()
    */
   @Override
-  public int getAccessTokenValiditySeconds() {
-    return 0;
+  public Integer getAccessTokenValiditySeconds() {
+    return null;
   }
 
 }

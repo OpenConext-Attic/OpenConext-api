@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright 2012 SURFnet bv, The Netherlands
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
+<!-- Copyright 2012 SURFnet bv, The Netherlands Licensed under the Apache 
+	License, Version 2.0 (the "License"); you may not use this file except in 
+	compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:security="http://www.springframework.org/schema/security"
@@ -28,7 +20,7 @@
 	<cache:annotation-driven key-generator="methodNameAwareCacheKeyGenerator" />
 	<context:component-scan base-package="nl.surfnet.coin.api" />
 	<context:component-scan base-package="nl.surfnet.coin.teams" />
-	
+
 	<bean id="cacheManager" class="${cacheManagerClass}">
 		<property name="cacheManager" ref="ehcache" />
 	</bean>
@@ -38,7 +30,16 @@
 		<property name="configLocation" value="classpath:api-ehcache.xml" />
 	</bean>
 
-	<bean id="methodNameAwareCacheKeyGenerator" class="nl.surfnet.coin.shared.cache.MethodNameAwareCacheKeyGenerator" />
+	<bean id="methodNameAwareCacheKeyGenerator"
+		class="nl.surfnet.coin.shared.cache.MethodNameAwareCacheKeyGenerator" />
+
+	<bean id="securityContextPersistenceFilter"
+		class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<property name='securityContextRepository'>
+			<bean
+				class="org.springframework.security.web.context.NullSecurityContextRepository"/>
+		</property>
+	</bean>
 
 	<!-- Authorization annotations on service methods -->
 	<security:global-method-security
@@ -47,7 +48,7 @@
 	<!-- One configuration entry for /social/rest/**, regardless of OAuth-version. 
 		For both versions a filter is included. Only if both fail (i.e. do not put 
 		an Authentication object in the Security Context) the request will be rejected. -->
-	<security:http pattern="/social/rest/**"
+	<security:http create-session="stateless" pattern="/social/rest/**"
 		authentication-manager-ref="shibbolethAuthenticationManager"
 		access-decision-manager-ref="accessDecisionManager" entry-point-ref="unauthorizedEntryPoint">
 
@@ -71,7 +72,7 @@
 			after="EXCEPTION_TRANSLATION_FILTER" />
 	</security:http>
 
-	<security:http pattern="/mock10/social/rest/**"
+	<security:http create-session="stateless" pattern="/mock10/social/rest/**"
 		authentication-manager-ref="shibbolethAuthenticationManager"
 		access-decision-manager-ref="accessDecisionManager" entry-point-ref="shibbolethEntryPoint">
 		<security:anonymous enabled="true" />
@@ -88,35 +89,41 @@
 			after="EXCEPTION_TRANSLATION_FILTER" />
 	</security:http>
 
-	<security:http pattern="/mockbasic/social/rest/**" authentication-manager-ref="mockAuthenticationManager">
+	<security:http create-session="stateless" pattern="/mockbasic/social/rest/**"
+		authentication-manager-ref="mockAuthenticationManager">
 		<security:http-basic />
 		<security:intercept-url pattern="/mockbasic/social/rest/**"
 			access="ROLE_USER" />
 	</security:http>
-	
+
 	<bean id="mockAuthenticationManager"
 		class="nl.surfnet.coin.api.basic.MockBasicAuthenticationManager" />
 
 
 	<!-- configuration interface -->
-	<security:http security="none" pattern="/configure/**" />
-	<security:http security="none" pattern="/test/**" />
+	<security:http create-session="stateless" security="none"
+		pattern="/configure/**" />
+	<security:http create-session="stateless" security="none"
+		pattern="/test/**" />
 	<!-- static stuff -->
-	<security:http security="none" pattern="/css/**" />
-	<security:http security="none" pattern="/js/**" />
-	<security:http security="none" pattern="/favicon.ico" />
-	<security:http security="none" pattern="/images/**" />
+	<security:http create-session="stateless" security="none"
+		pattern="/css/**" />
+	<security:http create-session="stateless" security="none"
+		pattern="/js/**" />
+	<security:http create-session="stateless" security="none"
+		pattern="/favicon.ico" />
+	<security:http create-session="stateless" security="none"
+		pattern="/images/**" />
 
 	<bean id="janusClientDetailsService" class="${clientDetailsServiceClass}" />
 
 	<bean id="janusClient" class="nl.surfnet.coin.janus.JanusRestClient">
-    <property name="janusUri" value="${janus.uri}" />
-    <property name="user" value="${janus.user}" />
-    <property name="secret" value="${janus.secret}" />
-  </bean>
+		<property name="janusUri" value="${janus.uri}" />
+		<property name="user" value="${janus.user}" />
+		<property name="secret" value="${janus.secret}" />
+	</bean>
 
-	<bean id="unauthorizedEntryPoint"
-		class="nl.surfnet.coin.api.oauth.Http401UnauthorizedEntryPoint"/>
+	<bean id="unauthorizedEntryPoint" class="nl.surfnet.coin.api.oauth.Http401UnauthorizedEntryPoint" />
 
 	<bean id="shibbolethEntryPoint"
 		class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
@@ -124,7 +131,7 @@
 			value="${coin-api.shibboleth.login.url}" />
 		<property name="useForward" value="false" />
 	</bean>
-	
+
 	<bean id="shibbolethAuthenticationManager"
 		class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
 
@@ -144,36 +151,38 @@
 	<bean id="localeResolver"
 		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
 		<!-- Set the default Locale to English -->
-    <property name="defaultLocale" value="${coin-api.locale-default}"/>
-  </bean>
+		<property name="defaultLocale" value="${coin-api.locale-default}" />
+	</bean>
 
-  <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-    <property name="paramName" value="lang" />
-  </bean>
+	<bean id="localeChangeInterceptor"
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<property name="paramName" value="lang" />
+	</bean>
 
-<mvc:interceptors>
-  <ref bean="localeChangeInterceptor" />
-</mvc:interceptors>
+	<mvc:interceptors>
+		<ref bean="localeChangeInterceptor" />
+	</mvc:interceptors>
 
-  <bean id="messageSource"
-        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-    <property name="basename" value="classpath:messages"/>
-    <property name="defaultEncoding" value="UTF-8"/>
-  </bean>
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:messages" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
 
-  <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-	   <property name="driverClass" value="${coin-api.jdbc.driver}" />
-	   <property name="jdbcUrl" value="${coin-api.jdbc.url}" />
-	   <property name="username" value="${coin-api.jdbc.user}"/>
-	   <property name="password" value="${coin-api.jdbc.password}"/>
-	   <property name="idleConnectionTestPeriod" value="60"/>
-	   <property name="idleMaxAge" value="240"/>
-	   <property name="maxConnectionsPerPartition" value="20"/>
-	   <property name="minConnectionsPerPartition" value="5"/>
-	   <property name="partitionCount" value="2"/>
-	   <property name="acquireIncrement" value="5"/>
-	   <property name="statementsCacheSize" value="100"/>
-	   <property name="releaseHelperThreads" value="3"/>
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${coin-api.jdbc.driver}" />
+		<property name="jdbcUrl" value="${coin-api.jdbc.url}" />
+		<property name="username" value="${coin-api.jdbc.user}" />
+		<property name="password" value="${coin-api.jdbc.password}" />
+		<property name="idleConnectionTestPeriod" value="60" />
+		<property name="idleMaxAge" value="240" />
+		<property name="maxConnectionsPerPartition" value="20" />
+		<property name="minConnectionsPerPartition" value="5" />
+		<property name="partitionCount" value="2" />
+		<property name="acquireIncrement" value="5" />
+		<property name="statementsCacheSize" value="100" />
+		<property name="releaseHelperThreads" value="3" />
 	</bean>
 
 	<bean id="logService" class="nl.surfnet.coin.shared.log.ApiCallLogServiceImpl">
@@ -197,49 +206,52 @@
 	</bean>
 	<bean id="ebJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource">
-			<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-			   <property name="driverClass" value="${coin-api.engineblock.jdbc.driver}" />
-			   <property name="jdbcUrl" value="${coin-api.engineblock.jdbc.url}" />
-			   <property name="username" value="${coin-api.engineblock.jdbc.user}"/>
-			   <property name="password" value="${coin-api.engineblock.jdbc.password}"/>
-			   <property name="idleConnectionTestPeriod" value="60"/>
-			   <property name="idleMaxAge" value="240"/>
-			   <property name="maxConnectionsPerPartition" value="20"/>
-			   <property name="minConnectionsPerPartition" value="5"/>
-			   <property name="partitionCount" value="2"/>
-			   <property name="acquireIncrement" value="5"/>
-			   <property name="statementsCacheSize" value="100"/>
-			   <property name="releaseHelperThreads" value="3"/>
+			<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+				destroy-method="close">
+				<property name="driverClass" value="${coin-api.engineblock.jdbc.driver}" />
+				<property name="jdbcUrl" value="${coin-api.engineblock.jdbc.url}" />
+				<property name="username" value="${coin-api.engineblock.jdbc.user}" />
+				<property name="password" value="${coin-api.engineblock.jdbc.password}" />
+				<property name="idleConnectionTestPeriod" value="60" />
+				<property name="idleMaxAge" value="240" />
+				<property name="maxConnectionsPerPartition" value="20" />
+				<property name="minConnectionsPerPartition" value="5" />
+				<property name="partitionCount" value="2" />
+				<property name="acquireIncrement" value="5" />
+				<property name="statementsCacheSize" value="100" />
+				<property name="releaseHelperThreads" value="3" />
 			</bean>
 		</property>
 	</bean>
 
 	<bean id="grouperJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource">
-			<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-			   <property name="driverClass" value="${coin-api.grouper.jdbc.driver}" />
-			   <property name="jdbcUrl" value="${coin-api.grouper.jdbc.url}" />
-			   <property name="username" value="${coin-api.grouper.jdbc.user}"/>
-			   <property name="password" value="${coin-api.grouper.jdbc.password}"/>
-			   <property name="idleConnectionTestPeriod" value="60"/>
-			   <property name="idleMaxAge" value="240"/>
-			   <property name="maxConnectionsPerPartition" value="20"/>
-			   <property name="minConnectionsPerPartition" value="5"/>
-			   <property name="partitionCount" value="2"/>
-			   <property name="acquireIncrement" value="5"/>
-			   <property name="statementsCacheSize" value="100"/>
-			   <property name="releaseHelperThreads" value="3"/>
-			</bean>		
+			<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+				destroy-method="close">
+				<property name="driverClass" value="${coin-api.grouper.jdbc.driver}" />
+				<property name="jdbcUrl" value="${coin-api.grouper.jdbc.url}" />
+				<property name="username" value="${coin-api.grouper.jdbc.user}" />
+				<property name="password" value="${coin-api.grouper.jdbc.password}" />
+				<property name="idleConnectionTestPeriod" value="60" />
+				<property name="idleMaxAge" value="240" />
+				<property name="maxConnectionsPerPartition" value="20" />
+				<property name="minConnectionsPerPartition" value="5" />
+				<property name="partitionCount" value="2" />
+				<property name="acquireIncrement" value="5" />
+				<property name="statementsCacheSize" value="100" />
+				<property name="releaseHelperThreads" value="3" />
+			</bean>
 		</property>
 	</bean>
 
-	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-		<constructor-arg ref="grouperJdbcTemplate"/>
+	<bean id="namedParameterJdbcTemplate"
+		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg ref="grouperJdbcTemplate" />
 	</bean>
 
 	<bean id="apiGrouperDao" class="nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl">
 		<property name="jdbcTemplate" ref="grouperJdbcTemplate" />
-		<property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
+		<property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate" />
 	</bean>
 
 	<bean id="groupProviderService"
@@ -251,8 +263,8 @@
 		<property name="baseDir" value="${coin-api.db.migrations.folder}" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
+
 	<bean id="versionIdentifier" class="java.lang.StringBuffer">
-		<constructor-arg value="@VERSION@"/>
+		<constructor-arg value="@VERSION@" />
 	</bean>
 </beans>

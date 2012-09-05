@@ -18,17 +18,20 @@ package nl.surfnet.coin.teams.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.service.BasicAuthGroupService;
 import nl.surfnet.coin.teams.util.GroupProviderOptionParameters;
@@ -54,9 +57,7 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     String url = String.format("%s/groups/%s?startIndex=%s&count=%s",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, offset, limit);
     WebResource webResource = client.resource(url);
-
-    InputStream response = webResource.get(InputStream.class);
-    final Group20Entry entry = getGroup20EntryFromResponse(response, groupProvider);
+    Group20Entry entry = getGroup20Entry(groupProvider, webResource);
     return entry;
   }
 
@@ -69,10 +70,8 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     String url = String.format("%s/groups/%s/%s",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupID);
     WebResource webResource = client.resource(url);
-
-    InputStream response = webResource.get(InputStream.class);
-    final Group20Entry entry = getGroup20EntryFromResponse(response, groupProvider);
-    if (entry == null) {
+    Group20Entry entry = getGroup20Entry(groupProvider, webResource);
+    if (entry == null || entry.getEntry() == null || entry.getEntry().isEmpty()) {
       return null;
     }
     final List<Group20> group20s = entry.getEntry();
@@ -81,6 +80,19 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     }
     throw new RuntimeException(String.format("Received %s groups for groupid %s", group20s.size(), groupId));
 
+  }
+
+  private Group20Entry getGroup20Entry(GroupProvider groupProvider,
+      WebResource webResource) {
+    Group20Entry entry = null;
+    try {
+      InputStream response = webResource.get(InputStream.class);
+      entry = getGroup20EntryFromResponse(response, groupProvider);
+    } catch (UniformInterfaceException e) {
+      log.error("Received error from "+groupProvider,e);
+      //intentional as we don't want the flow of other groupProviders to end
+    }
+    return entry;
   }
 
   @Override
@@ -95,8 +107,14 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupId,
         offset, limit);
     WebResource webResource = client.resource(url);
-
-    String response = webResource.get(String.class);
+    String response;
+    try {
+      response = webResource.get(String.class);
+    } catch (UniformInterfaceException e) {
+      log.error("Received error from "+groupProvider,e);
+      //intentional as we don't want the flow of other groupProviders to end
+      return new GroupMembersEntry(new ArrayList<Person>());
+    }     
     InputStream in = new ByteArrayInputStream(response.getBytes());
 
     GroupMembersEntry entry = getGroupMembersEntryFromResponse(in, groupProvider);

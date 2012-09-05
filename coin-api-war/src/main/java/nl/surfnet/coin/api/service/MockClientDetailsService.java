@@ -60,8 +60,9 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
     details.setScope(Arrays.asList("read"));
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
+    details.setAuthorizedGrantTypes(Arrays.asList("authorization_code","implicit"));
     ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
-    details.setRegisteredRedirectUri(new HashSet(Arrays.asList(CALLBACK_URLS)));
+    details.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(CALLBACK_URLS)));
 
     LOG.debug("Got request loadClientByClientId({}), will return: {}", clientId, details);
     return details;

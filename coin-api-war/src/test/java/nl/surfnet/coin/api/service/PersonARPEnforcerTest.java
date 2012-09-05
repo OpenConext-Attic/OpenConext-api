@@ -16,18 +16,25 @@
 
 package nl.surfnet.coin.api.service;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import nl.surfnet.coin.api.client.domain.Email;
+import nl.surfnet.coin.api.client.domain.Name;
+import nl.surfnet.coin.api.client.domain.Organization;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.janus.domain.ARP;
 
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
-
-import nl.surfnet.coin.api.client.domain.Email;
-import nl.surfnet.coin.api.client.domain.Name;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.janus.domain.ARP;
-
-import static org.junit.Assert.assertThat;
 
 public class PersonARPEnforcerTest {
 
@@ -46,10 +53,17 @@ public class PersonARPEnforcerTest {
     Person p = new Person();
     p.setDisplayName("boobaa");
     p.setName(new Name("boo", "baa", "bii"));
+    Set<Organization> organizations = new HashSet<Organization>();
+    Organization org = new Organization("topSecret");
+    organizations.add(org);
+    p.setOrganizations(organizations);
     ARP arp = new ARP();
+    Map<String, List<Object>> attr = new HashMap<String, List<Object>>();
+    arp.setAttributes(attr);
     Person enforced = e.enforceARP(p, arp);
-    assertThat(enforced.getDisplayName(), IsNull.nullValue());
-    assertThat(enforced.getName(), IsNull.nullValue());
+    assertNull(enforced.getDisplayName());
+    assertNull(enforced.getName());
+    
   }
 
   @Test

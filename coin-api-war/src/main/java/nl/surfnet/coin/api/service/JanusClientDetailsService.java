@@ -67,6 +67,11 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
     clientDetails.setClientId(metadata.getOauthConsumerKey());
     clientDetails.setRegisteredRedirectUri(getCallbackUrlCollection(metadata));
     clientDetails.setScope(Arrays.asList("read"));
+    clientDetails.setAuthorizedGrantTypes(Arrays.asList("authorization_code"));
+    if (metadata.isTwoLeggedOauthAllowed()) {
+       clientDetails.getAuthorizedGrantTypes().add("implicit");
+    }
+    clientDetails.setAuthorizedGrantTypes(Arrays.asList("implicit", "authorization_code"));
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
     return clientDetails;
   }
