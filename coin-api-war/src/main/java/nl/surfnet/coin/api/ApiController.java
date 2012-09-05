@@ -387,14 +387,12 @@ public class ApiController extends AbstractApiController {
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
   @ExceptionHandler(RuntimeException.class)
-  @SuppressWarnings("unused")
   public Object handleException(RuntimeException e) {
     DateTime date = new DateTime();
     LOG.error("Handling error, will respond with the exception message. Current date: " +  date +
         ".", e);
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("error", "An internal server error occurred.");
-    model.put("detail", e.getMessage());
     model.put("date", date.toString());
     return model;
   }

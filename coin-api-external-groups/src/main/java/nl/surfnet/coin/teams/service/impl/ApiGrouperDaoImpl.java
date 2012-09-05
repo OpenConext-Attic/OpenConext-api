@@ -188,7 +188,9 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
         }
       };
       persons = jdbcTemplate.query(SQL_MEMBERS_BY_TEAM, new Object[] { groupId, pageSize, offset }, mapper);
-      addPersonRolesToGroup(persons, groupId);
+      if (CollectionUtils.isNotEmpty(persons)) {
+        addPersonRolesToGroup(persons, groupId);
+      }
     } catch (EmptyResultDataAccessException e) {
       // ignore as we have a sensible default
     }
