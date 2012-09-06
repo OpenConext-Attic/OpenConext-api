@@ -57,35 +57,35 @@ public class ApiSettings {
   private String parseAnchorForAccesstoken;
 
   public ApiSettings() {
-    this("dev");
+    this("https://api.dev.surfconext.nl/v1/test");
   }
 
   /**
-   * @param string
+   * @param url
+   *          the request.getRequestUrl()
    */
   public ApiSettings(String url) {
-    String env;
-    try {
-      Pattern pattern = Pattern.compile("api\\.(\\w*)\\.surfconext");
-      Matcher matcher = pattern.matcher(url);
+    String env = ".dev.";
 
-      env = (matcher.find() ? ("." + matcher.group(1) + ".") : ".");
+    try {
+      Matcher matcher = Pattern.compile("api(\\.\\w*\\.)surfconext").matcher(url);
+      env = (matcher.find() ? matcher.group(1) : ".");
     } catch (Exception e) {
-      //unexpected, but we won't risk runtime errors for defaults
-      env = ".";
+      // unexpected, but we won't risk runtime errors for defaults
     }
 
     this.oauthKey = String.format("https://testsp%ssurfconext.nl/shibboleth", env);
     this.oauthSecret = "mysecret";
 
-    this.requestTokenEndPoint = String.format("https://api%ssurfconext.nl/v1/oauth1/requestToken", env);
-    this.accessTokenEndPoint = String.format("https://api%ssurfconext.nl/v1/oauth1/accessToken", env);
-    this.authorizationURL = String.format("https://api%ssurfconext.nl/v1/oauth1/confirm_access", env);
+    String base = "https://api%ssurfconext.nl/v1/";
+    this.requestTokenEndPoint = String.format(base + "oauth1/requestToken", env);
+    this.accessTokenEndPoint = String.format(base + "oauth1/accessToken", env);
+    this.authorizationURL = String.format(base + "oauth1/confirm_access", env);
 
-    this.accessTokenEndPoint2 = String.format("https://api%ssurfconext.nl/v1/oauth2/token", env);
-    this.authorizationURL2 = String.format("https://api%ssurfconext.nl/v1/oauth2/authorize", env);
+    this.accessTokenEndPoint2 = String.format(base + "oauth2/token", env);
+    this.authorizationURL2 = String.format(base + "oauth2/authorize", env);
 
-    this.requestURL = String.format("https://api%ssurfconext.nl/v1/social/rest/groups/@me", env);
+    this.requestURL = String.format(base + "social/rest/groups/@me", env);
 
   }
 

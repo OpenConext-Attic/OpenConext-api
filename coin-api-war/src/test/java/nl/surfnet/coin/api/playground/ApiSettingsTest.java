@@ -30,11 +30,21 @@ public class ApiSettingsTest {
    */
   @Test
   public void testApiSettingsString() {
+    //test
     ApiSettings settings = new ApiSettings("https://api.test.surfconext.nl/v1/test");
     assertEquals("https://api.test.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
     
+    //prod
     settings = new ApiSettings("https://api.surfconext.nl/v1/test");
     assertEquals("https://api.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
-  }
+
+    //non-happy flow
+    settings = new ApiSettings(null);
+    assertEquals("https://api.dev.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
+
+    //default
+    settings = new ApiSettings();
+    assertEquals("https://api.dev.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
+}
 
 }
