@@ -1,0 +1,1 @@
+delete from oauth1_tokens WHERE userId IS NULL;
