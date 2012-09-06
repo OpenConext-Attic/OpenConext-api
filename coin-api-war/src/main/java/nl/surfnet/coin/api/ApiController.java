@@ -384,7 +384,7 @@ public class ApiController extends AbstractApiController {
    * @param e the exception
    * @return the response body
    */
-  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
   @ResponseBody
   @ExceptionHandler(RuntimeException.class)
   public Object handleException(RuntimeException e) {
@@ -392,8 +392,7 @@ public class ApiController extends AbstractApiController {
     LOG.error("Handling error, will respond with the exception message. Current date: " +  date +
         ".", e);
     Map<String, Object> model = new HashMap<String, Object>();
-    model.put("error", "An internal server error occurred.");
-    model.put("date", date.toString());
+    model.put("entry", new ArrayList<Object>());
     return model;
   }
 

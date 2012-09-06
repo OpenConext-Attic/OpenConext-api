@@ -56,20 +56,19 @@ public class OAuthClientController {
 
   @Autowired
   private StringBuffer versionIdentifier;
-  
+
   private final Token EMPTY_TOKEN = new Token("", "");
 
   @RequestMapping(value = { "/test" }, method = RequestMethod.GET)
-  public String socialQueries(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public String socialQueries(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
     setupModelMap(new ApiSettings(), "step1", request, modelMap, null);
     modelMap.addAttribute("versionIdentifier", versionIdentifier);
     return "oauth-client";
   }
 
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "step1")
-  public String step1(ModelMap modelMap, @ModelAttribute("settings")
-  ApiSettings settings, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public String step1(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
+      HttpServletResponse response) throws IOException {
     if (settings.isTwoLeggedOauth()) {
       settings.setAccessTokenEndPoint("");
       settings.setAuthorizationURL("");
@@ -102,6 +101,9 @@ public class OAuthClientController {
     } else {
       ConfigurableOAuth20ServiceImpl service20 = (ConfigurableOAuth20ServiceImpl) service;
       authorizationUrl = service20.getAuthorizationUrl(EMPTY_TOKEN);
+      if (settings.isLeaveOutRedirectUri()) {
+        authorizationUrl = authorizationUrl.replaceFirst("&redirect_uri=oob", "");
+      }
     }
     modelMap.addAttribute("authorizationUrlAfter", authorizationUrl);
     setupModelMap(settings, "step2", request, modelMap, service);
@@ -117,11 +119,9 @@ public class OAuthClientController {
         "%s %s %s %s %s",
         "METHOD: ".concat(request.getVerb().toString()).concat(br),
         "URL: ".concat(request.getUrl().toString()).concat(br),
-        (bodyParams != null && bodyParams.size() > 0) ? "BODY: ".concat(bodyParams.asFormUrlEncodedString()).concat(br)
-            : "",
-        (queryStringParams != null && queryStringParams.size() > 0) ? "QUERY: ".concat(
-            queryStringParams.asFormUrlEncodedString()).concat(br) : "",
-        (headers != null && !headers.isEmpty() ? "HEADERS: ".concat(headers.toString()) : ""));
+        (bodyParams != null && bodyParams.size() > 0) ? "BODY: ".concat(bodyParams.asFormUrlEncodedString()).concat(br) : "",
+        (queryStringParams != null && queryStringParams.size() > 0) ? "QUERY: ".concat(queryStringParams.asFormUrlEncodedString()).concat(
+            br) : "", (headers != null && !headers.isEmpty() ? "HEADERS: ".concat(headers.toString()) : ""));
   }
 
   private static String oAuthResponseHeadersToString(Object response) {
@@ -141,8 +141,8 @@ public class OAuthClientController {
   }
 
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "step2")
-  public void step2(ModelMap modelMap, @ModelAttribute("settings")
-  ApiSettings settings, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void step2(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
+      HttpServletResponse response) throws IOException {
     ApiSettings settingsFromSession = (ApiSettings) request.getSession().getAttribute("settings");
     String authorizationUrl;
     OAuthService service = (OAuthService) request.getSession().getAttribute("service");
@@ -153,6 +153,9 @@ public class OAuthClientController {
     } else {
       ConfigurableOAuth20ServiceImpl service20 = (ConfigurableOAuth20ServiceImpl) service;
       authorizationUrl = service20.getAuthorizationUrl(EMPTY_TOKEN);
+      if (settings.isLeaveOutRedirectUri()) {
+        authorizationUrl = authorizationUrl.replaceFirst("&redirect_uri=oob", "");
+      }
       settingsFromSession.setAccessTokenRequestOption(settings.getAccessTokenRequestOption());
       request.getSession().setAttribute("settings", settingsFromSession);
     }
@@ -160,8 +163,8 @@ public class OAuthClientController {
   }
 
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "step3")
-  public String step3(ModelMap modelMap, @ModelAttribute("settings")
-  ApiSettings settings, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public String step3(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
+      HttpServletResponse response) throws IOException {
     OAuthService service = (OAuthService) request.getSession().getAttribute("service");// getService10(settings);
     Token accessToken = (Token) request.getSession().getAttribute("accessToken");
     StringBuffer requestURL = new StringBuffer(settings.getRequestURL() + "?");
@@ -196,8 +199,8 @@ public class OAuthClientController {
   }
 
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "reset")
-  public String reset(ModelMap modelMap, @ModelAttribute("settings")
-  ApiSettings settings, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public String reset(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
+      HttpServletResponse response) throws IOException {
     return socialQueries(modelMap, request, response);
   }
 
@@ -223,8 +226,7 @@ public class OAuthClientController {
       // we will extract the token (which is in the anchor of the url and not
       // accessible here) on the client
       accessToken = EMPTY_TOKEN;
-      oAuthRequest = new OAuthRequest(Verb.GET, request.getRequestURL().append("?").append(request.getQueryString())
-          .toString());
+      oAuthRequest = new OAuthRequest(Verb.GET, request.getRequestURL().append("?").append(request.getQueryString()).toString());
       oauthResponse = "";
       modelMap.addAttribute("parseAnchorForAccesstoken", Boolean.TRUE);
     } else {
@@ -276,7 +278,7 @@ public class OAuthClientController {
   public Collection<String> populateOAuthVersions() {
     return Arrays.asList(new String[] { OAuthVersion.VERSION10A.getVersion(), OAuthVersion.VERSION20.getVersion() });
   }
-  
+
   @ModelAttribute("requestTokenVerbs")
   public Collection<String> populateRequestTokenVerbs() {
     return Arrays.asList(new String[] { Verb.POST.toString(), Verb.GET.toString() });
@@ -285,12 +287,10 @@ public class OAuthClientController {
   @ModelAttribute("accessTokenRequestOptions")
   public Collection<String> populateAccessTokenRequestOptions() {
     return Arrays.asList(new String[] { AccessTokenRequestOption.AUTHENTICATION_HEADER.getOption(),
-        AccessTokenRequestOption.ENTITY_BODY_PARAMETERS.getOption(),
-        AccessTokenRequestOption.QUERY_STRING_PARAMETERS.getOption() });
+        AccessTokenRequestOption.ENTITY_BODY_PARAMETERS.getOption(), AccessTokenRequestOption.QUERY_STRING_PARAMETERS.getOption() });
   }
 
-  private void setupModelMap(ApiSettings settings, String step, HttpServletRequest request, ModelMap modelMap,
-      OAuthService service) {
+  private void setupModelMap(ApiSettings settings, String step, HttpServletRequest request, ModelMap modelMap, OAuthService service) {
     settings.setStep(step);
     modelMap.addAttribute("settings", settings);
     request.getSession().setAttribute("settings", settings);
@@ -298,26 +298,34 @@ public class OAuthClientController {
   }
 
   private ConfigurableOAuth10aServiceImpl getService10(ApiSettings settings) {
-    ConfigurableOAuth10aServiceImpl service = (ConfigurableOAuth10aServiceImpl) new ServiceBuilder()
+    ServiceBuilder builder = new ServiceBuilder()
         .provider(
-            new ConfigurableApi10a(settings.getRequestTokenEndPoint(), settings.getAuthorizationURL(), settings
-                .getAccessTokenEndPoint())).apiKey(settings.getOauthKey()).apiSecret(settings.getOauthSecret())
-        .callback(oauthCallbackUrl).scope("read").debug().build();
+            new ConfigurableApi10a(settings.getRequestTokenEndPoint(), settings.getAuthorizationURL(), settings.getAccessTokenEndPoint()))
+        .apiKey(settings.getOauthKey()).apiSecret(settings.getOauthSecret()).callback(oauthCallbackUrl).debug();
+    if (StringUtils.hasText(settings.getScope())) {
+      builder.scope(settings.getScope());
+    }
+    ConfigurableOAuth10aServiceImpl service = (ConfigurableOAuth10aServiceImpl) builder.build();
     return service;
   }
 
   private ConfigurableOAuth20ServiceImpl getService20(ApiSettings settings) {
-    ConfigurableApi20 api20 = new ConfigurableApi20(settings.getAccessTokenEndPoint2(),
-        settings.getAuthorizationURL2(), settings.isImplicitGrant());
-
+    ConfigurableApi20 api20 = new ConfigurableApi20(settings.getAccessTokenEndPoint2(), settings.getAuthorizationURL2(),
+        settings.isImplicitGrant());
     ServiceBuilder provider = new ServiceBuilder().provider(api20);
     if (settings.isImplicitGrant()) {
       provider.apiSecret("DUMMY");
     } else {
       provider.apiSecret(settings.getOauthSecret());
     }
-    ConfigurableOAuth20ServiceImpl service = (ConfigurableOAuth20ServiceImpl) provider.apiKey(settings.getOauthKey())
-        .callback(oauthCallbackUrl).scope("read").debug().build();
+    ServiceBuilder builder = provider.apiKey(settings.getOauthKey()).debug();
+    if (StringUtils.hasText(settings.getScope())) {
+      builder.scope(settings.getScope());
+    }
+    if (!settings.isLeaveOutRedirectUri()) {
+      builder.callback(oauthCallbackUrl);
+    }
+    ConfigurableOAuth20ServiceImpl service = (ConfigurableOAuth20ServiceImpl) builder.build();
     return service;
   }
 

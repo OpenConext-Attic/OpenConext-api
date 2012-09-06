@@ -33,6 +33,36 @@ public class ApiSettings {
   private String accessTokenEndPoint2;
   private boolean twoLegged;
   private boolean implicitGrant;
+  private boolean leaveOutRedirectUri;
+  private String scope = "read";
+
+  /**
+   * @return the scope
+   */
+  public String getScope() {
+    return scope;
+  }
+
+  /**
+   * @param scope the scope to set
+   */
+  public void setScope(String scope) {
+    this.scope = scope;
+  }
+
+  /**
+   * @return the leaveOutRedirectUri
+   */
+  public boolean isLeaveOutRedirectUri() {
+    return leaveOutRedirectUri;
+  }
+
+  /**
+   * @param leaveOutRedirectUri the leaveOutRedirectUri to set
+   */
+  public void setLeaveOutRedirectUri(boolean leaveOutRedirectUri) {
+    this.leaveOutRedirectUri = leaveOutRedirectUri;
+  }
 
   private String oauthKey;
   private String oauthSecret;

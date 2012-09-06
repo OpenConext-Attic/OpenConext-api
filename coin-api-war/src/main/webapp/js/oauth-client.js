@@ -28,6 +28,7 @@ $(function() {
 	$('#implicitGrant').click(function() {
 		$('#oauth20Input').toggle(!this.checked);
 		$('#secretInput').toggle(!this.checked);
+		$('#leaveOutRedirectUri').toggle(!this.checked);
 	});
 
 	// we are in step 3 of implicit grant

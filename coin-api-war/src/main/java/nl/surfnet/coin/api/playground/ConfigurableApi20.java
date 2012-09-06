@@ -72,7 +72,9 @@ public class ConfigurableApi20 extends DefaultApi20 {
     if (config.hasScope()) {
       url.append("&scope=").append(config.getScope());
     }
-    url.append("&redirect_uri=").append(config.getCallback());
+    if (config.getCallback() != null) {
+      url.append("&redirect_uri=").append(config.getCallback());
+    }
     return url.toString();
   }
 

@@ -94,6 +94,13 @@
 													name="oauthSecret" class="input-xxlarge" />
 											</div>
 										</div>
+										<div class="control-group" id="scope">
+											<label class="control-label" for="scope">Scope</label>
+											<div class="controls">
+												<form:input path="scope" id="scope"
+													name="scope" class="input-xxlarge" />
+											</div>
+										</div>
 									</div>
 									<div id="oauth10a" ${settings.version==
 										'1.0a' ? '' : 'style="display: none;"'}>
@@ -167,6 +174,14 @@
 										</div>
 										<div id="oauth20Input" ${settings.implicitGrant==
 											false ? '' : 'style="display: none;"'}>
+											<div class="control-group">
+												<label class="control-label" for="leaveOutRedirectUri">Use no redirect URI</label>
+												<div class="controls">
+													<label class="checkbox"> <form:checkbox
+															id="leaveOutRedirectUri" name="leaveOutRedirectUri"
+															path="leaveOutRedirectUri" /> </label>
+												</div>
+											</div>
 											<div class="control-group">
 												<label class="control-label" for="accessTokenEndPoint2">AccessToken
 													URL</label>

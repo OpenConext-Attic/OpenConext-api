@@ -35,7 +35,7 @@
   - @RequestMapping on org.springframework.security.oauth2.provider.endpoint.TokenEndpoint matches and handles the request
 
   -->
-  <http pattern="/oauth/token" authentication-manager-ref="clientAuthenticationManager"
+  <http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="clientAuthenticationManager"
         xmlns="http://www.springframework.org/schema/security">
     <intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY"/>
     <anonymous enabled="false"/>

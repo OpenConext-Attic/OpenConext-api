@@ -60,14 +60,19 @@ public class ConfigurableOAuth20ServiceImpl implements OAuthService {
       request.addQuerystringParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
       request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
       request.addQuerystringParameter(OAuthConstants.CODE, verifier.getValue());
-      request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+      if (!config.getCallback().equalsIgnoreCase("oob")) {
+        request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+      }
+
       if (config.hasScope())
         request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
     } else {
       request.addBodyParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
       request.addBodyParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
       request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
-      request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+      if (!config.getCallback().equalsIgnoreCase("oob")) {
+        request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+      }
       if (config.hasScope())
         request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
 
@@ -78,12 +83,13 @@ public class ConfigurableOAuth20ServiceImpl implements OAuthService {
   public OAuthRequest getOAuthRequestConformSpec(Verifier verifier) {
     OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), api.getAccessTokenEndpoint());
 
-    String encodeBase64String = Base64
-        .encodeBase64String((config.getApiKey() + ":" + config.getApiSecret()).getBytes());
+    String encodeBase64String = Base64.encodeBase64String((config.getApiKey() + ":" + config.getApiSecret()).getBytes());
     encodeBase64String = encodeBase64String.replaceAll("\n", "").replaceAll("\r", "");
     request.addHeader("Authorization", "Basic " + encodeBase64String);
     request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
-    request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+    if (!config.getCallback().equalsIgnoreCase("oob")) {
+      request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+    }
     request.addBodyParameter("grant_type", "authorization_code");
     if (config.hasScope()) {
       request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
@@ -113,8 +119,7 @@ public class ConfigurableOAuth20ServiceImpl implements OAuthService {
    * {@inheritDoc}
    */
   public Token getRequestToken() {
-    throw new UnsupportedOperationException(
-        "Unsupported operation, please use 'getAuthorizationUrl' and redirect your users there");
+    throw new UnsupportedOperationException("Unsupported operation, please use 'getAuthorizationUrl' and redirect your users there");
   }
 
   /**
