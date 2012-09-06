@@ -18,6 +18,9 @@
  */
 package nl.surfnet.coin.api.playground;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 
@@ -26,6 +29,7 @@ import org.scribe.model.Verb;
  * 
  */
 public class ApiSettings {
+
   private String version = OAuthVersion.VERSION10A.getVersion();// "1.0a"
   private String requestTokenEndPoint;
   private String requestTokenVerb = Verb.POST.toString();
@@ -35,34 +39,6 @@ public class ApiSettings {
   private boolean implicitGrant;
   private boolean leaveOutRedirectUri;
   private String scope = "read";
-
-  /**
-   * @return the scope
-   */
-  public String getScope() {
-    return scope;
-  }
-
-  /**
-   * @param scope the scope to set
-   */
-  public void setScope(String scope) {
-    this.scope = scope;
-  }
-
-  /**
-   * @return the leaveOutRedirectUri
-   */
-  public boolean isLeaveOutRedirectUri() {
-    return leaveOutRedirectUri;
-  }
-
-  /**
-   * @param leaveOutRedirectUri the leaveOutRedirectUri to set
-   */
-  public void setLeaveOutRedirectUri(boolean leaveOutRedirectUri) {
-    this.leaveOutRedirectUri = leaveOutRedirectUri;
-  }
 
   private String oauthKey;
   private String oauthSecret;
@@ -79,6 +55,39 @@ public class ApiSettings {
   private int startIndex;
   private String sortBy;
   private String parseAnchorForAccesstoken;
+
+  public ApiSettings() {
+    this("dev");
+  }
+
+  /**
+   * @param string
+   */
+  public ApiSettings(String url) {
+    String env;
+    try {
+      Pattern pattern = Pattern.compile("api\\.(\\w*)\\.surfconext");
+      Matcher matcher = pattern.matcher(url);
+
+      env = (matcher.find() ? ("." + matcher.group(1) + ".") : ".");
+    } catch (Exception e) {
+      //unexpected, but we won't risk runtime errors for defaults
+      env = ".";
+    }
+
+    this.oauthKey = String.format("https://testsp%ssurfconext.nl/shibboleth", env);
+    this.oauthSecret = "mysecret";
+
+    this.requestTokenEndPoint = String.format("https://api%ssurfconext.nl/v1/oauth1/requestToken", env);
+    this.accessTokenEndPoint = String.format("https://api%ssurfconext.nl/v1/oauth1/accessToken", env);
+    this.authorizationURL = String.format("https://api%ssurfconext.nl/v1/oauth1/confirm_access", env);
+
+    this.accessTokenEndPoint2 = String.format("https://api%ssurfconext.nl/v1/oauth2/token", env);
+    this.authorizationURL2 = String.format("https://api%ssurfconext.nl/v1/oauth2/authorize", env);
+
+    this.requestURL = String.format("https://api%ssurfconext.nl/v1/social/rest/groups/@me", env);
+
+  }
 
   public int getCount() {
     return count;
@@ -266,10 +275,41 @@ public class ApiSettings {
   }
 
   /**
-   * @param requestTokenVerb the requestTokenVerb to set
+   * @param requestTokenVerb
+   *          the requestTokenVerb to set
    */
   public void setRequestTokenVerb(String requestTokenVerb) {
     this.requestTokenVerb = requestTokenVerb;
+  }
+
+  /**
+   * @return the scope
+   */
+  public String getScope() {
+    return scope;
+  }
+
+  /**
+   * @param scope
+   *          the scope to set
+   */
+  public void setScope(String scope) {
+    this.scope = scope;
+  }
+
+  /**
+   * @return the leaveOutRedirectUri
+   */
+  public boolean isLeaveOutRedirectUri() {
+    return leaveOutRedirectUri;
+  }
+
+  /**
+   * @param leaveOutRedirectUri
+   *          the leaveOutRedirectUri to set
+   */
+  public void setLeaveOutRedirectUri(boolean leaveOutRedirectUri) {
+    this.leaveOutRedirectUri = leaveOutRedirectUri;
   }
 
 }

@@ -61,7 +61,8 @@ public class OAuthClientController {
 
   @RequestMapping(value = { "/test" }, method = RequestMethod.GET)
   public String socialQueries(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
-    setupModelMap(new ApiSettings(), "step1", request, modelMap, null);
+    
+    setupModelMap(new ApiSettings(request.getRequestURL().toString()), "step1", request, modelMap, null);
     modelMap.addAttribute("versionIdentifier", versionIdentifier);
     return "oauth-client";
   }
