@@ -77,15 +77,15 @@ public class ApiSettings {
     this.oauthKey = String.format("https://testsp%ssurfconext.nl/shibboleth", env);
     this.oauthSecret = "mysecret";
 
-    String base = "https://api%ssurfconext.nl/v1/";
-    this.requestTokenEndPoint = String.format(base + "oauth1/requestToken", env);
-    this.accessTokenEndPoint = String.format(base + "oauth1/accessToken", env);
-    this.authorizationURL = String.format(base + "oauth1/confirm_access", env);
+    String base = String.format("https://api%ssurfconext.nl/v1/", env);
+    this.requestTokenEndPoint = base + "oauth1/requestToken";
+    this.accessTokenEndPoint = base + "oauth1/accessToken";
+    this.authorizationURL = base + "oauth1/confirm_access";
 
-    this.accessTokenEndPoint2 = String.format(base + "oauth2/token", env);
-    this.authorizationURL2 = String.format(base + "oauth2/authorize", env);
+    this.accessTokenEndPoint2 = base + "oauth2/token";
+    this.authorizationURL2 = base + "oauth2/authorize";
 
-    this.requestURL = String.format(base + "social/rest/groups/@me", env);
+    this.requestURL = base + "social/rest/groups/@me";
 
   }
 
