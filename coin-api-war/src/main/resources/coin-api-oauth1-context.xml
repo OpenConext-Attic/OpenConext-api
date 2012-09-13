@@ -7,8 +7,8 @@
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
 	<!-- All requests to /oauth/** are protected by this configuration. Invalid 
-		requests are redirected to the shibbolethEntryPoint. -->
-	<http pattern="/oauth1/**" entry-point-ref="shibbolethEntryPoint">
+		requests are redirected to the samlEntryPoint. -->
+	<http pattern="/oauth1/**" entry-point-ref="samlEntryPoint">
 		<intercept-url pattern="/oauth1/**" access="ROLE_USER" />
 		<custom-filter ref="requestHeaderAuthenticationFilter"
 			position="PRE_AUTH_FILTER" />
@@ -28,10 +28,10 @@
 		</beans:property>
 	</beans:bean>
 
-	<!-- This requestHeaderAuthenticationFilter uses the REMOTE_USER header 
-		from the HTTP request (set by Shibboleth) to build an authentication object. -->
+	<!-- This requestHeaderAuthenticationFilter uses the SAML assertion
+		in the HTTP request to build an authentication object. -->
 	<beans:bean id="requestHeaderAuthenticationFilter"
-		class="nl.surfnet.coin.api.shib.ShibRequestHeaderAuthenticationFilter">
+		class="nl.surfnet.coin.api.saml.SAMLRequestHeaderAuthenticationFilter">
 		<beans:property name="principalRequestHeader" value="REMOTE_USER" />
 		<beans:property name="exceptionIfHeaderMissing" value="false" />
 		<beans:property name="continueFilterChainOnUnsuccessfulAuthentication"
@@ -41,7 +41,7 @@
 	</beans:bean>
 
 	<beans:bean id="authenticationDetailsSource"
-		class="nl.surfnet.coin.api.oauth.ShibAuthenticationDetailsSource" />
+		class="nl.surfnet.coin.api.oauth.ConextUserAuthenticationDetailsSource" />
 
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider ref="preAuthProvider" />

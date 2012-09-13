@@ -49,7 +49,7 @@
 		For both versions a filter is included. Only if both fail (i.e. do not put 
 		an Authentication object in the Security Context) the request will be rejected. -->
 	<security:http create-session="stateless" pattern="/social/rest/**"
-		authentication-manager-ref="shibbolethAuthenticationManager"
+		authentication-manager-ref="samlAuthenticationManager"
 		access-decision-manager-ref="accessDecisionManager" entry-point-ref="unauthorizedEntryPoint">
 
 		<security:anonymous enabled="true" />
@@ -73,8 +73,8 @@
 	</security:http>
 
 	<security:http create-session="stateless" pattern="/mock10/social/rest/**"
-		authentication-manager-ref="shibbolethAuthenticationManager"
-		access-decision-manager-ref="accessDecisionManager" entry-point-ref="shibbolethEntryPoint">
+		authentication-manager-ref="samlAuthenticationManager"
+		access-decision-manager-ref="accessDecisionManager" entry-point-ref="samlEntryPoint">
 		<security:anonymous enabled="true" />
 		<!-- Allow OPTIONS-request without security, which is a CORS-preflight 
 			request, handled by a specific controller -->
@@ -125,15 +125,11 @@
 
 	<bean id="unauthorizedEntryPoint" class="nl.surfnet.coin.api.oauth.Http401UnauthorizedEntryPoint" />
 
-	<bean id="shibbolethEntryPoint"
-		class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
-		<constructor-arg index="0"
-			value="${coin-api.shibboleth.login.url}" />
-		<property name="useForward" value="false" />
-	</bean>
+	<bean id="samlEntryPoint"
+		class="nl.surfnet.coin.api.saml.SAMLAuthenticationEntryPoint"/>
 
-	<bean id="shibbolethAuthenticationManager"
-		class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
+	<bean id="samlAuthenticationManager"
+		class="nl.surfnet.coin.api.saml.SAMLAuthenticationManager" />
 
 
 	<bean id="log4jInitialization"

@@ -16,18 +16,18 @@
 
 package nl.surfnet.coin.api.oauth;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.util.Collections;
+
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
+import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.oauth.provider.token.OAuthProviderTokenImpl;
-
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
-import nl.surfnet.coin.db.AbstractInMemoryDatabaseTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 public class OpenConextOauth1TokenServicesTest extends AbstractInMemoryDatabaseTest {
 
@@ -99,7 +99,7 @@ public class OpenConextOauth1TokenServicesTest extends AbstractInMemoryDatabaseT
     token.setSecret("ssh");
     token.setCallbackUrl("callbackurl");
     token.setConsumerKey("consumerkey");
-    ShibbolethAuthenticationToken userAuthentication = new ShibbolethAuthenticationToken(Collections.EMPTY_LIST);
+    SAMLAuthenticationToken userAuthentication = new SAMLAuthenticationToken(Collections.EMPTY_LIST);
     userAuthentication.setClientMetaData(new JanusClientMetadata());
     token.setUserAuthentication(userAuthentication);
     return token;

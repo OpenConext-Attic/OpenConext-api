@@ -103,6 +103,7 @@
     <coin-shared.version>2.8.1</coin-shared.version>
     <dumbster.version>1.6</dumbster.version>
     <spring-oauth.version>1.0.0.RC2</spring-oauth.version>
+	<spring-security-opensaml.version>2.8.1</spring-security-opensaml.version>
   </properties>
 
   <dependencyManagement>
@@ -136,6 +137,11 @@
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
         <version>3.1.0.RELEASE</version>
+      </dependency>
+      <dependency>
+        <groupId>org.surfnet.coin</groupId>
+        <artifactId>spring-security-opensaml</artifactId>
+        <version>${spring-security-opensaml.version}</version>
       </dependency>
       <dependency>
         <groupId>org.surfnet.coin</groupId>

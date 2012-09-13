@@ -23,6 +23,8 @@ import java.sql.Types;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.security.core.Authentication;
@@ -35,8 +37,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.JdbcTokenStore;
-
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
 
 /**
  * {@link JdbcTokenStore} that add the ClientMetaData from Janus if it is not
@@ -67,8 +67,8 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
   public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
     AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
     Authentication userAuthentication = authentication.getUserAuthentication();
-    if (userAuthentication instanceof ShibbolethAuthenticationToken) {
-      ShibbolethAuthenticationToken shibAuth = (ShibbolethAuthenticationToken) userAuthentication;
+    if (userAuthentication instanceof SAMLAuthenticationToken) {
+      SAMLAuthenticationToken shibAuth = (SAMLAuthenticationToken) userAuthentication;
       if (shibAuth.getClientMetaData() == null) {
         String clientId = authorizationRequest.getClientId();
         ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
@@ -104,7 +104,7 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
     } else {
       throw new RuntimeException("The userAuthentication is of the type '"
           + (userAuthentication != null ? userAuthentication.getClass() : "null")
-          + "'. Required is a (sub)class of ShibbolethAuthenticationToken");
+          + "'. Required is a (sub)class of SAMLAuthenticationToken");
     }
 
   }

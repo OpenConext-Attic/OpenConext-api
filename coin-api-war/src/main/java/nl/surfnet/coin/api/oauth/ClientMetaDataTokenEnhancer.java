@@ -20,7 +20,7 @@ package nl.surfnet.coin.api.oauth;
 
 import javax.annotation.Resource;
 
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -58,8 +58,8 @@ public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
     if (clientDetails instanceof OpenConextClientDetails) {
       ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
       Authentication userAuthentication = authentication.getUserAuthentication();
-      if (userAuthentication instanceof ShibbolethAuthenticationToken) {
-        ((ShibbolethAuthenticationToken) userAuthentication).setClientMetaData(clientMetaData);
+      if (userAuthentication instanceof SAMLAuthenticationToken) {
+        ((SAMLAuthenticationToken) userAuthentication).setClientMetaData(clientMetaData);
       } else {
         throw new RuntimeException("The userAuthentication is of the type '"
             + (userAuthentication != null ? userAuthentication.getClass() : "null")

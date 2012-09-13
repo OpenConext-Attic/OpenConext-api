@@ -20,7 +20,7 @@ import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
 import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
 import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 import nl.surfnet.coin.shared.log.ApiCallLog;
 import nl.surfnet.coin.shared.log.ApiCallLogContextListener;
 
@@ -89,8 +89,8 @@ public abstract class AbstractApiController {
     if (authentication instanceof OAuth2Authentication) {
       OAuth2Authentication oauth2 = (OAuth2Authentication) authentication;
       Authentication userAuthentication = oauth2.getUserAuthentication();
-      if (userAuthentication instanceof ShibbolethAuthenticationToken) {
-        ShibbolethAuthenticationToken shib = (ShibbolethAuthenticationToken) userAuthentication;
+      if (userAuthentication instanceof SAMLAuthenticationToken) {
+        SAMLAuthenticationToken shib = (SAMLAuthenticationToken) userAuthentication;
         metaData = shib.getClientMetaData();
         registerApiVersion("oauth2");
       }
@@ -124,8 +124,8 @@ public abstract class AbstractApiController {
         metaData = details.getClientMetaData();
         registerApiVersion("oauth1-2legged");
       }
-    } else if (authentication instanceof ShibbolethAuthenticationToken) {
-      ShibbolethAuthenticationToken shibToken = (ShibbolethAuthenticationToken) authentication;
+    } else if (authentication instanceof SAMLAuthenticationToken) {
+      SAMLAuthenticationToken shibToken = (SAMLAuthenticationToken) authentication;
       metaData = shibToken.getClientMetaData();
       registerApiVersion("oauth2");
     } else {

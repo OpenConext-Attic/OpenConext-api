@@ -18,7 +18,7 @@
  */
 package nl.surfnet.coin.api.oauth;
 
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 /**
  * Holds a reference to the ClientMetaData to be accessed in different parts of
@@ -29,7 +29,7 @@ public class ClientMetaDataHolder  {
 
   private static final ThreadLocal<ClientMetaData> clientMetaDataContext = new ThreadLocal<ClientMetaData>();
 
-  public static void storeClientMetaData(ShibbolethAuthenticationToken token) {
+  public static void storeClientMetaData(SAMLAuthenticationToken token) {
     ClientMetaData clientMetaData = clientMetaDataContext.get();
     if (clientMetaData != null) {
       token.setClientMetaData(clientMetaData);
