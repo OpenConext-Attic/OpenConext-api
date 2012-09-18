@@ -28,34 +28,6 @@
     <listener-class>nl.surfnet.coin.shared.log.ApiCallLogContextListener</listener-class>
   </listener>
 
-
-  <!-- from selenium-web.xml ================================================ -->
-  <filter>
-    <filter-name>mockShibbolethFilter</filter-name>
-    <filter-class>nl.surfnet.coin.api.shib.MockShibbolethFilter</filter-class>
-    <init-param>
-      <param-name>remoteUser</param-name>
-      <param-value>mock-shib-remote-user</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/oauth1/confirm_access</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/oauth2/authorize</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/oauth2/confirm_access</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>mockShibbolethFilter</filter-name>
-    <url-pattern>/social/rest/*</url-pattern>
-  </filter-mapping>
-  <!-- from selenium-web.xml ================================================ -->
-
   <filter>
     <filter-name>springSecurityFilterChain</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

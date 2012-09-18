@@ -22,24 +22,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import nl.surfnet.spring.security.opensaml.AuthnRequestGenerator;
-import nl.surfnet.spring.security.opensaml.util.IDService;
-import nl.surfnet.spring.security.opensaml.util.TimeService;
-import nl.surfnet.spring.security.opensaml.xml.EndpointGenerator;
-
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.metadata.Endpoint;
 import org.opensaml.saml2.metadata.SingleSignOnService;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
+import nl.surfnet.spring.security.opensaml.AuthnRequestGenerator;
+import nl.surfnet.spring.security.opensaml.util.IDService;
+import nl.surfnet.spring.security.opensaml.util.TimeService;
+import nl.surfnet.spring.security.opensaml.xml.EndpointGenerator;
+
 /**
  * SamlAuthenticationEntryPoint.java
- * 
+ *
  */
 public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -47,27 +46,19 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private TimeService timeService = new TimeService();
   private IDService idService = new IDService();
-  
+
   @Resource(name="openSAMLContext")
   private OpenSAMLContext openSAMLContext;
-  
+
   private String ssoUrl = "https://engine.dev.surfconext.nl/authentication/idp/single-sign-on";
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.springframework.security.web.AuthenticationEntryPoint#commence(javax
-   * .servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
-   * org.springframework.security.core.AuthenticationException)
-   */
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException,
       ServletException {
-    sendAuthnRequest(response);
+    sendAuthnRequest(request, response);
   }
- 
-  private void sendAuthnRequest(HttpServletResponse response) throws IOException {
+
+  private void sendAuthnRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
     AuthnRequestGenerator authnRequestGenerator = new AuthnRequestGenerator(openSAMLContext.entityId(), timeService,
         idService);
     EndpointGenerator endpointGenerator = new EndpointGenerator();
@@ -80,7 +71,8 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
     AuthnRequest authnRequest = authnRequestGenerator.generateAuthnRequest(target, openSAMLContext.assertionConsumerUri());
 
     try {
-      openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, "relayState");
+      String originalQueryString = request.getQueryString();
+      openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalQueryString);
     } catch (MessageEncodingException mee) {
       LOG.error("Could not send authnRequest to Identity Provider.", mee);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
