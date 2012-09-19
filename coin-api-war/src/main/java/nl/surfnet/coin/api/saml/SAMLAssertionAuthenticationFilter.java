@@ -26,6 +26,7 @@ import org.opensaml.saml2.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.util.Assert;
@@ -61,7 +62,10 @@ public class SAMLAssertionAuthenticationFilter extends AbstractPreAuthenticatedP
 
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authResult) {
-    super.successfulAuthentication(request, response, authResult);
+    SAMLAuthenticationToken samlAuthenticationToken = new SAMLAuthenticationToken(authResult.getAuthorities());
+    samlAuthenticationToken.setAuthenticated(true);
+    samlAuthenticationToken.setDetails(authResult.getPrincipal());
+    SecurityContextHolder.getContext().setAuthentication(samlAuthenticationToken);
 
     String originalUrl = request.getRequestURI()  + "?" + request.getParameter("RelayState");
     try {

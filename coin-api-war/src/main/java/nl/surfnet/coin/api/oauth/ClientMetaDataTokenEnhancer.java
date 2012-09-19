@@ -20,8 +20,6 @@ package nl.surfnet.coin.api.oauth;
 
 import javax.annotation.Resource;
 
-import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -30,6 +28,8 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
+
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 /**
  * {@link TokenEnhancer} that stores the {@link ClientMetaData} within the
@@ -42,14 +42,6 @@ public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
   @Resource(name = "janusClientDetailsService")
   private ClientDetailsService clientDetailsService;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.springframework.security.oauth2.provider.token.TokenEnhancer#enhance
-   * (org.springframework.security.oauth2.common.OAuth2AccessToken,
-   * org.springframework.security.oauth2.provider.OAuth2Authentication)
-   */
   @Override
   public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
     AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
@@ -63,7 +55,7 @@ public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
       } else {
         throw new RuntimeException("The userAuthentication is of the type '"
             + (userAuthentication != null ? userAuthentication.getClass() : "null")
-            + "'. Required is a (sub)class of ShibbolethAuthenticationToken");
+            + "'. Required is a (sub)class of SAMLAuthenticationToken");
       }
     }
     /*
