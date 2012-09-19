@@ -23,19 +23,6 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nl.surfnet.spring.security.opensaml.AssertionConsumer;
-import nl.surfnet.spring.security.opensaml.AssertionConsumerImpl;
-import nl.surfnet.spring.security.opensaml.CertificateStore;
-import nl.surfnet.spring.security.opensaml.CertificateStoreImpl;
-import nl.surfnet.spring.security.opensaml.Provisioner;
-import nl.surfnet.spring.security.opensaml.SAMLMessageHandler;
-import nl.surfnet.spring.security.opensaml.SAMLMessageHandlerImpl;
-import nl.surfnet.spring.security.opensaml.SecurityPolicyDelegate;
-import nl.surfnet.spring.security.opensaml.ServiceProviderAuthenticationException;
-import nl.surfnet.spring.security.opensaml.SignatureSecurityPolicyRule;
-import nl.surfnet.spring.security.opensaml.crypt.KeyStoreCredentialResolverDelegate;
-import nl.surfnet.spring.security.opensaml.xml.SAML2ValidatorSuite;
-
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.binding.SAMLMessageContext;
@@ -56,10 +43,22 @@ import org.opensaml.xml.parse.BasicParserPool;
 import org.opensaml.xml.security.credential.CredentialResolver;
 import org.opensaml.xml.validation.ValidationException;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
+
+import nl.surfnet.spring.security.opensaml.AssertionConsumer;
+import nl.surfnet.spring.security.opensaml.AssertionConsumerImpl;
+import nl.surfnet.spring.security.opensaml.CertificateStore;
+import nl.surfnet.spring.security.opensaml.CertificateStoreImpl;
+import nl.surfnet.spring.security.opensaml.Provisioner;
+import nl.surfnet.spring.security.opensaml.SAMLMessageHandler;
+import nl.surfnet.spring.security.opensaml.SAMLMessageHandlerImpl;
+import nl.surfnet.spring.security.opensaml.SecurityPolicyDelegate;
+import nl.surfnet.spring.security.opensaml.ServiceProviderAuthenticationException;
+import nl.surfnet.spring.security.opensaml.SignatureSecurityPolicyRule;
+import nl.surfnet.spring.security.opensaml.crypt.KeyStoreCredentialResolverDelegate;
+import nl.surfnet.spring.security.opensaml.xml.SAML2ValidatorSuite;
 
 /**
  * Context that wires the required OpenSAML configuration. All methods can be
@@ -90,6 +89,8 @@ public class OpenSAMLContext {
   private SAMLMessageHandlerImpl samlMessageHandler;
   private final SAML2ValidatorSuite validatorSuite;
 
+  private String ssoUrl;
+
   public OpenSAMLContext() throws IOException {
     final Properties properties = PropertiesLoaderUtils.loadAllProperties("coin-api.properties");
     // Bootstrap openSAML
@@ -107,6 +108,7 @@ public class OpenSAMLContext {
     assertionConsumerURI = properties.getProperty("assertionConsumerURI", DEFAULT_ASSERTION_CONSUMER_URI);
     wayfUrlMetadata = properties.getProperty("wayfUrlMetadata", "no-property-named-wayfUrlMetadata");
     wayfCertificate = properties.getProperty("wayfCertificate", "no-property-named-wayfCertificate");
+    ssoUrl = properties.getProperty("ssoUrl", "no-property-named-ssoUrl");
 
     this.provisioner = new SAMLProvisioner();
 
@@ -249,5 +251,9 @@ public class OpenSAMLContext {
       throw new ServiceProviderAuthenticationException("Could not validate SAML Response", e);
     }
     return inboundSAMLMessage;
+  }
+
+  public String ssoUrl() {
+    return ssoUrl;
   }
 }

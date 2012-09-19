@@ -49,7 +49,24 @@
 		</property>
 	</bean>
 
-	<!-- Authorization annotations on service methods -->
+  <!-- This requestHeaderAuthenticationFilter uses the SAML assertion
+     in the HTTP request to build an authentication object. -->
+  <bean id="assertionConsumerFilter" class="nl.surfnet.coin.api.saml.SAMLAssertionAuthenticationFilter">
+    <property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" /> <!-- FIXME: shouldn't this be false? GP 20120918 -->
+    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
+  </bean>
+
+  <security:http pattern="/assertionConsumer"
+    authentication-manager-ref="samlAuthenticationManager"
+    access-decision-manager-ref="accessDecisionManager"
+    entry-point-ref="unauthorizedEntryPoint">
+    <security:custom-filter ref="assertionConsumerFilter" position="PRE_AUTH_FILTER" />
+  </security:http>
+
+
+
+  <!-- Authorization annotations on service methods -->
 	<security:global-method-security
 		pre-post-annotations="enabled" />
 

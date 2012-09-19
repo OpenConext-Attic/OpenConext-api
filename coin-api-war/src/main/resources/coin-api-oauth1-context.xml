@@ -26,8 +26,6 @@
 		requests are redirected to the samlEntryPoint. -->
 	<http pattern="/oauth1/**" entry-point-ref="samlEntryPoint">
 		<intercept-url pattern="/oauth1/**" access="ROLE_USER" />
-		<custom-filter ref="requestHeaderAuthenticationFilter"
-			position="PRE_AUTH_FILTER" />
 	</http>
 
 	<oauth:provider consumer-details-service-ref="janusClientDetailsService"
@@ -44,14 +42,7 @@
 		</beans:property>
 	</beans:bean>
 
-	<!-- This requestHeaderAuthenticationFilter uses the SAML assertion
-		in the HTTP request to build an authentication object. -->
-	<beans:bean id="requestHeaderAuthenticationFilter"
-		class="nl.surfnet.coin.api.saml.SAMLAssertionAuthenticationFilter">
-		<beans:property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" /> <!-- FIXME: shouldn't this be false? GP 20120918 -->
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-		<beans:property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
-	</beans:bean>
+
 
 	<beans:bean id="authenticationDetailsSource"
 		class="nl.surfnet.coin.api.oauth.ConextUserAuthenticationDetailsSource" />

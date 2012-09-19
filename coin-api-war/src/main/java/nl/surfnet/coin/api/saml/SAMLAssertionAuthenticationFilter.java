@@ -67,7 +67,7 @@ public class SAMLAssertionAuthenticationFilter extends AbstractPreAuthenticatedP
     samlAuthenticationToken.setDetails(authResult.getPrincipal());
     SecurityContextHolder.getContext().setAuthentication(samlAuthenticationToken);
 
-    String originalUrl = request.getRequestURI()  + "?" + request.getParameter("RelayState");
+    String originalUrl = request.getParameter("RelayState");
     try {
       LOG.debug("Redirecting to original url {}", originalUrl);
       response.sendRedirect(originalUrl);

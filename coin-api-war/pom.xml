@@ -313,7 +313,6 @@
 				<configuration>
 					<reload>manual</reload>
 					<webAppConfig>
-						<descriptor>${basedir}/src/test/resources/selenium-web.xml</descriptor>
 						<contextPath>/</contextPath>
 						<extraClasspath>${basedir}/src/test/resources/</extraClasspath>
 					</webAppConfig>

@@ -50,8 +50,6 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
   @Resource(name="openSAMLContext")
   private OpenSAMLContext openSAMLContext;
 
-  private String ssoUrl = "https://engine.dev.surfconext.nl/authentication/idp/single-sign-on";
-
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException,
       ServletException {
@@ -63,7 +61,7 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
         idService);
     EndpointGenerator endpointGenerator = new EndpointGenerator();
 
-    final String target = ssoUrl;
+    final String target = openSAMLContext.ssoUrl();
 
     Endpoint endpoint = endpointGenerator.generateEndpoint(
         SingleSignOnService.DEFAULT_ELEMENT_NAME, target, openSAMLContext.assertionConsumerUri());
@@ -71,8 +69,8 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
     AuthnRequest authnRequest = authnRequestGenerator.generateAuthnRequest(target, openSAMLContext.assertionConsumerUri());
 
     try {
-      String originalQueryString = request.getQueryString();
-      openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalQueryString);
+      String originalUrl = String.format("%s?%s", request.getRequestURI(), request.getQueryString());
+      openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalUrl);
     } catch (MessageEncodingException mee) {
       LOG.error("Could not send authnRequest to Identity Provider.", mee);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
