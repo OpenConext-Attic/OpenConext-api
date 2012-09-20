@@ -128,9 +128,9 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
                 + "'. Required is a (sub)class of ClientMetaDataUser or a (sub)class of SAMLAuthenticationToken");
           }
         } else if (userAuthentication instanceof SAMLAuthenticationToken) {
-          SAMLAuthenticationToken shibToken = (SAMLAuthenticationToken) userAuthentication;
-          shibToken.setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
-          userId = shibToken.getName();
+          SAMLAuthenticationToken samlToken = (SAMLAuthenticationToken) userAuthentication;
+          samlToken.setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
+          userId = samlToken.getName();
         } else {
           throw new RuntimeException("The userAuthentication is of the type '"
               + (userAuthentication != null ? userAuthentication.getClass() : "null")

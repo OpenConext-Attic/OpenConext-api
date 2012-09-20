@@ -17,7 +17,6 @@
 package nl.surfnet.coin.selenium;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -57,8 +56,8 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-  private static final String USER_ID = "mock-shib-remote-user";
-  private static final String GROUP_ID = "mock-shib-remote-group";
+  private static final String USER_ID = "mocked-userid";
+  private static final String GROUP_ID = "mocked-groupid";
 
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
@@ -100,6 +99,11 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     server.stopServer();
   }
 
+  @Before
+  public void letMujinaReturnUrnCollabPerson() {
+    letMujinaSendUrnCollabAttribute(USER_ID);
+  }
+
   @Test
   public void authorizationCodeGrant() throws Exception {
     OAuthService service = new ServiceBuilder()
@@ -112,7 +116,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     LOG.debug("Auth url: {}", authUrl);
 
     getWebDriver().get(authUrl);
-
+    loginAtMujina();
     // Authorize on user consent page
     giveUserConsentIfNeeded();
 

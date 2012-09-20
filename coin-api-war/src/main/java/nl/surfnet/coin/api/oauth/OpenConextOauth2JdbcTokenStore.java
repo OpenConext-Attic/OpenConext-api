@@ -23,8 +23,6 @@ import java.sql.Types;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.security.core.Authentication;
@@ -37,6 +35,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.JdbcTokenStore;
+
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 /**
  * {@link JdbcTokenStore} that add the ClientMetaData from Janus if it is not
@@ -68,13 +68,13 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
     AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
     Authentication userAuthentication = authentication.getUserAuthentication();
     if (userAuthentication instanceof SAMLAuthenticationToken) {
-      SAMLAuthenticationToken shibAuth = (SAMLAuthenticationToken) userAuthentication;
-      if (shibAuth.getClientMetaData() == null) {
+      SAMLAuthenticationToken samlToken = (SAMLAuthenticationToken) userAuthentication;
+      if (samlToken.getClientMetaData() == null) {
         String clientId = authorizationRequest.getClientId();
         ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
         if (clientDetails instanceof OpenConextClientDetails) {
           ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
-          shibAuth.setClientMetaData(clientMetaData);
+          samlToken.setClientMetaData(clientMetaData);
         } else {
           throw new RuntimeException("The clientDetails is of the type '"
               + (clientDetails != null ? clientDetails.getClass() : "null")
@@ -95,7 +95,7 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
               authenticationKeyGenerator.extractKey(authentication),
               authentication.isClientOnly() ? null : authentication.getName(),
               authentication.getAuthorizationRequest().getClientId(),
-              shibAuth.getClientMetaData().getAppEntityId(),
+              samlToken.getClientMetaData().getAppEntityId(),
               new SqlLobValue(SerializationUtils.serialize(authentication)), refreshToken }, new int[] {
           Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB,
           Types.VARCHAR });

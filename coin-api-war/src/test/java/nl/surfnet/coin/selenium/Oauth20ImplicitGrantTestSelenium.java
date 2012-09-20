@@ -90,6 +90,11 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     server.stopServer();
   }
 
+  @Before
+  public void letMujinaReturnUrnCollabPerson() {
+    letMujinaSendUrnCollabAttribute("some-user");
+  }
+
   @Test
   public void implicitGrant() throws Exception {
 
@@ -108,6 +113,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
     getWebDriver().get(authUrl);
+    loginAtMujina();
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();

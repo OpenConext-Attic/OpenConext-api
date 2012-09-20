@@ -24,7 +24,7 @@
 		<ehcache.version>2.2.0</ehcache.version>
 		<mujina-idp.version>2.8.1-SNAPSHOT</mujina-idp.version>
 		<selenium.version>2.23.1</selenium.version>
-		<selenium.test.url>http://localhost:8095/</selenium.test.url>
+		<selenium.test.url>http://localhost:8095/api/</selenium.test.url>
 		<jetty.port>8095</jetty.port>
 
 		<!-- default webdriver for selenium tests. To be overridden on a per profile 

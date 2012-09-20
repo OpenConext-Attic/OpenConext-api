@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test Person related queries with selenium
  */
-public class ConextApiControllerTestIntegration extends IntegrationSupport {
+public class ConextApiControllerTestIntegration extends SeleniumSupport {
 
   private final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private final String OAUTH_SECRET = "mysecret";
@@ -46,7 +46,7 @@ public class ConextApiControllerTestIntegration extends IntegrationSupport {
   @Before
   public void initialize() throws Exception {
     client = new OpenConextOAuthClientImpl();
-    client.setEndpointBaseUrl(URL_UNDER_TEST);
+    client.setEndpointBaseUrl(getApiBaseUrl());
     client.setConsumerKey(OAUTH_KEY);
     client.setConsumerSecret(OAUTH_SECRET);
     client.setCallbackUrl("http://not-used/");

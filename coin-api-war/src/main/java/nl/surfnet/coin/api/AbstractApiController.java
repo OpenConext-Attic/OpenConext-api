@@ -16,14 +16,6 @@
 
 package nl.surfnet.coin.api;
 
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
-import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
-import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
-import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
-import nl.surfnet.coin.shared.log.ApiCallLog;
-import nl.surfnet.coin.shared.log.ApiCallLogContextListener;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +33,14 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
+import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
+import nl.surfnet.coin.shared.log.ApiCallLog;
+import nl.surfnet.coin.shared.log.ApiCallLogContextListener;
 
 public abstract class AbstractApiController {
 
@@ -90,8 +90,8 @@ public abstract class AbstractApiController {
       OAuth2Authentication oauth2 = (OAuth2Authentication) authentication;
       Authentication userAuthentication = oauth2.getUserAuthentication();
       if (userAuthentication instanceof SAMLAuthenticationToken) {
-        SAMLAuthenticationToken shib = (SAMLAuthenticationToken) userAuthentication;
-        metaData = shib.getClientMetaData();
+        SAMLAuthenticationToken samltoken = (SAMLAuthenticationToken) userAuthentication;
+        metaData = samltoken.getClientMetaData();
         registerApiVersion("oauth2");
       }
     }
@@ -125,8 +125,8 @@ public abstract class AbstractApiController {
         registerApiVersion("oauth1-2legged");
       }
     } else if (authentication instanceof SAMLAuthenticationToken) {
-      SAMLAuthenticationToken shibToken = (SAMLAuthenticationToken) authentication;
-      metaData = shibToken.getClientMetaData();
+      SAMLAuthenticationToken samlToken = (SAMLAuthenticationToken) authentication;
+      metaData = samlToken.getClientMetaData();
       registerApiVersion("oauth2");
     } else {
       throw new IllegalArgumentException("Authentication is of unknown class ('"

@@ -37,7 +37,7 @@ public class Oauth10aTwoLeggedTestSelenium extends SeleniumSupport {
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
 
-  private static final String USER_ID = "mock-shib-remote-user";
+  private static final String USER_ID = "mocked-user";
   private static final String OS_URL = "social/rest/people/" + USER_ID;
 
   @Test
@@ -57,7 +57,7 @@ public class Oauth10aTwoLeggedTestSelenium extends SeleniumSupport {
     Response response = req.send();
     String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
-    assertTrue("response body should contain correct json data", bodyText.contains("mock-shib-remote-user"));
+    assertTrue("response body should contain correct json data", bodyText.contains(USER_ID));
     
     //also test the mock 
     

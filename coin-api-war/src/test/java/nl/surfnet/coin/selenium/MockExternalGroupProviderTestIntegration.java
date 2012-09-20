@@ -147,7 +147,7 @@ public class MockExternalGroupProviderTestIntegration {
   }
 
   protected String getApiBaseUrl() {
-    return System.getProperty("selenium.test.url", "http://localhost:8095/");
+    return System.getProperty("selenium.test.url", "http://localhost:8095/api/");
   }
 
   private void reset() {
