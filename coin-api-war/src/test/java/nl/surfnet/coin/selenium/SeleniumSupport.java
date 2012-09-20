@@ -39,7 +39,9 @@ public class SeleniumSupport {
   private final static Logger LOG = LoggerFactory.getLogger(SeleniumSupport.class);
 
   private static WebDriver driver;
-  
+
+  private static final String MUJINA_BASE = "http://localhost:8095/mujina-idp";
+
   protected String getApiBaseUrl() {
     return System.getProperty("selenium.test.url", "http://localhost:8095/api/");
   }
@@ -94,7 +96,7 @@ public class SeleniumSupport {
   public void letMujinaSendUrnCollabAttribute(String user) {
     ClientConfig config = new DefaultClientConfig();
     Client.create(config)
-      .resource("http://localhost:8095/mujina-idp/api/attributes/urn:oid:1.3.6.1.4.1.1076.20.40.40.1")
+      .resource(MUJINA_BASE + "/api/attributes/urn:oid:1.3.6.1.4.1.1076.20.40.40.1")
       .type("application/json")
       .put("{\"value\": \"" + user + "\"}");
   }
