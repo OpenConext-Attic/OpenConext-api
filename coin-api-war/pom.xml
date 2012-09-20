@@ -334,7 +334,7 @@
 
           <reload>manual</reload>
 					<webAppConfig>
-						<contextPath>/</contextPath>
+						<contextPath>/api</contextPath>
 						<extraClasspath>${basedir}/src/test/resources/</extraClasspath>
 					</webAppConfig>
 					<connectors>

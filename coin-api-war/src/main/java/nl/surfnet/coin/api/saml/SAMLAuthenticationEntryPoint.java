@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Scoping;
+import org.opensaml.saml2.core.impl.ScopingBuilder;
 import org.opensaml.saml2.metadata.Endpoint;
 import org.opensaml.saml2.metadata.SingleSignOnService;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
@@ -49,6 +51,7 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   @Resource(name="openSAMLContext")
   private OpenSAMLContext openSAMLContext;
+  private final ScopingBuilder scopingBuilder = new ScopingBuilder();
 
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException,
@@ -68,6 +71,9 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     AuthnRequest authnRequest = authnRequestGenerator.generateAuthnRequest(target, openSAMLContext.assertionConsumerUri());
 
+    Scoping scoping = scopingBuilder.buildObject();
+    scoping.getRequesterIDs();
+    authnRequest.setScoping(scoping);
     try {
       String originalUrl = String.format("%s?%s", request.getRequestURI(), request.getQueryString());
       openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalUrl);

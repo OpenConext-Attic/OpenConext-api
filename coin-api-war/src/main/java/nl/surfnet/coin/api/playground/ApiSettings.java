@@ -76,7 +76,7 @@ public class ApiSettings {
     }
     String base;
     if (StringUtils.hasText(url) && url.contains("localhost")) {
-      base = "http://localhost:8095/";
+      base = "http://localhost:8095/api/";
       this.requestURL = base + "mock10/social/rest/groups/@me";
     } else {
       base = String.format("https://api%ssurfconext.nl/v1/", env);

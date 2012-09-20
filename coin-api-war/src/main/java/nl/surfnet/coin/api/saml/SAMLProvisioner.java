@@ -19,8 +19,6 @@ package nl.surfnet.coin.api.saml;
 import java.util.Collections;
 import java.util.List;
 
-import nl.surfnet.spring.security.opensaml.Provisioner;
-
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeStatement;
@@ -28,18 +26,19 @@ import org.opensaml.xml.XMLObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.w3c.dom.Element;
+
+import nl.surfnet.spring.security.opensaml.Provisioner;
 
 /**
  * Implementation of Spring-security-opensaml's Provisioner interface, which provisions a UserDetails object based on a SAML Assertion.
  */
 public class SAMLProvisioner implements Provisioner {
 
-  private static final String UID = "urn:oid:1.3.6.1.4.1.1076.20.40.40.1";
+  private static final String COLLAB_PERSON_ID = "urn:oid:1.3.6.1.4.1.1076.20.40.40.1";
 
   @Override
   public UserDetails provisionUser(Assertion assertion) {
-    String userId = getValueFromAttributeStatements(assertion, UID);
+    String userId = getValueFromAttributeStatements(assertion, COLLAB_PERSON_ID);
     return new User(userId, "", Collections.singletonList(new SimpleAuthority("USER")));
   }
 
