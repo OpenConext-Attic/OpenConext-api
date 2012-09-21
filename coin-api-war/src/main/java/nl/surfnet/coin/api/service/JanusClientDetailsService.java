@@ -58,7 +58,7 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
   @Override
   @Cacheable(value = { "janus-meta-data" })
   public ClientDetails loadClientByClientId(String consumerKey) throws OAuth2Exception {
-    EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
+    EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey, OAuth2Exception.create(OAuth2Exception.INVALID_CLIENT, null));
     vaildateMetaData(consumerKey, metadata);
     final OpenConextClientDetails clientDetails = new OpenConextClientDetails();
     ClientMetaData clientMetaData = new JanusClientMetadata(metadata);
@@ -110,12 +110,10 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
     return result;
   }
 
-  private EntityMetadata getJanusMetadataByConsumerKey(String consumerKey) {
+  private EntityMetadata getJanusMetadataByConsumerKey(String consumerKey, RuntimeException e) {
     List<String> entityIds = janus.getEntityIdsByMetaData(Janus.Metadata.OAUTH_CONSUMERKEY, consumerKey);
     if (entityIds.size() != 1) {
-      String format = String.format("Not a unique consumer (but %s) found by consumer key '%s'.",entityIds.size(),
-          consumerKey);
-      throw new RuntimeException(format);
+      throw e;
     }
     String entityId = entityIds.get(0);
     return janus.getMetadataByEntityId(entityId);
@@ -127,7 +125,7 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
   @Override
   @Cacheable(value = { "janus-meta-data" })
   public ConsumerDetails loadConsumerByConsumerKey(String consumerKey) throws OAuthException {
-    EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey);
+    EntityMetadata metadata = getJanusMetadataByConsumerKey(consumerKey, new OAuthException(OAuth2Exception.INVALID_CLIENT));
     vaildateMetaData(consumerKey, metadata);
     final OpenConextConsumerDetails consumerDetails = new OpenConextConsumerDetails();
     consumerDetails.setConsumerKey(consumerKey);

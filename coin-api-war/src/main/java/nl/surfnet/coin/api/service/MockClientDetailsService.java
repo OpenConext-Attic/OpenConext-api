@@ -30,6 +30,7 @@ import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
