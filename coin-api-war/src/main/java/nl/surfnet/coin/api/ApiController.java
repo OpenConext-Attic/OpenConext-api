@@ -16,7 +16,6 @@
 
 package nl.surfnet.coin.api;
 
-import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -25,6 +24,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.joda.time.DateTime;
@@ -99,7 +101,7 @@ public class ApiController extends AbstractApiController {
   public PersonEntry getPerson(@PathVariable("userId")
   String userId) {
     String onBehalfOf = getOnBehalfOf();
-    LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'", new Object[] { userId, onBehalfOf });
+    LOG.info("Got getPerson-request, for userId '{}' on behalf of '{}'", userId, onBehalfOf);
     if (PERSON_ID_SELF.equals(userId)) {
       userId = onBehalfOf;
     }

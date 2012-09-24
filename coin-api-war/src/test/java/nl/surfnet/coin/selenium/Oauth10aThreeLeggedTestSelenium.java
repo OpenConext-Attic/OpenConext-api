@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.selenium;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.scribe.builder.ServiceBuilder;
@@ -52,11 +53,16 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     getWebDriver().get(getApiBaseUrl() + OS_URL);
     final String pageSource = getWebDriver().getPageSource();
     LOG.debug("Response body: {}", pageSource);
-    assertFalse("No valid content without an OAuth token", pageSource.contains("@example.com"));
+    assertFalse("No valid content without an OAuth token", pageSource.contains("@"));
   }
 
+  @Before
+  public void letMujinaPassUrnCollabUser() {
+    letMujinaSendUrnCollabAttribute(USER_ID);
+  }
   @Test
   public void test() {
+
     OAuthService service = new ServiceBuilder()
         .provider(new OpenConextApi10aThreeLegged(getApiBaseUrl()))
         .apiKey(OAUTH_KEY)
@@ -76,6 +82,7 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
 
     // direct user to verification url.
     getWebDriver().get(authUrl);
+    loginAtMujina();
     LOG.debug("Confirm-URL: {}", getWebDriver().getCurrentUrl());
     getWebDriver().findElement(By.id("accept_terms_button")).click();
     LOG.debug("after-Confirm-URL: {}", getWebDriver().getCurrentUrl());
