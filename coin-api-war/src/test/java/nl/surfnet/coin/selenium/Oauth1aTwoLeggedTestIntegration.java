@@ -32,7 +32,7 @@ import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
+public class Oauth1aTwoLeggedTestIntegration extends SeleniumSupport {
 
   private Logger LOG = LoggerFactory.getLogger(Oauth1aTwoLeggedTestIntegration.class);
 
@@ -48,7 +48,7 @@ public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
   public void withoutToken() {
 
     // Use a request that is not signed.
-    OAuthRequest req = new OAuthRequest(Verb.GET, URL_UNDER_TEST + OS_URL);
+    OAuthRequest req = new OAuthRequest(Verb.GET, getApiBaseUrl() + OS_URL);
     Response response = req.send();
     final String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
@@ -69,7 +69,7 @@ public class Oauth1aTwoLeggedTestIntegration extends IntegrationSupport {
         .debug()
         .build();
 
-    OAuthRequest req = new OAuthRequest(Verb.GET, URL_UNDER_TEST + OS_URL);
+    OAuthRequest req = new OAuthRequest(Verb.GET, getApiBaseUrl() + OS_URL);
     service.signRequest(new Token("", ""), req);
     Response response = req.send();
     final String bodyText = response.getBody();

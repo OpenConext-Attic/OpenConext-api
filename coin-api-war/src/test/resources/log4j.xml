@@ -53,6 +53,11 @@
 		<priority value="WARN" />
 	</category>
 
+	<category name="org.opensaml">
+		<priority value="warn" />
+	</category>
+
+
 	<root>
 		<priority value="DEBUG" />
 		<appender-ref ref="CONSOLE" />

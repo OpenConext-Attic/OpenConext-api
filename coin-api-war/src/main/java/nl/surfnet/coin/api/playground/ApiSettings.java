@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+import org.springframework.util.StringUtils;
 
 /**
  * Backing form object for all OAuth calls from the Test Framework
@@ -66,18 +67,25 @@ public class ApiSettings {
    */
   public ApiSettings(String url) {
     String env = ".dev.";
-
+    
     try {
       Matcher matcher = Pattern.compile("api(\\.\\w*\\.)surfconext").matcher(url);
       env = (matcher.find() ? matcher.group(1) : ".");
     } catch (Exception e) {
       // unexpected, but we won't risk runtime errors for defaults
     }
+    String base;
+    if (StringUtils.hasText(url) && url.contains("localhost")) {
+      base = "http://localhost:8095/api/";
+      this.requestURL = base + "mock10/social/rest/groups/@me";
+    } else {
+      base = String.format("https://api%ssurfconext.nl/v1/", env);
+      this.requestURL = base + "social/rest/groups/@me";
+    }
 
     this.oauthKey = String.format("https://testsp%ssurfconext.nl/shibboleth", env);
     this.oauthSecret = "mysecret";
 
-    String base = String.format("https://api%ssurfconext.nl/v1/", env);
     this.requestTokenEndPoint = base + "oauth1/requestToken";
     this.accessTokenEndPoint = base + "oauth1/accessToken";
     this.authorizationURL = base + "oauth1/confirm_access";
@@ -85,7 +93,6 @@ public class ApiSettings {
     this.accessTokenEndPoint2 = base + "oauth2/token";
     this.authorizationURL2 = base + "oauth2/authorize";
 
-    this.requestURL = base + "social/rest/groups/@me";
 
   }
 

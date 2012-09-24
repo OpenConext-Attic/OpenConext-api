@@ -36,7 +36,7 @@ import org.springframework.security.oauth2.provider.token.AuthenticationKeyGener
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.JdbcTokenStore;
 
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 /**
  * {@link JdbcTokenStore} that add the ClientMetaData from Janus if it is not
@@ -67,14 +67,14 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
   public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
     AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
     Authentication userAuthentication = authentication.getUserAuthentication();
-    if (userAuthentication instanceof ShibbolethAuthenticationToken) {
-      ShibbolethAuthenticationToken shibAuth = (ShibbolethAuthenticationToken) userAuthentication;
-      if (shibAuth.getClientMetaData() == null) {
+    if (userAuthentication instanceof SAMLAuthenticationToken) {
+      SAMLAuthenticationToken samlToken = (SAMLAuthenticationToken) userAuthentication;
+      if (samlToken.getClientMetaData() == null) {
         String clientId = authorizationRequest.getClientId();
         ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
         if (clientDetails instanceof OpenConextClientDetails) {
           ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
-          shibAuth.setClientMetaData(clientMetaData);
+          samlToken.setClientMetaData(clientMetaData);
         } else {
           throw new RuntimeException("The clientDetails is of the type '"
               + (clientDetails != null ? clientDetails.getClass() : "null")
@@ -95,7 +95,7 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
               authenticationKeyGenerator.extractKey(authentication),
               authentication.isClientOnly() ? null : authentication.getName(),
               authentication.getAuthorizationRequest().getClientId(),
-              shibAuth.getClientMetaData().getAppEntityId(),
+              samlToken.getClientMetaData().getAppEntityId(),
               new SqlLobValue(SerializationUtils.serialize(authentication)), refreshToken }, new int[] {
           Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB,
           Types.VARCHAR });
@@ -104,7 +104,7 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
     } else {
       throw new RuntimeException("The userAuthentication is of the type '"
           + (userAuthentication != null ? userAuthentication.getClass() : "null")
-          + "'. Required is a (sub)class of ShibbolethAuthenticationToken");
+          + "'. Required is a (sub)class of SAMLAuthenticationToken");
     }
 
   }

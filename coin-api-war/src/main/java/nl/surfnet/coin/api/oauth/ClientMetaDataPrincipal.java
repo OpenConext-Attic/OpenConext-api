@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.security.Principal;
 
 /**
- * Principal returned by ShibRequestHeaderAuthenticationFilter that is stored as
+ * Principal returned by SAMLAssertionAuthenticationFilter that is stored as
  * a blob in the oauth1_tokens table for access (when we need to enforce SP
  * GroupProvider ACL's)
  * 

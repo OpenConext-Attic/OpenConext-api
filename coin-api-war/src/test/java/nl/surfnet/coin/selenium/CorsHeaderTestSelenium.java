@@ -52,7 +52,7 @@ public class CorsHeaderTestSelenium {
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
   private String getApiBaseUrl() {
-    return System.getProperty("selenium.test.url", "http://localhost:8095/");
+    return System.getProperty("selenium.test.url", "http://localhost:8095/api/");
   }
 
   @Test

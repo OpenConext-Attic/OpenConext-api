@@ -21,7 +21,7 @@ import org.scribe.model.OAuthConfig;
 
 public class OpenConextApi20Implicit extends DefaultApi20 {
 
-  private String baseUrl = "http://localhost:8095/";
+  private String baseUrl = "http://localhost:8095/api/";
 
 
   public OpenConextApi20Implicit() {

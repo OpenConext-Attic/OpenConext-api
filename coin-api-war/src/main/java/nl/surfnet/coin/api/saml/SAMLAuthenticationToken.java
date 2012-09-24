@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.surfnet.coin.api.shib;
+package nl.surfnet.coin.api.saml;
 
 import java.util.Collection;
 
@@ -24,12 +24,14 @@ import org.springframework.security.core.GrantedAuthority;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 
 @SuppressWarnings("serial")
-public class ShibbolethAuthenticationToken extends AbstractAuthenticationToken {
+public class SAMLAuthenticationToken extends AbstractAuthenticationToken {
 
   private ClientMetaData clientMetaData;
-  
-  public ShibbolethAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
+  private Object principal;
+
+  public SAMLAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
     super(authorities);
+    this.principal = principal;
   }
 
   @Override
@@ -37,13 +39,9 @@ public class ShibbolethAuthenticationToken extends AbstractAuthenticationToken {
     return "";
   }
 
-  /**
-   * Details only contains the username (the REMOTE_USER from shib)
-   * @return
-   */
   @Override
   public Object getPrincipal() {
-    return getDetails();
+    return principal;
   }
 
   /**

@@ -45,34 +45,29 @@
 
   </http>
 
-  <security:http pattern="/oauth/**" authentication-manager-ref="shibbolethAuthenticationManager"
+  <security:http pattern="/oauth/**" authentication-manager-ref="samlAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
-       entry-point-ref="shibbolethEntryPoint" 
+       entry-point-ref="samlEntryPoint" 
       >
-    <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
     <security:request-cache ref="nullRequestCache" />
   </security:http>
 
   <!-- Normally, Spring Security remembers the initial request and replays it, after authentication.
-  However, our authentication mechanism relies on extra headers being set after authentication.
+  However, our authentication mechanism forwards the state (using SAML RelayState)
   Therefore, the request should not be saved but the new one should just be used. This NullRequestCache effectively does not store the requests.
    -->
   <bean id="nullRequestCache" class="org.springframework.security.web.savedrequest.NullRequestCache" />
 
+
+
   <!-- confirm_access is not filtered by EndpointValidationFilter, therefore an additional config is required. -->
-  <security:http pattern="/oauth2/confirm_access" authentication-manager-ref="shibbolethAuthenticationManager"
+  <security:http pattern="/oauth2/confirm_access" authentication-manager-ref="samlAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
-       entry-point-ref="shibbolethEntryPoint"
+       entry-point-ref="samlEntryPoint"
       >
-    <security:custom-filter ref="shibbolethFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
   </security:http>
-
-  <bean id="shibbolethFilter" class="nl.surfnet.coin.api.shib.ShibbolethFilter">
-    <constructor-arg value="/oauth/authorize" />
-    <property name="authenticationManager" ref="shibbolethAuthenticationManager" />
-  </bean>
 
   <bean id="approvalHandler" class="nl.surfnet.coin.api.oauth.ConfigurableTokenServicesUserApprovalHandler">
     <property name="tokenServices" ref="tokenServices" />

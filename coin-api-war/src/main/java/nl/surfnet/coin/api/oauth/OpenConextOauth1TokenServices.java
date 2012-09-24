@@ -39,7 +39,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import nl.surfnet.coin.api.shib.ShibbolethAuthenticationToken;
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 /**
  * Token store for Oauth1 tokens.
@@ -118,23 +118,23 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
           if (principal instanceof ClientMetaDataUser) {
             ((ClientMetaDataUser) principal).setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
             userId = ((ClientMetaDataUser) principal).getUsername();
-          } else if (principal instanceof ShibbolethAuthenticationToken) {
-            ((ShibbolethAuthenticationToken) principal).setClientMetaData(extendedBaseConsumerDetails
+          } else if (principal instanceof SAMLAuthenticationToken) {
+            ((SAMLAuthenticationToken) principal).setClientMetaData(extendedBaseConsumerDetails
                 .getClientMetaData());
-            userId = ((ShibbolethAuthenticationToken) principal).getName();
+            userId = ((SAMLAuthenticationToken) principal).getName();
           } else {
             throw new RuntimeException("The principal on the PreAuthenticatedAuthenticationToken is of the type '"
                 + (principal != null ? principal.getClass() : "null")
-                + "'. Required is a (sub)class of ClientMetaDataUser or a (sub)class of ShibbolethAuthenticationToken");
+                + "'. Required is a (sub)class of ClientMetaDataUser or a (sub)class of SAMLAuthenticationToken");
           }
-        } else if (userAuthentication instanceof ShibbolethAuthenticationToken) {
-          ShibbolethAuthenticationToken shibToken = (ShibbolethAuthenticationToken) userAuthentication;
-          shibToken.setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
-          userId = shibToken.getName();
+        } else if (userAuthentication instanceof SAMLAuthenticationToken) {
+          SAMLAuthenticationToken samlToken = (SAMLAuthenticationToken) userAuthentication;
+          samlToken.setClientMetaData(extendedBaseConsumerDetails.getClientMetaData());
+          userId = samlToken.getName();
         } else {
           throw new RuntimeException("The userAuthentication is of the type '"
               + (userAuthentication != null ? userAuthentication.getClass() : "null")
-              + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken or ShibbolethAuthenticationToken");
+              + "'. Required is a (sub)class of PreAuthenticatedAuthenticationToken or SAMLAuthenticationToken");
         }
       } else {
         throw new RuntimeException("The consumerDetails is of the type '"

@@ -51,7 +51,7 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
   private String defaultSecret = "mysecret";
   private static final String[] CALLBACK_URLS = new String[] {
       "http://localhost:8083/",
-      "http://localhost:8095/test/oauth-callback.shtml"
+      "http://localhost:8095/api/test/oauth-callback.shtml"
   };
 
   @Override

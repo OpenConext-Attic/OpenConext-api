@@ -18,6 +18,9 @@ package nl.surfnet.coin.selenium;
 
 import java.util.concurrent.TimeUnit;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -37,12 +40,10 @@ public class SeleniumSupport {
 
   private static WebDriver driver;
 
-  private static String withEndingSlash(String path) {
-    return path.endsWith("/") ? path : path + "/";
-  }
-  
+  private static final String MUJINA_BASE = "http://localhost:8095/mujina-idp";
+
   protected String getApiBaseUrl() {
-    return System.getProperty("selenium.test.url", "http://localhost:8095/");
+    return System.getProperty("selenium.test.url", "http://localhost:8095/api/");
   }
 
   @Before
@@ -72,6 +73,8 @@ public class SeleniumSupport {
 
   private void initFirefoxDriver() {
     SeleniumSupport.driver = new FirefoxDriver();
+
+
     SeleniumSupport.driver.manage().timeouts()
         .implicitlyWait(3, TimeUnit.SECONDS);
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -91,11 +94,26 @@ public class SeleniumSupport {
     return driver;
   }
 
-  protected void loginEndUser() {
-    // log in...
-    getWebDriver().findElement(By.name("j_username")).sendKeys("bob");
-    getWebDriver().findElement(By.name("j_password")).sendKeys("bobspassword");
-    getWebDriver().findElement(By.name("submit")).click();
+  protected WebDriver getRestartedWebDriver() {
+    driver.quit();
+    driver = null;
+    initializeOnce();
+    return driver;
+  }
+
+
+  public void letMujinaSendUrnCollabAttribute(String user) {
+    ClientConfig config = new DefaultClientConfig();
+    Client.create(config)
+      .resource(MUJINA_BASE + "/api/attributes/urn:oid:1.3.6.1.4.1.1076.20.40.40.1")
+      .type("application/json")
+      .put("{\"value\": \"" + user + "\"}");
+  }
+
+  public void loginAtMujina() {
+    getWebDriver().findElement(By.name("j_username")).sendKeys("user");
+    getWebDriver().findElement(By.name("j_password")).sendKeys("secret");
+    getWebDriver().findElement(By.name("login")).submit();
   }
 
   protected void giveUserConsentIfNeeded() {

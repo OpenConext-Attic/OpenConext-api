@@ -25,7 +25,7 @@ import org.scribe.utils.OAuthEncoder;
 
 public class OpenConextApi20AuthorizationCode extends DefaultApi20 {
 
-  private String baseUrl = "http://localhost:8095/";
+  private String baseUrl = "http://localhost:8095/api/";
 
   public OpenConextApi20AuthorizationCode() {
   }

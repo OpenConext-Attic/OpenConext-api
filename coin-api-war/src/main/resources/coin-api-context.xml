@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2012 SURFnet bv, The Netherlands Licensed under the Apache 
-	License, Version 2.0 (the "License"); you may not use this file except in 
-	compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
-	Unless required by applicable law or agreed to in writing, software distributed 
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-	the specific language governing permissions and limitations under the License. -->
+<!--
+  Copyright 2012 SURFnet bv, The Netherlands
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:security="http://www.springframework.org/schema/security"
@@ -41,7 +49,24 @@
 		</property>
 	</bean>
 
-	<!-- Authorization annotations on service methods -->
+  <!-- This requestHeaderAuthenticationFilter uses the SAML assertion
+     in the HTTP request to build an authentication object. -->
+  <bean id="assertionConsumerFilter" class="nl.surfnet.coin.api.saml.SAMLAssertionAuthenticationFilter">
+    <property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" /> <!-- FIXME: shouldn't this be false? GP 20120918 -->
+    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
+  </bean>
+
+  <security:http pattern="/assertionConsumer"
+    authentication-manager-ref="samlAuthenticationManager"
+    access-decision-manager-ref="accessDecisionManager"
+    entry-point-ref="unauthorizedEntryPoint">
+    <security:custom-filter ref="assertionConsumerFilter" position="PRE_AUTH_FILTER" />
+  </security:http>
+
+
+
+  <!-- Authorization annotations on service methods -->
 	<security:global-method-security
 		pre-post-annotations="enabled" />
 
@@ -49,7 +74,7 @@
 		For both versions a filter is included. Only if both fail (i.e. do not put 
 		an Authentication object in the Security Context) the request will be rejected. -->
 	<security:http create-session="stateless" pattern="/social/rest/**"
-		authentication-manager-ref="shibbolethAuthenticationManager"
+		authentication-manager-ref="samlAuthenticationManager"
 		access-decision-manager-ref="accessDecisionManager" entry-point-ref="unauthorizedEntryPoint">
 
 		<security:anonymous enabled="true" />
@@ -73,8 +98,8 @@
 	</security:http>
 
 	<security:http create-session="stateless" pattern="/mock10/social/rest/**"
-		authentication-manager-ref="shibbolethAuthenticationManager"
-		access-decision-manager-ref="accessDecisionManager" entry-point-ref="shibbolethEntryPoint">
+		authentication-manager-ref="samlAuthenticationManager"
+		access-decision-manager-ref="accessDecisionManager" entry-point-ref="samlEntryPoint">
 		<security:anonymous enabled="true" />
 		<!-- Allow OPTIONS-request without security, which is a CORS-preflight 
 			request, handled by a specific controller -->
@@ -125,15 +150,11 @@
 
 	<bean id="unauthorizedEntryPoint" class="nl.surfnet.coin.api.oauth.Http401UnauthorizedEntryPoint" />
 
-	<bean id="shibbolethEntryPoint"
-		class="nl.surfnet.coin.api.oauth.ShibbolethAuthenticationEntryPoint">
-		<constructor-arg index="0"
-			value="${coin-api.shibboleth.login.url}" />
-		<property name="useForward" value="false" />
-	</bean>
+	<bean id="samlEntryPoint"
+		class="nl.surfnet.coin.api.saml.SAMLAuthenticationEntryPoint"/>
 
-	<bean id="shibbolethAuthenticationManager"
-		class="nl.surfnet.coin.api.shib.ShibbolethAuthenticationManager" />
+	<bean id="samlAuthenticationManager"
+		class="nl.surfnet.coin.api.saml.SAMLAuthenticationManager" />
 
 
 	<bean id="log4jInitialization"
