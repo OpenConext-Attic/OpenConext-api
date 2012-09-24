@@ -67,7 +67,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   @Before
   public void clearCookies() {
-    getWebDriver().manage().deleteAllCookies();
+    getRestartedWebDriver();
   }
 
   @Before

@@ -73,6 +73,8 @@ public class SeleniumSupport {
 
   private void initFirefoxDriver() {
     SeleniumSupport.driver = new FirefoxDriver();
+
+
     SeleniumSupport.driver.manage().timeouts()
         .implicitlyWait(3, TimeUnit.SECONDS);
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -89,6 +91,13 @@ public class SeleniumSupport {
    * @return the webDriver
    */
   protected WebDriver getWebDriver() {
+    return driver;
+  }
+
+  protected WebDriver getRestartedWebDriver() {
+    driver.quit();
+    driver = null;
+    initializeOnce();
     return driver;
   }
 

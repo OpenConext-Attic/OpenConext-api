@@ -69,8 +69,10 @@ public abstract class AbstractApiController {
         return ((OAuthAuthenticationDetails) principal).getConsumerDetails().getConsumerName();
       } else if (principal instanceof ClientMetaDataPrincipal) {
         return ((ClientMetaDataPrincipal) principal).getRemoteUser();
-      } else {
+      } else if (principal instanceof UserDetails) {
         return ((UserDetails) principal).getUsername();
+      } else {
+        throw new RuntimeException("Unexpected principal class: " + principal.getClass().getName());
       }
     }
   }

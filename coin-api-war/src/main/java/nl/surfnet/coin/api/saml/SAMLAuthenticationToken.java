@@ -27,9 +27,11 @@ import nl.surfnet.coin.api.oauth.ClientMetaData;
 public class SAMLAuthenticationToken extends AbstractAuthenticationToken {
 
   private ClientMetaData clientMetaData;
-  
-  public SAMLAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
+  private Object principal;
+
+  public SAMLAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
     super(authorities);
+    this.principal = principal;
   }
 
   @Override
@@ -37,13 +39,9 @@ public class SAMLAuthenticationToken extends AbstractAuthenticationToken {
     return "";
   }
 
-  /**
-   * Details only contains the username which is the UUID from SURFconext SAML
-   * @return
-   */
   @Override
   public Object getPrincipal() {
-    return getDetails();
+    return principal;
   }
 
   /**

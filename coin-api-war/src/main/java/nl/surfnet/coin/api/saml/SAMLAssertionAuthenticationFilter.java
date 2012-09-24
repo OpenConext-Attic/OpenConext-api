@@ -62,9 +62,10 @@ public class SAMLAssertionAuthenticationFilter extends AbstractPreAuthenticatedP
 
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authResult) {
-    SAMLAuthenticationToken samlAuthenticationToken = new SAMLAuthenticationToken(authResult.getAuthorities());
+    SAMLAuthenticationToken samlAuthenticationToken = new SAMLAuthenticationToken(authResult.getPrincipal(), authResult.getAuthorities());
+
     samlAuthenticationToken.setAuthenticated(true);
-    samlAuthenticationToken.setDetails(authResult.getPrincipal());
+    samlAuthenticationToken.setDetails(authResult.getDetails());
     SecurityContextHolder.getContext().setAuthentication(samlAuthenticationToken);
 
     String originalUrl = request.getParameter("RelayState");

@@ -84,6 +84,12 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     server.startServer();
   }
 
+  @Before
+  public void clearCookies() {
+    getRestartedWebDriver();
+  }
+
+
   @After
   public void stopServer() {
     LOG.debug("Stopping server...");
@@ -140,6 +146,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
     getWebDriver().get(authUrl);
+    loginAtMujina();
 
     // Deny on user consent page
     WebElement authorizeButton = getWebDriver().findElement(
