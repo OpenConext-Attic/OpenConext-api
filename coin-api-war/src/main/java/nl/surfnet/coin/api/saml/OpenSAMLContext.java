@@ -106,9 +106,9 @@ public class OpenSAMLContext {
     clockSkew = Integer.parseInt(properties.getProperty("clockSkew", "90"));
     newExpires = Integer.parseInt(properties.getProperty("newExpires", "300"));
     assertionConsumerURI = properties.getProperty("assertionConsumerURI", DEFAULT_ASSERTION_CONSUMER_URI);
-    wayfUrlMetadata = properties.getProperty("wayfUrlMetadata", "no-property-named-wayfUrlMetadata");
-    wayfCertificate = properties.getProperty("wayfCertificate", "no-property-named-wayfCertificate");
-    ssoUrl = properties.getProperty("ssoUrl", "no-property-named-ssoUrl");
+    wayfUrlMetadata = properties.getProperty("idpMetadataUrl", "no-property-named-idpMetadataUrl");
+    wayfCertificate = properties.getProperty("idpCertificate", "no-property-named-idpCertificate");
+    ssoUrl = properties.getProperty("idpUrl", "no-property-named-idpUrl");
 
     this.provisioner = new SAMLProvisioner();
 

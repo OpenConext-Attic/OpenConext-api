@@ -26,6 +26,7 @@ import org.opensaml.xml.XMLObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.Assert;
 
 import nl.surfnet.spring.security.opensaml.Provisioner;
 
@@ -39,7 +40,8 @@ public class SAMLProvisioner implements Provisioner {
   @Override
   public UserDetails provisionUser(Assertion assertion) {
     String userId = getValueFromAttributeStatements(assertion, COLLAB_PERSON_ID);
-    return new User(userId, "", Collections.singletonList(new SimpleAuthority("USER")));
+    Assert.hasLength(userId, "SAML assertion does not contain required personId (" + COLLAB_PERSON_ID + ")");
+    return new User(userId, "N/A", Collections.singletonList(new SimpleAuthority("USER")));
   }
 
   public static class SimpleAuthority implements GrantedAuthority {

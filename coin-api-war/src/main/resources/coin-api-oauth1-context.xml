@@ -42,11 +42,6 @@
 		</beans:property>
 	</beans:bean>
 
-
-
-	<beans:bean id="authenticationDetailsSource"
-		class="nl.surfnet.coin.api.oauth.ConextUserAuthenticationDetailsSource" />
-
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider ref="preAuthProvider" />
 	</authentication-manager>

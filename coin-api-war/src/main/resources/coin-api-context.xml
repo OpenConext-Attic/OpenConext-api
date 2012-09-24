@@ -51,11 +51,7 @@
 
   <!-- This requestHeaderAuthenticationFilter uses the SAML assertion
      in the HTTP request to build an authentication object. -->
-  <bean id="assertionConsumerFilter" class="nl.surfnet.coin.api.saml.SAMLAssertionAuthenticationFilter">
-    <property name="continueFilterChainOnUnsuccessfulAuthentication" value="true" /> <!-- FIXME: shouldn't this be false? GP 20120918 -->
-    <property name="authenticationManager" ref="authenticationManager" />
-    <property name="authenticationDetailsSource" ref="authenticationDetailsSource" />
-  </bean>
+  <bean id="assertionConsumerFilter" class="nl.surfnet.coin.api.saml.SAMLAssertionAuthenticationFilter" />
 
   <security:http pattern="/assertionConsumer"
     authentication-manager-ref="samlAuthenticationManager"

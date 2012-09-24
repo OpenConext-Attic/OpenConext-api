@@ -87,3 +87,11 @@ staticContentBasePath=https://static.acc.surfconext.nl
 
 # Default locale for consent screen
 coin-api.locale-default=nl
+
+# SAML properties
+entityId=https://api.acc.surfconext.nl/
+assertionConsumerURI=https://api.acc.surfconext.nl/v1/assertionConsumer
+idpUrl=https://engine.acc.surfconext.nl/authentication/idp/single-sign-on
+idpCertificate=??
+idpMetadataUrl=https://engine.acc.surfconext.nl/authentication/idp/metadata
+
