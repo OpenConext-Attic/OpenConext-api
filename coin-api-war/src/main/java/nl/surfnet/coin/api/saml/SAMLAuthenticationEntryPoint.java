@@ -23,7 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.RequesterID;
 import org.opensaml.saml2.core.Scoping;
+import org.opensaml.saml2.core.impl.RequesterIDBuilder;
 import org.opensaml.saml2.core.impl.ScopingBuilder;
 import org.opensaml.saml2.metadata.Endpoint;
 import org.opensaml.saml2.metadata.SingleSignOnService;
@@ -33,6 +35,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
+import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
+import nl.surfnet.coin.api.oauth.OpenConextOauth1TokenServices;
+import nl.surfnet.coin.api.service.OpenConextClientDetailsService;
 import nl.surfnet.spring.security.opensaml.AuthnRequestGenerator;
 import nl.surfnet.spring.security.opensaml.util.IDService;
 import nl.surfnet.spring.security.opensaml.util.TimeService;
@@ -52,6 +58,13 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
   @Resource(name="openSAMLContext")
   private OpenSAMLContext openSAMLContext;
   private final ScopingBuilder scopingBuilder = new ScopingBuilder();
+  private final RequesterIDBuilder requesterIDBuilder = new RequesterIDBuilder();
+
+  @Resource(name="janusClientDetailsService")
+  private OpenConextClientDetailsService clientDetailsService;
+
+  @Resource
+  private OpenConextOauth1TokenServices oauth1TokenServices;
 
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException,
@@ -72,7 +85,8 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
     AuthnRequest authnRequest = authnRequestGenerator.generateAuthnRequest(target, openSAMLContext.assertionConsumerUri());
 
     Scoping scoping = scopingBuilder.buildObject();
-    scoping.getRequesterIDs();
+
+    scoping.getRequesterIDs().add(createRequesterID(getSPEntityIdByRequest(request)));
     authnRequest.setScoping(scoping);
     try {
       String originalUrl = String.format("%s?%s", request.getRequestURI(), request.getQueryString());
@@ -81,5 +95,34 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
       LOG.error("Could not send authnRequest to Identity Provider.", mee);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  /**
+   * Get the SP Entity ID from the OAuth client id in the HTTP request
+   */
+  public String getSPEntityIdByRequest(HttpServletRequest request) {
+    if (request.getParameter("client_id") != null) {
+      // oauth2
+      String clientId = request.getParameter("client_id");
+      OpenConextClientDetails clientDetails = (OpenConextClientDetails) clientDetailsService.loadClientByClientId(clientId);
+      return clientDetails.getClientMetaData().getAppEntityId();
+    } else {
+      // oauth 1
+      // First get the consumer key by the token.
+      String token = request.getParameter("oauth_token");
+      String clientId = oauth1TokenServices.getToken(token).getConsumerKey();
+      // Then get the SP entity ID from Janus
+      OpenConextConsumerDetails consumerDetails = (OpenConextConsumerDetails) clientDetailsService.loadConsumerByConsumerKey(clientId);
+      return consumerDetails.getClientMetaData().getAppEntityId();
+    }
+  }
+
+  /**
+   * Simple builder
+   */
+  public RequesterID createRequesterID(String id) {
+    RequesterID requesterID = requesterIDBuilder.buildObject();
+    requesterID.setRequesterID(id);
+    return requesterID;
   }
 }
