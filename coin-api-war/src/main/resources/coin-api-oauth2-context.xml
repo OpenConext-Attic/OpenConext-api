@@ -103,7 +103,7 @@
       token-services-ref="tokenServices"
       redirect-resolver-ref="implicitGrantExplicitRedirectResolver"
       >
-    <oauth2:authorization-code/>
+    <oauth2:authorization-code authorization-code-services-ref="jdbcAuthorizationCodeServices" />
     <oauth2:implicit/>
   </oauth2:authorization-server>
 
@@ -116,8 +116,12 @@
     <!-- non expiring tokens -->
     <property name="accessTokenValiditySeconds" value="0" />
   </bean>
-  
+
   <bean id="tokenStore" class="nl.surfnet.coin.api.oauth.OpenConextOauth2JdbcTokenStore">
+    <constructor-arg ref="dataSource"/>
+  </bean>
+
+  <bean id="jdbcAuthorizationCodeServices" class="org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices">
     <constructor-arg ref="dataSource"/>
   </bean>
 
