@@ -27,15 +27,11 @@
   <artifactId>coin-api-external-groups</artifactId>
   <description>External group provider interface.</description>
 
-  <properties>
-    <coin-api-client.version>2.8.9-SNAPSHOT</coin-api-client.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.surfnet.coin</groupId>
       <artifactId>coin-api-client</artifactId>
-      <version>${coin-api-client.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.surfnet.coin</groupId>
