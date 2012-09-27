@@ -1,0 +1,12 @@
+Since 2.10.0, api uses a changed set of properties in coin-api.properties.
+The following properties have been added:
+-------
+entityId
+assertionConsumerURI
+idpUrl
+idpCertificate
+idpMetadataUrl
+-------
+
+The Shibboleth related configuration in httpd.conf and in shibboleth2.xml has been removed.
+Refer to the relevant configuration files in coin-infra (v 2.10.0) for the exact details.
