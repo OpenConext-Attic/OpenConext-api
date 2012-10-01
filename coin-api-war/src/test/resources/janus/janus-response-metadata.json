@@ -1,10 +1,10 @@
 {
     "coin:eula":"https: //wiki.surfnetlabs.nl/display/OpenConext/Licenses",
     "coin:gadgetbaseurl":"https: //testsp.dev.surfconext.nl/.*",
-    "coin:oauth:app_description":"ThisapplicationisaTestapplicationtoshow3-leggedoauthforServiceProviders",
+    "description:en":"ThisapplicationisaTestapplicationtoshow3-leggedoauthforServiceProviders",
     "coin:oauth:app_icon":"http: //www.surfguest.nl/img/surfnet_logo.gif",
-    "coin:oauth:app_thumbnail":"http: //www.surfguest.nl/img/surfnet_logo.gif",
-    "coin:oauth:app_title":"TestSP",
+    "logo:0:url":"http: //www.surfguest.nl/img/surfnet_logo.gif",
+    "name:en":"TestSP",
     "coin:oauth:secret":"mysecret",
     "coin:oauth:two_legged_allowed":true,
     "contacts:0:contactType":"technical",

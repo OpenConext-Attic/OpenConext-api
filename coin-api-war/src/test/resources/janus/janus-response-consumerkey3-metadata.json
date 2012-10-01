@@ -1,10 +1,10 @@
 {
     "coin:gadgetbaseurl": "consumerkey3/.*",
     "coin:oauth:callback_url" : "http://localhost/callback1",
-    "coin:oauth:app_description": "app-description",
+    "description:en": "app-description",
     "coin:oauth:app_icon": "app-icon",
-    "coin:oauth:app_thumbnail": "app-thumbnail",
-    "coin:oauth:app_title": "app-title",
+    "logo:0:url": "app-thumbnail",
+    "name:en": "app-title",
     "coin:oauth:secret": "secret",
     "coin:oauth:two_legged_allowed": false
 }
