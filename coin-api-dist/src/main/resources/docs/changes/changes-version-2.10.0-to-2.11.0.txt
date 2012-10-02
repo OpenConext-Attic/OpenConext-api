@@ -1,0 +1,14 @@
+The following properties have been added to coin-api.properties:
+-------
+spPrivateKey
+spCertificate
+-------
+
+They both should be provided by the deployer, to be obtained from the SSL key/certificate used by Apache httpd.
+Strip whitespace and the heading and footer from the files and use the result as the value.
+
+In practice, use this command to obtain the value for the key:
+cat star.dev.surfconext.nl.key |head -n -1 |tail -n +2 | tr -d '\n'
+
+In practice, use this command to obtain the value for the certificate:
+cat star.dev.surfconext.nl.pem |head -n -1 |tail -n +2 | tr -d '\n'
