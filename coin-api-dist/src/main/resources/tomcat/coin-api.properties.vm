@@ -93,4 +93,6 @@ entityId=https://api.demo.openconext.org/
 assertionConsumerURI=https://api.demo.openconext.org/v1/assertionConsumer
 idpUrl=https://engine.demo.openconext.org/authentication/idp/single-sign-on
 idpCertificate=??
-idpMetadataUrl=https://engine.demo.openconext.org/authentication/idp/metadata
+idpEntityId=https://engine.demo.openconext.org/authentication/idp/metadata
+spPrivateKey=??
+spCertificate=??

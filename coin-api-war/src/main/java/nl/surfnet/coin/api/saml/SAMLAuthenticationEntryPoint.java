@@ -22,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.Validate;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequesterID;
 import org.opensaml.saml2.core.Scoping;
@@ -30,6 +31,11 @@ import org.opensaml.saml2.core.impl.ScopingBuilder;
 import org.opensaml.saml2.metadata.Endpoint;
 import org.opensaml.saml2.metadata.SingleSignOnService;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
+import org.opensaml.xml.security.*;
+import org.opensaml.xml.security.credential.Credential;
+import org.opensaml.xml.security.credential.UsageType;
+import org.opensaml.xml.security.criteria.EntityIDCriteria;
+import org.opensaml.xml.security.criteria.UsageCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -77,7 +83,7 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
         idService);
     EndpointGenerator endpointGenerator = new EndpointGenerator();
 
-    final String target = openSAMLContext.ssoUrl();
+    final String target = openSAMLContext.idpUrl();
 
     Endpoint endpoint = endpointGenerator.generateEndpoint(
         SingleSignOnService.DEFAULT_ELEMENT_NAME, target, openSAMLContext.assertionConsumerUri());
@@ -89,10 +95,21 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
     scoping.getRequesterIDs().add(createRequesterID(getSPEntityIdByRequest(request)));
     authnRequest.setScoping(scoping);
     try {
+      CriteriaSet criteriaSet = new CriteriaSet();
+      criteriaSet.add(new EntityIDCriteria(openSAMLContext.entityId()));
+      criteriaSet.add(new UsageCriteria(UsageType.SIGNING));
+
+      Credential signingCredential = openSAMLContext.keyStoreCredentialResolver().resolveSingle(criteriaSet);
+
+      Validate.notNull(signingCredential);
+
       String originalUrl = String.format("%s?%s", request.getRequestURI(), request.getQueryString());
-      openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalUrl);
+      openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalUrl, signingCredential);
     } catch (MessageEncodingException mee) {
       LOG.error("Could not send authnRequest to Identity Provider.", mee);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    } catch (org.opensaml.xml.security.SecurityException e) {
+      LOG.error("Could not send authnRequest to Identity Provider.", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }

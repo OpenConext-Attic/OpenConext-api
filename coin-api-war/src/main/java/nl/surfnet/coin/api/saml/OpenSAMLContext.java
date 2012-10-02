@@ -18,7 +18,6 @@ package nl.surfnet.coin.api.saml;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,8 +48,7 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import nl.surfnet.spring.security.opensaml.AssertionConsumer;
 import nl.surfnet.spring.security.opensaml.AssertionConsumerImpl;
-import nl.surfnet.spring.security.opensaml.CertificateStore;
-import nl.surfnet.spring.security.opensaml.CertificateStoreImpl;
+import nl.surfnet.spring.security.opensaml.KeyStore;
 import nl.surfnet.spring.security.opensaml.Provisioner;
 import nl.surfnet.spring.security.opensaml.SAMLMessageHandler;
 import nl.surfnet.spring.security.opensaml.SAMLMessageHandlerImpl;
@@ -81,15 +79,18 @@ public class OpenSAMLContext {
 
   private String assertionConsumerURI;
 
-  private String wayfUrlMetadata;
+  private String idpEntityId;
 
-  private String wayfCertificate;
+  private String idpCertificate;
+
 
   private Provisioner provisioner;
   private SAMLMessageHandlerImpl samlMessageHandler;
   private final SAML2ValidatorSuite validatorSuite;
 
-  private String ssoUrl;
+  private String idpUrl;
+  private String spPrivateKey;
+  private String spCertificate;
 
   public OpenSAMLContext() throws IOException {
     final Properties properties = PropertiesLoaderUtils.loadAllProperties("coin-api.properties");
@@ -106,21 +107,19 @@ public class OpenSAMLContext {
     clockSkew = Integer.parseInt(properties.getProperty("clockSkew", "90"));
     newExpires = Integer.parseInt(properties.getProperty("newExpires", "300"));
     assertionConsumerURI = properties.getProperty("assertionConsumerURI", DEFAULT_ASSERTION_CONSUMER_URI);
-    wayfUrlMetadata = properties.getProperty("idpMetadataUrl", "no-property-named-idpMetadataUrl");
-    wayfCertificate = properties.getProperty("idpCertificate", "no-property-named-idpCertificate");
-    ssoUrl = properties.getProperty("idpUrl", "no-property-named-idpUrl");
+
+    idpEntityId = properties.getProperty("idpEntityId", "no-property-named-idpEntityId");
+    idpCertificate = properties.getProperty("idpCertificate", "no-property-named-idpCertificate");
+    idpUrl = properties.getProperty("idpUrl", "no-property-named-idpUrl");
+    spPrivateKey = properties.getProperty("spPrivateKey", "no-property-named-spPrivateKey");
+    spCertificate = properties.getProperty("spCertificate", "no-property-named-spCertificate");
 
     this.provisioner = new SAMLProvisioner();
 
     samlMessageHandler = new SAMLMessageHandlerImpl(samlMessageDecoder(), securityPolicyResolver());
     samlMessageHandler.setEntityId(entityId);
     samlMessageHandler.setVelocityEngine(velocityEngine());
-    try {
-      samlMessageHandler.afterPropertiesSet();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
+    samlMessageHandler.setNeedsSigning(true);
     validatorSuite = new SAML2ValidatorSuite();
 
   }
@@ -160,7 +159,7 @@ public class OpenSAMLContext {
 
   protected CredentialResolver keyStoreCredentialResolver() {
     final KeyStoreCredentialResolverDelegate keyStoreCredentialResolverDelegate = new KeyStoreCredentialResolverDelegate();
-    keyStoreCredentialResolverDelegate.setCertificateStore(certificateStore());
+    keyStoreCredentialResolverDelegate.setKeyStore(keyStore());
     return keyStoreCredentialResolverDelegate;
   }
 
@@ -200,15 +199,13 @@ public class OpenSAMLContext {
     return assertionConsumer;
   }
 
-  protected CertificateStore certificateStore() {
-    final CertificateStoreImpl certificateStore = new CertificateStoreImpl();
-    certificateStore.setCertificates(Collections.singletonMap(wayfUrlMetadata, wayfCertificate));
-    try {
-      certificateStore.afterPropertiesSet();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-    return certificateStore;
+  protected KeyStore keyStore() {
+    final KeyStore keyStore = new KeyStore();
+
+    keyStore.addCertificate(idpEntityId, idpCertificate);
+    keyStore.addPrivateKey(entityId(), spPrivateKey, spCertificate, "somepass");
+
+    return keyStore;
   }
 
   public String entityId() {
@@ -253,7 +250,7 @@ public class OpenSAMLContext {
     return inboundSAMLMessage;
   }
 
-  public String ssoUrl() {
-    return ssoUrl;
+  public String idpUrl() {
+    return idpUrl;
   }
 }
