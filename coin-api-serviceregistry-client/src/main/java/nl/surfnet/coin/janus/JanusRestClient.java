@@ -217,6 +217,49 @@ public class JanusRestClient implements Janus {
   }
 
   @Override
+  public List<EntityMetadata> getIdpList() {
+
+    Map<String, String> parameters = new HashMap<String, String>();
+
+    final Collection metadataAsStrings = CollectionUtils.collect(Arrays.asList(Metadata.values()), new Transformer() {
+      @Override
+      public Object transform(Object input) {
+        return ((Metadata) input).val();
+      }
+    });
+
+    parameters.put("keys", StringUtils.join(metadataAsStrings, ','));
+
+    URI signedUri;
+    try {
+      signedUri = sign("getIdpList", parameters);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Signed Janus-request is: {}", signedUri);
+      }
+
+      final Map<String, Map<String, Object>> restResponse = restTemplate.getForObject(signedUri, Map.class);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Janus-request returned: {}", restResponse.toString());
+      }
+      List<EntityMetadata> entities = new ArrayList<EntityMetadata>();
+      for (Map.Entry<String, Map<String, Object>> entry : restResponse.entrySet()) {
+        String entityId = entry.getKey();
+        final EntityMetadata e = EntityMetadata.fromMetadataMap(entry.getValue());
+        e.setAppEntityId(entityId);
+        entities.add(e);
+      }
+
+      return entities;
+
+    } catch (IOException e) {
+      LOG.error("While doing Janus-request", e);
+    }
+    return null;
+  }
+
+  @Override
   public ARP getArp(String entityId) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("entityid", entityId);

@@ -121,6 +121,13 @@ public interface Janus {
   List<EntityMetadata> getSpList();
 
   /**
+   * Retrieves a list of all Identity Providers.
+   *
+   * @return for each IDP (by entity id), a map of attributes and its values.
+   */
+  List<EntityMetadata> getIdpList();
+
+  /**
    * Retrieves the Attribute Release Policy for this entity
    *
    * @param entityId the identifier of the entity
