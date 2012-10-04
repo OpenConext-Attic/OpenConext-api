@@ -359,7 +359,8 @@
 					</connectors>
 					<stopKey>apistop</stopKey>
 					<stopPort>9095</stopPort>
-				</configuration>
+          <contextXml>${basedir}/src/test/resources/jetty-context.xml</contextXml>
+        </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -456,7 +457,8 @@
 							<scanIntervalSeconds>0</scanIntervalSeconds>
 							<stopKey>foo</stopKey>
 							<stopPort>9966</stopPort>
-						</configuration>
+              <contextXml>${basedir}/src/test/resources/jetty-context.xml</contextXml>
+            </configuration>
 						<executions>
 							<execution>
 								<id>start-jetty</id>
