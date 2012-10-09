@@ -164,4 +164,24 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     assertFalse("redirect URL fragment should contain access token",
       callbackRequestFragment.contains("access_token="));
   }
+
+
+  @Test
+  public void noRedirectUriGiven() {
+    String url = getApiBaseUrl() + "oauth2/authorize?client_id=someclient&response_type=token";
+
+    getWebDriver().get(url);
+
+    loginAtMujina();
+
+    // Authorize on user consent page
+    giveUserConsentIfNeeded();
+
+    String pageSource = getWebDriver().getPageSource();
+    LOG.debug("Response body is: " + pageSource);
+    assertTrue("Page should contain correct error message", pageSource.contains("redirect_uri_mismatch"));
+    assertFalse("Page should not be a 500", pageSource.contains("500"));
+//    callbackRequestFragment = uri.getFragment();
+
+  }
 }
