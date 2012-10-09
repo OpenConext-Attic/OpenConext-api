@@ -17,7 +17,7 @@ package nl.surfnet.coin.api.oauth;
 
 import java.util.Set;
 
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.common.exceptions.RedirectMismatchException;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.endpoint.DefaultRedirectResolver;
@@ -41,13 +41,13 @@ public class ImplicitGrantExplicitRedirectResolver extends DefaultRedirectResolv
    * org.springframework.security.oauth2.provider.ClientDetails)
    */
   @Override
-  public String resolveRedirect(String requestedRedirect, ClientDetails client) throws OAuth2Exception {
+  public String resolveRedirect(String requestedRedirect, ClientDetails client) {
     Set<String> redirectUris = client.getRegisteredRedirectUri();
 
     boolean implicitGrant = isImplicitGrant();
 
     if ((redirectUris == null || redirectUris.isEmpty()) && implicitGrant) {
-      throw new OAuth2Exception("A redirect_uri must be configured for implicit grant.");
+      throw new RedirectMismatchException("A redirect_uri must be configured for implicit grant.");
     }
     return super.resolveRedirect(requestedRedirect, client);
   }
