@@ -66,6 +66,15 @@ public class AccessConfirmationController {
     return new ModelAndView("access_confirmation", model);
   }
 
+  @RequestMapping("/oauth/error")
+  public ModelAndView handleError(HttpServletRequest request) {
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("error", request.getAttribute("error"));
+    model.put("message", "There was a problem with the OAuth2 protocol");
+    return new ModelAndView("oauth_error", model);
+  }
+
+
   @Autowired
   public void setClientDetailsService(ClientDetailsService clientDetailsService) {
     this.clientDetailsService = clientDetailsService;
