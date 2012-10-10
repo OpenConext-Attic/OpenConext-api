@@ -18,7 +18,7 @@ package nl.surfnet.coin.janus;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
+import static nl.surfnet.coin.janus.Janus.Metadata.*;
 import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 import nl.surfnet.coin.janus.domain.JanusEntity;
@@ -51,7 +51,8 @@ public class JanusRestClientMock implements Janus {
   @SuppressWarnings("unchecked")
   public JanusRestClientMock() {
     try {
-      TypeReference<List<EntityMetadata>> typeReference = new TypeReference<List<EntityMetadata>>() {};
+      TypeReference<List<EntityMetadata>> typeReference = new TypeReference<List<EntityMetadata>>() {
+      };
       this.spList = (List<EntityMetadata>) parseJsonData(typeReference, "janus-json/sp.json");
       this.idpList = (List<EntityMetadata>) parseJsonData(typeReference, "janus-json/idp.json");
       all = new ArrayList<EntityMetadata>();
@@ -76,7 +77,7 @@ public class JanusRestClientMock implements Janus {
     }
     return null;
   }
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -86,15 +87,30 @@ public class JanusRestClientMock implements Janus {
    */
   @Override
   public List<String> getEntityIdsByMetaData(Metadata key, String value) {
-    // Always the Janus.Metadata.OAUTH_CONSUMERKEY
+    // Two known cases: Janus.Metadata.OAUTH_CONSUMERKEY &
+    // Janus.Metadata.INSITUTION_ID
     List<String> results = new ArrayList<String>();
-    for (EntityMetadata metadata : all) {
-      String consumerKey = metadata.getOauthConsumerKey();
-      if (StringUtils.hasText(consumerKey) && consumerKey.matches(value)) {
-        results.add(metadata.getAppEntityId());
+    switch (key) {
+    case OAUTH_CONSUMERKEY:
+      for (EntityMetadata metadata : spList) {
+        String consumerKey = metadata.getOauthConsumerKey();
+        if (StringUtils.hasText(consumerKey) && consumerKey.matches(value)) {
+          results.add(metadata.getAppEntityId());
+        }
       }
+      return results;
+    case INSITUTION_ID:
+      for (EntityMetadata metadata : idpList) {
+        String institutionId = metadata.getInstutionId();
+        if (StringUtils.hasText(institutionId) && institutionId.equalsIgnoreCase(value)) {
+          results.add(metadata.getAppEntityId());
+        }
+      }
+      return results;
+    default:
+      throw new RuntimeException("Only supported Janus.MetaData types are : " + Janus.Metadata.INSITUTION_ID + ","
+          + Janus.Metadata.OAUTH_CONSUMERKEY);
     }
-    return results;
   }
 
   /*

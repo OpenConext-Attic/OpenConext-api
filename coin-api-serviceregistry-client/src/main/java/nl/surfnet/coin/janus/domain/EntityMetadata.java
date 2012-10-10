@@ -55,6 +55,7 @@ public class EntityMetadata implements Serializable {
   private boolean isIdpVisibleOnly;
   private String workflowState;
   private List<Contact> contacts = new ArrayList<Contact>();
+  private String instutionId;
 
   public static EntityMetadata fromMetadataMap(Map<String, Object> metadata) {
     EntityMetadata em = new EntityMetadata();
@@ -76,7 +77,8 @@ public class EntityMetadata implements Serializable {
     em.addAppHomeUrl(LANG_NL, (String) metadata.get(Janus.Metadata.ORGANIZATION_URL_NL.val()));
     em.setAppLogoUrl((String) metadata.get(Janus.Metadata.LOGO_URL.val()));
     em.setEula((String) metadata.get(Janus.Metadata.EULA.val()));
-
+    em.setInstutionId((String) metadata.get(Janus.Metadata.INSITUTION_ID.val()));  
+    
     em.addUrl(LANG_EN, (String) metadata.get(Janus.Metadata.URL_EN.val()));
     em.addUrl(LANG_NL, (String) metadata.get(Janus.Metadata.URL_NL.val()));
 
@@ -393,6 +395,14 @@ public class EntityMetadata implements Serializable {
 
   public void addUrl(String language, String value) {
     this.urls.put(language, value);
+  }
+
+  public String getInstutionId() {
+    return instutionId;
+  }
+
+  public void setInstutionId(String instutionId) {
+    this.instutionId = instutionId;
   }
 
 }

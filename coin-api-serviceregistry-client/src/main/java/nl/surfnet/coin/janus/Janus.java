@@ -44,6 +44,7 @@ public interface Janus {
     ORGANIZATION_URL_NL("OrganizationURL:nl"),
     ORGANIZATION_NAME("OrganizationName:en"),
     ORGANIZATION_NAME_NL("OrganizationName:nl"),
+    INSITUTION_ID("coin:institution_id"),
     LOGO_URL("logo:0:url"),
     NAMEIDFORMAT("NameIDFormat"),
     DISPLAYNAME("displayName:en"),

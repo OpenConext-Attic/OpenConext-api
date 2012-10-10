@@ -41,6 +41,8 @@ public class JanusRestClientMockTest {
 
     metaData = mock.getMetadataByEntityId(IDP_ENTITY_ID);
     assertEquals(IDP_ENTITY_ID, metaData.getAppEntityId());
+    assertEquals("mock-institution-id", metaData.getInstutionId());
+    
 }
 
 }
