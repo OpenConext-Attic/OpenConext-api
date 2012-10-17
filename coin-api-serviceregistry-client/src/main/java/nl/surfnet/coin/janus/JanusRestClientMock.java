@@ -47,6 +47,7 @@ public class JanusRestClientMock implements Janus {
   private final static String IDP_TYPE = "saml20-idp";
 
   private final ARP EMPTY_ARP = null;
+  private final ARP NON_EMPTY_ARP;
 
   @SuppressWarnings("unchecked")
   public JanusRestClientMock() {
@@ -58,6 +59,8 @@ public class JanusRestClientMock implements Janus {
       all = new ArrayList<EntityMetadata>();
       all.addAll(spList);
       all.addAll(idpList);
+      NON_EMPTY_ARP = (ARP) parseJsonData(new TypeReference<ARP>() {
+      }, "janus-json/arp.json");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -167,7 +170,7 @@ public class JanusRestClientMock implements Janus {
    */
   @Override
   public ARP getArp(String entityId) {
-    return EMPTY_ARP;
+    return NON_EMPTY_ARP;
   }
 
   /*

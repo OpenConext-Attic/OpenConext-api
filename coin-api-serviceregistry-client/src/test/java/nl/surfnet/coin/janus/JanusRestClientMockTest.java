@@ -17,6 +17,7 @@ package nl.surfnet.coin.janus;
 
 import static org.junit.Assert.*;
 
+import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
 import org.junit.Test;
@@ -42,7 +43,12 @@ public class JanusRestClientMockTest {
     metaData = mock.getMetadataByEntityId(IDP_ENTITY_ID);
     assertEquals(IDP_ENTITY_ID, metaData.getAppEntityId());
     assertEquals("mock-institution-id", metaData.getInstutionId());
-    
-}
+  }
+  
+  @Test
+  public void getArp() {
+    ARP arp = mock.getArp(SP_ENTITY_ID);
+    assertNotNull(arp);
+  }
 
 }
