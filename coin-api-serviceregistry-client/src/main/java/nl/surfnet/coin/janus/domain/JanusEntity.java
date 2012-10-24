@@ -50,6 +50,12 @@ public class JanusEntity {
     this.entityId = entityId;
   }
 
+  public JanusEntity(int eid, int revision, String entityId) {
+    this.eid = eid;
+    this.revision = revision;
+    this.entityId = entityId;
+  }
+
   public static JanusEntity fromJanusResponse(Map<String, Object> janusResponse) {
     JanusEntity janusEntity = new JanusEntity();
     janusEntity.setEntityId((String) janusResponse.get("entityid"));
