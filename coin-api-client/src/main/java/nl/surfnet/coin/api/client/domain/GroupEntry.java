@@ -16,14 +16,22 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import static nl.surfnet.coin.api.client.domain.Group20Entry.NULL_SAFE_STRING_COMPARATOR;
+import static nl.surfnet.coin.api.client.domain.Group20Entry.SORT_ATR;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * 
  *
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unchecked" })
 public class GroupEntry extends AbstractEntry {
   private List<Group> entry;
 
@@ -64,7 +72,9 @@ public class GroupEntry extends AbstractEntry {
     this.entry = entry;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntrySize()
    */
   @Override
@@ -72,5 +82,45 @@ public class GroupEntry extends AbstractEntry {
     return this.entry != null ? this.entry.size() : 0;
   }
 
- 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntryCollection()
+   */
+  @SuppressWarnings("rawtypes")
+  @Override
+  @JsonIgnore
+  public List getEntryCollection() {
+    return entry;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.client.domain.AbstractEntry#sortEntryCollection(java
+   * .lang.String)
+   */
+  @Override
+  @JsonIgnore
+  public void sortEntryCollection(String sort) {
+    if (StringUtils.isNotBlank(sort) && SORT_ATR.contains(sort)) {
+      BeanComparator beanComparator = new BeanComparator(sort, NULL_SAFE_STRING_COMPARATOR);
+      Collections.sort(entry, beanComparator);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.client.domain.AbstractEntry#setEntryCollection(java
+   * .util.List)
+   */
+  @Override
+  @JsonIgnore
+  public void setEntryCollection(List entry) {
+    this.entry = entry;
+  }
+
 }

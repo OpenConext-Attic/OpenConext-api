@@ -159,7 +159,7 @@ public class ApiController extends AbstractApiController {
     if (grouperAllowed && internalGroup) {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
-      groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, spEntityId, count, startIndex, sortBy);
+      groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, spEntityId, 0, 0, sortBy);
     }
     if (!internalGroup) {
       // external group. see which groupProvider can handle this call
@@ -223,7 +223,8 @@ public class ApiController extends AbstractApiController {
     if (!grouperAllowed) {
       sendAclMissingMail(grouper, spEntityId, userId, Service.People);
     } else {
-      group20Entry = groupService.getGroups20(userId, onBehalfOf, count, startIndex, sortBy);
+      //we don't want the original count / startindex as we will sublist after
+      group20Entry = groupService.getGroups20(userId, onBehalfOf, null, null, sortBy);
       if (group20Entry != null && !group20Entry.getEntry().isEmpty()) {
         group20Entry = groupProviderConfiguration.addUrnPartForGrouper(allGroupProviders, group20Entry);
       }
@@ -237,7 +238,7 @@ public class ApiController extends AbstractApiController {
        */
       if (groupProvider.isExternalGroupProvider() && groupProvider.isMeantForUser(userId)) {
         Group20Entry externalGroups = groupProviderConfiguration.getGroup20Entry(groupProvider, userId,
-            count == null ? Integer.MAX_VALUE : count, startIndex == null ? 0 : startIndex);
+            Integer.MAX_VALUE, 0);
         if (externalGroups != null) {
           List<Group20> groups = externalGroups.getEntry();
           if (groups != null) {
@@ -403,11 +404,31 @@ public class ApiController extends AbstractApiController {
    */
   protected void setResultOptions(AbstractEntry entry, Integer count, Integer startIndex, String sortBy) {
     entry.setFiltered(false);
-    entry.setItemsPerPage((count != null && count != 0) ? count : entry.getEntrySize());
     entry.setSorted(sortBy != null);
-    entry.setStartIndex((startIndex != null && startIndex != 0) ? startIndex : 0);
-    entry.setTotalResults(entry.getEntrySize());
+    if (sortBy != null) {
+      entry.sortEntryCollection(sortBy);
+    }
     entry.setUpdatedSince(false);
+    int entrySize = entry.getEntrySize();
+    entry.setTotalResults(entrySize);
+    entry.setStartIndex((startIndex != null && startIndex != 0) ? startIndex : 0);
+    /*
+     * Bugfix: https://jira.surfconext.nl/jira/browse/BACKLOG-739
+     * 
+     * We might get more results then we want, because the result is plus the external group providers
+     */
+    count = (count != null && count != 0) ? count : 0;
+    
+    startIndex = entry.getStartIndex();
+    if (startIndex > 0 || count > 0) {
+      // need sublist
+      List collection = entry.getEntryCollection();
+      startIndex = startIndex > entrySize ? entrySize : startIndex;
+      count = ((startIndex + count) < entrySize && count != 0) ? (startIndex + count) : entrySize; 
+      List subList = collection.subList(startIndex, count);
+      entry.setEntryCollection(subList);
+    }
+    entry.setItemsPerPage(entry.getEntrySize());
   }
 
   protected void invariant() {

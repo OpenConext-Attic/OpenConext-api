@@ -86,5 +86,33 @@ public class GroupMembersEntry extends AbstractEntry {
   public int getEntrySize() {
     return this.entry != null ? this.entry.size() : 0;
   }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntryCollection()
+   */
+  @SuppressWarnings("rawtypes")
+  @Override
+  @JsonIgnore
+  public List getEntryCollection() {
+    return entry;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#sortEntryCollection(java.lang.String)
+   */
+  @Override
+  @JsonIgnore
+  public void sortEntryCollection(String sort) {
+    // no sorting on group members is supported
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#setEntryCollection(java.util.List)
+   */
+  @Override
+  @JsonIgnore
+  public void setEntryCollection(List entry) {
+    this.entry = entry;
+  }
   
 }

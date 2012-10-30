@@ -16,6 +16,11 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * 
  *
@@ -59,6 +64,37 @@ public class PersonEntry extends AbstractEntry {
   @Override
   public int getEntrySize() {
     return this.entry != null ? 1 : 0;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntryCollection()
+   */
+  @Override
+  @JsonIgnore
+  public List getEntryCollection() {
+    ArrayList<Person> list = new ArrayList<Person>();
+    if (this.entry != null) {
+      list.add(entry);
+    }
+    return list;
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#sortEntryCollection(java.lang.String)
+   */
+  @Override
+  @JsonIgnore
+  public void sortEntryCollection(String sort) {
+    // we can't sort
+    
+  }
+
+  /* (non-Javadoc)
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#setEntryCollection(java.util.List)
+   */
+  @Override
+  @JsonIgnore
+  public void setEntryCollection(List entryCollection) {
   }
   
 

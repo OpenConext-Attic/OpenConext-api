@@ -17,6 +17,7 @@
 package nl.surfnet.coin.api.client.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -24,7 +25,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * 
  *
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","rawtypes"})
 public abstract class AbstractEntry implements Serializable {
   private int startIndex;
   private int totalResults;
@@ -126,4 +127,15 @@ public abstract class AbstractEntry implements Serializable {
    */
   @JsonIgnore
   public abstract int getEntrySize();
+  
+  @JsonIgnore
+  public abstract List getEntryCollection();
+  
+  @JsonIgnore
+  public abstract void setEntryCollection(List entry);
+
+  @JsonIgnore
+  public abstract void sortEntryCollection(String sort);
+  
+  
 }

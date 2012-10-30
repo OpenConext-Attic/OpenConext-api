@@ -16,14 +16,33 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * 
  *
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
 public class Group20Entry extends AbstractEntry {
+
+  @JsonIgnore
+  public static List<String> SORT_ATR = Arrays.asList(new String[] { "id", "title", "description" });
+
+  @JsonIgnore
+  public static Comparator NULL_SAFE_STRING_COMPARATOR = new Comparator<String>() {
+    @Override
+    public int compare(String o1, String o2) {
+      return (o1 == null ? "" : o1).compareTo(o2 == null ? "" : o2);
+    }
+  };
+
   private List<Group20> entry;
 
   public Group20Entry(List<Group20> groups) {
@@ -58,7 +77,9 @@ public class Group20Entry extends AbstractEntry {
     this.entry = entry;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntrySize()
    */
   @Override
@@ -66,5 +87,44 @@ public class Group20Entry extends AbstractEntry {
     return this.entry != null ? this.entry.size() : 0;
   }
 
- 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntryCollection()
+   */
+  @Override
+  @JsonIgnore
+  public List getEntryCollection() {
+    return entry;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.client.domain.AbstractEntry#sortEntryCollection(java
+   * .lang.String)
+   */
+  @Override
+  @JsonIgnore
+  public void sortEntryCollection(String sort) {
+    if (StringUtils.isNotBlank(sort) && SORT_ATR.contains(sort)) {
+      BeanComparator beanComparator = new BeanComparator(sort, NULL_SAFE_STRING_COMPARATOR);
+      Collections.sort(entry, beanComparator);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * nl.surfnet.coin.api.client.domain.AbstractEntry#setEntryCollection(java
+   * .util.List)
+   */
+  @Override
+  @JsonIgnore
+  public void setEntryCollection(List entry) {
+    this.entry = entry;
+  }
+
 }

@@ -209,6 +209,11 @@
 		<version>1.8.3</version>
 	  </dependency>
 	  <dependency>
+		<groupId>commons-beanutils</groupId>
+		<artifactId>commons-beanutils-core</artifactId>
+		<version>1.8.3</version>
+	  </dependency>
+	  <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>2.2.8</version>
