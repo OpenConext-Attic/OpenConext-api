@@ -24,6 +24,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.surfnet.coin.api.client.internal.OpenConextApi20Implicit;
+import nl.surfnet.coin.mock.MockHandler;
+import nl.surfnet.coin.mock.MockHtppServer;
+
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
@@ -35,10 +39,6 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nl.surfnet.coin.api.client.internal.OpenConextApi20Implicit;
-import nl.surfnet.coin.mock.MockHandler;
-import nl.surfnet.coin.mock.MockHtppServer;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -179,7 +179,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
 
     String pageSource = getWebDriver().getPageSource();
     LOG.debug("Response body is: " + pageSource);
-    assertTrue("Page should contain correct error message", pageSource.contains("redirect_uri_mismatch"));
+    assertTrue("Page should contain correct error message", pageSource.contains("does not match one of the registered values"));
     assertFalse("Page should not be a 500", pageSource.contains("500"));
 //    callbackRequestFragment = uri.getFragment();
 

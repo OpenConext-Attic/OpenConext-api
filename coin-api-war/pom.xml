@@ -30,7 +30,7 @@
 		<apacheds.version>1.5.5</apacheds.version>
 		<ehcache.version>2.2.0</ehcache.version>
 		<mujina-idp.version>2.8.1-SNAPSHOT</mujina-idp.version>
-		<selenium.version>2.23.1</selenium.version>
+		<selenium.version>2.25.0</selenium.version>
 		<selenium.test.url>http://localhost:8095/api/</selenium.test.url>
 		<jetty.port>8095</jetty.port>
 

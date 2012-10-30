@@ -56,10 +56,13 @@
 	<category name="org.opensaml">
 		<priority value="warn" />
 	</category>
+	<category name="nl.surfnet.coin">
+		<priority value="debug" />
+	</category>
 
 
 	<root>
-		<priority value="DEBUG" />
+		<priority value="info" />
 		<appender-ref ref="CONSOLE" />
 	</root>
 </log4j:configuration>
