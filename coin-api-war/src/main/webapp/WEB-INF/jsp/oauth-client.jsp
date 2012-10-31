@@ -306,9 +306,10 @@
 												name="requestURL" class="input-xxlarge" />
 											<p class="help-block">Hint:
 												https://api.dev.surfconext.nl/v1/social/rest/groups/@me</p>
+                                            <p class="help-block">Hint:
+                                              https://api.dev.surfconext.nl/v1/social/rest/people/@me/groupId</p>
 											<p class="help-block">Hint:
 												https://os.dev.surfconext.nl/social/rest/people/@me</p>
-										</div>
 									</div>
 									<div class="form-actions">
 										<button id="step3" name="step3" class="btn btn-primary">Fetch</button>
