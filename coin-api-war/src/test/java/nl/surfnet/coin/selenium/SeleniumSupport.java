@@ -165,8 +165,8 @@ public class SeleniumSupport {
             File screenshot =  ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             String outputFile = String.format("%s%s%d.png", System.getProperty("java.io.tmpdir"), System.getProperty("file.separator"), System.currentTimeMillis());
 
-            LOG.info("Screenshot for failed method {}.{} will be saved to: {}", new Object[] {
-              method.getClass(), method.getName(), outputFile});
+            LOG.info("Screenshot for failed method {}.{}() will be saved to: {}", new Object[] {
+              method.getMethod().getDeclaringClass().getName(), method.getName(), outputFile});
             FileUtils.copyFile(screenshot, new File(outputFile));
           } catch (Exception e) {
             // No need to crash the tests if the screenshot fails

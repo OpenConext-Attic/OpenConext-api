@@ -16,6 +16,8 @@
 
 package nl.surfnet.coin.selenium;
 
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aThreeLegged;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -29,8 +31,6 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aThreeLegged;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -62,6 +62,8 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
   }
   @Test
   public void test() {
+
+    getWebDriver().manage().deleteAllCookies();
 
     OAuthService service = new ServiceBuilder()
         .provider(new OpenConextApi10aThreeLegged(getApiBaseUrl()))
