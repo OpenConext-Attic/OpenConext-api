@@ -18,6 +18,7 @@ package nl.surfnet.coin.api.client.domain;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -32,9 +33,11 @@ public class Group20EntryTest {
    * {@link nl.surfnet.coin.api.client.domain.Group20Entry#sortEntryCollection(java.lang.String)}
    * .
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testSortEntryCollection() {
-    Group20Entry entry = new Group20Entry(Arrays.asList(new Group20("id2", "title2", "description1"), new Group20("id1", "title1", null)));
+    Group20Entry entry = new Group20Entry(Arrays.asList(new Group20("id2", "c", "description1"), new Group20("id1", "B", null),
+        new Group20("id1", "a", null)));
     entry.sortEntryCollection(null);
     assertEquals("id2", ((Group20) entry.getEntryCollection().get(0)).getId());
 
@@ -44,7 +47,12 @@ public class Group20EntryTest {
     entry.sortEntryCollection("description");
     assertNull(((Group20) entry.getEntryCollection().get(0)).getDescription());
 
+    entry.sortEntryCollection("title");
+
+    List<Group20> groups = entry.getEntryCollection();
+    assertEquals("a", groups.get(0).getTitle());
+    assertEquals("B", groups.get(1).getTitle());
+    assertEquals("c", groups.get(2).getTitle());
   }
 
- 
 }

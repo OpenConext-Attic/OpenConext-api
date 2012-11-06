@@ -159,7 +159,8 @@ public class ApiController extends AbstractApiController {
     if (grouperAllowed && internalGroup) {
       // need to cut off the urn part in order for Grouper
       String grouperGroupId = groupProviderConfiguration.cutOffUrnPartForGrouper(allGroupProviders, groupId);
-      groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, spEntityId, 0, 0, sortBy);
+      //we don't want the original count / startindex as we will sublist after
+      groupMembers = personService.getGroupMembers(grouperGroupId, onBehalfOf, spEntityId, null, null, sortBy);
     }
     if (!internalGroup) {
       // external group. see which groupProvider can handle this call
@@ -169,7 +170,7 @@ public class ApiController extends AbstractApiController {
          */
         if (groupProvider.isExternalGroupProvider() && groupProvider.isMeantForUser(onBehalfOf)) {
           GroupMembersEntry externalGroupMembers = groupProviderConfiguration.getGroupMembersEntry(groupProvider,
-              onBehalfOf, groupId, count == null ? Integer.MAX_VALUE : count, startIndex == null ? 0 : startIndex);
+              onBehalfOf, groupId, Integer.MAX_VALUE, 0);
           if (externalGroupMembers != null) {
             List<Person> entry = externalGroupMembers.getEntry();
             if (entry != null) {

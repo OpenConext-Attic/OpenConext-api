@@ -39,7 +39,7 @@ public class Group20Entry extends AbstractEntry {
   public static Comparator NULL_SAFE_STRING_COMPARATOR = new Comparator<String>() {
     @Override
     public int compare(String o1, String o2) {
-      return (o1 == null ? "" : o1).compareTo(o2 == null ? "" : o2);
+      return (o1 == null ? "" : o1.toLowerCase()).compareTo(o2 == null ? "" : o2.toLowerCase());
     }
   };
 
