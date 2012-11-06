@@ -118,7 +118,7 @@ public class SeleniumSupport {
   public void loginAtMujinaIfNeeded() {
 
     try {
-      getWebDriver().findElement(By.id("j_username"));
+      getWebDriver().findElement(By.name("j_username"));
     } catch (RuntimeException e) {
       LOG.debug("No login form found, probably no login @mujina needed anymore.");
       return;
