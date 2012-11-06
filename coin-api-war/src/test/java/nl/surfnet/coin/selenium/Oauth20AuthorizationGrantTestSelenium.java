@@ -116,7 +116,7 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
     LOG.debug("Auth url: {}", authUrl);
 
     getWebDriver().get(authUrl);
-    loginAtMujina();
+    loginAtMujinaIfNeeded();
     // Authorize on user consent page
     giveUserConsentIfNeeded();
 

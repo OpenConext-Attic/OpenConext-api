@@ -63,8 +63,6 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
   @Test
   public void test() {
 
-    getWebDriver().manage().deleteAllCookies();
-
     OAuthService service = new ServiceBuilder()
         .provider(new OpenConextApi10aThreeLegged(getApiBaseUrl()))
         .apiKey(OAUTH_KEY)
@@ -84,7 +82,7 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
 
     // direct user to verification url.
     getWebDriver().get(authUrl);
-    loginAtMujina();
+    loginAtMujinaIfNeeded();
     LOG.debug("Confirm-URL: {}", getWebDriver().getCurrentUrl());
     getWebDriver().findElement(By.id("accept_terms_button")).click();
     LOG.debug("after-Confirm-URL: {}", getWebDriver().getCurrentUrl());

@@ -119,7 +119,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
     getWebDriver().get(authUrl);
-    loginAtMujina();
+    loginAtMujinaIfNeeded();
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();
@@ -146,7 +146,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
     String authUrl = service.getAuthorizationUrl(null);
     LOG.debug("Auth url: {}", authUrl);
     getWebDriver().get(authUrl);
-    loginAtMujina();
+    loginAtMujinaIfNeeded();
 
     // Deny on user consent page
     WebElement authorizeButton = getWebDriver().findElement(
@@ -172,7 +172,7 @@ public class Oauth20ImplicitGrantTestSelenium extends SeleniumSupport {
 
     getWebDriver().get(url);
 
-    loginAtMujina();
+    loginAtMujinaIfNeeded();
 
     // Authorize on user consent page
     giveUserConsentIfNeeded();

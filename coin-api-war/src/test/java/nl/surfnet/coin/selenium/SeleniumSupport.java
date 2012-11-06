@@ -115,11 +115,18 @@ public class SeleniumSupport {
       .put("{\"value\": \"" + user + "\"}");
   }
 
-  public void loginAtMujina() {
+  public void loginAtMujinaIfNeeded() {
+
+    try {
+      getWebDriver().findElement(By.id("j_username"));
+    } catch (RuntimeException e) {
+      LOG.debug("No login form found, probably no login @mujina needed anymore.");
+      return;
+    }
+
     getWebDriver().findElement(By.name("j_username")).sendKeys("user");
     getWebDriver().findElement(By.name("j_password")).sendKeys("secret");
     getWebDriver().findElement(By.name("login")).submit();
-
   }
 
   protected void giveUserConsentIfNeeded() {
