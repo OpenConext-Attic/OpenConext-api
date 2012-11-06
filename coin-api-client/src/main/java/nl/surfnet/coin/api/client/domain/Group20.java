@@ -30,14 +30,20 @@ public class Group20 {
   private String voot_membership_role;
 
 
+  public Group20() {
+    this(null);
+  }
+
+  public Group20(String id) {
+    this(id, null , null);
+  }
+
   public Group20(String id, String title, String description) {
     this.id = id;
     this.title = title;
     this.description = description;
   }
 
-  public Group20() {
-  }
 
   /**
    * @return the id
