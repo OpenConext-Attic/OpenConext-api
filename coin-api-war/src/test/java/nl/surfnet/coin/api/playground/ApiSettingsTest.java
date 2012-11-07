@@ -21,30 +21,32 @@ import org.junit.Test;
 
 /**
  * ApiSettingsTest.java
- *
+ * 
  */
 public class ApiSettingsTest {
 
   /**
-   * Test method for {@link nl.surfnet.coin.api.playground.ApiSettings#ApiSettings(java.lang.String)}.
+   * Test method for
+   * {@link nl.surfnet.coin.api.playground.ApiSettings#ApiSettings(java.lang.String)}
+   * .
    */
   @Test
   public void testApiSettingsString() {
-    //test
+    // test
     ApiSettings settings = new ApiSettings("https://api.test.surfconext.nl/v1/test");
-    assertEquals("https://api.test.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
-    
-    //prod
+    assertEquals("https://api.test.surfconext.nl/v1/oauth1/accessToken", settings.getAccessTokenEndPoint());
+
+    // prod
     settings = new ApiSettings("https://api.surfconext.nl/v1/test");
-    assertEquals("https://api.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
+    assertEquals("https://api.surfconext.nl/v1/oauth1/accessToken", settings.getAccessTokenEndPoint());
 
-    //non-happy flow
-    settings = new ApiSettings(null);
-    assertEquals("https://api.dev.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
+    // vm
+    settings = new ApiSettings("https://api.demo.openconext.org/v1/test");
+    assertEquals("https://api.demo.openconext.org/v1/oauth1/accessToken", settings.getAccessTokenEndPoint());
 
-    //default
+    // default
     settings = new ApiSettings();
-    assertEquals("https://api.dev.surfconext.nl/v1/oauth1/accessToken",settings.getAccessTokenEndPoint());
-}
+    assertEquals("https://api.dev.surfconext.nl/v1/oauth1/accessToken", settings.getAccessTokenEndPoint());
+  }
 
 }

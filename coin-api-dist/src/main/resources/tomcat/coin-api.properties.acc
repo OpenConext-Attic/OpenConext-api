@@ -96,3 +96,6 @@ idpCertificate=MIICgTCCAeoCCQCbOlrWDdX7FTANBgkqhkiG9w0BAQUFADCBhDELMAkGA1UEBhMCT
 idpEntityId=https://engine.acc.surfconext.nl/authentication/idp/metadata
 spPrivateKey=??
 spCertificate=??
+
+#which SAML attribute holds the UUID
+saml-uuid-attribute=urn:oid:1.3.6.1.4.1.1076.20.40.40.1

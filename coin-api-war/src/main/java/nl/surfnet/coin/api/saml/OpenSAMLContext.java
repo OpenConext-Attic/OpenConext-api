@@ -114,7 +114,9 @@ public class OpenSAMLContext {
     spPrivateKey = properties.getProperty("spPrivateKey", "no-property-named-spPrivateKey");
     spCertificate = properties.getProperty("spCertificate", "no-property-named-spCertificate");
 
-    this.provisioner = new SAMLProvisioner();
+    String uuidAttribute = properties.getProperty("saml-uuid-attribute", "urn:oid:1.3.6.1.4.1.1076.20.40.40.1");
+    
+    this.provisioner = new SAMLProvisioner(uuidAttribute);
 
     samlMessageHandler = new SAMLMessageHandlerImpl(samlMessageDecoder(), securityPolicyResolver());
     samlMessageHandler.setEntityId(entityId);

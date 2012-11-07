@@ -35,12 +35,21 @@ import nl.surfnet.spring.security.opensaml.Provisioner;
  */
 public class SAMLProvisioner implements Provisioner {
 
-  private static final String COLLAB_PERSON_ID = "urn:oid:1.3.6.1.4.1.1076.20.40.40.1";
+  private String uuidAttribute ;
+
+  /**
+   * @param uuidAttribute
+   */
+  public SAMLProvisioner(String uuidAttribute) {
+    super();
+    this.uuidAttribute = uuidAttribute;
+  }
+
 
   @Override
   public UserDetails provisionUser(Assertion assertion) {
-    String userId = getValueFromAttributeStatements(assertion, COLLAB_PERSON_ID);
-    Assert.hasLength(userId, "SAML assertion does not contain required personId (" + COLLAB_PERSON_ID + ")");
+    String userId = getValueFromAttributeStatements(assertion, uuidAttribute);
+    Assert.hasLength(userId, "SAML assertion does not contain required personId (" + uuidAttribute + ")");
     return new User(userId, "N/A", Collections.singletonList(new SimpleAuthority("USER")));
   }
 

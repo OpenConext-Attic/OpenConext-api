@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -66,20 +67,19 @@ public class ApiSettings {
    *          the request.getRequestUrl()
    */
   public ApiSettings(String url) {
-    String env = ".dev.";
-    
+    Assert.hasText(url);
+    String base = url.substring(0, url.lastIndexOf("test"));
+    String env ="dev";
     try {
-      Matcher matcher = Pattern.compile("api(\\.\\w*\\.)surfconext").matcher(url);
+      Matcher matcher = Pattern.compile("https(\\.\\w*\\.)surfconext").matcher(url);
       env = (matcher.find() ? matcher.group(1) : ".");
     } catch (Exception e) {
       // unexpected, but we won't risk runtime errors for defaults
     }
-    String base;
-    if (StringUtils.hasText(url) && url.contains("localhost")) {
+    if (url.contains("localhost")) {
       base = "http://localhost:8095/api/";
       this.requestURL = base + "mock10/social/rest/groups/@me";
     } else {
-      base = String.format("https://api%ssurfconext.nl/v1/", env);
       this.requestURL = base + "social/rest/groups/@me";
     }
 
