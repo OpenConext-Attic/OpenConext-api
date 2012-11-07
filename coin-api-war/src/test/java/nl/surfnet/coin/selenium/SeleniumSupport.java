@@ -42,6 +42,7 @@ public class SeleniumSupport {
   private static WebDriver driver;
 
   private static final String MUJINA_BASE = "http://localhost:8095/mujina-idp";
+  protected static final String USER_ID = "mocked-user";
 
   protected String getApiBaseUrl() {
     return System.getProperty("selenium.test.url", "http://localhost:8095/api/");

@@ -43,7 +43,6 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
   private static final String OAUTH_KEY = "https://testsp.test.surfconext.nl/shibboleth";
   private static final String OAUTH_SECRET = "mysecret";
 
-  private static final String USER_ID = "mocked-user";
   private static final String OS_URL = "social/rest/people/" + USER_ID;
   private final static String OAUTH_OPENCONEXT_API_READ_SCOPE = "read";
 
@@ -60,17 +59,12 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
   public void letMujinaPassUrnCollabUser() {
     letMujinaSendUrnCollabAttribute(USER_ID);
   }
+
   @Test
   public void test() {
 
-    OAuthService service = new ServiceBuilder()
-        .provider(new OpenConextApi10aThreeLegged(getApiBaseUrl()))
-        .apiKey(OAUTH_KEY)
-        .apiSecret(OAUTH_SECRET)
-        .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
-        .callback("oob")
-        .signatureType(SignatureType.QueryString)
-        .debug()
+    OAuthService service = new ServiceBuilder().provider(new OpenConextApi10aThreeLegged(getApiBaseUrl())).apiKey(OAUTH_KEY)
+        .apiSecret(OAUTH_SECRET).scope(OAUTH_OPENCONEXT_API_READ_SCOPE).callback("oob").signatureType(SignatureType.QueryString).debug()
         .build();
     Token requestToken = service.getRequestToken();
     LOG.debug("Request token: {}", requestToken);
@@ -102,9 +96,9 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     Response response = req.send();
     String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
-    assertTrue("response body should contain correct json data", bodyText.contains(USER_ID));
-    
-    //test the acces token (without cookies)
+    assertTrue("response body should contain correct json data : " + bodyText, bodyText.contains(USER_ID));
+
+    // test the acces token (without cookies)
     req = new OAuthRequest(Verb.GET, getApiBaseUrl() + OS_URL);
     service.signRequest(accessToken, req);
     LOG.debug("Signed resource request: {}", req.toString());
@@ -113,9 +107,9 @@ public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
     bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);
     assertTrue("response body should contain correct json data", bodyText.contains(USER_ID));
-    
-    //also test the mock 
-    
+
+    // also test the mock
+
     req = new OAuthRequest(Verb.GET, (getApiBaseUrl() + OS_URL).replace("/social/rest/", "/mock10/social/rest/"));
     service.signRequest(accessToken, req);
     LOG.debug("Signed resource request: {}", req.toString());
