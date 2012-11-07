@@ -115,7 +115,7 @@ public class SeleniumSupport {
       .put("{\"value\": \"" + user + "\"}");
   }
 
-  public void loginAtMujinaIfNeeded() {
+  public void loginAtMujinaIfNeeded(String username) {
 
     try {
       getWebDriver().findElement(By.name("j_username"));
@@ -124,7 +124,7 @@ public class SeleniumSupport {
       return;
     }
 
-    getWebDriver().findElement(By.name("j_username")).sendKeys("user");
+    getWebDriver().findElement(By.name("j_username")).sendKeys(username);
     getWebDriver().findElement(By.name("j_password")).sendKeys("secret");
     getWebDriver().findElement(By.name("login")).submit();
   }
