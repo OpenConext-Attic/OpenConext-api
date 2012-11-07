@@ -23,7 +23,7 @@
 
 janus.user=engine
 janus.secret=engineblock
-janus.uri=https://serviceregistry.demo.openconext.org/simplesaml/module.php/janus/services/rest/
+janus.uri=https://serviceregistry._OPENCONEXT_DOMAIN_/simplesaml/module.php/janus/services/rest/
 
 coin-api.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.jdbc.url=jdbc:mysql://localhost:3306/api
@@ -58,7 +58,7 @@ coin-mailserver-port=25
 coin-errormail-to=
 
 # Callback URL of the OAuth client
-coin-api.oauth.callback.url=https://api.demo.openconext.org/v1/test/oauth-callback.shtml
+coin-api.oauth.callback.url=https://api._OPENCONEXT_DOMAIN_/v1/test/oauth-callback.shtml
 
 ####################################################################
 ##
@@ -83,15 +83,15 @@ coin-api.db.migrations.folder=db/migration/mysql
 #Cache manager
 cacheManagerClass=nl.surfnet.coin.shared.cache.ConextNoOpCacheManager
 
-staticContentBasePath=https://static.demo.openconext.org
+staticContentBasePath=https://static._OPENCONEXT_DOMAIN_
 
 # Default locale for consent screen
 coin-api.locale-default=nl
 
 # SAML properties
 entityId=https://api.demo.openconext.org/
-assertionConsumerURI=https://api.demo.openconext.org/v1/assertionConsumer
-idpUrl=https://engine.demo.openconext.org/authentication/idp/single-sign-on
+assertionConsumerURI=https://api._OPENCONEXT_DOMAIN_/v1/assertionConsumer
+idpUrl=https://engine._OPENCONEXT_DOMAIN_/authentication/idp/single-sign-on
 idpCertificate=??
 idpEntityId=https://engine.demo.openconext.org/authentication/idp/metadata
 spPrivateKey=??
