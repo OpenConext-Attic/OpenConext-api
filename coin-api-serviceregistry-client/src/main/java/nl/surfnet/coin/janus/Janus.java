@@ -72,7 +72,8 @@ public interface Janus {
     SS_IDP_VISIBLE_ONLY("coin:ss:idp_visible_only"),
     WORKFLOWSTATE("workflowState"),
     URL_EN("url:en"),
-    URL_NL("url:nl");
+    URL_NL("url:nl"),
+    APPLICATION_URL("coin:application_url");
 
     private String val;
 
