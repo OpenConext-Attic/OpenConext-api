@@ -1,0 +1,9 @@
+The following property have been added to coin-api.properties:
+-------
+#which SAML attribute holds the UUID
+saml-uuid-attribute=urn:oid:1.3.6.1.4.1.1076.20.40.40.1
+-------
+
+It's value belongs to the category: "The following properties are the responsibility of the developers"
+
+On every environment, but localhost it's value will be urn:oid:1.3.6.1.4.1.1076.20.40.40.1. Only when testing locally against Mujina we need the flexibility to choose a different SAML attribute for the unique identifier. In all coin-api.properties.env properties files the value is correct.
