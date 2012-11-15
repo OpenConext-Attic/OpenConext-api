@@ -16,12 +16,12 @@
 
 package nl.surfnet.coin.api.client;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import org.scribe.model.Token;
+import java.util.concurrent.ConcurrentHashMap;
 
 import nl.surfnet.coin.api.client.internal.OAuthToken;
+
+import org.scribe.model.Token;
 
 /**
  * InMemory Repository for Tokens
@@ -29,7 +29,7 @@ import nl.surfnet.coin.api.client.internal.OAuthToken;
  */
 public class InMemoryOAuthRepositoryImpl implements OAuthRepository {
 
-  private Map<String, OAuthToken> tokens = new HashMap<String, OAuthToken>();
+  private Map<String, OAuthToken> tokens = new ConcurrentHashMap<String, OAuthToken>();
 
   @Override
   public OAuthToken getToken(String userId) {
