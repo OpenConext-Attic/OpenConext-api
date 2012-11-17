@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import nl.surfnet.coin.teams.util.PHPRegexConverter;
@@ -257,6 +258,7 @@ public class GroupProvider implements Serializable {
    * @return {@literal true} if the urn for this user matches the precondition
    */
   public boolean isMeantForUser(String userId) {
+    Assert.notNull(userId , "UserId may not be null. Bug due to session persistence?");
     return (!StringUtils.hasText(this.userIdPrecondition)) || userId.matches(this.userIdPrecondition);
   }
 

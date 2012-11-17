@@ -74,6 +74,13 @@ public class GroupProviderTest {
     assertTrue(groupProvider.isMeantForUser("urn:collab:person:nl.surfguest:guestuser"));
   }
 
+  @Test(expected=IllegalArgumentException.class)
+  public void meantForUser_nullPointerException() {
+    GroupProvider groupProvider = populateGroupProvider();
+    groupProvider.setUserIdPrecondition("urn:collab:person:nl.surfguest:(.+)");
+    assertFalse(groupProvider.isMeantForUser(null));
+  }
+
   @Test
   public void meantForUser_doesNotMatchPrecondition() {
     GroupProvider groupProvider = populateGroupProvider();

@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * Person representation
  * 
  */
-public class Person {
+public class Person implements Serializable {
 
   private String nickname;
   private Set<Email> emails;
