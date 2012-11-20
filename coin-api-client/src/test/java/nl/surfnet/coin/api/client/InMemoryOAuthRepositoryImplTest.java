@@ -16,36 +16,38 @@
 
 package nl.surfnet.coin.api.client;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import nl.surfnet.coin.api.client.internal.OAuthToken;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.scribe.model.Token;
-import org.springframework.util.Assert;
 
-/**
- * InMemory Repository for Tokens
- * 
- */
-public class InMemoryOAuthRepositoryImpl implements OAuthRepository {
+import static org.junit.Assert.assertEquals;
 
-  private Map<String, OAuthToken> tokens = new ConcurrentHashMap<String, OAuthToken>();
+public class InMemoryOAuthRepositoryImplTest {
 
-  @Override
-  public OAuthToken getToken(String userId) {
-    return tokens.get(userId);
+  private InMemoryOAuthRepositoryImpl repository;
+
+  @Before
+  public void before() {
+    repository =  new InMemoryOAuthRepositoryImpl();
   }
 
-  @Override
-  public void storeToken(Token accessToken, String userId, OAuthVersion version) {
-    tokens.put(userId, new OAuthToken(accessToken, version));
+  @Test
+  public void store() {
+    repository.storeToken(new Token("", ""), "user", OAuthVersion.v2);
   }
 
-  @Override
-  public void removeToken(String onBehalfOf) {
-    Assert.notNull(onBehalfOf, "Token to be removed cannot have key null");
-    tokens.remove(onBehalfOf);
+  @Test
+  public void retrieve() {
+    Token token = new Token("", "");
+    repository.storeToken(token, "user", OAuthVersion.v2);
+    OAuthToken token1 = repository.getToken("user");
+    assertEquals(token, token1.getToken());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void remove() {
+    repository.removeToken(null);
+  }
 }
