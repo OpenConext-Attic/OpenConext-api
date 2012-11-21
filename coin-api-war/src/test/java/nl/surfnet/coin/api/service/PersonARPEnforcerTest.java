@@ -16,9 +16,6 @@
 
 package nl.surfnet.coin.api.service;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,9 +29,12 @@ import nl.surfnet.coin.api.client.domain.Organization;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.janus.domain.ARP;
 
-import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
 import org.junit.Test;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class PersonARPEnforcerTest {
 
@@ -45,7 +45,7 @@ public class PersonARPEnforcerTest {
     Person p = new Person();
     ARP arp = null;
     Person enforced = e.enforceARP(p, arp);
-    assertThat(enforced, IsEqual.equalTo(p));
+    assertThat(enforced, equalTo(p));
   }
 
   @Test
@@ -76,8 +76,22 @@ public class PersonARPEnforcerTest {
     ARP arp = new ARP();
     arp.getAttributes().put("urn:mace:dir:attribute-def:displayName", Collections.<Object>singletonList("*"));
     Person enforced = e.enforceARP(p, arp);
-    assertThat(enforced.getDisplayName(), IsEqual.equalTo("boobaa"));
-    assertThat(enforced.getName().getFamilyName(), IsEqual.equalTo("baa"));
-    assertThat(enforced.getEmails(), IsNull.nullValue());
+    assertThat(enforced.getDisplayName(), equalTo("boobaa"));
+    assertThat(enforced.getName().getFamilyName(), equalTo("baa"));
+    assertThat(enforced.getEmails(), nullValue());
+  }
+
+  @Test
+  public void id() {
+    // ARP contains one of the id attributes. Enforced person should contain id attributes
+    Person p = new Person();
+    p.setDisplayName("boobaa");
+    p.setName(new Name("boo", "baa", "bii"));
+    p.setId("myid");
+    ARP arp = new ARP();
+    arp.getAttributes().put("urn:oid:1.3.6.1.4.1.1076.20.40.40.1", Collections.<Object>singletonList("*"));
+    Person enforced = e.enforceARP(p, arp);
+    assertThat(enforced.getId(), equalTo("myid"));
+    assertThat(enforced.getDisplayName(), nullValue());
   }
 }

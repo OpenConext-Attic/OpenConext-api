@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.util.Assert;
-
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.janus.domain.ARP;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.util.Assert;
 
 /**
  * Helper class to enforce a given ARP onto a given Person object.
@@ -45,6 +45,7 @@ public class PersonARPEnforcer {
     NL_ORGUNITDN("urn:mace:surffederatie.nl:attribute-def:nlEduPersonOrgUni"),
     SCHAC_HOMEORG("urn:mace:terena.org:attribute-def:schacHomeOrganization"),
     EMAIL("urn:mace:dir:attribute-def:mail"),
+    COLLABPERSONID("urn:oid:1.3.6.1.4.1.1076.20.40.40.1"),
     COLLABPERSONISGUEST("collabpersonisguest")
     ;
 
@@ -56,6 +57,10 @@ public class PersonARPEnforcer {
     }
   }
 
+  private final static List<String> idAttributes = Arrays.asList(
+      Attribute.UID.name,
+      Attribute.COLLABPERSONID.name
+  );
   private final static List<String> nameAttributes = Arrays.asList(
       Attribute.CN.name,
       Attribute.GIVEN_NAME.name,
@@ -86,7 +91,9 @@ public class PersonARPEnforcer {
       return person;
     }
 
+    // Start with an empty person.
     Person newP = new Person();
+
     if (arp.getAttributes() == null || arp.getAttributes().isEmpty()) {
       // Empty arp: allow nothing
       return newP;
@@ -110,12 +117,11 @@ public class PersonARPEnforcer {
       newP.setEmails(person.getEmails());
     }
 
-    if (arpAttributeNames.contains(Attribute.UID.name)) {
-      newP.setAccounts(person.getAccounts());
-    }
-
-    if (arpAttributeNames.contains(Attribute.UID.name)) {
+    if (CollectionUtils.containsAny(idAttributes, arpAttributeNames)) {
       newP.setTags(person.getTags());
+      newP.setAccounts(person.getAccounts());
+      newP.setId(person.getId());
+      newP.setVoot_membership_role(person.getVoot_membership_role());
     }
 
     return newP;
