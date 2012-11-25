@@ -15,12 +15,10 @@
  */
 package nl.surfnet.coin.api.client.domain;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -36,17 +34,13 @@ public class PersonTest {
    * Test method for {@link nl.surfnet.coin.api.client.domain.Person#getId()}.
    */
   @Test
-  public void testGetId() throws Exception {
+  public void test_get_id_after_serialization() throws Exception {
     Person person = new Person();
     person.setId("id");
     
-    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("target/person.ser"));
-    out.writeObject(person);
+    new ObjectOutputStream(new FileOutputStream("target/person.ser")).writeObject(person);
+    Person persistentPerson = (Person) new ObjectInputStream(new FileInputStream("target/person.ser")).readObject();
     
-    ObjectInputStream in = new ObjectInputStream(new FileInputStream("target/person.ser"));
-    Person persistentPerson = (Person) in.readObject();
-    
-    assertNotNull(persistentPerson.getId());
     assertEquals("id",persistentPerson.getId());
   }
 
