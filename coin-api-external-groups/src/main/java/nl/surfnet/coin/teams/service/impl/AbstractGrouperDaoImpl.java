@@ -50,6 +50,33 @@ public abstract class AbstractGrouperDaoImpl  {
       + "and ((gf.type = 'access' and gf.name = 'viewers') or gm.subject_id = ?) "
       + "order by gg.name limit ? offset ?";
 
+  protected static String SQL_FIND_TEAMS_LIKE_GROUPNAME_ROWCOUNT = "select count(distinct gg.name) "
+    + "from grouper_groups gg, grouper_stems gs, grouper_members gm,"
+    + "grouper_memberships gms, "
+    + " grouper_fields gf, grouper_group_set ggs  "
+    + "where gg.parent_stem = gs.id and gms.member_id = gm.id and gms.owner_group_id = gg.id "
+    + " and gs.name != 'etc' "
+    + " and ggs.field_id = gf.id "
+    + " and gg.id = ggs.owner_group_id "
+    + "and gms.owner_id = ggs.member_id "
+    + " and gms.field_id = ggs.member_field_id "
+    + "and ((gf.type = 'access' and gf.name = 'viewers') or gm.subject_id = ?) "
+    + "and upper(gg.name) like ?";
+  protected static String SQL_FIND_TEAMS_LIKE_GROUPNAME =
+    "select distinct gg.name, gg.display_name ,gg.description, gs.name as stem_name, "
+      + "gs.display_name as stem_display_name, gs.description as stem_description "
+      + "from grouper_groups gg, grouper_stems gs, grouper_members gm,"
+      + "grouper_memberships gms, "
+      + " grouper_fields gf, grouper_group_set ggs  "
+      + "where gg.parent_stem = gs.id and gms.member_id = gm.id and gms.owner_group_id = gg.id "
+      + " and gs.name != 'etc' "
+      + " and ggs.field_id = gf.id "
+      + " and gg.id = ggs.owner_group_id "
+      + "and gms.owner_id = ggs.member_id "
+      + " and gms.field_id = ggs.member_field_id "
+      + "and ((gf.type = 'access' and gf.name = 'viewers') or gm.subject_id = ?) "
+      + "and upper(gg.name) like ? order by gg.name limit ? offset ?";
+
   protected static String SQL_FIND_TEAM_BY_MEMBER_AND_BY_GROUPNAME =
       "select distinct gg.name, gg.display_name ,gg.description, gs.name as stem_name, "
           + "gs.display_name as stem_display_name, gs.description as stem_description "
