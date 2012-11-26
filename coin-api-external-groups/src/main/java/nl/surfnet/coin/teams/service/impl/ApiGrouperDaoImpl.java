@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Group20Entry;
+import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
+import nl.surfnet.coin.api.client.domain.Person;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
@@ -36,11 +41,6 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.Assert;
-
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
 
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao {
 
@@ -208,11 +208,12 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     params.put("limit", pageSize);
     params.put("offset", offset);
     try {
-      String sql = SQL_FIND_TEAMS_LIKE_GROUPNAMES;
+      String sql = SQL_FIND_TEAMS_BY_GROUPIDS;
       groups = namedParameterJdbcTemplate.query(sql, params, new OpenSocial20GroupRowMapper());
       addRolesToGroups(personId, groups);
     } catch (EmptyResultDataAccessException e) {
     }
+    // FIXME: rowCount != groups.size() maar aparte query voor rowcount (query bestaat al: SQL_FIND_TEAMS_BY_GROUPIDS_ROWCOUNT)
     return new Group20Entry(groups, pageSize, offset, null, groups.size());
   }
 

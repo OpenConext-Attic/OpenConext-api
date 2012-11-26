@@ -176,7 +176,7 @@ public abstract class AbstractGrouperDaoImpl  {
       + " where gmso.member_id = gmo.id and gmso.owner_group_id = ggo.id and gmo.subject_id = ?)   "
       + " group by gg.name  ";
 
-  protected static String SQL_FIND_TEAMS_LIKE_GROUPNAMES_ROWCOUNT =
+  protected static String SQL_FIND_TEAMS_BY_GROUPIDS_ROWCOUNT =
       "select count(distinct gg.name) as groupcount "
           + "from grouper_groups gg, grouper_stems gs, grouper_members gm,"
           + "grouper_memberships gms, "
@@ -189,7 +189,7 @@ public abstract class AbstractGrouperDaoImpl  {
           + " and gms.field_id = ggs.member_field_id "
           + "and gg.name in (:groupId)";
 
-  protected static String SQL_FIND_TEAMS_LIKE_GROUPNAMES =
+  protected static String SQL_FIND_TEAMS_BY_GROUPIDS =
       "select distinct gg.name, gg.display_name ,gg.description, gs.name as stem_name, "
           + "gs.display_name as stem_display_name, gs.description as stem_description "
           + "from grouper_groups gg, grouper_stems gs, grouper_members gm,"
