@@ -30,7 +30,7 @@
 
   <div id="approve">
         <!-- YES -->
-        <form id="accept" method="post" action="<%=request.getContextPath()%>/oauth/authorize">
+        <form id="accept" method="post" action="<%=request.getContextPath()%>/oauth2/authorize">
           <p>
             <input name="user_oauth_approval" value="true" type="hidden"/>
 
@@ -43,7 +43,7 @@
         </form>
 
         <!-- NO -->
-        <form id="reject" method="post" action="<%=request.getContextPath()%>/oauth/authorize">
+        <form id="reject" method="post" action="<%=request.getContextPath()%>/oauth2/authorize">
           <p>
             <input name="user_oauth_approval" value="false" type="hidden"/>
 

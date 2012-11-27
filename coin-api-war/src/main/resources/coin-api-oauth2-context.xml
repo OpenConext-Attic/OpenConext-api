@@ -26,18 +26,15 @@
 
 
   <!--
-  Beware!
-  Although the public URL for OAuth2.0 tokens is /oauth2/token, we must use /oauth/token here.
-  This is due to the request mingling that the oauth2EndpointUrlFilter performs (in order to be able to define the endpoint urls at all).
-  So:
-  - request enters the webapp for /oauth2/token
-  - oauth2EndpointUrlFilter rewrites the request to /oauth/token
-  - @RequestMapping on org.springframework.security.oauth2.provider.endpoint.TokenEndpoint matches and handles the request
+  
+  See https://jira.springsource.org/browse/SECOAUTH-321.
+  
+  Where we had to use /oauth/token because of the rewrite, we now - see issue - can use oauth2/token
 
   -->
-  <http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="clientAuthenticationManager"
+  <http pattern="/oauth2/token" create-session="stateless" authentication-manager-ref="clientAuthenticationManager"
         xmlns="http://www.springframework.org/schema/security">
-    <intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY"/>
+    <intercept-url pattern="/oauth2/token" access="IS_AUTHENTICATED_FULLY"/>
     <anonymous enabled="false"/>
     <http-basic/>
     <!-- include this only if you need to authenticate clients via request parameters -->
@@ -45,7 +42,11 @@
 
   </http>
 
-  <security:http pattern="/oauth/**" authentication-manager-ref="samlAuthenticationManager"
+  <!-- This was oauth/** 
+  
+  Does not seem to 'hit' because of oauth2/authorize, 
+  because of place of FrameworkEndpointHandlerMapping??? -->
+  <security:http pattern="/oauth2/**" authentication-manager-ref="samlAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
        entry-point-ref="samlEntryPoint" 
       >
@@ -62,12 +63,12 @@
 
 
   <!-- confirm_access is not filtered by EndpointValidationFilter, therefore an additional config is required. -->
-  <security:http pattern="/oauth2/confirm_access" authentication-manager-ref="samlAuthenticationManager"
+ <!--  <security:http pattern="/oauth2/confirm_access" authentication-manager-ref="samlAuthenticationManager"
        access-decision-manager-ref="accessDecisionManager"
        entry-point-ref="samlEntryPoint"
       >
     <security:custom-filter ref="oauth2ProviderFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
-  </security:http>
+  </security:http> -->
 
   <bean id="approvalHandler" class="nl.surfnet.coin.api.oauth.ConfigurableTokenServicesUserApprovalHandler">
     <property name="tokenServices" ref="tokenServices" />
@@ -76,6 +77,7 @@
 
   <bean id="clientCredentialsTokenEndpointFilter"
         class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">
+    <constructor-arg value="/oauth2/token"/>    
     <property name="authenticationManager" ref="clientAuthenticationManager"/>
   </bean>
 
@@ -102,6 +104,7 @@
       user-approval-page="redirect:/oauth2/confirm_access"
       token-services-ref="tokenServices"
       redirect-resolver-ref="implicitGrantExplicitRedirectResolver"
+      
       >
     <oauth2:authorization-code authorization-code-services-ref="jdbcAuthorizationCodeServices" />
     <oauth2:implicit/>

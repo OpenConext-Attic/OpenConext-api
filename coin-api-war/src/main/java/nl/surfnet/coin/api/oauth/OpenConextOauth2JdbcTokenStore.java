@@ -89,9 +89,10 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
       }
 
 
+      String value = extractTokenKey(token.getValue());
       jdbcTemplate.update(
           ACCESS_TOKEN_INSERT_STATEMENT,
-          new Object[] { token.getValue(), new SqlLobValue(SerializationUtils.serialize(token)),
+          new Object[] { value, new SqlLobValue(SerializationUtils.serialize(token)),
               authenticationKeyGenerator.extractKey(authentication),
               authentication.isClientOnly() ? null : authentication.getName(),
               authentication.getAuthorizationRequest().getClientId(),

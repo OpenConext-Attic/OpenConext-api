@@ -56,7 +56,6 @@ public class Oauth20AuthorizationGrantTestSelenium extends SeleniumSupport {
 
   private static final String OAUTH_CALLBACK_URL = "http://localhost:8083/";
 
-//  private static final String USER_ID = "mocked-userid";
   private static final String USER_ID = "mocked-user";
   private static final String GROUP_ID = "mocked-groupid";
 

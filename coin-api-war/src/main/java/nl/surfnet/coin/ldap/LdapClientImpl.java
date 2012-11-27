@@ -18,14 +18,19 @@
  */
 package nl.surfnet.coin.ldap;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+
+import nl.surfnet.coin.api.client.domain.Account;
+import nl.surfnet.coin.api.client.domain.Email;
+import nl.surfnet.coin.api.client.domain.Name;
+import nl.surfnet.coin.api.client.domain.Organization;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.eb.EngineBlock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
@@ -37,13 +42,6 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import nl.surfnet.coin.api.client.domain.Account;
-import nl.surfnet.coin.api.client.domain.Email;
-import nl.surfnet.coin.api.client.domain.Name;
-import nl.surfnet.coin.api.client.domain.Organization;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.eb.EngineBlock;
 
 /**
  * Interface to Ldap where all persons are stored.

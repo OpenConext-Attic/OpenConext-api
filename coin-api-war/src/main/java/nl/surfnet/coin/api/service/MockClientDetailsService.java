@@ -21,17 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth.common.OAuthException;
-import org.springframework.security.oauth.common.signature.SharedConsumerSecret;
-import org.springframework.security.oauth.provider.ConsumerDetails;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.util.StringUtils;
-
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
 import nl.surfnet.coin.api.oauth.JanusClientMetadata;
@@ -40,6 +29,16 @@ import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth.common.OAuthException;
+import org.springframework.security.oauth.common.signature.SharedConsumerSecretImpl;
+import org.springframework.security.oauth.provider.ConsumerDetails;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.provider.ClientDetails;
 
 /**
  * Mock details service. Replacement for JanusClientDetailsService.
@@ -78,7 +77,7 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
     // Can do 2 legged
     consumerDetails.setRequiredToObtainAuthenticatedToken(false);
     consumerDetails.setAuthorities(Arrays.<GrantedAuthority>asList(new SimpleGrantedAuthority("ROLE_USER")));
-    consumerDetails.setSignatureSecret(new SharedConsumerSecret(defaultSecret));
+    consumerDetails.setSignatureSecret(new SharedConsumerSecretImpl(defaultSecret));
     consumerDetails.setClientMetaData(mockMetadata(consumerKey));
     ClientMetaDataHolder.setClientMetaData(consumerDetails.getClientMetaData());
 

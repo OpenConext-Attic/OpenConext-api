@@ -22,7 +22,7 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth-1.0.xsd">
 
-	<!-- All requests to /oauth/** are protected by this configuration. Invalid 
+	<!-- All requests to /oauth1/** are protected by this configuration. Invalid 
 		requests are redirected to the samlEntryPoint. -->
 	<http pattern="/oauth1/**" entry-point-ref="samlEntryPoint">
 		<intercept-url pattern="/oauth1/**" access="ROLE_USER" />
