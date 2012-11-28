@@ -1,0 +1,2 @@
+The format of the OAuth 2 token store has changed due to changes in Spring-security-oauth2.
+Remove all tokens: delete from oauth_access_token
