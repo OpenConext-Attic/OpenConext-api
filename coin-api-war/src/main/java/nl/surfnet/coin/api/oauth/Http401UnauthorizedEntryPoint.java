@@ -38,6 +38,7 @@ public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
       HttpServletResponse response, AuthenticationException authException)
       throws IOException, ServletException {
     HttpServletResponse httpResponse = (HttpServletResponse) response;
+    httpResponse.addHeader("WWW-Authenticate", "Bearer realm=\"api.surfconext\"");
     httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     
   }
