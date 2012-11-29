@@ -37,8 +37,8 @@
 	<div class="page-header">
 		<h2>SURFconext API</h2>
         <br/>
-        <p><b>404.</b> That’s an error.</p>
-        <p>The currently supported versions are <ins>/v1</ins></p>
+        <p><b>404.</b> That is an error.</p>
+        <p>The currently supported version is <ins><a href="test">/v1</a></ins></p>
 	</div>
 	<div class="row">
 		<div class="span7 columns">
