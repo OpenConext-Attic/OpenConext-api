@@ -395,9 +395,7 @@ public class ApiController extends AbstractApiController {
     DateTime date = new DateTime();
     LOG.error("Handling error, will respond with the exception message. Current date: " +  date +
         ".", e);
-    Map<String, Object> model = new HashMap<String, Object>();
-    model.put("entry", new ArrayList<Object>());
-    return model;
+    return new Group20Entry(new ArrayList<Group20>());
   }
 
   /*

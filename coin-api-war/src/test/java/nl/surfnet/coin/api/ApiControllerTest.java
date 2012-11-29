@@ -17,6 +17,7 @@ package nl.surfnet.coin.api;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,9 @@ import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
 /**
@@ -42,9 +46,15 @@ public class ApiControllerTest {
     controller.setResultOptions(entry, 1, 5, "title");
     assertEquals(1, entry.getEntryCollection().size());
     assertEquals("title5", ((Group20) entry.getEntryCollection().get(0)).getTitle());
-
   }
 
+  @Test
+  public void testErrorHandling() throws JsonGenerationException, JsonMappingException, IOException {
+    Object results = controller.handleException(new RuntimeException("nice"));
+    String s = new ObjectMapper().writeValueAsString(results);
+    System.out.println(s);
+  }
+  
   @Test
   public void testSetResultOptionsEqualCountIndexEntryGroup20() {
     AbstractEntry entry = getAbstractEntryGroup20(10);
