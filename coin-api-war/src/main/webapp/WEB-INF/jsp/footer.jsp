@@ -14,7 +14,7 @@
 ~ limitations under the License.
 --%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="helpContainer" style="display: none">
   <h3><spring:message code="consent.help-title"/></h3>
   <spring:message code="consent.help-paragraph"/>
@@ -36,7 +36,7 @@
 </div>
 
 <!-- JAVSCRIPT -->
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/jquery-1.5.1.min.js"></script>
+<script src="<c:url value="/js/jquery-1.8.3.min.js"/>"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#helpLink').click(function() {
@@ -47,28 +47,11 @@
       $("#helpContainer").toggle();
       $("#content").toggle();
     });
-  });
-</script>
-<!--
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/jquery.mousewheel.min.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/jquery.putCursorAtEnd.1.0.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/jquery.jscrollpane.min.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/keyboardNavigator.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/typewatch.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/jquery.cookie.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/discover.js"></script>
-<script type="text/javascript" src="https://static.dev.surfconext.nl/javascript/screen.js"></script>
--->
-<script type="text/javascript">
-
-  $("#accept_terms_button").focus();
-
-  (function() {
+    $("#accept_terms_button").focus();
     var d = new Discover();
     d.linkHelp();
-  })();
-</script>
 
+  });
+</script>
 </body>
 </html>
