@@ -48,8 +48,6 @@
       $("#content").toggle();
     });
     $("#accept_terms_button").focus();
-    var d = new Discover();
-    d.linkHelp();
 
   });
 </script>
