@@ -3,6 +3,13 @@ OpenConext API
 
 This module provides an OpenSocial interface to OpenConext. It is licensed under the Apache 2 license.
 
+Apart from the actual REST inteface, this module contains an OAuth 'form-based' client, capable of making configurable OAuth calls (available under /v1/test):
+  * 2-legged and 3-legged OAuth1.0a
+  * OAuth2.0 authorization code grant and implicit grant
+  * OAuth2.0 access token requests using either query parameters, entity body parameters or the authorization header
+  * Step by step detail information about the OAuth requests and responses
+
+
 Using the OpenConext OpenSocial API
 ------------------------------
         OpenConextOAuthClient api = new OpenConextOAuthClientImpl();
