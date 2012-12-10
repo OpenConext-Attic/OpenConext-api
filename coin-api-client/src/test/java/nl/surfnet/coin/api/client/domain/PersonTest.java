@@ -16,11 +16,14 @@
 package nl.surfnet.coin.api.client.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import nl.surfnet.coin.api.client.domain.Email.Type;
 
 import org.junit.Test;
 
@@ -33,6 +36,7 @@ public class PersonTest {
   /**
    * Test method for {@link nl.surfnet.coin.api.client.domain.Person#getId()}.
    */
+  @SuppressWarnings("resource")
   @Test
   public void test_get_id_after_serialization() throws Exception {
     Person person = new Person();
@@ -42,6 +46,16 @@ public class PersonTest {
     Person persistentPerson = (Person) new ObjectInputStream(new FileInputStream("target/person.ser")).readObject();
     
     assertEquals("id",persistentPerson.getId());
+  }
+  
+  @Test
+  public void testGetEmail() {
+    Person person = new Person();
+    assertNull(person.getEmailValue());
+    
+    person.addEmail(new Email("value@test.org",Type.email));
+    assertEquals("value@test.org", person.getEmailValue());
+    
   }
 
 }

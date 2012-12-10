@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Person representation
@@ -96,6 +97,13 @@ public class Person implements Serializable {
    */
   public Set<Email> getEmails() {
     return emails;
+  }
+  
+  /*
+   * Sensible default
+   */
+  public String getEmailValue() {
+    return CollectionUtils.isEmpty(emails) ? null : emails.iterator().next().getValue();
   }
 
   /**
