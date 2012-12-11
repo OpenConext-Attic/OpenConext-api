@@ -15,17 +15,23 @@
  */
 package nl.surfnet.coin.api.client.domain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import nl.surfnet.coin.api.client.domain.Email.Type;
 
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
 
 /**
  * PersonTest.java
@@ -53,9 +59,20 @@ public class PersonTest {
     Person person = new Person();
     assertNull(person.getEmailValue());
     
-    person.addEmail(new Email("value@test.org",Type.email));
+    person.addEmail(new Email("value@test.org", Type.email));
     assertEquals("value@test.org", person.getEmailValue());
     
   }
 
+  @Test
+  public void skipConvenienceMethodsOnSerialize() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper()
+      .enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
+    Person person = new Person();
+    person.addEmail(new Email("value@test.org", Type.email));
+
+    String serialized = objectMapper.writeValueAsString(person);
+    assertThat("serialized Person should not include convenience getters", serialized, not(containsString("emailValue")));
+  }
 }
