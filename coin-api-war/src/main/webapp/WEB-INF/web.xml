@@ -28,6 +28,16 @@
 		<listener-class>nl.surfnet.coin.shared.log.ApiCallLogContextListener</listener-class>
 	</listener>
 
+  <filter>
+    <filter-name>diagnosticLogger</filter-name>
+    <filter-class>nl.surfnet.coin.shared.log.diagnostics.DiagnosticsLoggerFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>diagnosticLogger</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
