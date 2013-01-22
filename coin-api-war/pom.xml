@@ -75,16 +75,6 @@
 		<dependency>
 			<groupId>org.surfnet.coin</groupId>
 			<artifactId>spring-security-opensaml</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>log4j-over-slf4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>jcl-over-slf4j</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -153,14 +143,6 @@
 			<artifactId>httpclient</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
 		<!-- Begin Selenium -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -179,6 +161,12 @@
 			<artifactId>selenium-htmlunit-driver</artifactId>
 			<version>${selenium.version}</version>
 			<scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.icegreen</groupId>
@@ -264,6 +252,11 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.20</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>nl.iprofs.modules.context-logging</groupId>
+      <artifactId>context-logging</artifactId>
     </dependency>
 	</dependencies>
 	<build>

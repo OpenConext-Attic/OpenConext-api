@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
+
 import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +40,6 @@ import org.springframework.security.oauth.provider.token.RandomValueProviderToke
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
 
 /**
  * Token store for Oauth1 tokens.
@@ -89,7 +89,7 @@ public class OpenConextOauth1TokenServices extends RandomValueProviderTokenServi
     try {
       token = jdbcTemplate.queryForObject(selectTokenSql, new OAuthProviderTokenRowMapper(), authentication);
     } catch (EmptyResultDataAccessException e) {
-      if (LOG.isInfoEnabled()) {
+      if (LOG.isDebugEnabled()) {
         LOG.debug("Failed to find token for input '{}'", authentication);
       }
       return null;

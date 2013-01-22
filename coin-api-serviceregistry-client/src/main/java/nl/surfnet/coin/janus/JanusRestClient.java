@@ -30,6 +30,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import nl.surfnet.coin.janus.domain.ARP;
+import nl.surfnet.coin.janus.domain.EntityMetadata;
+import nl.surfnet.coin.janus.domain.JanusEntity;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -40,10 +44,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
-
-import nl.surfnet.coin.janus.domain.ARP;
-import nl.surfnet.coin.janus.domain.EntityMetadata;
-import nl.surfnet.coin.janus.domain.JanusEntity;
 
 /**
  * REST client implementation for Janus.

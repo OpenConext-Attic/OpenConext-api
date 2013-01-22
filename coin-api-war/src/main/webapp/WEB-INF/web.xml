@@ -21,6 +21,10 @@
 	<display-name>coin-api</display-name>
 
 	<listener>
+		<listener-class>nl.iprofs.modules.contextlogging.InitParameterLogbackContextListener</listener-class>
+	</listener>
+
+	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 

@@ -50,17 +50,6 @@
 	   <artifactId>jersey-client</artifactId>
 	   <version>1.12</version>
    </dependency>
-      
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.surfnet.coin</groupId>
