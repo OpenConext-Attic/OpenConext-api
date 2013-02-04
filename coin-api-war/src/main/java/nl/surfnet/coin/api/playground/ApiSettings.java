@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * Backing form object for all OAuth calls from the Test Framework
@@ -32,7 +31,7 @@ import org.springframework.util.StringUtils;
  */
 public class ApiSettings {
 
-  private String version = OAuthVersion.VERSION10A.getVersion();// "1.0a"
+  private String version = OAuthVersion.VERSION20.getVersion(); // "1.0a" or 2.0
   private String requestTokenEndPoint;
   private String requestTokenVerb = Verb.POST.toString();
   private String accessTokenEndPoint;
