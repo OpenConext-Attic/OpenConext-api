@@ -15,6 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <configuration scan="true">
   <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>logs/api.log</file>
@@ -30,11 +31,12 @@
 
 
   <appender name="MEMORYAPPENDER" class="nl.surfnet.coin.shared.log.diagnostics.MemoryAppender">
-    <dumpappender>file</dumpappender>
+    <dumpAppender>file</dumpAppender>
   </appender>
 
   <logger name="MEMORYLOGGER">
     <appender-ref ref="MEMORYAPPENDER" />
+    <appender-ref ref="file" />
   </logger>
 
 

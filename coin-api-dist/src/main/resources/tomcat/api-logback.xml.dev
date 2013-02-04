@@ -30,11 +30,12 @@
 
 
   <appender name="MEMORYAPPENDER" class="nl.surfnet.coin.shared.log.diagnostics.MemoryAppender">
-    <dumpappender>file</dumpappender>
+    <dumpAppender>file</dumpAppender>
   </appender>
 
   <logger name="MEMORYLOGGER">
     <appender-ref ref="MEMORYAPPENDER" />
+    <appender-ref ref="file" />
   </logger>
 
 
