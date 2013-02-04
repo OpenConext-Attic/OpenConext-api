@@ -1,0 +1,2 @@
+Logging has changed from Log4j to Logback.
+Put the right logback.xml from the {tomcat} directory within this dist package into the classpath of the web container.
