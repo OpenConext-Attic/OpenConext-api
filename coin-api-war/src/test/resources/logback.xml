@@ -17,45 +17,64 @@
 <configuration scan="true">
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} abc [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
 
-	<logger name="org.hibernate" level="warn">
+
+  <appender name="DUMPAPPENDER" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [--MEMORY--] [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="MEMORYAPPENDER" class="nl.surfnet.coin.shared.log.diagnostics.MemoryAppender" />
+
+
+  <logger name="org.hibernate" level="warn" additivity="false">
 		<appender-ref ref="console" />
 	</logger>
-	<logger name="org.springframework" level="warn">
+	<logger name="org.springframework" level="warn" additivity="false">
     <appender-ref ref="console" />
 	</logger>
-  <logger name="org.springframework.jdbc" level="info">
+  <logger name="org.springframework.jdbc" level="info" additivity="false">
     <appender-ref ref="console" />
   </logger>
-    <logger name="org.springframework.security" level="info">
+    <logger name="org.springframework.security" level="info" additivity="false">
       <appender-ref ref="console" />
     </logger>
-	<logger name="org.apache" level="warn">
+	<logger name="org.apache" level="warn" additivity="false">
     <appender-ref ref="console" />
 	</logger>
-	<logger name="org.mortbay" level="warn">
+	<logger name="org.mortbay" level="warn" additivity="false">
     <appender-ref ref="console" />
 	</logger>
 
 	<!-- c3p0 -->
-	<logger name="com.mchange" level="warn">
+	<logger name="com.mchange" level="warn" additivity="false">
     <appender-ref ref="console" />
 	</logger>
-	<logger name="hsqldb.db" level="warn">
+	<logger name="hsqldb.db" level="warn" additivity="false">
     <appender-ref ref="console" />
 	</logger>
 
-	<logger name="org.opensaml" level="warn">
+	<logger name="org.opensaml" level="warn" additivity="false">
     <appender-ref ref="console" />
 	</logger>
-	<logger name="nl.surfnet.coin" level="debug">
+	<logger name="nl.surfnet.coin" level="debug" additivity="false">
     <appender-ref ref="console" />
 	</logger>
-  <logger name="nl.surfnet.coin.diagnostics" level="trace">
-    <appender-ref ref="console" />
+
+	<logger name="nl.surfnet" level="debug">
+    <appender-ref ref="MEMORYAPPENDER" />
+	</logger>
+
+  <!-- This serves only as a lookup structure:
+  logger MEMORYLOGGER is by definition present,
+  and has the MEMORYAPPENDER and DUMPAPPENDER attached.
+  -->
+  <logger name="MEMORYLOGGER">
+    <appender-ref ref="MEMORYAPPENDER" />
+    <appender-ref ref="DUMPAPPENDER" />
   </logger>
 
 	<root level="info">

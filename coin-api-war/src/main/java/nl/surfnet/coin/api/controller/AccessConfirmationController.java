@@ -24,8 +24,6 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nl.surfnet.coin.shared.log.diagnostics.ConextMDC;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +70,6 @@ public class AccessConfirmationController {
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("error", request.getAttribute("error"));
     model.put("message", "There was a problem with the OAuth2 protocol");
-    ConextMDC.markForWarn();
     return new ModelAndView("oauth_error", model);
   }
 

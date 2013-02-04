@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nl.surfnet.coin.shared.log.diagnostics.ConextMDC;
 import nl.surfnet.spring.security.opensaml.AssertionConsumer;
 import nl.surfnet.spring.security.opensaml.AssertionConsumerImpl;
 import nl.surfnet.spring.security.opensaml.KeyStore;
@@ -53,7 +52,6 @@ import org.opensaml.ws.security.provider.StaticSecurityPolicyResolver;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.parse.BasicParserPool;
 import org.opensaml.xml.security.credential.CredentialResolver;
-import org.opensaml.xml.util.Base64;
 import org.opensaml.xml.validation.ValidationException;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -233,9 +231,7 @@ public class OpenSAMLContext {
     SAMLMessageContext messageContext;
 
     try {
-      ConextMDC.put("SAML response before decoding: " + request.getParameter("SAMLResponse"));
       messageContext = samlMessageHandler.extractSAMLMessageContext(request);
-      ConextMDC.put("Decoded SAML response: " + new String(Base64.decode(request.getParameter("SAMLResponse"))));
     } catch (MessageDecodingException me) {
       throw new ServiceProviderAuthenticationException("Could not decode SAML Response", me);
     } catch (org.opensaml.xml.security.SecurityException se) {
