@@ -22,37 +22,70 @@
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
       <fileNamePattern>logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-        <maxHistory>60</maxHistory>
+      <maxHistory>60</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{ISO8601} %5p [%t] %logger{40}:%L - %m%n</pattern>
+    </encoder>
+
+
+    <!-- global filter for this appender -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>warn</level>
+    </filter>
+
+    <!-- specific filters -->
+    <!--
+        <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+          <logger>org.springframework</logger>
+          <level>warn</level>
+        </filter>
+    -->
+
+  </appender>
+
+  <appender name="DUMPAPPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/api-fc.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+      <maxHistory>60</maxHistory>
     </rollingPolicy>
     <encoder>
       <pattern>%d{ISO8601} %5p [%t] %logger{40}:%L - %m%n</pattern>
     </encoder>
   </appender>
 
-
   <appender name="MEMORYAPPENDER" class="nl.surfnet.coin.shared.log.diagnostics.MemoryAppender">
-    <dumpAppender>file</dumpAppender>
+
+    <!-- Even when dumping the memory events, filter them using these filters -->
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.springframework</logger>
+      <level>info</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.opensaml</logger>
+      <level>info</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.apache</logger>
+      <level>info</level>
+    </filter>
   </appender>
 
+
+  <!-- This serves only as a lookup structure:
+  logger MEMORYLOGGER is by definition present,
+  and has the MEMORYAPPENDER and DUMPAPPENDER attached.
+  -->
   <logger name="MEMORYLOGGER">
-    <appender-ref ref="MEMORYAPPENDER" />
-    <appender-ref ref="file" />
+    <appender-ref ref="MEMORYAPPENDER"/>
+    <appender-ref ref="DUMPAPPENDER"/>
   </logger>
 
-
-  <logger name="org.hibernate" level="warn" additivity="false">
-    <appender-ref ref="file" />
-  </logger>
-  <logger name="org.springframework" level="warn" additivity="false">
-    <appender-ref ref="file" />
-  </logger>
-  <logger name="nl.surfnet.coin" level="info" additivity="false">
-    <appender-ref ref="file" />
-  </logger>
-  <logger name="nl.surfnet" level="debug">
-    <appender-ref ref="MEMORYAPPENDER" />
-  </logger>
-  <root level="info">
+  <!-- filtering on info/warn level is done by the appenders -->
+  <root level="debug">
     <appender-ref ref="file"/>
+    <appender-ref ref="MEMORYAPPENDER"/>
   </root>
 </configuration>
