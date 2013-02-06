@@ -56,26 +56,11 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
   @Resource(name = "basicAuthGroupService")
   private BasicAuthGroupService basicAuthGroupService;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.GroupProviderConfiguration#isInternalGroup(java.lang
-   * .String)
-   */
   @Override
   public boolean isInternalGroup(String groupId) {
     return INTERNAL_GROUP_PATTERN.matcher(groupId).matches();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.GroupProviderConfiguration#getAllowedGroupProviders
-   * (nl.surfnet.coin.api.GroupProviderConfigurationImpl.Service,
-   * java.lang.String)
-   */
   @Override
   public List<GroupProvider> getAllowedGroupProviders(Service service, String spEntityId,
       List<GroupProvider> allGroupProviders) {
@@ -89,11 +74,6 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
     return result;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see nl.surfnet.coin.api.GroupProviderConfiguration#getAllGroupProviders()
-   */
   @Override
   @Cacheable(value = { "group-providers" }, key = "methodName")
   public List<GroupProvider> getAllGroupProviders() {
@@ -124,26 +104,11 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.GroupProviderConfiguration#isGrouperCallsAllowed(java
-   * .util.List)
-   */
   @Override
   public boolean isCallAllowed(Service service, String spEntityId, GroupProvider groupProvider) {
     return isAclConfiguredForGroupProvider(groupProvider, spEntityId, service);
-
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroupMembersEntry(nl.
-   * surfnet.coin.teams.domain.GroupProvider, java.lang.String, int, int)
-   */
   @Override
   public GroupMembersEntry getGroupMembersEntry(GroupProvider groupProvider, String onBehalfOf, String groupId,
       int limit, int offset) {
@@ -167,13 +132,6 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
     return new GroupMembersEntry(new ArrayList<Person>());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.GroupProviderConfiguration#getGroup20Entry(nl.surfnet
-   * .coin.teams.domain.GroupProvider, java.lang.String, int, int)
-   */
   @Override
   public Group20Entry getGroup20Entry(GroupProvider groupProvider, String userId, int limit, int offset) {
     switch (groupProvider.getGroupProviderType()) {
@@ -218,13 +176,6 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
     return null;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.GroupProviderConfiguration#cutOffUrnPartForGrouper(
-   * java.util.List, java.lang.String)
-   */
   @Override
   public String cutOffUrnPartForGrouper(List<GroupProvider> groupProviders, String groupId) {
     for (GroupProvider groupProvider : groupProviders) {

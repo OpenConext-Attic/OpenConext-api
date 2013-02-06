@@ -22,22 +22,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import nl.surfnet.coin.ldap.LdapClient;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * 
  *
  */
 public class EngineBlockImpl implements EngineBlock {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EngineBlockImpl.class);
 
   @Autowired
   private JdbcTemplate ebJdbcTemplate;
@@ -52,7 +51,9 @@ public class EngineBlockImpl implements EngineBlock {
   @Override
   public String getUserUUID(String identifier) {
     Assert.hasText(identifier, "Not allowed to provide a null or empty identifier");
-    List<String> results = ebJdbcTemplate.query("SELECT user_uuid FROM saml_persistent_id WHERE persistent_id =  ?",
+    String sql = "SELECT user_uuid FROM saml_persistent_id WHERE persistent_id =  ?";
+    LOG.debug("Executing query with identifier {}: {}", identifier, sql);
+    List<String> results = ebJdbcTemplate.query(sql,
      new String[] { identifier }, new RowMapper<String>() {
           @Override
           public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -62,6 +63,7 @@ public class EngineBlockImpl implements EngineBlock {
     if (CollectionUtils.isEmpty(results)) {
       throw new RuntimeException("No persistent_id found for user_uuid("+identifier+")");
     }
+    LOG.debug("Numer of results from query: {}", results.size());
     return results.get(0);
   }
 
