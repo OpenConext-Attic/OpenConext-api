@@ -21,11 +21,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
@@ -33,9 +28,17 @@ import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.ldap.LdapClient;
 import nl.surfnet.coin.teams.service.impl.ApiGrouperDao;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Component(value = "ldapService")
 public class PersonServiceImpl implements PersonService {
 
+  private Logger LOG = LoggerFactory.getLogger(PersonServiceImpl.class);
   @Autowired
   private LdapClient ldapClient;
 
@@ -52,8 +55,9 @@ public class PersonServiceImpl implements PersonService {
     Person person = ldapClient.findPerson(userId);
 
     ARP arp = clientDetailsService.getArp(spEntityId);
+    LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
     person = arpEnforcer.enforceARP(person, arp);
-
+    LOG.debug("Person info after enforcing arp, for userId {}, on behalf of {}: {}", userId, onBehalfOf, person);
     return new PersonEntry(person, 1, 0, null, 1);
   }
 
@@ -79,9 +83,12 @@ public class PersonServiceImpl implements PersonService {
       // Now enrich the information
       List<Person> enrichtedInfo = ldapClient.findPersons(identifiers);
       ARP arp = clientDetailsService.getArp(spEntityId);
+      LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
+
       for (Person person : enrichtedInfo) {
         person.setVoot_membership_role(getVootMembersShip(person.getId(), persons));
         arpEnforcer.enforceARP(person, arp);
+        LOG.debug("Person info after enforcing arp, for groupId {}, on behalf of {}: {}", groupId, onBehalfOf, person);
       }
       entry.setEntry(enrichtedInfo);
     }

@@ -22,6 +22,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
+import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
+import nl.surfnet.coin.api.oauth.OpenConextOauth1TokenServices;
+import nl.surfnet.coin.api.service.OpenConextClientDetailsService;
+import nl.surfnet.spring.security.opensaml.AuthnRequestGenerator;
+import nl.surfnet.spring.security.opensaml.util.IDService;
+import nl.surfnet.spring.security.opensaml.util.TimeService;
+import nl.surfnet.spring.security.opensaml.xml.EndpointGenerator;
+
 import org.apache.commons.lang.Validate;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequesterID;
@@ -31,7 +40,7 @@ import org.opensaml.saml2.core.impl.ScopingBuilder;
 import org.opensaml.saml2.metadata.Endpoint;
 import org.opensaml.saml2.metadata.SingleSignOnService;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
-import org.opensaml.xml.security.*;
+import org.opensaml.xml.security.CriteriaSet;
 import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.security.credential.UsageType;
 import org.opensaml.xml.security.criteria.EntityIDCriteria;
@@ -40,15 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-
-import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
-import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
-import nl.surfnet.coin.api.oauth.OpenConextOauth1TokenServices;
-import nl.surfnet.coin.api.service.OpenConextClientDetailsService;
-import nl.surfnet.spring.security.opensaml.AuthnRequestGenerator;
-import nl.surfnet.spring.security.opensaml.util.IDService;
-import nl.surfnet.spring.security.opensaml.util.TimeService;
-import nl.surfnet.spring.security.opensaml.xml.EndpointGenerator;
 
 /**
  * SamlAuthenticationEntryPoint.java
@@ -104,6 +104,7 @@ public class SAMLAuthenticationEntryPoint implements AuthenticationEntryPoint {
       Validate.notNull(signingCredential);
 
       String originalUrl = String.format("%s?%s", request.getRequestURI(), request.getQueryString());
+      LOG.debug("About to send authnRequest to endpoint {}", endpoint.getLocation());
       openSAMLContext.samlMessageHandler().sendSAMLMessage(authnRequest, endpoint, response, originalUrl, signingCredential);
     } catch (MessageEncodingException mee) {
       LOG.error("Could not send authnRequest to Identity Provider.", mee);
