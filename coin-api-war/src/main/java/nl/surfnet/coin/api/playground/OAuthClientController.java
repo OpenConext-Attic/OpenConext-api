@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,9 +32,10 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -51,6 +51,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class OAuthClientController {
 
+  private static final Logger LOG = LoggerFactory.getLogger(OAuthClientController.class);
+
+
   @Value("${coin-api.oauth.callback.url}")
   private String oauthCallbackUrl;
 
@@ -60,7 +63,7 @@ public class OAuthClientController {
   private final Token EMPTY_TOKEN = new Token("", "");
 
   @RequestMapping(value = { "/test" }, method = RequestMethod.GET)
-  public String socialQueries(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public String socialQueries(ModelMap modelMap, HttpServletRequest request) throws IOException {
     
     setupModelMap(new ApiSettings(request.getRequestURL().toString()), "step1", request, modelMap, null);
     modelMap.addAttribute("versionIdentifier", versionIdentifier);
@@ -202,7 +205,7 @@ public class OAuthClientController {
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "reset")
   public String reset(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
       HttpServletResponse response) throws IOException {
-    return socialQueries(modelMap, request, response);
+    return socialQueries(modelMap, request);
   }
 
   @RequestMapping(value = "/test/parseAnchor.shtml", method = RequestMethod.GET)
@@ -214,8 +217,13 @@ public class OAuthClientController {
     return request.getQueryString();
   }
 
+
   @RequestMapping(value = "/test/oauth-callback.shtml", method = RequestMethod.GET)
-  public String oauthCallBack(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
+  public String oauthCallBack(ModelMap modelMap, HttpServletRequest request) throws IOException {
+    if (request.getSession().getAttribute("settings") == null) {
+      LOG.debug("No settings-attribute in session, session cookie lost or no current session pending? Will return main application view.");
+      return socialQueries(modelMap, request);
+    }
     ApiSettings settings = (ApiSettings) request.getSession().getAttribute("settings");
     String verifierParam = (settings.isOAuth10a() ? "oauth_verifier" : "code");
     String oAuthVerifier = request.getParameter(verifierParam);
