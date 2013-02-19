@@ -59,7 +59,7 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     Client client = getClient(groupProvider);
     String url = String.format("%s/groups/%s?startIndex=%s&count=%s",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, offset, limit);
-    LOG.info("Getting groups for person {} at groupProvider {}, using URL: ", personId, groupProvider.getIdentifier(), url);
+    LOG.info("Getting groups for person {} at groupProvider {}, using URL: {}", personId, groupProvider.getIdentifier(), url);
     WebResource webResource = client.resource(url);
     Group20Entry entry = getGroup20Entry(groupProvider, webResource);
     LOG.debug("Got group information: {}", entry);
@@ -75,7 +75,7 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     String url = String.format("%s/groups/%s/%s",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupID);
 
-    LOG.info("Getting group information for person {} and group {} at groupProvider {}, using URL: ", personId, groupId, groupProvider.getIdentifier(), url);
+    LOG.info("Getting group information for person {} and group {} at groupProvider {}, using URL: {}", personId, groupId, groupProvider.getIdentifier(), url);
 
     WebResource webResource = client.resource(url);
     Group20Entry entry = getGroup20Entry(groupProvider, webResource);
@@ -116,7 +116,7 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupId,
         offset, limit);
 
-    LOG.info("Getting group members for person {} and group {} at groupProvider {}, using URL: ", personId, groupId, groupProvider.getIdentifier(), url);
+    LOG.info("Getting group members for person {} and group {} at groupProvider {}, using URL: {}", personId, groupId, groupProvider.getIdentifier(), url);
 
     WebResource webResource = client.resource(url);
     String response;
