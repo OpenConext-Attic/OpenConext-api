@@ -38,8 +38,13 @@ public Email(String value) {
 private String value;
   private Type type;
 
+  // https://opensocial-resources.googlecode.com/svn/spec/1.1/Core-Data.xml#Plural-Field
+  // https://opensocial-resources.googlecode.com/svn/spec/1.1/Social-Data.xml#Person
+  // 
+  // NOTE: it seems 'email' is not a valid type according to the specification...keeping it
+  // for backwards compatibility
   public enum Type {
-    email, work
+    email, work, home, other
   }
 
   /**
