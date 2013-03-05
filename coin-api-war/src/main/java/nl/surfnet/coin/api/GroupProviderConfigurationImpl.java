@@ -125,8 +125,8 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
       break;
     }
     default:
-      throw new RuntimeException(String.format("Not supported GroupProviderType(%s)",
-          groupProvider.getGroupProviderType()));
+      throw new RuntimeException(String.format("Unsupported GroupProviderType (%s) for group provider %d, '%s'",
+        groupProvider.getGroupProviderType(), groupProvider.getId(), groupProvider.getName()));
     }
     // sensible default
     return new GroupMembersEntry(new ArrayList<Person>());
@@ -147,8 +147,8 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
       break;
     }
     default:
-      throw new RuntimeException(String.format("Not supported GroupProviderType(%s)",
-          groupProvider.getGroupProviderType()));
+      throw new RuntimeException(String.format("Unsupported GroupProviderType (%s) for group provider %d, '%s'",
+          groupProvider.getGroupProviderType(), groupProvider.getId(), groupProvider.getName()));
     }
     // sensible default
     return new Group20Entry(new ArrayList<Group20>());
@@ -169,8 +169,8 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
       break;
     }
     default:
-      throw new RuntimeException(String.format("Not supported GroupProviderType(%s)",
-          groupProvider.getGroupProviderType()));
+      throw new RuntimeException(String.format("Unsupported GroupProviderType (%s) for group provider %d, '%s'",
+        groupProvider.getGroupProviderType(), groupProvider.getId(), groupProvider.getName()));
     }
     // can't think of a sensible default
     return null;
