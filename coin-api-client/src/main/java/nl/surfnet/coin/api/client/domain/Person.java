@@ -258,7 +258,7 @@ public class Person implements Serializable {
 
   @Override
   public int hashCode() {
-    return this.id.hashCode();
+    return (this.id == null) ? 0 : id.hashCode();
   }
 
   @Override
@@ -269,6 +269,12 @@ public class Person implements Serializable {
     if (!(other instanceof Person)) {
       return false;
     }
+
+    // true if both ids null
+    if (id == null && ((Person) other).id == null) {
+      return true;
+    }
+
     return id.equals(((Person)other).id);
   }
 }

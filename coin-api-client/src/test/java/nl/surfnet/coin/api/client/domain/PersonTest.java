@@ -75,4 +75,17 @@ public class PersonTest {
     String serialized = objectMapper.writeValueAsString(person);
     assertThat("serialized Person should not include convenience getters", serialized, not(containsString("emailValue")));
   }
+
+  @Test
+  public void testHashCode() {
+    // test that null id results in valid hashCode
+    new Person().hashCode();
+  }
+
+  @Test
+  public void testEquals() {
+    // null ids are equal
+    assertEquals(new Person(), new Person());
+  }
+
 }
