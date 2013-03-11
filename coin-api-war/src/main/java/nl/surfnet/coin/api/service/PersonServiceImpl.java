@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,7 +39,8 @@ import org.springframework.stereotype.Component;
 @Component(value = "ldapService")
 public class PersonServiceImpl implements PersonService {
 
-  private Logger LOG = LoggerFactory.getLogger(PersonServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PersonServiceImpl.class);
+
   @Autowired
   private LdapClient ldapClient;
 
@@ -82,15 +84,18 @@ public class PersonServiceImpl implements PersonService {
       });
       // Now enrich the information
       List<Person> enrichtedInfo = ldapClient.findPersons(identifiers);
+
+      // Apply ARP
       ARP arp = clientDetailsService.getArp(spEntityId);
       LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
-
+      List<Person> arpEnforcedPersons = new ArrayList<Person>();
       for (Person person : enrichtedInfo) {
         person.setVoot_membership_role(getVootMembersShip(person.getId(), persons));
-        arpEnforcer.enforceARP(person, arp);
+        Person arpedPerson = arpEnforcer.enforceARP(person, arp);
         LOG.debug("Person info after enforcing arp, for groupId {}, on behalf of {}: {}", groupId, onBehalfOf, person);
+        arpEnforcedPersons.add(arpedPerson);
       }
-      entry.setEntry(enrichtedInfo);
+      entry.setEntry(arpEnforcedPersons);
     }
     return entry;
   }
