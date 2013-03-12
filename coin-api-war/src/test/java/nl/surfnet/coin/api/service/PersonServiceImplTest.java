@@ -38,9 +38,8 @@ import static org.mockito.Mockito.when;
 
 public class PersonServiceImplTest {
 
-
   @InjectMocks
-  PersonServiceImpl svc;
+  PersonServiceImpl personService;
 
   @Mock
   PersonARPEnforcer arpEnforcer;
@@ -55,10 +54,11 @@ public class PersonServiceImplTest {
   OpenConextClientDetailsService clientDetailsService;
 
   @Before
-  public void setup() {
-    svc = new PersonServiceImpl();
+  public void before() {
+    personService = new PersonServiceImpl();
     MockitoAnnotations.initMocks(this);
   }
+
   @Test
   public void enforceArpOnGetGroupMembers() throws Exception {
 
@@ -71,11 +71,14 @@ public class PersonServiceImplTest {
     when(ldapClient.findPersons(Arrays.asList("theid"))).thenReturn(Arrays.asList(originalPerson));
 
     Person arpedPerson = new Person();
+    arpedPerson.setId("theid");
     arpedPerson.setDisplayName("the arped display name");
 
     when(arpEnforcer.enforceARP((Person) any(), (ARP) any())).thenReturn(arpedPerson);
 
-    GroupMembersEntry groupMembers = svc.getGroupMembers("groupId", "onbehalfof", "spentityid", 2, 0, null);
+    GroupMembersEntry groupMembers = personService.getGroupMembers("groupId", "onbehalfof", "spentityid", 2, 0, null);
+
+    assertEquals("Id is allowed by ARP, should be same", "theid", groupMembers.getEntry().get(0).getId());
 
     assertEquals("the arped display name", groupMembers.getEntry().get(0).getDisplayName());
   }

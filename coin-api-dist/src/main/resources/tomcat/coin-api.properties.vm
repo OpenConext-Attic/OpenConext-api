@@ -89,11 +89,11 @@ staticContentBasePath=https://static._OPENCONEXT_DOMAIN_
 coin-api.locale-default=nl
 
 # SAML properties
-entityId=https://api.demo.openconext.org/
+entityId=https://api._OPENCONEXT_DOMAIN_/
 assertionConsumerURI=https://api._OPENCONEXT_DOMAIN_/v1/assertionConsumer
 idpUrl=https://engine._OPENCONEXT_DOMAIN_/authentication/idp/single-sign-on
 idpCertificate=??
-idpEntityId=https://engine.demo.openconext.org/authentication/idp/metadata
+idpEntityId=https://engine._OPENCONEXT_DOMAIN_/authentication/idp/metadata
 spPrivateKey=??
 spCertificate=??
 
