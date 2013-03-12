@@ -23,16 +23,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_DESCRIPTION;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.PROPERTY_NAME;
@@ -46,6 +46,8 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
  * 
  */
 public abstract class AbstractGroupService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractGroupService.class);
 
   private final static OpenConextJsonParser parser = new OpenConextJsonParser();
   
@@ -89,6 +91,7 @@ public abstract class AbstractGroupService {
      * normally an antipattern, but we don't want to terminate the flow as we may have multiple GroupProviders 
      */
     } catch (Exception e) {
+      LOG.debug("Caught exception (msg: {}) while parsing response, will return empty group object", e.getMessage());
       return new Group20Entry(new ArrayList<Group20>());
     }
   }

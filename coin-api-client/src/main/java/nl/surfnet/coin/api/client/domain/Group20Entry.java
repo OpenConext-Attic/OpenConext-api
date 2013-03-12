@@ -23,12 +23,10 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-/**
- * 
- *
- */
 @SuppressWarnings({ "serial", "rawtypes", "unchecked" })
 public class Group20Entry extends AbstractEntry {
 
@@ -77,34 +75,17 @@ public class Group20Entry extends AbstractEntry {
     this.entry = entry;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntrySize()
-   */
   @Override
   public int getEntrySize() {
     return this.entry != null ? this.entry.size() : 0;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntryCollection()
-   */
   @Override
   @JsonIgnore
   public List getEntryCollection() {
     return entry;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.domain.AbstractEntry#sortEntryCollection(java
-   * .lang.String)
-   */
   @Override
   @JsonIgnore
   public void sortEntryCollection(String sort) {
@@ -114,17 +95,17 @@ public class Group20Entry extends AbstractEntry {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * nl.surfnet.coin.api.client.domain.AbstractEntry#setEntryCollection(java
-   * .util.List)
-   */
   @Override
   @JsonIgnore
   public void setEntryCollection(List entry) {
     this.entry = entry;
   }
 
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+      .appendSuper(super.toString())
+      .append(entry)
+      .toString();
+  }
 }

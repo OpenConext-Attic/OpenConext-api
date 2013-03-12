@@ -18,12 +18,10 @@ package nl.surfnet.coin.api.client.domain;
 
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-/**
- * 
- *
- */
 @SuppressWarnings("serial")
 public class GroupMembersEntry extends AbstractEntry {
 
@@ -79,17 +77,11 @@ public class GroupMembersEntry extends AbstractEntry {
     return found;
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntrySize()
-   */
   @Override
   public int getEntrySize() {
     return this.entry != null ? this.entry.size() : 0;
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#getEntryCollection()
-   */
   @SuppressWarnings("rawtypes")
   @Override
   @JsonIgnore
@@ -97,22 +89,23 @@ public class GroupMembersEntry extends AbstractEntry {
     return entry;
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#sortEntryCollection(java.lang.String)
-   */
   @Override
   @JsonIgnore
   public void sortEntryCollection(String sort) {
     // no sorting on group members is supported
   }
 
-  /* (non-Javadoc)
-   * @see nl.surfnet.coin.api.client.domain.AbstractEntry#setEntryCollection(java.util.List)
-   */
   @Override
   @JsonIgnore
   public void setEntryCollection(List entry) {
     this.entry = entry;
   }
-  
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+      .appendSuper(super.toString())
+      .append(entry)
+      .toString();
+  }
 }

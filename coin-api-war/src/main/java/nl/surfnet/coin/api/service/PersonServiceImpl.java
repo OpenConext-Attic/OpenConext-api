@@ -57,8 +57,9 @@ public class PersonServiceImpl implements PersonService {
     Person person = ldapClient.findPerson(userId);
 
     ARP arp = clientDetailsService.getArp(spEntityId);
+    LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
     person = arpEnforcer.enforceARP(person, arp);
-
+    LOG.debug("Person info after enforcing arp, for userId {}, on behalf of {}: {}", userId, onBehalfOf, person);
     return new PersonEntry(person, 1, 0, null, 1);
   }
 

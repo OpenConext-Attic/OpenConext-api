@@ -16,6 +16,9 @@
 
 package nl.surfnet.coin.teams.domain;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * User's key and secret for a Group provider
  */
@@ -83,5 +86,14 @@ public class GroupProviderUserOauth {
     result = PRIME * result + (oAuthToken != null ? oAuthToken.hashCode() : 0);
     result = PRIME * result + (oAuthSecret != null ? oAuthSecret.hashCode() : 0);
     return result;
+  }
+
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+      .append("personId", personId)
+      .append("provider", provider)
+      .append("oAuthToken", oAuthToken)
+      .append("oAuthSecret", "*****")
+      .toString();
   }
 }

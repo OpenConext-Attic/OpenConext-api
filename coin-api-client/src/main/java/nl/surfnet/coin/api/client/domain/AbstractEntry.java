@@ -19,6 +19,8 @@ package nl.surfnet.coin.api.client.domain;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -136,6 +138,17 @@ public abstract class AbstractEntry implements Serializable {
 
   @JsonIgnore
   public abstract void sortEntryCollection(String sort);
-  
-  
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+      .append("startIndex", startIndex)
+      .append("totalResults", totalResults)
+      .append("itemsPerPage", itemsPerPage)
+      .append("filtered", filtered)
+      .append("updatedSince", updatedSince)
+      .append("sorted", sorted)
+      .toString();
+  }
+
 }

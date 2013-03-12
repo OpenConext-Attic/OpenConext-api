@@ -16,12 +16,13 @@
 
 package nl.surfnet.coin.api.client.domain;
 
-/**
- * 
- *
- */
-public class Email {
-public Email() {
+import java.io.Serializable;
+
+public class Email implements Serializable {
+
+  private static final long serialVersionUID = 0L;
+
+  public Email() {
     super();
   }
 

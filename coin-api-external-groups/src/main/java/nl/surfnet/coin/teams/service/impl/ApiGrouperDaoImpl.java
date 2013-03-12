@@ -35,6 +35,8 @@ import nl.surfnet.coin.api.client.domain.Person;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -43,6 +45,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.Assert;
 
 public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrouperDao {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ApiGrouperDaoImpl.class);
 
   private JdbcTemplate jdbcTemplate;
   /*
@@ -65,6 +69,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
     Assert.notNull(personId, "The personId can not be null");
     Assert.notNull(groupName, "The groupName can not be null");
     try {
+      LOG.debug("Query to grouper database for person '{}' in group '{}'", personId, groupName.toUpperCase());
       group20Entry = new Group20Entry(Arrays.asList(jdbcTemplate.queryForObject(
           SQL_FIND_TEAM_BY_MEMBER_AND_BY_GROUPNAME, new Object[] { personId, groupName.toUpperCase() },
           new OpenSocial20GroupRowMapper())));

@@ -86,8 +86,7 @@ public interface GroupProviderConfiguration {
    *          the ACL to check for
    * @param spEntityId
    *          the entity of the Service provider
-   * @param the
-   *          Group Provider
+   * @param groupProvider the Group Provider
    * @return true if Grouper is present
    */
   boolean isCallAllowed(Service service, String spEntityId, GroupProvider groupProvider);

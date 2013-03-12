@@ -21,13 +21,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
@@ -35,6 +28,14 @@ import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.service.BasicAuthGroupService;
 import nl.surfnet.coin.teams.util.GroupProviderOptionParameters;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToExternalGroupId;
 import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertToExternalPersonId;
@@ -46,6 +47,8 @@ import static nl.surfnet.coin.teams.util.GroupProviderPropertyConverter.convertT
 @Component(value = "basicAuthGroupService")
 public class GroupServiceBasicAuthentication extends AbstractGroupService implements BasicAuthGroupService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(GroupServiceBasicAuthentication.class);
+
   private Client client = Client.create();
   
   @Override
@@ -56,8 +59,10 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     Client client = getClient(groupProvider);
     String url = String.format("%s/groups/%s?startIndex=%s&count=%s",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, offset, limit);
+    LOG.info("Getting groups for person {} at groupProvider {}, using URL: {}", personId, groupProvider.getIdentifier(), url);
     WebResource webResource = client.resource(url);
     Group20Entry entry = getGroup20Entry(groupProvider, webResource);
+    LOG.debug("Got group information: {}", entry);
     return entry;
   }
 
@@ -69,8 +74,12 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     Client client = getClient(groupProvider);
     String url = String.format("%s/groups/%s/%s",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupID);
+
+    LOG.info("Getting group information for person {} and group {} at groupProvider {}, using URL: {}", personId, groupId, groupProvider.getIdentifier(), url);
+
     WebResource webResource = client.resource(url);
     Group20Entry entry = getGroup20Entry(groupProvider, webResource);
+    LOG.debug("Got group information: {}", entry);
     if (entry == null || entry.getEntry() == null || entry.getEntry().isEmpty()) {
       return null;
     }
@@ -106,6 +115,9 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     String url = String.format("%s/people/%s/%s?startIndex=%s&count=%s&sortBy=name.familyName",
         groupProvider.getAllowedOptionAsString(GroupProviderOptionParameters.URL), strippedPersonID, strippedGroupId,
         offset, limit);
+
+    LOG.info("Getting group members for person {} and group {} at groupProvider {}, using URL: {}", personId, groupId, groupProvider.getIdentifier(), url);
+
     WebResource webResource = client.resource(url);
     String response;
     try {
@@ -118,6 +130,7 @@ public class GroupServiceBasicAuthentication extends AbstractGroupService implem
     InputStream in = new ByteArrayInputStream(response.getBytes());
 
     GroupMembersEntry entry = getGroupMembersEntryFromResponse(in, groupProvider);
+    LOG.debug("Got member information: {}", entry);
     return entry;
   }
 
