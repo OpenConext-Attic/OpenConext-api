@@ -25,16 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanComparator;
-import org.codehaus.jackson.type.TypeReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import nl.surfnet.coin.api.GroupProviderConfiguration;
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
 import nl.surfnet.coin.api.client.domain.AbstractEntry;
@@ -47,6 +37,16 @@ import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
+
+import org.apache.commons.beanutils.BeanComparator;
+import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Component(value = "mockService")
 public class MockServiceImpl implements PersonService, GroupService,
@@ -138,6 +138,14 @@ public class MockServiceImpl implements PersonService, GroupService,
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * A no-op implementation that simply returns the same list (a new one actually, by contract)
+   */
+  @Override
+  public List<Person> enforceArp(String spEntityId, List<Person> persons) {
+    return new ArrayList<Person>(persons);
   }
 
   private GroupMembersEntry getPreparedGroupMembers(String groupId) {

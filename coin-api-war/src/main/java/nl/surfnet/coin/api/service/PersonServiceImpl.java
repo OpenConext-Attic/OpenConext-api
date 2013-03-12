@@ -16,15 +16,11 @@
 
 package nl.surfnet.coin.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
@@ -33,8 +29,17 @@ import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.ldap.LdapClient;
 import nl.surfnet.coin.teams.service.impl.ApiGrouperDao;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Component(value = "ldapService")
 public class PersonServiceImpl implements PersonService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(PersonServiceImpl.class);
 
   @Autowired
   private LdapClient ldapClient;
@@ -77,13 +82,18 @@ public class PersonServiceImpl implements PersonService {
         }
       });
       // Now enrich the information
-      List<Person> enrichtedInfo = ldapClient.findPersons(identifiers);
-      ARP arp = clientDetailsService.getArp(spEntityId);
-      for (Person person : enrichtedInfo) {
+      List<Person> enrichedPersons = ldapClient.findPersons(identifiers);
+
+      for (Person person : enrichedPersons) {
         person.setVoot_membership_role(getVootMembersShip(person.getId(), persons));
-        arpEnforcer.enforceARP(person, arp);
       }
-      entry.setEntry(enrichtedInfo);
+
+      // Apply ARP
+      ARP arp = clientDetailsService.getArp(spEntityId);
+      LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
+      List<Person> arpEnforcedPersons = enforceArp(spEntityId, enrichedPersons);
+
+      entry.setEntry(arpEnforcedPersons);
     }
     return entry;
   }
@@ -97,7 +107,16 @@ public class PersonServiceImpl implements PersonService {
     throw new RuntimeException("No person found with identifier ('" + id + "')");
   }
 
-  public void setArpEnforcer(PersonARPEnforcer arpEnforcer) {
-    this.arpEnforcer = arpEnforcer;
+
+  @Override
+  public List<Person> enforceArp(String spEntityId, List<Person> persons) {
+    ARP arp = clientDetailsService.getArp(spEntityId);
+    List<Person> arpEnforcedPersons = new ArrayList<Person>(persons.size());
+    for (Person person : persons) {
+      Person arpedPerson = arpEnforcer.enforceARP(person, arp);
+      LOG.debug("Person info after enforcing arp: {}", arpedPerson);
+      arpEnforcedPersons.add(arpedPerson);
+    }
+    return arpEnforcedPersons;
   }
 }

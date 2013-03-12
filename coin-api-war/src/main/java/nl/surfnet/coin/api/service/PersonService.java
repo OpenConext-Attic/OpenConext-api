@@ -17,12 +17,14 @@
 package nl.surfnet.coin.api.service;
 
 
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
+
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface PersonService {
 
@@ -52,4 +54,13 @@ public interface PersonService {
   @PostAuthorize("#onBehalf == null or returnObject.isMember(#onBehalfOf)")
   GroupMembersEntry getGroupMembers(String groupId, String onBehalfOf, String spEntityId, Integer count,
                                     Integer startIndex, String sortBy);
+
+  /**
+   * Enforce the ARP on the given list of Persons.
+   * <p><strong>Beware:</strong> this is not an in-place enforcement: the original list will not be touched, nor its elements.</p>
+   * @param spEntityId the SP to use the ARP for
+   * @param persons the persons to enforce
+   * @return List of persons with the ARP applied.
+   */
+  List<Person> enforceArp(String spEntityId, List<Person> persons);
 }
