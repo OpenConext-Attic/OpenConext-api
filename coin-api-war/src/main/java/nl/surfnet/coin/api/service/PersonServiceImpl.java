@@ -82,19 +82,17 @@ public class PersonServiceImpl implements PersonService {
         }
       });
       // Now enrich the information
-      List<Person> enrichtedInfo = ldapClient.findPersons(identifiers);
+      List<Person> enrichedPersons = ldapClient.findPersons(identifiers);
+
+      for (Person person : enrichedPersons) {
+        person.setVoot_membership_role(getVootMembersShip(person.getId(), persons));
+      }
 
       // Apply ARP
       ARP arp = clientDetailsService.getArp(spEntityId);
-
       LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
-      List<Person> arpEnforcedPersons = new ArrayList<Person>();
-      for (Person person : enrichtedInfo) {
-        person.setVoot_membership_role(getVootMembersShip(person.getId(), persons));
-        Person arpedPerson = arpEnforcer.enforceARP(person, arp);
-        LOG.debug("Person info after enforcing arp, for groupId {}, on behalf of {}: {}", groupId, onBehalfOf, person);
-        arpEnforcedPersons.add(arpedPerson);
-      }
+      List<Person> arpEnforcedPersons = enforceArp(spEntityId, enrichedPersons);
+
       entry.setEntry(arpEnforcedPersons);
     }
     return entry;
@@ -109,7 +107,16 @@ public class PersonServiceImpl implements PersonService {
     throw new RuntimeException("No person found with identifier ('" + id + "')");
   }
 
-  public void setArpEnforcer(PersonARPEnforcer arpEnforcer) {
-    this.arpEnforcer = arpEnforcer;
+
+  @Override
+  public List<Person> enforceArp(String spEntityId, List<Person> persons) {
+    ARP arp = clientDetailsService.getArp(spEntityId);
+    List<Person> arpEnforcedPersons = new ArrayList<Person>(persons.size());
+    for (Person person : persons) {
+      Person arpedPerson = arpEnforcer.enforceARP(person, arp);
+      LOG.debug("Person info after enforcing arp: {}", arpedPerson);
+      arpEnforcedPersons.add(arpedPerson);
+    }
+    return arpEnforcedPersons;
   }
 }

@@ -17,8 +17,6 @@
 package nl.surfnet.coin.api.service;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
