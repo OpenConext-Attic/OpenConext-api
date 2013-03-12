@@ -33,20 +33,24 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 public class PersonServiceImplTest {
 
+  @InjectMocks
+  PersonServiceImpl personService;
+
   @Mock
-  private ApiGrouperDao apiGrouperDao;
+  PersonARPEnforcer arpEnforcer;
+
+  @Mock
+  ApiGrouperDao apiGrouperDao;
 
   @Mock
   LdapClient ldapClient;
-
-  @InjectMocks
-  PersonServiceImpl personService;
 
   @Mock
   OpenConextClientDetailsService clientDetailsService;
@@ -56,24 +60,28 @@ public class PersonServiceImplTest {
     personService = new PersonServiceImpl();
     MockitoAnnotations.initMocks(this);
   }
+
   @Test
-  public void testGetGroupMembers() throws Exception {
+  public void enforceArpOnGetGroupMembers() throws Exception {
 
-    Person person = new Person();
-    person.setId("thePersonId");
-    person.setDisplayName("the display name");
-    when(apiGrouperDao.findAllMembers(eq("groupId"), anyInt(), anyInt())).thenReturn(new GroupMembersEntry(Arrays.asList(person)));
-    when(ldapClient.findPersons(Arrays.asList("thePersonId"))).thenReturn(Arrays.asList(person));
-    ARP arp = new ARP();
-    arp.setAttributes(new HashMap<String, List<Object>>());
-    arp.getAttributes().put(PersonARPEnforcer.Attribute.COLLABPERSONID.name, null);
-    when(clientDetailsService.getArp("spEntityId")).thenReturn(arp);
+    Person originalPerson = new Person();
+    originalPerson.setDisplayName("originalDisplayName");
+    originalPerson.setId("theid");
 
+    when(apiGrouperDao.findAllMembers(eq("groupId"), anyInt(), anyInt())).thenReturn(new GroupMembersEntry(Arrays.asList(originalPerson)));
 
-    GroupMembersEntry groupMembers = personService.getGroupMembers("groupId", "onBehalfOf", "spEntityId", 10, 0, "");
-    Person person1 = groupMembers.getEntry().get(0);
-    assertEquals("Id is allowed by ARP, should be same", "thePersonId", person1.getId());
-    assertEquals("DisplayName is not allowed by ARP, should be null", null, person1.getDisplayName());
+    when(ldapClient.findPersons(Arrays.asList("theid"))).thenReturn(Arrays.asList(originalPerson));
 
+    Person arpedPerson = new Person();
+    arpedPerson.setId("theid");
+    arpedPerson.setDisplayName("the arped display name");
+
+    when(arpEnforcer.enforceARP((Person) any(), (ARP) any())).thenReturn(arpedPerson);
+
+    GroupMembersEntry groupMembers = personService.getGroupMembers("groupId", "onbehalfof", "spentityid", 2, 0, null);
+
+    assertEquals("Id is allowed by ARP, should be same", "theid", groupMembers.getEntry().get(0).getId());
+
+    assertEquals("the arped display name", groupMembers.getEntry().get(0).getDisplayName());
   }
 }
