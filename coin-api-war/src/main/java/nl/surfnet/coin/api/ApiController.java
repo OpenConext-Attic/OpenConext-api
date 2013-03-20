@@ -50,6 +50,7 @@ import nl.surfnet.coin.teams.service.TeamExternalGroupDao;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +128,7 @@ public class ApiController extends AbstractApiController {
   Integer startIndex, @RequestParam(value = "sortBy", required = false)
   String sortBy) {
     String onBehalfOf = getOnBehalfOf();
+    validateRequest(userId, onBehalfOf);
     if (PERSON_ID_SELF.equals(userId)) {
       userId = onBehalfOf;
     }
@@ -289,6 +291,12 @@ public class ApiController extends AbstractApiController {
     }
     return groups20Entry;
   }
+  
+  private void validateRequest(final String userId, final String onBehalfOf) {
+    if (StringUtils.isEmpty(onBehalfOf) && PERSON_ID_SELF.equals(userId)) {
+      throw new IllegalArgumentException("Argument " + PERSON_ID_SELF +" may not be specified in this context");
+    }
+  }
 
   /*
    * Get all SURFTeams groups for those external groups that linked to one or
@@ -391,10 +399,21 @@ public class ApiController extends AbstractApiController {
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   @ResponseBody
   @ExceptionHandler(RuntimeException.class)
-  public Object handleException(RuntimeException e) {
-    DateTime date = new DateTime();
-    LOG.error("Handling error, will respond with the exception message. Current date: " +  date +
-        ".", e);
+  public Object handleRuntimeException(RuntimeException e) {
+    LOG.error("Handling generic runtime exception, will respond with HTTP Not Found.", e);
+    return new Group20Entry(new ArrayList<Group20>());
+  }
+  
+  /**
+   * Handler for IllegalArgument Exception.
+   * @param e the exception
+   * @return the response body
+   */
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  @ExceptionHandler(IllegalArgumentException.class)
+  public Object handleIllegalArgumentException(IllegalArgumentException e) {
+    LOG.info("Illegal Argument encountered in client request, we are responding with HTTP Bad Request");
     return new Group20Entry(new ArrayList<Group20>());
   }
 

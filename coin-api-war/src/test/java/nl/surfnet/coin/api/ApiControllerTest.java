@@ -50,7 +50,7 @@ public class ApiControllerTest {
 
   @Test
   public void testErrorHandling() throws JsonGenerationException, JsonMappingException, IOException {
-    Object results = controller.handleException(new RuntimeException("nice"));
+    Object results = controller.handleRuntimeException(new RuntimeException("nice"));
     String s = new ObjectMapper().writeValueAsString(results);
     System.out.println(s);
   }
