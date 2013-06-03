@@ -1,0 +1,1 @@
+alter table oauth1_tokens modify callbackUrl varchar(4096);
