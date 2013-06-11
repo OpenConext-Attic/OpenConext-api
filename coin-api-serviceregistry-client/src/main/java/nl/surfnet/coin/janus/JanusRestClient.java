@@ -274,7 +274,7 @@ public class JanusRestClient implements Janus {
     final Map restResponse = restTemplate.getForObject(signedUri, Map.class);
     LOG.debug("Janus-request returned {}", restResponse);
 
-    return (restResponse == null || restResponse.isEmpty()) ? null : ARP.fromRestResponse(restResponse);
+    return (restResponse == null) ? null : ARP.fromRestResponse(restResponse);
   }
 
   @Override

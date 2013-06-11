@@ -17,6 +17,7 @@
 package nl.surfnet.coin.janus.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for {@link ARP}
@@ -52,6 +55,8 @@ public class ARPTest {
     assertEquals(description, arp.getDescription());
     assertEquals(3, arp.getAttributes().size());
 
+    assertFalse(arp.isNoArp());
+    assertFalse(arp.isNoAttrArp());
   }
 
   @Test
@@ -66,5 +71,14 @@ public class ARPTest {
     assertEquals(name, arp.getName());
     assertEquals(description, arp.getDescription());
     assertEquals(0, arp.getAttributes().size());
+    assertTrue(arp.isNoAttrArp());
+  }
+
+  @Test
+  public void fromRestResponseNoArp() {
+    // When there is no arp at all, the REST response will be an empty map.
+    Map<String, Object> restResponse = new HashMap<String, Object>();
+    ARP arp = ARP.fromRestResponse(restResponse);
+    assertTrue(arp.isNoArp());
   }
 }
