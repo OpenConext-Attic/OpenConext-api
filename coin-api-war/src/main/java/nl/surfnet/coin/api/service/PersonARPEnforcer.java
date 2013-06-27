@@ -87,14 +87,14 @@ public class PersonARPEnforcer {
     Assert.notNull(person);
 
     // No arp at all: allow everything
-    if (arp == null) {
+    if (arp == null || arp.isNoArp()) {
       return person;
     }
 
     // Start with an empty person.
     Person newP = new Person();
 
-    if (arp.getAttributes() == null || arp.getAttributes().isEmpty()) {
+    if (arp.isNoAttrArp()) {
       // Empty arp: allow nothing
       return newP;
     }

@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
@@ -93,5 +94,16 @@ public class PersonARPEnforcerTest {
     Person enforced = e.enforceARP(p, arp);
     assertThat(enforced.getId(), equalTo("myid"));
     assertThat(enforced.getDisplayName(), nullValue());
+  }
+
+  @Test
+  public void testNoArp() {
+    Person p = new Person();
+    p.setDisplayName("john.doe");
+    ARP arp = new ARP();
+    arp.setNoArp(true);
+
+    Person enforced = e.enforceARP(p, arp);
+    assertEquals(p.getDisplayName(), enforced.getDisplayName());
   }
 }
