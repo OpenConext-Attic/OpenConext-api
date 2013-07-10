@@ -97,6 +97,7 @@
         <groupId>org.surfnet.coin</groupId>
         <artifactId>coin-test</artifactId>
         <version>${coin-test.version}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>

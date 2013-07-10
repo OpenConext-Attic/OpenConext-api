@@ -21,7 +21,6 @@
     <version>3.6.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>org.surfnet.coin</groupId>
   <artifactId>coin-api-client</artifactId>
   <name>coin-api-client</name>
 
