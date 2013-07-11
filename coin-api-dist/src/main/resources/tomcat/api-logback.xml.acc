@@ -18,10 +18,10 @@
 
 <configuration scan="true">
   <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>logs/api.log</file>
+    <file>${CATALINA_BASE}/logs/api.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+      <fileNamePattern>${CATALINA_BASE}/logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
       <maxHistory>60</maxHistory>
     </rollingPolicy>
     <encoder>
@@ -45,10 +45,10 @@
   </appender>
 
   <appender name="DUMPAPPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>logs/api-fc.log</file>
+    <file>${CATALINA_BASE}/logs/api-fc.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+      <fileNamePattern>${CATALINA_BASE}/logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
       <maxHistory>60</maxHistory>
     </rollingPolicy>
     <encoder>
