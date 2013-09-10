@@ -36,7 +36,7 @@ coin-api.ldap.userDn=cn=ro,dc=surfconext,dc=nl
 
 coin-api.engineblock.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.engineblock.jdbc.password=c0n3xt
-coin-api.engineblock.jdbc.url=jdbc:mysql://localhost:3306/engineblock
+coin-api.engineblock.jdbc.url=jdbc:mysql://localhost:3306/eb
 coin-api.engineblock.jdbc.user=root
 
 coin-api.grouper.jdbc.driver=com.mysql.jdbc.Driver
