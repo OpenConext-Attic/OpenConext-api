@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.janus;
 
+import java.net.URI;
 import java.util.List;
 
 import nl.surfnet.coin.janus.domain.ARP;
@@ -153,4 +154,23 @@ public interface Janus {
    * @return {@link JanusEntity}
    */
   JanusEntity getEntity(String entityId);
+  
+  /**
+   * @param janusUri
+   *          the janusUri to set
+   */
+   void setJanusUri(URI janusUri);
+
+  /**
+   * @param user
+   *          the user to set
+   */
+  void setUser(String user);
+  
+  /**
+   * @param secret
+   *          the secret to set
+   */
+  void setSecret(String secret);
+
 }
