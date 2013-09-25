@@ -29,7 +29,7 @@
 		<jetty.version>8.0.4.v20111024</jetty.version>
 		<ehcache.version>2.2.0</ehcache.version>
 		<mujina-idp.version>2.15.0</mujina-idp.version>
-		<selenium.version>2.25.0</selenium.version>
+		<selenium.version>2.35.0</selenium.version>
 		<selenium.test.url>http://localhost:8095/api/</selenium.test.url>
 		<jetty.port>8095</jetty.port>
 
