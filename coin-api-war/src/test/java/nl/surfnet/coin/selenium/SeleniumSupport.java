@@ -23,6 +23,7 @@ import org.junit.Rule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +56,17 @@ public class SeleniumSupport {
   @Before
   public void initializeOnce() {
     if (driver == null) {
+      if ("firefox".equals(System.getProperty("selenium.webdriver", "firefox"))) {
+        initFirefoxDriver();
+      } else {
+        initPhantomJSDriver();
+      }
+    }
+  }
+
+  private void initPhantomJSDriver() {
       driver = new PhantomJSDriver();
-      SeleniumSupport.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+      driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
       Runtime.getRuntime().addShutdownHook(new Thread() {
         @Override
         public void run() {
@@ -65,7 +75,21 @@ public class SeleniumSupport {
           }
         }
       });
-    }
+  }
+
+  private void initFirefoxDriver() {
+    driver = new FirefoxDriver();
+
+    driver.manage().timeouts()
+        .implicitlyWait(10, TimeUnit.SECONDS);
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        if (driver != null) {
+          driver.quit();
+        }
+      }
+    });
   }
 
   /**

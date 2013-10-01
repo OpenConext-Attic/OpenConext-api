@@ -35,7 +35,7 @@
 
 		<!-- default webdriver for selenium tests. To be overridden on a per profile 
 			base -->
-		<selenium.webdriver>firefox</selenium.webdriver>
+		<selenium.webdriver>phantomJS</selenium.webdriver>
 	</properties>
 
 	<dependencies>
@@ -142,14 +142,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
-
-		<!-- Begin Selenium -->
-<dependency>
-    <groupId>com.github.detro.ghostdriver</groupId>
-    <artifactId>phantomjsdriver</artifactId>
-    <version>1.0.4</version>
-</dependency>
-		<!-- End Selenium -->
+    <dependency>
+      <groupId>com.github.detro.ghostdriver</groupId>
+      <artifactId>phantomjsdriver</artifactId>
+      <version>1.0.4</version>
+    </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -410,7 +407,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<selenium.webdriver>htmlunit</selenium.webdriver>
+				<selenium.webdriver>phantomJS</selenium.webdriver>
 			</properties>
 		</profile>
 	</profiles>
