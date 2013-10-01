@@ -18,18 +18,18 @@ package nl.surfnet.coin.selenium;
 
 import java.util.concurrent.TimeUnit;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import org.junit.Before;
 import org.junit.Rule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 /**
  *
@@ -55,42 +55,17 @@ public class SeleniumSupport {
   @Before
   public void initializeOnce() {
     if (driver == null) {
-      if ("firefox".equals(System.getProperty("selenium.webdriver", "firefox"))) {
-        initFirefoxDriver();
-      } else {
-        initHtmlUnitDriver();
-      }
+      driver = new PhantomJSDriver();
+      SeleniumSupport.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+          if (driver != null) {
+            driver.quit();
+          }
+        }
+      });
     }
-  }
-
-  private void initHtmlUnitDriver() {
-    SeleniumSupport.driver = new HtmlUnitDriver();
-    SeleniumSupport.driver.manage().timeouts()
-        .implicitlyWait(3, TimeUnit.SECONDS);
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        if (driver != null) {
-          driver.quit();
-        }
-      }
-    });
-  }
-
-  private void initFirefoxDriver() {
-    SeleniumSupport.driver = new FirefoxDriver();
-
-
-    SeleniumSupport.driver.manage().timeouts()
-        .implicitlyWait(3, TimeUnit.SECONDS);
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        if (driver != null) {
-          driver.quit();
-        }
-      }
-    });
   }
 
   /**
