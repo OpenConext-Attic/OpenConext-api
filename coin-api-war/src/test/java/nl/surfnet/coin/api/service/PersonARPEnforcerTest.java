@@ -16,12 +16,7 @@
 
 package nl.surfnet.coin.api.service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import nl.surfnet.coin.api.client.domain.Email;
 import nl.surfnet.coin.api.client.domain.Name;
@@ -40,6 +35,7 @@ import static org.junit.Assert.assertThat;
 public class PersonARPEnforcerTest {
 
   PersonARPEnforcer e = new PersonARPEnforcer();
+
   @Test
   public void allowAll() throws Exception {
   // with a 'null' arp, no restrictions
@@ -51,9 +47,7 @@ public class PersonARPEnforcerTest {
 
   @Test
   public void allowNone() {
-    Person p = new Person();
-    p.setDisplayName("boobaa");
-    p.setName(new Name("boo", "baa", "bii"));
+    Person p = initPerson();
     Set<Organization> organizations = new HashSet<Organization>();
     Organization org = new Organization("topSecret");
     organizations.add(org);
@@ -67,12 +61,17 @@ public class PersonARPEnforcerTest {
     
   }
 
-  @Test
-  public void nameOnly() {
-    // ARP contains one of the name attributes. Enforced person should contain all name attributes, but no email
+  private Person initPerson() {
     Person p = new Person();
     p.setDisplayName("boobaa");
     p.setName(new Name("boo", "baa", "bii"));
+    return p;
+  }
+
+  @Test
+  public void nameOnly() {
+    // ARP contains one of the name attributes. Enforced person should contain all name attributes, but no email
+    Person p = initPerson();
     p.setEmails(Collections.singleton(new Email("foo@bar.com")));
     ARP arp = new ARP();
     arp.getAttributes().put("urn:mace:dir:attribute-def:displayName", Collections.<Object>singletonList("*"));
@@ -85,15 +84,23 @@ public class PersonARPEnforcerTest {
   @Test
   public void id() {
     // ARP contains one of the id attributes. Enforced person should contain id attributes
-    Person p = new Person();
-    p.setDisplayName("boobaa");
-    p.setName(new Name("boo", "baa", "bii"));
+    Person p = initPerson();
     p.setId("myid");
     ARP arp = new ARP();
     arp.getAttributes().put("urn:oid:1.3.6.1.4.1.1076.20.40.40.1", Collections.<Object>singletonList("*"));
     Person enforced = e.enforceARP(p, arp);
     assertThat(enforced.getId(), equalTo("myid"));
     assertThat(enforced.getDisplayName(), nullValue());
+  }
+
+  @Test
+  public void testArpWithPrefixMatchingInformation() {
+    Person p = initPerson();
+    ARP arp = new ARP();
+    arp.getAttributes().put(PersonARPEnforcer.Attribute.UID.name, Arrays.<Object>asList("*", true));
+    Person enforced = e.enforceARP(p, arp);
+    assertNull(enforced.getDisplayName());
+
   }
 
   @Test
