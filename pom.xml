@@ -20,12 +20,12 @@
   <parent>
     <groupId>org.surfnet.coin</groupId>
     <artifactId>coin-master</artifactId>
-    <version>3.8.1-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.surfnet.coin</groupId>
   <artifactId>coin-api-parent</artifactId>
-  <version>3.8.1-SNAPSHOT</version>
+  <version>3.10.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>coin-api-parent</name>
   <description>Coin API Parent</description>
