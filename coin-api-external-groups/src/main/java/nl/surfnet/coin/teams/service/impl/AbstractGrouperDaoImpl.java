@@ -16,12 +16,16 @@
 
 package nl.surfnet.coin.teams.service.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * @deprecated use the official grouper web service instead, it supports pagination from version 2.x.x onwards.
+ */
+@Deprecated
 public abstract class AbstractGrouperDaoImpl  {
 
 

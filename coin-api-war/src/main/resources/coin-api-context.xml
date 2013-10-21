@@ -228,14 +228,14 @@
 		</property>
 	</bean>
 
-	<bean id="grouperJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	<bean id="teamsJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource">
 			<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 				destroy-method="close">
-				<property name="driverClass" value="${coin-api.grouper.jdbc.driver}" />
-				<property name="jdbcUrl" value="${coin-api.grouper.jdbc.url}" />
-				<property name="username" value="${coin-api.grouper.jdbc.user}" />
-				<property name="password" value="${coin-api.grouper.jdbc.password}" />
+				<property name="driverClass" value="${coin-api.teams.jdbc.driver}" />
+				<property name="jdbcUrl" value="${coin-api.teams.jdbc.url}" />
+				<property name="username" value="${coin-api.teams.jdbc.user}" />
+				<property name="password" value="${coin-api.teams.jdbc.password}" />
 				<property name="idleConnectionTestPeriodInMinutes" value="60" />
 				<property name="idleMaxAgeInMinutes" value="240" />
 				<property name="maxConnectionsPerPartition" value="20" />
@@ -250,11 +250,11 @@
 
 	<bean id="namedParameterJdbcTemplate"
 		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-		<constructor-arg ref="grouperJdbcTemplate" />
+		<constructor-arg ref="teamsJdbcTemplate" />
 	</bean>
 
 	<bean id="apiGrouperDao" class="nl.surfnet.coin.teams.service.impl.ApiGrouperDaoImpl">
-		<property name="jdbcTemplate" ref="grouperJdbcTemplate" />
+		<property name="jdbcTemplate" ref="teamsJdbcTemplate" />
 		<property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate" />
 	</bean>
 

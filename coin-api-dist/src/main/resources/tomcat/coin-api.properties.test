@@ -39,10 +39,10 @@ coin-api.engineblock.jdbc.password=??
 coin-api.engineblock.jdbc.url=jdbc:mysql://db.test.surfconext.nl:3306/eb
 coin-api.engineblock.jdbc.user=??
 
-coin-api.grouper.jdbc.driver=com.mysql.jdbc.Driver
-coin-api.grouper.jdbc.url=jdbc:mysql://db.test.surfconext.nl:3306/teams
-coin-api.grouper.jdbc.user=??
-coin-api.grouper.jdbc.password=??
+coin-api.teams.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.teams.jdbc.url=jdbc:mysql://db.test.surfconext.nl:3306/teams
+coin-api.teams.jdbc.user=??
+coin-api.teams.jdbc.password=??
 
 # global configuration of database properties, used for all data sources
 # in seconds

@@ -48,7 +48,7 @@ public class TeamExternalGroupDaoImpl implements TeamExternalGroupDao {
   private static final String GROUP_PROVIDER = "group_provider";
   private static final String GROUPER_TEAM_ID = "grouper_team_id";
 
-  @Resource(name = "grouperJdbcTemplate")
+  @Resource(name = "teamsJdbcTemplate")
   private JdbcTemplate jdbcTemplate;
 
   public void setJdbcTemplate(JdbcTemplate tpl) {
