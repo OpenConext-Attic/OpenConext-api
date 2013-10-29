@@ -16,8 +16,11 @@
 
 package nl.surfnet.coin.api.client.domain;
 
+import java.beans.Transient;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -42,6 +45,7 @@ public class Person implements Serializable {
   private Set<Organization> organizations;
   private Set<PhoneNumber> phoneNumbers;
   private String error;
+  private transient Map<String, String> nameIds = new HashMap<String, String>();
 
   public void addEmail(Email email) {
     if (emails == null) {
@@ -55,6 +59,14 @@ public class Person implements Serializable {
       tags = new HashSet<String>();
     }
     tags.add(tag);
+  }
+  
+  public void addNameId(String nameId, String id) {
+    nameIds.put(nameId, id);
+  }
+  
+  public String getNameId(String nameId) {
+    return nameIds.get(nameId);
   }
 
   public void addAccount(Account account) {

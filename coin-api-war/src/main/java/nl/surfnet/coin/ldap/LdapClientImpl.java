@@ -18,6 +18,9 @@
  */
 package nl.surfnet.coin.ldap;
 
+import static nl.surfnet.coin.janus.Janus.NAMEID_FORMAT_PERSISTENT;
+import static nl.surfnet.coin.janus.Janus.NAMEID_FORMAT_UNSPECIFIED;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -50,7 +53,6 @@ import org.springframework.util.StringUtils;
  * 
  */
 public class LdapClientImpl implements LdapClient {
-
   private static final Logger LOG = LoggerFactory.getLogger(LdapClientImpl.class);
 
   @Autowired
@@ -132,7 +134,13 @@ public class LdapClientImpl implements LdapClient {
    * 'edupersonaffiliation' => 'organizations.title',
    */
   protected Person convertLdapProperties(Person person, Attributes attributes) {
+    /* we store all the possible IDs in the nameID map, but we also store the unspecified
+     * id in the ID property (for backwards compatability
+     */
+    person.addNameId(NAMEID_FORMAT_UNSPECIFIED, getAttribute("collabpersonid", attributes));
+    person.addNameId(NAMEID_FORMAT_PERSISTENT, getAttribute("collabPersonUUID",  attributes));
     person.setId(getAttribute("collabpersonid", attributes));
+    
     person.addTag(Boolean.valueOf(getAttribute("collabpersonisguest", attributes)) ? "guest" : "member");
     String uid = getAttribute("uid", attributes);
     if (StringUtils.hasText(uid)) {

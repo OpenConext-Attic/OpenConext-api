@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.service;
 
+import static nl.surfnet.coin.janus.Janus.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +60,16 @@ public class PersonServiceImpl implements PersonService {
     ARP arp = clientDetailsService.getArp(spEntityId);
     LOG.debug("ARP for SP {} is: {}", spEntityId, arp);
     person = arpEnforcer.enforceARP(person, arp);
+    
+    /*
+     * enforce the correct name id
+     */
+    if (clientDetailsService.getNameID(spEntityId).equals(NAMEID_FORMAT_PERSISTENT)) {
+      person.setId(person.getNameId(NAMEID_FORMAT_PERSISTENT));
+    } else {
+      person.setId(person.getNameId(NAMEID_FORMAT_UNSPECIFIED));
+    }
+    
     LOG.debug("Person info after enforcing arp, for userId {}, on behalf of {}: {}", userId, onBehalfOf, person);
     return new PersonEntry(person, 1, 0, null, 1);
   }

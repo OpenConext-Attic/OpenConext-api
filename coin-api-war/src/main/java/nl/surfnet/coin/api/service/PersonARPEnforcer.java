@@ -84,7 +84,7 @@ public class PersonARPEnforcer {
    * @return A copy of the given person, mangled
    */
   public Person enforceARP(Person person, ARP arp) {
-    Assert.notNull(person);
+    Assert.notNull(person, "while enforcing ARP: person cannot be null");
 
     // No arp at all: allow everything
     if (arp == null || arp.isNoArp()) {

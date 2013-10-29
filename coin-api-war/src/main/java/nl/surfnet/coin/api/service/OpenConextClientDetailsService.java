@@ -24,4 +24,6 @@ import nl.surfnet.coin.janus.domain.ARP;
 public interface OpenConextClientDetailsService extends ClientDetailsService, ConsumerDetailsService {
 
   ARP getArp(String spEntityId);
+  
+  String getNameID(String spEntityId);
 }

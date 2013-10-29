@@ -114,6 +114,7 @@ public class ApiController extends AbstractApiController {
     } else {
       person = personService.getPerson(userId, onBehalfOf, spEntityId);
     }
+    
     logApiCall(onBehalfOf);
     setResultOptions(person, 0, 0, null);
     return person;
@@ -413,7 +414,7 @@ public class ApiController extends AbstractApiController {
   @ResponseBody
   @ExceptionHandler(IllegalArgumentException.class)
   public Object handleIllegalArgumentException(IllegalArgumentException e) {
-    LOG.info("Illegal Argument encountered in client request, we are responding with HTTP Bad Request");
+    LOG.info("Illegal Argument encountered in client request, we are responding with HTTP Bad Request", e);
     return new Group20Entry(new ArrayList<Group20>());
   }
 

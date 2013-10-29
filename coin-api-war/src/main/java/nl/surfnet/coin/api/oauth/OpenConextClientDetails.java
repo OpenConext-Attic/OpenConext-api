@@ -54,5 +54,4 @@ public class OpenConextClientDetails extends BaseClientDetails {
   public Integer getAccessTokenValiditySeconds() {
     return null;
   }
-
 }

@@ -87,4 +87,8 @@ public class JanusClientMetadata implements ClientMetaData, Serializable {
   public String getEulaUrl() {
     return metadata.getEula();
   }
+  
+  public String getNameId() {
+    return metadata.getNameID();
+  }
 }

@@ -24,6 +24,7 @@ import nl.surfnet.coin.api.client.domain.Account;
 import nl.surfnet.coin.api.client.domain.Email;
 import nl.surfnet.coin.api.client.domain.Name;
 import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.janus.Janus;
 
 public class MockLdapClientImpl implements LdapClient {
 
@@ -31,6 +32,8 @@ public class MockLdapClientImpl implements LdapClient {
   public Person findPerson(String identifier) {
     Person p = new Person();
     p.setId(identifier);
+    p.addNameId(Janus.NAMEID_FORMAT_UNSPECIFIED, identifier);
+    p.addNameId(Janus.NAMEID_FORMAT_PERSISTENT, Integer.toString(identifier.hashCode()));
     p.setName(new Name("the formatted name", "family", "given"));
     p.setDisplayName("his or her display name");
     p.addEmail(new Email("foo@example.com", Email.Type.email));

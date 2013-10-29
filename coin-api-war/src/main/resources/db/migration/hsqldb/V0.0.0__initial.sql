@@ -81,6 +81,7 @@ create table group_provider_precondition_option (
 insert into service_provider_group_acl (id, group_provider_id, spentityid, allow_groups, allow_members) values (1, 9, 'https://serviceregistry.test.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 1, 1);
 insert into service_provider_group_acl (id, group_provider_id, spentityid, allow_groups, allow_members) values (2, 5, 'https://testsp.dev.surfconext.nl/shibboleth', 1, 1);
 insert into service_provider_group_acl (id, group_provider_id, spentityid, allow_groups, allow_members) values (3, 5, 'https://testsp.test.surfconext.nl/shibboleth', 1, 1);
+insert into service_provider_group_acl (id, group_provider_id, spentityid, allow_groups, allow_members) values (4, 5, 'https://testsp.surfconext.nl/shibboleth', 1, 1);
 
 insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('avans','urn:collab:person:test.surfguest.nl:tester', 'replaced_by_dummy_value', 'replaced_by_dummy_value');
 insert into group_provider_user_oauth (provider_id, user_id, oauth_token, oauth_secret) values ('hz', 'urn:collab:person:test.surfguest.nl:tester2', 'replaced_by_dummy_value', 'replaced_by_dummy_value');

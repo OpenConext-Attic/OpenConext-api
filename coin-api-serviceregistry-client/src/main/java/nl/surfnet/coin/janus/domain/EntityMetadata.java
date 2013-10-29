@@ -57,6 +57,7 @@ public class EntityMetadata implements Serializable {
   private List<Contact> contacts = new ArrayList<Contact>();
   private String instutionId;
   private String applicationUrl;
+  private String nameID;
 
   public static EntityMetadata fromMetadataMap(Map<String, Object> metadata) {
     EntityMetadata em = new EntityMetadata();
@@ -120,6 +121,8 @@ public class EntityMetadata implements Serializable {
       Contact contact = getContact2(metadata, (String) c2Mail);
       em.addContact(contact);
     }
+    
+    em.setNameID((String)(metadata.get(Janus.Metadata.NAMEIDFORMAT.val())));
 
     return em;
   }
@@ -413,6 +416,14 @@ public class EntityMetadata implements Serializable {
 
   public void setApplicationUrl(String applicationUrl) {
     this.applicationUrl = applicationUrl;
+  }
+
+  public String getNameID() {
+    return nameID;
+  }
+
+  public void setNameID(String nameID) {
+    this.nameID = nameID;
   }
 
 }

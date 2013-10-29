@@ -28,7 +28,8 @@ import nl.surfnet.coin.janus.domain.JanusEntity;
  */
 public interface Janus {
 
-
+  public static final String NAMEID_FORMAT_PERSISTENT = "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
+  public static final String NAMEID_FORMAT_UNSPECIFIED = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
 
   public enum Metadata {
 

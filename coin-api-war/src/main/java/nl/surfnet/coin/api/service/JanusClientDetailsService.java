@@ -31,6 +31,7 @@ import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
+import org.bouncycastle.asn1.cms.MetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,9 +84,19 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
     }
   }
 
+  @Override
   @Cacheable(value = { "janus-meta-data" })
   public ARP getArp(String clientId) {
     return janus.getArp(clientId);
+  }
+
+  @Override
+  public String getNameID(String spEntityId) {
+    EntityMetadata metaData = janus.getMetadataByEntityId(spEntityId);
+    if (null != metaData) {
+      return metaData.getNameID();
+    }
+    return Janus.NAMEID_FORMAT_UNSPECIFIED;
   }
 
   /*
