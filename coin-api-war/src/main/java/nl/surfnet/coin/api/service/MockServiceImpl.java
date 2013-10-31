@@ -16,28 +16,12 @@
 
 package nl.surfnet.coin.api.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import nl.surfnet.coin.api.GroupProviderConfiguration;
 import nl.surfnet.coin.api.client.OpenConextJsonParser;
-import nl.surfnet.coin.api.client.domain.AbstractEntry;
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupEntry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.domain.PersonEntry;
+import nl.surfnet.coin.api.client.domain.*;
 import nl.surfnet.coin.teams.domain.GroupProvider;
 import nl.surfnet.coin.teams.domain.GroupProviderType;
 import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
-
 import org.apache.commons.beanutils.BeanComparator;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
@@ -47,6 +31,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Component(value = "mockService")
 public class MockServiceImpl implements PersonService, GroupService,
@@ -358,7 +346,7 @@ public class MockServiceImpl implements PersonService, GroupService,
       parent.setStartIndex(startIndex);
     }
     if (count != null && count.intValue() != 0 && count < size) {
-      entry = entry.subList(0, count);
+      entry = entry.subList(0, (entry.size() > count) ? count : entry.size());
       parent.setItemsPerPage(count);
     }
 
