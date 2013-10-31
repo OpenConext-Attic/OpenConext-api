@@ -81,7 +81,7 @@
 											<div class="controls">
 												<form:input path="oauthKey" id="oauthKey" name="oauthKey"
 													class="input-xxlarge" />
-												<p class="help-block">Hint: https://testsp.dev.surfconext.nl/shibboleth</p>	
+												<p class="help-block">${settings.oauthKey}</p>
 											</div>
 										</div>
 										<div class="control-group" id="secretInput"
@@ -120,10 +120,7 @@
 													<form:input path="requestTokenEndPoint"
 														id="requestTokenEndPoint" name="requestTokenEndPoint"
 														class="input-xxlarge" />
-													<p class="help-block">Hint:
-														https://api.dev.surfconext.nl/v1/oauth1/requestToken</p>
-													<p class="help-block">Hint:
-														https://os.dev.surfconext.nl/oauth/requestToken</p>
+													<p class="help-block">Hint: ${settings.requestTokenEndPoint}</p>
 												</div>
 											</div>
 											<div class="control-group">
@@ -141,10 +138,7 @@
 													<form:input path="accessTokenEndPoint"
 														id="accessTokenEndPoint" name="accessTokenEndPoint"
 														class="input-xxlarge" />
-													<p class="help-block">Hint:
-														https://api.dev.surfconext.nl/v1/oauth1/accessToken</p>
-													<p class="help-block">Hint:
-														https://os.dev.surfconext.nl/oauth/accessToken</p>
+													<p class="help-block">Hint: ${settings.accessTokenEndPoint}</p>
 												</div>
 											</div>
 											<div class="control-group">
@@ -153,10 +147,7 @@
 												<div class="controls">
 													<form:input path="authorizationURL" id="authorizationURL"
 														name="authorizationURL" class="input-xxlarge" />
-													<p class="help-block">Hint:
-														https://api.dev.surfconext.nl/v1/oauth1/confirm_access</p>
-													<p class="help-block">Hint:
-														https://os.dev.surfconext.nl/oauth/authorize</p>
+													<p class="help-block">Hint: ${settings.authorizationURL}</p>
 												</div>
 											</div>
 										</div>
@@ -189,8 +180,7 @@
 													<form:input path="accessTokenEndPoint2"
 														id="accessTokenEndPoint2" name="accessTokenEndPoint2"
 														class="input-xxlarge" />
-													<p class="help-block">Hint:
-														https://api.dev.surfconext.nl/v1/oauth2/token</p>
+													<p class="help-block">Hint: ${settings.accessTokenEndPoint2}</p>
 												</div>
 											</div>
 										</div>
@@ -200,8 +190,7 @@
 											<div class="controls">
 												<form:input path="authorizationURL2" id="authorizationURL2"
 													name="authorizationURL2" class="input-xxlarge" />
-												<p class="help-block">Hint:
-													https://api.dev.surfconext.nl/v1/oauth2/authorize</p>
+												<p class="help-block">Hint: ${settings.authorizationURL2}</p>
 											</div>
 										</div>
 									</div>
@@ -305,11 +294,9 @@
 											<form:input path="requestURL" id="requestURL"
 												name="requestURL" class="input-xxlarge" />
 											<p class="help-block">Hint:
-												https://api.dev.surfconext.nl/v1/social/rest/groups/@me</p>
+												https://api.DOMAIN_NAME/v1/social/rest/groups/@me</p>
                                             <p class="help-block">Hint:
-                                              https://api.dev.surfconext.nl/v1/social/rest/people/@me/groupId</p>
-											<p class="help-block">Hint:
-												https://os.dev.surfconext.nl/social/rest/people/@me</p>
+                                              https://api.DOMAIN_NAME/v1/social/rest/people/@me/groupId</p>
 									</div>
 									<div class="form-actions">
 										<button id="step3" name="step3" class="btn btn-primary">Fetch</button>
