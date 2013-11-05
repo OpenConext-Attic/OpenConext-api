@@ -66,47 +66,33 @@ public class OpenConextOauth2JdbcTokenStore extends JdbcTokenStore {
   @Override
   public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
     AuthorizationRequest authorizationRequest = authentication.getAuthorizationRequest();
-    Authentication userAuthentication = authentication.getUserAuthentication();
-    if (userAuthentication instanceof SAMLAuthenticationToken) {
-      SAMLAuthenticationToken samlToken = (SAMLAuthenticationToken) userAuthentication;
-      if (samlToken.getClientMetaData() == null) {
-        String clientId = authorizationRequest.getClientId();
-        ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
-        if (clientDetails instanceof OpenConextClientDetails) {
-          ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
-          samlToken.setClientMetaData(clientMetaData);
-        } else {
-          throw new RuntimeException("The clientDetails is of the type '"
-              + (clientDetails != null ? clientDetails.getClass() : "null")
-              + "'. Required is a (sub)class of ExtendedBaseClientDetails");
-        }
-        
-      }
+    String clientId = authorizationRequest.getClientId();
+    ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
+    if (! (clientDetails instanceof OpenConextClientDetails)) {
+      throw new RuntimeException("The clientDetails is of the type '"
+          + (clientDetails != null ? clientDetails.getClass() : "null")
+          + "'. Required is a (sub)class of ExtendedBaseClientDetails");          
+    } 
+    
+    ClientMetaData clientMetaData = ((OpenConextClientDetails) clientDetails).getClientMetaData();
 
-      String refreshToken = null;
-      if (token.getRefreshToken() != null) {
-        refreshToken = token.getRefreshToken().getValue();
-      }
-
-
-      String value = extractTokenKey(token.getValue());
-      jdbcTemplate.update(
-          ACCESS_TOKEN_INSERT_STATEMENT,
-          new Object[] { value, new SqlLobValue(SerializationUtils.serialize(token)),
-              authenticationKeyGenerator.extractKey(authentication),
-              authentication.isClientOnly() ? null : authentication.getName(),
-              authentication.getAuthorizationRequest().getClientId(),
-              samlToken.getClientMetaData().getAppEntityId(),
-              new SqlLobValue(SerializationUtils.serialize(authentication)), refreshToken }, new int[] {
-          Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB,
-          Types.VARCHAR });
-
-
-    } else {
-      throw new RuntimeException("The userAuthentication is of the type '"
-          + (userAuthentication != null ? userAuthentication.getClass() : "null")
-          + "'. Required is a (sub)class of SAMLAuthenticationToken");
+    String refreshToken = null;
+    if (token.getRefreshToken() != null) {
+      refreshToken = token.getRefreshToken().getValue();
     }
+
+
+    String value = extractTokenKey(token.getValue());
+    jdbcTemplate.update(
+        ACCESS_TOKEN_INSERT_STATEMENT,
+        new Object[] { value, new SqlLobValue(SerializationUtils.serialize(token)),
+            authenticationKeyGenerator.extractKey(authentication),
+            authentication.isClientOnly() ? null : authentication.getName(),
+            authentication.getAuthorizationRequest().getClientId(),
+            clientMetaData.getAppEntityId(),
+            new SqlLobValue(SerializationUtils.serialize(authentication)), refreshToken }, new int[] {
+        Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB,
+        Types.VARCHAR });
 
   }
 

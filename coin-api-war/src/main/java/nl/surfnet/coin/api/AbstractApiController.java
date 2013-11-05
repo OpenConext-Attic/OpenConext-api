@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth.provider.OAuthAuthenticationDetails;
+import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.Assert;
@@ -37,14 +38,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.ClientMetaDataPrincipal;
 import nl.surfnet.coin.api.oauth.ClientMetaDataUser;
+import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
 import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
 import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
+import nl.surfnet.coin.api.service.JanusClientDetailsService;
+import nl.surfnet.coin.api.service.OpenConextClientDetailsService;
 import nl.surfnet.coin.shared.log.ApiCallLog;
 import nl.surfnet.coin.shared.log.ApiCallLogContextListener;
 
 public abstract class AbstractApiController {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractApiController.class);
+  
+  protected OpenConextClientDetailsService janusClientDetailsService;
 
   /**
    * Get the username of the (via oauth) authenticated user that performs this
@@ -60,7 +66,10 @@ public abstract class AbstractApiController {
       return null;
     } else {
       Object principal = auth.getPrincipal();
-      if (principal instanceof ConsumerDetails) {
+      if (auth instanceof OAuth2Authentication && ((OAuth2Authentication) auth).isClientOnly()) {
+        //oauth2 client credentials
+        return null;
+      } else if (principal instanceof ConsumerDetails) {
         // Two legged, it does not have end user details
         return null;
       } else if (principal instanceof String) {
@@ -90,12 +99,10 @@ public abstract class AbstractApiController {
     // oauth2
     if (authentication instanceof OAuth2Authentication) {
       OAuth2Authentication oauth2 = (OAuth2Authentication) authentication;
-      Authentication userAuthentication = oauth2.getUserAuthentication();
-      if (userAuthentication instanceof SAMLAuthenticationToken) {
-        SAMLAuthenticationToken samltoken = (SAMLAuthenticationToken) userAuthentication;
-        metaData = samltoken.getClientMetaData();
-        registerApiVersion("oauth2");
-      }
+      String clientId = oauth2.getAuthorizationRequest().getClientId();
+      ClientDetails clientDetails = janusClientDetailsService.loadClientByClientId(clientId);
+      metaData = ((OpenConextClientDetails)clientDetails).getClientMetaData();
+      registerApiVersion("oauth2");
     }
     // oauth1 3-legged
     else if (authentication instanceof PreAuthenticatedAuthenticationToken) {

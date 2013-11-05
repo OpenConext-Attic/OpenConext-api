@@ -18,12 +18,13 @@ package nl.surfnet.coin.api;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import nl.surfnet.coin.api.service.GroupService;
+import nl.surfnet.coin.api.service.OpenConextClientDetailsService;
 import nl.surfnet.coin.api.service.PersonService;
 import nl.surfnet.coin.eb.EngineBlock;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller for the person REST interface..
@@ -52,5 +53,9 @@ public class PersonController extends ApiController {
     this.groupProviderConfiguration = groupProviderConfiguration;
   }
 
+  @Resource(name ="janusClientDetailsService")
+  public void setJanusClientDetailsService(OpenConextClientDetailsService janusClient) {
+    this.janusClientDetailsService = janusClient;
+  }
 
 }

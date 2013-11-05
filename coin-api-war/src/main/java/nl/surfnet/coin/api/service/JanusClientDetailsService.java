@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -72,6 +73,9 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
        clientDetails.getAuthorizedGrantTypes().add("implicit");
     }
     clientDetails.setAuthorizedGrantTypes(Arrays.asList("implicit", "authorization_code"));
+    ArrayList<GrantedAuthority> authorities = new ArrayList<>(clientDetails.getAuthorities());
+    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+    clientDetails.setAuthorities(authorities);
     ClientMetaDataHolder.setClientMetaData(clientMetaData);
     return clientDetails;
   }

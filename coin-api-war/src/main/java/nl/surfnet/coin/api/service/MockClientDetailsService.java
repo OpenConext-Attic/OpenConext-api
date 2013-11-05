@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +61,8 @@ public class MockClientDetailsService implements OpenConextClientDetailsService 
     details.setScope(Arrays.asList("read"));
     details.setClientSecret(defaultSecret);
     details.setClientMetaData(mockMetadata(clientId));
-    details.setAuthorizedGrantTypes(Arrays.asList("authorization_code","implicit"));
+    details.setAuthorizedGrantTypes(Arrays.asList("authorization_code","implicit","client_credentials"));
+    details.setAuthorities(Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
     ClientMetaDataHolder.setClientMetaData(details.getClientMetaData());
     details.setRegisteredRedirectUri(new HashSet<String>(Arrays.asList(CALLBACK_URLS)));
 

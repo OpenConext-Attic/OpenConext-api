@@ -20,6 +20,10 @@ package nl.surfnet.coin.api.oauth;
 
 import javax.annotation.Resource;
 
+import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -29,8 +33,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
 
-import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
-
 /**
  * {@link TokenEnhancer} that stores the {@link ClientMetaData} within the
  * Authentication object
@@ -38,6 +40,7 @@ import nl.surfnet.coin.api.saml.SAMLAuthenticationToken;
  */
 @Component(value = "clientMetaDataTokenEnhancer")
 public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
+  private static final Logger LOG = LoggerFactory.getLogger(ClientMetaDataTokenEnhancer.class);
 
   @Resource(name = "janusClientDetailsService")
   private ClientDetailsService clientDetailsService;
@@ -52,6 +55,8 @@ public class ClientMetaDataTokenEnhancer implements TokenEnhancer {
       Authentication userAuthentication = authentication.getUserAuthentication();
       if (userAuthentication instanceof SAMLAuthenticationToken) {
         ((SAMLAuthenticationToken) userAuthentication).setClientMetaData(clientMetaData);
+      } else if (null == userAuthentication) {
+         LOG.debug("We are doing client credentials, token will not be enhanced with user authentication");
       } else {
         throw new RuntimeException("The userAuthentication is of the type '"
             + (userAuthentication != null ? userAuthentication.getClass() : "null")

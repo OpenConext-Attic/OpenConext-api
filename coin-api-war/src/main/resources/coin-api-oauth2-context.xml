@@ -104,10 +104,10 @@
       user-approval-page="redirect:/oauth2/confirm_access"
       token-services-ref="tokenServices"
       redirect-resolver-ref="implicitGrantExplicitRedirectResolver"
-      
       >
     <oauth2:authorization-code authorization-code-services-ref="jdbcAuthorizationCodeServices" />
     <oauth2:implicit/>
+    <oauth2:client-credentials/>
   </oauth2:authorization-server>
 
 

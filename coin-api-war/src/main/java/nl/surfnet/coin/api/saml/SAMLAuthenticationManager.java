@@ -33,8 +33,7 @@ public class SAMLAuthenticationManager implements AuthenticationManager{
    */
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-    final SAMLAuthenticationToken newAuthenticationToken = new SAMLAuthenticationToken(authentication.getPrincipal(),
-        Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+    final SAMLAuthenticationToken newAuthenticationToken = new SAMLAuthenticationToken(authentication.getPrincipal(), authentication.getAuthorities());
     newAuthenticationToken.setAuthenticated(true);
     newAuthenticationToken.setDetails(authentication.getDetails());
     return newAuthenticationToken;
