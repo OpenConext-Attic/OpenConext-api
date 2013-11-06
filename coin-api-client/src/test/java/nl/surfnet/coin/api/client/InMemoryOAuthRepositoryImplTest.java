@@ -16,11 +16,8 @@
 
 package nl.surfnet.coin.api.client;
 
-import nl.surfnet.coin.api.client.internal.OAuthToken;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.scribe.model.Token;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,19 +32,22 @@ public class InMemoryOAuthRepositoryImplTest {
 
   @Test
   public void store() {
-    repository.storeToken(new Token("", ""), "user", OAuthVersion.v2);
+    repository.storeToken("", "user");
   }
 
   @Test
   public void retrieve() {
-    Token token = new Token("", "");
-    repository.storeToken(token, "user", OAuthVersion.v2);
-    OAuthToken token1 = repository.getToken("user");
-    assertEquals(token, token1.getToken());
+    String token = "";
+    repository.storeToken(token, "user");
+    String token1 = repository.getToken("user");
+    assertEquals(token, token1);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void remove() {
+    repository.storeToken("foobar", "blaat");
+    repository.removeToken("blaat");
+
     repository.removeToken(null);
   }
 }

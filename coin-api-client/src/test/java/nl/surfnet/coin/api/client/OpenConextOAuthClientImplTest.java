@@ -16,17 +16,26 @@
 
 package nl.surfnet.coin.api.client;
 
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.scribe.model.Token;
-import org.springframework.core.io.ClassPathResource;
-
 import nl.surfnet.coin.api.client.domain.Group;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.mock.AbstractMockHttpServerTest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.localserver.LocalTestServer;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpRequestHandler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,23 +43,55 @@ import static org.junit.Assert.assertEquals;
  * 
  *
  */
-public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
+public class OpenConextOAuthClientImplTest {
+  private static final Logger LOG = LoggerFactory.getLogger(OpenConextOAuthClientImplTest.class);
 
   private static final String USER_ID = "urn:collab:person:test.surfguest.nl:mnice";
   private static final String GROUP_ID = "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:managementvo";
   private OpenConextOAuthClientImpl client;
+  private ResourceRequestHandler requestHandler;
+  private LocalTestServer testServer;
+
+  public static class ResourceRequestHandler implements HttpRequestHandler {
+
+    private Resource resource;
+    @Override
+    public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+      LOG.debug("Getting request: {}", request.getRequestLine());
+      response.setEntity(new InputStreamEntity(resource.getInputStream(), resource.contentLength()));
+
+    }
+
+    public void setResource(Resource resource) {
+      this.resource = resource;
+    }
+  }
 
   @Before
   public void initialize() throws Exception {
+
+    requestHandler = new ResourceRequestHandler();
+
+    testServer = new LocalTestServer(null, null);
+    testServer.register("/whatever/*", requestHandler);
+//    testServer.g
+    testServer.start();
     client = new OpenConextOAuthClientImpl();
-    client.setEndpointBaseUrl("http://localhost:8088/whatever");
+    client.setEndpointBaseUrl("http://" + testServer.getServiceAddress().getHostString() + ":" + testServer.getServiceAddress().getPort() + "/whatever/");
     client.setConsumerKey("key");
     client.setConsumerSecret("secret");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
-    repository.storeToken(new Token("key", "secret"), USER_ID, OAuthVersion.v10a);
+    repository.storeToken("key", USER_ID);
+    repository.storeToken("key", null); // for client creds
     client.setRepository(repository);
+
+
   }
 
+  @After
+  public void cleanup() throws Exception {
+    testServer.stop();
+  }
   /**
    * Test method for
    * {@link nl.surfnet.coin.api.client.OpenConextOAuthClientImpl#getPerson(java.lang.String, java.lang.String)}
@@ -58,7 +99,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetPerson() {
-    super.setResponseResource(new ClassPathResource("single-person.json"));
+    requestHandler.setResource(new ClassPathResource("single-person.json"));
     Person person = this.client.getPerson(USER_ID, USER_ID);
     assertEquals("mnice@surfguest.nl", person.getEmails().iterator().next()
         .getValue());
@@ -71,7 +112,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetPersonServerOutput() {
-    super.setResponseResource(new ClassPathResource("single-person-server-output.json"));
+    requestHandler.setResource(new ClassPathResource("single-person-server-output.json"));
     Person person = this.client.getPerson(USER_ID, null);
     assertEquals("mFoo@surfguest.nl", person.getEmails().iterator().next()
         .getValue());
@@ -84,7 +125,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetGroupMembers() {
-    super.setResponseResource(new ClassPathResource("multiple-persons.json"));
+    requestHandler.setResource(new ClassPathResource("multiple-persons.json"));
     List<Person> persons = this.client.getGroupMembers(GROUP_ID, USER_ID);
     assertEquals(22, persons.size());
   }
@@ -96,7 +137,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetGroups20() {
-    super.setResponseResource(new ClassPathResource("multiple-groups20.json"));
+    requestHandler.setResource(new ClassPathResource("multiple-groups20.json"));
     List<Group20> groups20 = this.client.getGroups20(USER_ID, USER_ID);
     assertEquals(3, groups20.size());
   }
@@ -108,7 +149,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetGroups() {
-    super.setResponseResource(new ClassPathResource("multiple-groups.json"));
+    requestHandler.setResource(new ClassPathResource("multiple-groups.json"));
     List<Group> groups = this.client.getGroups(USER_ID, USER_ID);
     assertEquals(17, groups.size());
   }
@@ -120,7 +161,7 @@ public class OpenConextOAuthClientImplTest extends AbstractMockHttpServerTest {
    */
   @Test
   public void testGetWrappedGroupMembers() {
-    super.setResponseResource(new ClassPathResource("multiple-wrapped-teammembers.json"));
+    requestHandler.setResource(new ClassPathResource("multiple-wrapped-teammembers.json"));
      List<Person> groupMembers = this.client.getGroupMembers(GROUP_ID, USER_ID);
     assertEquals(12, groupMembers.size());
   }

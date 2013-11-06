@@ -19,33 +19,38 @@ package nl.surfnet.coin.api.client;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import nl.surfnet.coin.api.client.internal.OAuthToken;
-
-import org.scribe.model.Token;
-import org.springframework.util.Assert;
-
 /**
- * InMemory Repository for Tokens
+ * InMemory Repository for Tokens.
+ *
+ * Uses the special 'null' userId for storing the token that is not user-specific (like for client credentials)
  * 
  */
 public class InMemoryOAuthRepositoryImpl implements OAuthRepository {
 
-  private Map<String, OAuthToken> tokens = new ConcurrentHashMap<String, OAuthToken>();
+  private Map<String, String> userSpecificTokens = new ConcurrentHashMap<String, String>();
+
+  private String nonUserSpecificToken = null;
 
   @Override
-  public OAuthToken getToken(String userId) {
-    return tokens.get(userId);
+  public String getToken(String userId) {
+    return userId == null ? nonUserSpecificToken : userSpecificTokens.get(userId);
   }
 
   @Override
-  public void storeToken(Token accessToken, String userId, OAuthVersion version) {
-    tokens.put(userId, new OAuthToken(accessToken, version));
+  public void storeToken(String accessToken, String userId) {
+    if (userId == null) {
+      nonUserSpecificToken = accessToken;
+    } else {
+      userSpecificTokens.put(userId, accessToken);
+    }
   }
 
   @Override
   public void removeToken(String onBehalfOf) {
-    Assert.notNull(onBehalfOf, "Token to be removed cannot have key null");
-    tokens.remove(onBehalfOf);
+    if (onBehalfOf == null) {
+      nonUserSpecificToken = null;
+    } else {
+      userSpecificTokens.remove(onBehalfOf);
+    }
   }
-
 }

@@ -16,18 +16,15 @@
 
 package nl.surfnet.coin.selenium;
 
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.scribe.model.Token;
-
 import nl.surfnet.coin.api.client.InMemoryOAuthRepositoryImpl;
 import nl.surfnet.coin.api.client.OAuthRepository;
-import nl.surfnet.coin.api.client.OAuthVersion;
 import nl.surfnet.coin.api.client.OpenConextOAuthClientImpl;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Person;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -51,7 +48,6 @@ public class ConextApiControllerTestIntegration extends SeleniumSupport {
     client.setConsumerSecret(OAUTH_SECRET);
     client.setCallbackUrl("http://not-used/");
     OAuthRepository repository = new InMemoryOAuthRepositoryImpl();
-    repository.storeToken(new Token(OAUTH_KEY, OAUTH_SECRET), USER_ID, OAuthVersion.v2);
     client.setRepository(repository);
   }
 

@@ -17,24 +17,16 @@
 package nl.surfnet.coin.selenium;
 
 import nl.surfnet.coin.api.client.internal.OpenConextApi10aThreeLegged;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
+import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Oauth10aThreeLeggedTestSelenium extends SeleniumSupport {
 

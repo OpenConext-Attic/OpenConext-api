@@ -16,8 +16,7 @@
 
 package nl.surfnet.coin.selenium;
 
-import java.io.IOException;
-
+import nl.surfnet.coin.api.client.internal.OpenConextApi20ClientCredentials;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -27,19 +26,13 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
+import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
+import java.io.IOException;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
 public class CorsHeaderTestSelenium {
@@ -75,7 +68,7 @@ public class CorsHeaderTestSelenium {
   @Test
   public void corsHeader() throws Exception {
     OAuthService service = new ServiceBuilder()
-        .provider(new OpenConextApi10aTwoLegged())
+        .provider(new OpenConextApi20ClientCredentials())
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
@@ -85,7 +78,8 @@ public class CorsHeaderTestSelenium {
         .build();
 
     OAuthRequest req = new OAuthRequest(Verb.GET, getApiBaseUrl() + OS_URL);
-    service.signRequest(new Token("", ""), req);
+    Token accessToken = service.getAccessToken(new Token("", ""), new Verifier(""));
+    service.signRequest(accessToken, req);
     Response response = req.send();
     assertNotNull("Response should contain CORS-header", response.getHeaders().get("Access-Control-Allow-Origin"));
     assertTrue("CORS-header should be '*'", response.getHeaders().get("Access-Control-Allow-Origin").equals("*"));

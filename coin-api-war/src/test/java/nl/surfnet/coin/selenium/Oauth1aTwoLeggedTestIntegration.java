@@ -16,18 +16,13 @@
 
 package nl.surfnet.coin.selenium;
 
+import nl.surfnet.coin.api.client.internal.OpenConextApi20ClientCredentials;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
+import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -60,7 +55,7 @@ public class Oauth1aTwoLeggedTestIntegration extends SeleniumSupport {
   @Test
   public void withToken() {
     OAuthService service = new ServiceBuilder()
-        .provider(new OpenConextApi10aTwoLegged())
+        .provider(new OpenConextApi20ClientCredentials())
         .apiKey(OAUTH_KEY)
         .apiSecret(OAUTH_SECRET)
         .scope(OAUTH_OPENCONEXT_API_READ_SCOPE)
@@ -70,7 +65,8 @@ public class Oauth1aTwoLeggedTestIntegration extends SeleniumSupport {
         .build();
 
     OAuthRequest req = new OAuthRequest(Verb.GET, getApiBaseUrl() + OS_URL);
-    service.signRequest(new Token("", ""), req);
+    Token accessToken = service.getAccessToken(new Token("", ""), new Verifier(""));
+    service.signRequest(accessToken, req);
     Response response = req.send();
     final String bodyText = response.getBody();
     LOG.debug("Response body: {}", bodyText);

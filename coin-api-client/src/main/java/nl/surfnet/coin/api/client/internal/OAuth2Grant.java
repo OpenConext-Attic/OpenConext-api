@@ -17,10 +17,10 @@
 package nl.surfnet.coin.api.client.internal;
 
 /**
- * The OAuth protocols we support
+ * The OAuth2 grant types we support
  * 
  */
-public enum OAuthProtocol {
-  twolegged, threelegged;
+public enum OAuth2Grant {
+  clientCredentials, authorizationCode;
 
 }

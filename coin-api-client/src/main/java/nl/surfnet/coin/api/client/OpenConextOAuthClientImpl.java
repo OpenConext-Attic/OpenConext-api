@@ -16,20 +16,16 @@
 
 package nl.surfnet.coin.api.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import nl.surfnet.coin.api.client.domain.Group;
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.client.internal.OAuth2Grant;
+import nl.surfnet.coin.api.client.internal.OpenConextApi20AuthorizationCode;
+import nl.surfnet.coin.api.client.internal.OpenConextApi20ClientCredentials;
 import org.apache.commons.io.IOUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.Api;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
+import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +33,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import nl.surfnet.coin.api.client.domain.Group;
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.internal.OAuthProtocol;
-import nl.surfnet.coin.api.client.internal.OAuthToken;
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aThreeLegged;
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
-import nl.surfnet.coin.api.client.internal.OpenConextApi20AuthorizationCode;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Implementation of OpenConextOAuthClient
@@ -52,17 +44,14 @@ import nl.surfnet.coin.api.client.internal.OpenConextApi20AuthorizationCode;
 public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, InitializingBean {
 
   private static final Logger LOG = LoggerFactory.getLogger(OpenConextOAuthClientImpl.class);
+  private static final int MAX_ACCESS_TOKEN_REQUESTS = 3;
 
-  private static final String REQUEST_TOKEN = "REQUEST_TOKEN";
   private OAuthEnvironment environment;
   private OAuthRepository repository;
   private OpenConextJsonParser parser = new OpenConextJsonParser();
 
   public OpenConextOAuthClientImpl() {
     this.environment = new OAuthEnvironment();
-
-    environment.setVersion(OAuthVersion.v2);
-
     this.repository = new InMemoryOAuthRepositoryImpl();
   }
 
@@ -72,18 +61,8 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
   }
 
   private String doGetAuthorizationUrl(HttpServletRequest request) {
-    final OAuthVersion version = environment.getVersion();
-    OAuthService service = getService(version, OAuthProtocol.threelegged);
-    Token requestToken;
-    if (OAuthVersion.v10a.equals(version)) {
-      requestToken = service.getRequestToken();
-      if (request != null) {
-        request.getSession().setAttribute(REQUEST_TOKEN, requestToken);
-      }
-    } else {
-      requestToken = null;
-    }
-    return service.getAuthorizationUrl(requestToken);
+    OAuthService service = getService(OAuth2Grant.authorizationCode);
+    return service.getAuthorizationUrl(null);
   }
 
   @Override
@@ -95,25 +74,18 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
   public void oauthCallback(HttpServletRequest request, String onBehalfOf) {
     String oAuthVerifier;
     Token requestToken = null;
-    OAuthVersion version = environment.getVersion();
-    if (OAuthVersion.v10a.equals(version)) {
-      oAuthVerifier = request.getParameter("oauth_verifier");
-      requestToken = (Token) request.getSession().getAttribute(REQUEST_TOKEN);
-    } else {
-      oAuthVerifier = request.getParameter("code");
-    }
+    oAuthVerifier = request.getParameter("code");
     Verifier verifier = new Verifier(oAuthVerifier);
 
-    OAuthService service = getService(version, OAuthProtocol.threelegged);
-    Token accessToken = service.getAccessToken(requestToken, verifier);
-    repository.storeToken(accessToken, onBehalfOf, version);
+    OAuthService service = getService(OAuth2Grant.authorizationCode);
+    String accessToken = service.getAccessToken(requestToken, verifier).getToken();
+    repository.storeToken(accessToken, onBehalfOf);
   }
 
 
   @Override
   public Person getPerson(String userId, String onBehalfOf) {
-    OAuthRequest request = new OAuthRequest(Verb.GET,
-        environment.getEndpointBaseUrl() + "social/rest/people/" + userId);
+    OAuthRequest request = new OAuthRequest(Verb.GET, environment.getEndpointBaseUrl() + "social/rest/people/" + userId);
     InputStream in = execute(onBehalfOf, request);
     return parser.parsePerson(in).getEntry();
   }
@@ -124,35 +96,29 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
       throw new IllegalArgumentException(
           "For retrieving group members the onBehalfOf may not be empty");
     }
-    OAuthRequest request = new OAuthRequest(Verb.GET,
-        environment.getEndpointBaseUrl() + "social/rest/people/" + onBehalfOf
-            + "/" + groupId);
+    OAuthRequest request = new OAuthRequest(Verb.GET, environment.getEndpointBaseUrl() + "social/rest/people/" + onBehalfOf + "/" + groupId);
     InputStream in = execute(onBehalfOf, request);
     return parser.parseTeamMembers(in).getEntry();
   }
 
   @Override
   public List<Group> getGroups(String userId, String onBehalfOf) {
-    OAuthRequest request = new OAuthRequest(Verb.GET,
-        environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
+    OAuthRequest request = new OAuthRequest(Verb.GET, environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
     InputStream in = execute(onBehalfOf, request);
     return parser.parseGroups(in).getEntry();
   }
 
   @Override
   public List<Group20> getGroups20(String userId, String onBehalfOf) {
-    OAuthRequest request = new OAuthRequest(Verb.GET,
-        environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
+    OAuthRequest request = new OAuthRequest(Verb.GET, environment.getEndpointBaseUrl() + "social/rest/groups/" + userId);
     InputStream in = execute(onBehalfOf, request);
     return parser.parseGroups20(in).getEntry();
   }
 
   @Override
   public Group20 getGroup20(String userId, String groupId, String onBehalfOf) {
-    final String url = String.format("%ssocial/rest/groups/%s/%s",
-        environment.getEndpointBaseUrl(), userId, groupId);
-    OAuthRequest request = new OAuthRequest(Verb.GET,
-        url);
+    final String url = String.format("%ssocial/rest/groups/%s/%s", environment.getEndpointBaseUrl(), userId, groupId);
+    OAuthRequest request = new OAuthRequest(Verb.GET, url);
     InputStream in = execute(onBehalfOf, request);
     final List<Group20> entry = parser.parseGroups20(in).getEntry();
     if (entry != null && entry.size() > 0) {
@@ -162,22 +128,25 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
   }
 
   private InputStream execute(String onBehalfOf, OAuthRequest request) {
-    Token token;
+    String token;
     OAuthService service;
+
+    token = repository.getToken(onBehalfOf);
     if (onBehalfOf == null) {
-      // two legged and therefore v10a
-      service = getService(OAuthVersion.v10a, OAuthProtocol.twolegged);
-      token = new Token("", "");
-    } else {
-      OAuthToken oAuthToken = repository.getToken(onBehalfOf);
-      if (oAuthToken == null) {
-        throw new RuntimeException("No access token present for user('"
-            + onBehalfOf + "'). First obtain an accesstoken.");
+      int retries = 0;
+      while (token == null && retries < MAX_ACCESS_TOKEN_REQUESTS) {
+        getClientAccessToken();
+        token = repository.getToken(onBehalfOf);
       }
-      token = oAuthToken.getToken();
-      service = getService(oAuthToken.getVersion(), OAuthProtocol.threelegged);
+      service = getService(OAuth2Grant.clientCredentials);
+    } else {
+      if (token == null) {
+        throw new RuntimeException("No access token present for user('" + onBehalfOf + "'). First obtain an accesstoken.");
+      }
+      service = getService(OAuth2Grant.authorizationCode);
     }
-    service.signRequest(token, request);
+
+    service.signRequest(new Token(token, ""), request);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Will send request '{}'", request.toString());
     }
@@ -185,14 +154,13 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
 
     if (oAuthResponse.getCode() >= 400) {
       if (oAuthResponse.getCode() == 401
-        && oAuthResponse.getStream() != null
-        && oAuthResponse.getBody().contains("invalid_token")) {
+              && oAuthResponse.getStream() != null
+              && oAuthResponse.getBody().contains("invalid_token")) {
         repository.removeToken(onBehalfOf);
         throw new InvalidTokenException(oAuthResponse.getBody());
       } else {
         // This could be refined to include other cases, and throw according exceptions.
-        throw new RuntimeException(String.format("Error response: %d, body: %s", oAuthResponse.getCode(),
-            oAuthResponse.getStream() == null ? null : oAuthResponse.getBody()));
+        throw new RuntimeException(String.format("Error response: %d, body: %s", oAuthResponse.getCode(), oAuthResponse.getStream() == null ? null : oAuthResponse.getBody()));
       }
     }
 
@@ -215,16 +183,11 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
     return stream;
   }
 
-  private OAuthService getService(OAuthVersion version, OAuthProtocol protocol) {
+  private OAuthService getService(OAuth2Grant grantType) {
     String baseUrl = environment.getEndpointBaseUrl();
     Api api;
 
-    if (version.equals(OAuthVersion.v10a)) {
-      api = protocol.equals(OAuthProtocol.twolegged) ? new OpenConextApi10aTwoLegged() : new OpenConextApi10aThreeLegged(baseUrl);
-    } else {
-      api = new OpenConextApi20AuthorizationCode(baseUrl);
-    }
-
+      api = grantType.equals(OAuth2Grant.clientCredentials) ? new OpenConextApi20ClientCredentials(baseUrl) : new OpenConextApi20AuthorizationCode(baseUrl);
 
     return new ServiceBuilder()
         .provider(api)
@@ -246,9 +209,6 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
   public void setEndpointBaseUrl(String url) {
     environment.setEndpointBaseUrl(url);
   }
-  public void setVersion(OAuthVersion v) {
-    environment.setVersion(v);
-  }
 
   @Override
   public void afterPropertiesSet() throws Exception {
@@ -259,5 +219,12 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
 
   public void setRepository(OAuthRepository repository) {
     this.repository = repository;
+  }
+
+  public void getClientAccessToken() {
+
+    Token accessToken = getService(OAuth2Grant.clientCredentials).getAccessToken(new Token("", ""), new Verifier(""));
+    LOG.debug("Received access token from OAuth 2 server: " + accessToken);
+    repository.storeToken(accessToken.getToken(), null);
   }
 }

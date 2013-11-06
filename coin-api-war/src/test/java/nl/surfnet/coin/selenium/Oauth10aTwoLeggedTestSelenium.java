@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.selenium;
 
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
@@ -25,8 +26,6 @@ import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 
 import static org.junit.Assert.assertTrue;
 

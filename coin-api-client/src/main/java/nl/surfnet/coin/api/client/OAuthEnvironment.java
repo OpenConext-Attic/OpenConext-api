@@ -27,7 +27,6 @@ public class OAuthEnvironment {
   private String oauthSecret;
   private String endpointBaseUrl;
   private String callbackUrl = OUT_OF_BOUND_CALLBACK;
-  private OAuthVersion version;
 
   /**
    * @return the oauthKey
@@ -88,11 +87,4 @@ public class OAuthEnvironment {
     this.callbackUrl = callbackUrl;
   }
 
-  public OAuthVersion getVersion() {
-    return version;
-  }
-
-  public void setVersion(OAuthVersion version) {
-    this.version = version;
-  }
 }

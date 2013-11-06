@@ -16,16 +16,12 @@
 
 package nl.surfnet.coin.selenium;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.*;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import nl.surfnet.coin.api.client.domain.Email;
+import nl.surfnet.coin.api.client.domain.Group20;
+import nl.surfnet.coin.api.client.domain.Person;
+import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -38,10 +34,9 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
-import nl.surfnet.coin.api.client.domain.Email;
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.internal.OpenConextApi10aTwoLegged;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 
 import static org.junit.Assert.assertTrue;
 
