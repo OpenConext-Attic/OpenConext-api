@@ -16,22 +16,10 @@
 
 package nl.surfnet.coin.api.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import nl.surfnet.coin.api.oauth.ClientMetaData;
-import nl.surfnet.coin.api.oauth.ClientMetaDataHolder;
-import nl.surfnet.coin.api.oauth.JanusClientMetadata;
-import nl.surfnet.coin.api.oauth.OpenConextClientDetails;
-import nl.surfnet.coin.api.oauth.OpenConextConsumerDetails;
+import nl.surfnet.coin.api.oauth.*;
 import nl.surfnet.coin.janus.Janus;
 import nl.surfnet.coin.janus.domain.ARP;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +32,8 @@ import org.springframework.security.oauth.provider.ConsumerDetails;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.util.StringUtils;
+
+import java.util.*;
 
 /**
  * Client details service that uses Janus as backend. Implements both the oauth1
@@ -68,11 +58,11 @@ public class JanusClientDetailsService implements OpenConextClientDetailsService
     clientDetails.setClientId(metadata.getOauthConsumerKey());
     clientDetails.setRegisteredRedirectUri(getCallbackUrlCollection(metadata));
     clientDetails.setScope(Arrays.asList("read"));
-    clientDetails.setAuthorizedGrantTypes(Arrays.asList("authorization_code"));
-    if (metadata.isTwoLeggedOauthAllowed()) {
-       clientDetails.getAuthorizedGrantTypes().add("implicit");
-    }
+
     clientDetails.setAuthorizedGrantTypes(Arrays.asList("implicit", "authorization_code"));
+    if (metadata.isTwoLeggedOauthAllowed()) {
+       clientDetails.getAuthorizedGrantTypes().add("client_credentials");
+    }
     ArrayList<GrantedAuthority> authorities = new ArrayList<>(clientDetails.getAuthorities());
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
     clientDetails.setAuthorities(authorities);
