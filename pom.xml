@@ -20,12 +20,12 @@
   <parent>
     <groupId>org.surfnet.coin</groupId>
     <artifactId>coin-master</artifactId>
-    <version>3.10.0-SNAPSHOT</version>
+    <version>3.11.0</version>
   </parent>
 
   <groupId>org.surfnet.coin</groupId>
   <artifactId>coin-api-parent</artifactId>
-  <version>3.10.0-SNAPSHOT</version>
+  <version>3.11.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>coin-api-parent</name>
   <description>Coin API Parent</description>
@@ -73,10 +73,10 @@
   <properties>
     <scribe.version>1.3.5</scribe.version>
     <jackson.version>1.9.5</jackson.version>
-    <coin-test.version>3.10.0-SNAPSHOT</coin-test.version>
+    <coin-test.version>3.11.0</coin-test.version>
     <commons-collections.version>3.2.1</commons-collections.version>
-    <coin-master-test-dependencies.version>3.10.0-SNAPSHOT</coin-master-test-dependencies.version>
-    <coin-shared.version>3.10.0-SNAPSHOT</coin-shared.version>
+    <coin-master-test-dependencies.version>3.11.0</coin-master-test-dependencies.version>
+    <coin-shared.version>3.11.0</coin-shared.version>
     <dumbster.version>1.6</dumbster.version>
     <spring-security-opensaml.version>2.16.1</spring-security-opensaml.version>
   </properties>
