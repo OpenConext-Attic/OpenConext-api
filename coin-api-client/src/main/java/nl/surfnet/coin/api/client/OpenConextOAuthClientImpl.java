@@ -210,6 +210,9 @@ public class OpenConextOAuthClientImpl implements OpenConextOAuthClient, Initial
     environment.setEndpointBaseUrl(url);
   }
 
+  public void setVersion(OAuthVersion v) {
+  }
+
   @Override
   public void afterPropertiesSet() throws Exception {
     Assert.notNull(environment);
