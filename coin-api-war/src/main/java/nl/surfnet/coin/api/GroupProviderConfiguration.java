@@ -19,7 +19,6 @@
 package nl.surfnet.coin.api;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
@@ -35,8 +34,6 @@ import nl.surfnet.coin.teams.domain.ServiceProviderGroupAcl;
  * 
  */
 public interface GroupProviderConfiguration {
-
-  Pattern INTERNAL_GROUP_PATTERN = Pattern.compile("^urn:collab:group:\\w*\\.?surfteams.nl.*");
 
   /*
    * The two Service options for determining the correct ACL

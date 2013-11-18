@@ -28,12 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
 import nl.surfnet.coin.api.client.domain.Group20;
 import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.teams.domain.GroupProvider;
-import nl.surfnet.coin.teams.domain.GroupProviderUserOauth;
 import nl.surfnet.coin.teams.service.BasicAuthGroupService;
 import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
@@ -132,7 +129,7 @@ public class GroupProviderConfigurationTest {
    */
   @Test
   public void testIsExternalGroup() {
-
+    configuration.setInternalGroupPattern("^urn:collab:group:\\w*\\.?surfteams.nl.*");
     assertFalse(configuration.isInternalGroup("urn:collab:group:hz.nl:bg001"));
     assertFalse(configuration.isInternalGroup("urn:collab:group:avans.nl:whatever"));
     assertFalse(configuration.isInternalGroup("urn:collab:group:hz.nl:surfteams"));

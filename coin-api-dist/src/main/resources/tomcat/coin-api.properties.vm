@@ -99,3 +99,6 @@ spCertificate=??
 
 #which SAML attribute holds the UUID
 saml-uuid-attribute=urn:oid:1.3.6.1.4.1.1076.20.40.40.1
+
+# this is part of a regex pattern that should determine whether the group is internal
+api.internal.group.pattern=^urn:collab:group:\\w*\\.?_OPENCONEXT_DOMAIN_.*

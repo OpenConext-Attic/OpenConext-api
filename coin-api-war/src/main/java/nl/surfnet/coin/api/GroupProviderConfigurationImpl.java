@@ -20,6 +20,7 @@ package nl.surfnet.coin.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -36,6 +37,7 @@ import nl.surfnet.coin.teams.service.GroupProviderService;
 import nl.surfnet.coin.teams.service.OauthGroupService;
 import nl.surfnet.coin.teams.util.GroupProviderPropertyConverter;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -56,9 +58,13 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
   @Resource(name = "basicAuthGroupService")
   private BasicAuthGroupService basicAuthGroupService;
 
+  @Value(value="${api.internal.group.pattern}")
+  private String internalGroupPattern;
+  
   @Override
   public boolean isInternalGroup(String groupId) {
-    return INTERNAL_GROUP_PATTERN.matcher(groupId).matches();
+    Pattern pattern = Pattern.compile(internalGroupPattern);
+    return pattern.matcher(groupId).matches();
   }
 
   @Override
@@ -233,4 +239,7 @@ public class GroupProviderConfigurationImpl implements GroupProviderConfiguratio
     this.basicAuthGroupService = basicAuthGroupService;
   }
 
+  void setInternalGroupPattern(String internalGroupPattern) {
+    this.internalGroupPattern = internalGroupPattern;
+  }
 }
