@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.janus;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,19 +24,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nl.surfnet.coin.janus.domain.ARP;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
 
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -49,13 +51,15 @@ public class JanusRestClientTest {
   @Mock
   private RestTemplate restTemplate;
 
+  private ObjectMapper objectMapper = new ObjectMapper();
+
   @Before
   public void before() {
     janusRestClient = new JanusRestClient();
     janusRestClient.setSecret("secret");
     janusRestClient.setUser("user");
     janusRestClient.setJanusUri(URI.create("http://localhost/"));
-        MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.initMocks(this);
   }
 
   @Test
@@ -71,7 +75,7 @@ public class JanusRestClientTest {
     assertTrue("Query string should contain correct entityid", captor.getValue().getQuery().contains("entityid=foo"));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains("method=getMetadata"));
     assertTrue("Query string should contain correct metadata field names", captor.getValue().getQuery().contains
-        ("coin:oauth:secret"));
+            ("coin:oauth:secret"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 
@@ -86,11 +90,11 @@ public class JanusRestClientTest {
 
     verify(restTemplate).getForObject(captor.capture(), eq(List.class));
     assertTrue("Query string should contain correct key (the consumer key metadata name)",
-        captor.getValue().getQuery().contains("key=coin:gadgetbaseurl"));
+            captor.getValue().getQuery().contains("key=coin:gadgetbaseurl"));
     assertTrue("Query string should contain correct value (the consumer key metadata value)",
-        captor.getValue().getQuery().contains("value=foobar"));
+            captor.getValue().getQuery().contains("value=foobar"));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
-        ("method=findIdentifiersByMetadata"));
+            ("method=findIdentifiersByMetadata"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 
@@ -105,9 +109,9 @@ public class JanusRestClientTest {
 
     verify(restTemplate).getForObject(captor.capture(), eq(List.class));
     assertTrue("Query string should contain correct idpentityid",
-        captor.getValue().getQuery().contains("idpentityid=boobaa"));
+            captor.getValue().getQuery().contains("idpentityid=boobaa"));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
-        ("method=getAllowedSps"));
+            ("method=getAllowedSps"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
   }
 
@@ -123,11 +127,46 @@ public class JanusRestClientTest {
 
     verify(restTemplate).getForObject(captor.capture(), eq(Map.class));
     assertTrue("Query string should contain correct method", captor.getValue().getQuery().contains
-        ("method=getSpList"));
+            ("method=getSpList"));
     assertTrue("Query string should contain correct user", captor.getValue().getQuery().contains("userid=user"));
-    System.out.println(captor.getValue().getQuery());
     assertTrue("Query string should contain correct metadata field names", captor.getValue().getQuery().contains
-        (Janus.Metadata.NAMEIDFORMAT.val()));
+            (Janus.Metadata.NAMEIDFORMAT.val()));
 
   }
+
+  @Test
+  public void getEmptyArp() throws IOException {
+    Map data = objectMapper.readValue(new ClassPathResource("janus-json/empty-arp.json").getInputStream(), Map.class);
+    when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(data);
+
+    ARP arp = janusRestClient.getArp("entityid");
+    assertTrue(arp.isNoArp());
+    assertFalse(arp.isNoAttrArp());
+    assertTrue(arp.getAttributes().isEmpty());
+
+  }
+
+  @Test
+  public void getNoAttributesArp() throws IOException {
+    Map data = objectMapper.readValue(new ClassPathResource("janus-json/empty-attributes-arp.json").getInputStream(), Map.class);
+    when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(data);
+
+    ARP arp = janusRestClient.getArp("entityid");
+    assertFalse(arp.isNoArp());
+    assertTrue(arp.isNoAttrArp());
+    assertTrue(arp.getAttributes().isEmpty());
+  }
+
+  @Test
+  public void getFullAttributesArp() throws IOException {
+    Map data = objectMapper.readValue(new ClassPathResource("janus-json/full-arp.json").getInputStream(), Map.class);
+    when(restTemplate.getForObject((URI) anyObject(), eq(Map.class))).thenReturn(data);
+
+    ARP arp = janusRestClient.getArp("entityid");
+    assertFalse(arp.isNoArp());
+    assertFalse(arp.isNoAttrArp());
+    assertFalse(arp.getAttributes().isEmpty());
+  }
+
+
 }
