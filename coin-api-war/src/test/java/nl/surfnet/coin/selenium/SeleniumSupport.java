@@ -23,8 +23,10 @@ import org.junit.Rule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By.ByName;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.support.ByIdOrName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,4 +145,26 @@ public class SeleniumSupport {
     }
   }
 
+  protected void clickElementById(String element) {
+    waitForElementDisplay(getWebDriver().findElement(By.id(element)));
+    getWebDriver().findElement(By.id(element)).click();
+  }
+  
+  protected void waitForElementDisplay(WebElement element) {
+    while(!element.isDisplayed()) {
+      LOG.debug("waiting for element " + element.getAttribute("id"));
+      //sorry I need to eat your CPU here
+      try {
+        Thread.sleep(100);
+      }catch (InterruptedException e) {
+        //ignored
+      }
+    }
+  }
+  
+  protected void enterText(WebElement element, CharSequence keysToSend) {
+    waitForElementDisplay(element);
+    element.clear();
+    element.sendKeys(keysToSend);
+  }
 }

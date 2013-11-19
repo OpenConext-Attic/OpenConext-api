@@ -53,7 +53,6 @@
 				OpenSocial API (version <c:out value="${versionIdentifier}" />).</p>
 		</div>
 	</div>
-
 	<div class="row">
 		<div class="span7 columns">
 			<form:form action="${pageContext.request.contextPath}/test" commandName="settings"
@@ -85,8 +84,8 @@
 											</div>
 										</div>
 										<div class="control-group" id="secretInput"
-											${settings.implicitGrant==
-											false ? '' : 'style="display: none;"'}>
+											${settings.grantType!=
+											'implicit' ? '' : 'style="display: none;"'}>
 											<label class="control-label" for="oauthSecret">OAuth
 												secret</label>
 											<div class="controls">
@@ -155,17 +154,22 @@
 									<div id="oauth20" ${settings.version==
 										'2.0' ? '' : 'style="display: none;"'}>
 										<div class="control-group">
-											<label class="control-label" for="implicitGrant">Implicit
-												Grant</label>
+											<label class="control-label" for="implicitGrant">Grant Type</label>
 											<div class="controls">
-												<label class="checkbox"> <form:checkbox
-														id="implicitGrant" name="implicitGrant"
-														path="implicitGrant" /> </label>
+												<label class="radio inline"><form:radiobutton
+														id="implicitGrant" value="implicit"
+														path="grantType" />Implicit</label>
+												<label class="radio inline"><form:radiobutton
+                            id="clientCredentials" value="clientCredentials"
+                            path="grantType" />clientCredentials</label>
+                        <label class="radio inline"><form:radiobutton
+                            id="authCode" value="authCode"
+                            path="grantType" />authorizationCode</label>
 											</div>
 										</div>
-										<div id="oauth20Input" ${settings.implicitGrant==
-											false ? '' : 'style="display: none;"'}>
-											<div class="control-group">
+										<div id="oauth20Input" ${settings.grantType!=
+											'implicit' ? '' : 'style="display: none;"'}>
+											<div id="redirectURI" class="control-group">
 												<label class="control-label" for="leaveOutRedirectUri">Use no redirect URI</label>
 												<div class="controls">
 													<label class="checkbox"> <form:checkbox
@@ -184,7 +188,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="control-group">
+										<div id="authorizationUrl" class="control-group">
 											<label class="control-label" for="authorizationURL2">Authorization
 												URL</label>
 											<div class="controls">
@@ -195,7 +199,7 @@
 										</div>
 									</div>
 									<div class="form-actions">
-										<button name="step1" class="btn btn-primary">Next</button>
+										<button id="submit-step1" name="step1" class="btn btn-primary">Next</button>
 										<button name="reset" class="btn">Reset</button>
 									</div>
 
@@ -212,7 +216,8 @@
 						<div id="step2" class="accordion-body collapse">
 							<div class="accordion-inner">
 								<fieldset>
-									<div class="control-group">
+									<div class="control-group" ${settings.grantType!=
+                    'clientcredentials' ? '' : 'style="display: none;"'}>
 										<label class="control-label">Authorization URL</label>
 										<div class="controls">
 											<p class="break-word">
@@ -231,7 +236,7 @@
 										</div>
 									</div>
 									<div class="form-actions">
-										<button name="step2" class="btn btn-primary">Next</button>
+										<button id="submit-step2" name="step2" class="btn btn-primary">Next</button>
 										<button name="reset" class="btn">Reset</button>
 									</div>
 								</fieldset>
@@ -299,7 +304,7 @@
                                               https://api.DOMAIN_NAME/v1/social/rest/people/@me/groupId</p>
 									</div>
 									<div class="form-actions">
-										<button id="step3" name="step3" class="btn btn-primary">Fetch</button>
+										<button id="submit-step3" name="step3" class="btn btn-primary">Fetch</button>
 										<button name="reset" class="btn">Reset</button>
 									</div>
 								</fieldset>

@@ -31,7 +31,7 @@ import org.scribe.oauth.OAuthService;
 
 /**
  * Because of poor extensibility we copied the {@link OAuth20ServiceImpl} from
- * srcibe to display the in-between-steps.
+ * scribe to display the in-between-steps.
  * 
  */
 public class ConfigurableOAuth20ServiceImpl implements OAuthService {

@@ -145,7 +145,7 @@ public class OAuthClientController {
   }
 
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "step2")
-  public void step2(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
+  public String step2(ModelMap modelMap, @ModelAttribute("settings") ApiSettings settings, HttpServletRequest request,
       HttpServletResponse response) throws IOException {
     ApiSettings settingsFromSession = (ApiSettings) request.getSession().getAttribute("settings");
     String authorizationUrl;
@@ -154,6 +154,8 @@ public class OAuthClientController {
       ConfigurableOAuth10aServiceImpl service10a = (ConfigurableOAuth10aServiceImpl) service;
       Token requestToken = (Token) settingsFromSession.getRequestToken();
       authorizationUrl = service10a.getAuthorizationUrl(requestToken);
+    } else if(settingsFromSession.isOauth2ClientCredentials()) {
+      return oauthCallBack(modelMap,request);
     } else {
       ConfigurableOAuth20ServiceImpl service20 = (ConfigurableOAuth20ServiceImpl) service;
       authorizationUrl = service20.getAuthorizationUrl(EMPTY_TOKEN);
@@ -164,6 +166,7 @@ public class OAuthClientController {
       request.getSession().setAttribute("settings", settingsFromSession);
     }
     response.sendRedirect(authorizationUrl);
+    return null;
   }
 
   @RequestMapping(value = "/test", method = RequestMethod.POST, params = "step3")
@@ -239,6 +242,9 @@ public class OAuthClientController {
       oauthResponse = "";
       modelMap.addAttribute("parseAnchorForAccesstoken", Boolean.TRUE);
     } else {
+      if (settings.isOauth2ClientCredentials()) {
+        oAuthVerifier = ""; 
+      }
       Verifier verifier = new Verifier(oAuthVerifier);
       Token requestToken = settings.getRequestToken();
       if (requestToken == null) {
@@ -320,7 +326,7 @@ public class OAuthClientController {
 
   private ConfigurableOAuth20ServiceImpl getService20(ApiSettings settings) {
     ConfigurableApi20 api20 = new ConfigurableApi20(settings.getAccessTokenEndPoint2(), settings.getAuthorizationURL2(),
-        settings.isImplicitGrant());
+        settings.getGrantType());
     ServiceBuilder provider = new ServiceBuilder().provider(api20);
     if (settings.isImplicitGrant()) {
       provider.apiSecret("DUMMY");

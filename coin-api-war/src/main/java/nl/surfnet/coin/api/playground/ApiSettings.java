@@ -37,7 +37,7 @@ public class ApiSettings {
   private String accessTokenEndPoint;
   private String accessTokenEndPoint2;
   private boolean twoLegged;
-  private boolean implicitGrant;
+  private String grantType = "authCode";
   private boolean leaveOutRedirectUri;
   private String scope = "read";
 
@@ -208,15 +208,19 @@ public class ApiSettings {
   }
 
   public boolean isImplicitGrant() {
-    return implicitGrant;
+    return grantType.equalsIgnoreCase("implicit");
   }
 
   public boolean isImplicitGrantOauth() {
-    return implicitGrant && !isOAuth10a();
+    return isImplicitGrant() && !isOAuth10a();
   }
 
-  public void setImplicitGrant(boolean implicitGrant) {
-    this.implicitGrant = implicitGrant;
+  public void setGrantType(String grantType) {
+    this.grantType = grantType.toLowerCase();
+  }
+  
+  public String getGrantType() {
+    return grantType;
   }
 
   public String getAuthorizationURL2() {
@@ -318,4 +322,7 @@ public class ApiSettings {
     this.leaveOutRedirectUri = leaveOutRedirectUri;
   }
 
+  public boolean isOauth2ClientCredentials() {
+    return grantType.equalsIgnoreCase("clientcredentials");
+  }
 }

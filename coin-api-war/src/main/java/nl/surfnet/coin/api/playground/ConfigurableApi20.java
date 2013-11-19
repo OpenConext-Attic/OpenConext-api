@@ -33,13 +33,13 @@ public class ConfigurableApi20 extends DefaultApi20 {
 
   private String accessTokenEndPoint;
   private String authorizationUrl;
-  private boolean implicitGrant;
+  private String grantType;
 
-  public ConfigurableApi20(String accessTokenEndPoint, String authorizationUrl, boolean implicitGrant) {
+  public ConfigurableApi20(String accessTokenEndPoint, String authorizationUrl, String grantType) {
     super();
     this.accessTokenEndPoint = accessTokenEndPoint;
     this.authorizationUrl = authorizationUrl;
-    this.implicitGrant = implicitGrant;
+    this.grantType = grantType;
   }
 
   @Override
@@ -54,7 +54,14 @@ public class ConfigurableApi20 extends DefaultApi20 {
    */
   @Override
   public String getAccessTokenEndpoint() {
-    return accessTokenEndPoint + "?grant_type=authorization_code";
+    switch (grantType) {
+      case "authCode":
+        return accessTokenEndPoint + "?grant_type=authorization_code";
+      case "clientcredentials":
+        return  accessTokenEndPoint + "?grant_type=client_credentials";
+      default:
+        throw new IllegalStateException("unknown grant type");
+    }
   }
 
   /*
@@ -66,7 +73,7 @@ public class ConfigurableApi20 extends DefaultApi20 {
    */
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    String type = (implicitGrant ? "token" : "code");
+    String type = (grantType.equalsIgnoreCase("authcode") ? "token" : "code");
     StringBuilder url = new StringBuilder(String.format(authorizationUrl + "?response_type=%s&client_id=%s", type,
         config.getApiKey()));
     if (config.hasScope()) {

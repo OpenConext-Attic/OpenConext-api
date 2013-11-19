@@ -24,13 +24,26 @@ $(function() {
 		$('#oauth10aInput').toggle(!this.checked);
 	});
 
-	// oauth2 implicit-grant only involves one request/ response and no secret
+	// changing the grant type means toggling some fields:
 	$('#implicitGrant').click(function() {
 		$('#oauth20Input').toggle(!this.checked);
 		$('#secretInput').toggle(!this.checked);
-		$('#leaveOutRedirectUri').toggle(!this.checked);
+		$('#authorizationUrl').toggle(!this.checked);
+		$('#redirectURI').toggle(!this.checked);
 	});
-
+	$('#clientCredentials').click(function() {
+		$('#oauth20Input').toggle(this.checked);
+		$('#secretInput').toggle(this.checked);
+		$('#authorizationUrl').toggle(!this.checked);
+		$('#redirectURI').toggle(!this.checked);
+	});
+	$('#authCode').click(function() {
+		$('#oauth20Input').toggle(this.checked);
+		$('#secretInput').toggle(this.checked);
+		$('#redirectURI').toggle(this.checked);
+		$('#authorizationUrl').toggle(this.checked);
+	});
+	
 	// we are in step 3 of implicit grant
 	if ($('#parseAnchorForAccesstoken').val() == 'true') {
 		value = window.location.hash.replace("#", "");

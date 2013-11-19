@@ -37,6 +37,7 @@ import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.oauth.JanusClientMetadata;
 import nl.surfnet.coin.api.service.MockServiceImpl;
+import nl.surfnet.coin.api.service.OpenConextClientDetailsService;
 import nl.surfnet.coin.eb.EngineBlock;
 import nl.surfnet.coin.janus.domain.EntityMetadata;
 import nl.surfnet.coin.shared.log.ApiCallLog;
@@ -71,6 +72,11 @@ public class MockApiController extends ApiController {
   @Resource(name = "engineBlock")
   public void setEngineBlock(EngineBlock engineBlock) {
     this.engineBlock = engineBlock;
+  }
+  
+  @Resource(name ="janusClientDetailsService")
+  public void setJanusClientDetailsService(OpenConextClientDetailsService janusClient) {
+    this.janusClientDetailsService = janusClient;
   }
 
   public void setMockApiEnabled(boolean mockApiEnabled) {
