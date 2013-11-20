@@ -73,7 +73,7 @@ public class ConfigurableApi20 extends DefaultApi20 {
    */
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    String type = (grantType.equalsIgnoreCase("authcode") ? "token" : "code");
+    String type = (grantType.equalsIgnoreCase("authcode") ? "code" : "token");
     StringBuilder url = new StringBuilder(String.format(authorizationUrl + "?response_type=%s&client_id=%s", type,
         config.getApiKey()));
     if (config.hasScope()) {
