@@ -47,33 +47,21 @@ public class ConfigurableApi20 extends DefaultApi20 {
     return new ConfigurableOAuth20ServiceImpl(this, config);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.scribe.builder.api.DefaultApi20#getAccessTokenEndpoint()
-   */
   @Override
   public String getAccessTokenEndpoint() {
     switch (grantType) {
       case "authCode":
         return accessTokenEndPoint + "?grant_type=authorization_code";
-      case "clientcredentials":
+      case "clientCredentials":
         return  accessTokenEndPoint + "?grant_type=client_credentials";
       default:
-        throw new IllegalStateException("unknown grant type");
+        throw new IllegalStateException("unknown grant type: " + grantType);
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.scribe.builder.api.DefaultApi20#getAuthorizationUrl(org.scribe.model
-   * .OAuthConfig)
-   */
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    String type = (grantType.equalsIgnoreCase("authcode") ? "code" : "token");
+    String type = (grantType.equalsIgnoreCase("authCode") ? "code" : "token");
     StringBuilder url = new StringBuilder(String.format(authorizationUrl + "?response_type=%s&client_id=%s", type,
         config.getApiKey()));
     if (config.hasScope()) {

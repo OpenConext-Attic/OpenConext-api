@@ -18,12 +18,12 @@
  */
 package nl.surfnet.coin.api.playground;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.springframework.util.Assert;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Backing form object for all OAuth calls from the Test Framework
@@ -216,7 +216,7 @@ public class ApiSettings {
   }
 
   public void setGrantType(String grantType) {
-    this.grantType = grantType.toLowerCase();
+    this.grantType = grantType;
   }
   
   public String getGrantType() {
