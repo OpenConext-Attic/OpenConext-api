@@ -78,7 +78,7 @@
     <coin-master-test-dependencies.version>3.11.0</coin-master-test-dependencies.version>
     <coin-shared.version>3.11.0</coin-shared.version>
     <dumbster.version>1.6</dumbster.version>
-    <spring-security-opensaml.version>2.16.1</spring-security-opensaml.version>
+    <spring-security-opensaml.version>4.0.0</spring-security-opensaml.version>
   </properties>
 
   <dependencyManagement>
