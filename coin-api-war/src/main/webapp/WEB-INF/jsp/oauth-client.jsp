@@ -313,7 +313,7 @@
 					</div>
 				</div>
 				<a class="btn btn-small btn-info" target="_blank"
-					href="https://wiki.surfnetlabs.nl/display/conextdocumentation/api.surfconext.nl">
+					href="https://wiki.surfnet.nl/display/surfconextdev/API+Playground">
 					<i class="icon-info-sign"></i> More Info</a>
 				<input id="step" type="hidden"
 					value="<c:out value="${settings.step}"/>" name="step" />
