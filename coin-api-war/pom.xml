@@ -21,7 +21,6 @@
 		<version>4.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<groupId>org.surfnet.coin</groupId>
 	<artifactId>coin-api-war</artifactId>
 	<packaging>war</packaging>
 	<name>coin-api-war</name>
@@ -76,7 +75,10 @@
 			<groupId>org.surfnet.coin</groupId>
 			<artifactId>spring-security-opensaml</artifactId>
 		</dependency>
-
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
@@ -146,6 +148,7 @@
       <groupId>com.github.detro.ghostdriver</groupId>
       <artifactId>phantomjsdriver</artifactId>
       <version>1.0.4</version>
+      <scope>test</scope>
     </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -170,7 +173,6 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -217,7 +219,6 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.20</version>
       <scope>test</scope>
     </dependency>
 
@@ -400,15 +401,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<profile>
-			<id>selenium-headless</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<selenium.webdriver>phantomJS</selenium.webdriver>
-			</properties>
 		</profile>
 	</profiles>
 

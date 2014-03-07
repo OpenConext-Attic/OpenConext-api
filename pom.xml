@@ -87,7 +87,18 @@
         <groupId>org.surfnet.coin</groupId>
         <artifactId>spring-security-opensaml</artifactId>
         <version>${spring-security-opensaml.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+     </dependency>
       <dependency>
         <groupId>org.surfnet.coin</groupId>
         <artifactId>coin-shared</artifactId>
