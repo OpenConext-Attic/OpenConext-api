@@ -1,0 +1,344 @@
+{"startIndex": 0, "totalResults": 57, "itemsPerPage": 57, "filtered": false, "updatedSince": false, "sorted": false, "entry": [
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:chrome",
+        "title": "Chrome",
+        "description": "Het team van Google Chrome liefhebbers",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:coin_jira_developers",
+        "title": "COIN Jira Developers",
+        "description": null,
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:code_jam_team",
+        "title": "Code Jam team",
+        "description": "Code Jam team (production)",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:mailfilter",
+        "title": "MailFilter",
+        "description": "Team van de SURFnet MailFilter dienst",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:edubox",
+        "title": "Edubox",
+        "description": "Door lid te worden van dit team krijg je toegang tot de EDUbox omgeving. In de pilot fase is dit via https://drive.surfcloud.nl",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfnet_coininfra",
+        "title": "SURFnet CoinInfra",
+        "description": "COIN Infra",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfnet.nl:as",
+        "title": "Advanced Services",
+        "description": "Advanced Services",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:dashboard_surfconextverantwoordelijke",
+        "title": "Dashboard surfconextverantwoordelijke",
+        "description": "Dit team kan gebruikt worden voor autorisatie tot het dashboard van SURFconext.\r\n\r\nvoor vragen over dit team: dashboard-surfconext-beheer@surfnet.nl\r\n\r\n//update feb 2014: dit team wordt <b>niet</b> gebruikt in de code van het dashboard van SURFconext.\r\n// daarvoor  moet nog een update van de code/configuratie plaatsvinen.",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfnet.nl:all",
+        "title": "all",
+        "description": "Iedereen die rondloopt op het SURFnet kantoor",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:sii12",
+        "title": "sii12",
+        "description": "SI Infrastructure team 2012",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:conferencing",
+        "title": "conferencing",
+        "description": "SURFteams voor Video Conferenving",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfmedia-live",
+        "title": "SURFmedia-Live",
+        "description": "Team van SURFmedia-Live [ook wel SURFnet-TV geheten]",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfnet.nl:surfnet",
+        "title": "surfnet",
+        "description": "Alle SURFnetters bij elkaar",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfconext-beheer",
+        "title": "SURFconext-beheer",
+        "description": "Dit is het beheer team voor SURFconext",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:rapportage",
+        "title": "rapportage",
+        "description": "Team van de SURFnet rapportage dienst",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:shopmanager_cdk",
+        "title": "Shopmanager CDK",
+        "description": null,
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfnet.nl:confluence-users-ldap",
+        "title": "confluence-users-ldap",
+        "description": "Confluencegroup confluence-users",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:gds",
+        "title": "GDS",
+        "description": "Team voor de nieuwe GDS (Global Dialing Schema) van SURFnet",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfnet.nl:openVPN",
+        "title": "openVPN",
+        "description": "Gebruikers van de OpenVPN service",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surflabs",
+        "title": "SURFlabs",
+        "description": "Het team achter SURFlabs",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:csa_admin",
+        "title": "csa_admin",
+        "description": "Team om toegang te regelen tot de CSA applicatie op SURFconext productie.\r\n\r\nNeem contact op met Michiel Schok / Alexander Blanc voor toegang tot dit team.",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:popco_dienst",
+        "title": "PopCo dienst",
+        "description": "Team van SURFnet PopCo",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:iphone",
+        "title": "iPhone",
+        "description": "Het team van iPhone liefhebbers",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfmailinglijsten",
+        "title": "SURFmailinglijsten",
+        "description": "Team voor de SURFmailinglijsten dienst",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:coin2011",
+        "title": "COIN2011",
+        "description": "Medewerkers van het SURFworks COIN 2011 project",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:unified_communications_in_ho",
+        "title": "Unified Communications in HO",
+        "description": "Unified Communications community in Hoger Onderwijs",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfconext_mobiel",
+        "title": "SURFconext mobiel",
+        "description": "SURFconext mobiel",
+        "voot_membership_role": "manager"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfnet-tv",
+        "title": "SURFnet-TV",
+        "description": "Tam van de SURFnet-TV dienst",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:android",
+        "title": "Android",
+        "description": "Het team van Google Android liefhebbers",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfcontact",
+        "title": "SURFcontact",
+        "description": "Team van SURFcontact",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:by-esn",
+        "title": "by-esn",
+        "description": "Team for testing By-ESN",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfnet.nl:cf-surfmedia",
+        "title": "cf-surfmedia",
+        "description": "Confluencegroup cf-surfmedia",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:html5poc",
+        "title": "HTML5PoC",
+        "description": "Groep van de PoC voor HTML5",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfnet-cdn",
+        "title": "SURFnet-CDN",
+        "description": "Team van het SURFnet CDN",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfconext",
+        "title": "SURFconext",
+        "description": "Team voor SURFconext",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:ftp-mirror",
+        "title": "FTP-Mirror",
+        "description": "Team voor de FTP-Mirror dienst",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:kennisnet",
+        "title": "Kennisnet",
+        "description": "Het team voor Kennisnet",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:alpha_en_beta",
+        "title": "Alpha en Beta",
+        "description": "De twee systemen van Henny Bekker",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:infoserver",
+        "title": "InfoServer",
+        "description": "Team voor de SURFnet InfoServer",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:dashboard",
+        "title": "Dashboard",
+        "description": "Team van de SURFnet Dashboard dienst",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:dashboard_admin",
+        "title": "dashboard_admin",
+        "description": "Team dat gebruikt wordt om toegang te verlenen tot het dashboard van SURFconext (productie) als SURFconextverantwoordelijke. Bijv. voor het geval SAB-toegang niet werkt.\r\n\r\nNeem voor wijzigingen in de teamsamenstelling contact op met Henny, Ivo of Eefje (dashboard-surfconext-beheer@surfnet.nl).",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfteams",
+        "title": "SURFteams",
+        "description": "Het team achter SURFteams",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:apshare",
+        "title": "APshare",
+        "description": "Team tbv de share in de SURFnet-labs wiki voor informatie over attribuut providers in SURFconext",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:team_opendrac",
+        "title": "Team OpenDRAC",
+        "description": "Team OpenDRAC",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:GoogleVO",
+        "title": "GoogleVO",
+        "description": "VO group for apps.surfnet.nl Google Apps domain. Open Google Drive: http://docs.apps.surfnet.nl",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:braindrops",
+        "title": "Braindrops",
+        "description": "Het team van Henny Bekker",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:coin_-_do_2010",
+        "title": "COIN - DO 2010",
+        "description": "COIN Dienstontwikkeling 2010",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:managementvo",
+        "title": "managementvo",
+        "description": "Team voor de SURFconext management VO",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:advanced_services",
+        "title": "Advanced Services",
+        "description": "Team van SURFnet Advanced Services",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:[surfteams_productie__op_surfconext]",
+        "title": "[SURFteams Productie  op SURFConext]",
+        "description": "If you see this team, you are talking to the Production version of SURFteams",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:dashboard_surfconextmanager",
+        "title": "Dashboard surfconextmanager",
+        "description": "//update feb 2014 : dit team wordt nog niet gebruikt in code van dashbaord SURFconext.\r\n// was daar wel ooit voor bedoeld, maar dat is niet live gegaan",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:coin",
+        "title": "COIN",
+        "description": "Team voor ex COIN liefhebbers",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfnet",
+        "title": "SURFnet",
+        "description": "Het team van SURFnet",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfnetlabs",
+        "title": "SURFnetLabs",
+        "description": "Het team achter SURFnetLabs",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:alpha",
+        "title": "Alpha",
+        "description": "Team voor gebruikers en fans in het algemeen van de DEC Alpha architectuur",
+        "voot_membership_role": "admin"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:surfnet_intern",
+        "title": "SURFnet intern",
+        "description": "Groep voor interne SURFnet aangelegenheden",
+        "voot_membership_role": "member"
+    },
+    {
+        "id": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:dashboard_viewer",
+        "title": "dashboard_viewer",
+        "description": "Team voor SURFconext dashboard - productie.\r\nLeden van het team hebben dezelfde rechten alsof ze de SURFconext-beheerder-rol hebben in SAB.",
+        "voot_membership_role": "admin"
+    }
+]}

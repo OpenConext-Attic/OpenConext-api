@@ -16,6 +16,7 @@
 
 package nl.surfnet.coin.api.client;
 
+import nl.surfnet.coin.api.client.domain.GroupEntry;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -52,4 +53,10 @@ public class OpenConextJsonParserTest {
     assertEquals("{}", out.toString());
     
   }
+
+    @Test
+    public void testGroups()  throws Exception {
+        final Group20Entry group20Entry = parser.parseGroups20(new ClassPathResource("groups.json").getInputStream());
+        assertEquals(57, group20Entry.getEntry().size());
+    }
 }
