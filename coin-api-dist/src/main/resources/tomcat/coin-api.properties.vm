@@ -21,28 +21,28 @@
 ##
 ####################################################################
 
-janus.user=engine
-janus.secret=engineblock
+janus.user=__OC__API_JANUSAPI_USER__
+janus.secret=__OC__API_JANUSAPI_PASS__
 janus.uri=https://serviceregistry._OPENCONEXT_DOMAIN_/simplesaml/module.php/janus/services/rest/
 
 coin-api.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.jdbc.url=jdbc:mysql://localhost:3306/api
-coin-api.jdbc.user=root
-coin-api.jdbc.password=c0n3xt
+coin-api.jdbc.user=__OC__API_DB_USER__
+coin-api.jdbc.password=__OC__API_DB_PASS__
 
 coin-api.ldap.url=ldap://localhost:389
-coin-api.ldap.password=ks97THqW2m3BN
-coin-api.ldap.userDn=cn=ro,dc=surfconext,dc=nl
+coin-api.ldap.password=__OC__LDAP_PASS__
+coin-api.ldap.userDn=__OC__LDAP_USER__
 
 coin-api.engineblock.jdbc.driver=com.mysql.jdbc.Driver
-coin-api.engineblock.jdbc.password=c0n3xt
+coin-api.engineblock.jdbc.password=__OC__ENGINE_DB_PASS__
 coin-api.engineblock.jdbc.url=jdbc:mysql://localhost:3306/engineblock
-coin-api.engineblock.jdbc.user=root
+coin-api.engineblock.jdbc.user=__OC__ENGINE_DB_USER__
 
 coin-api.teams.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.teams.jdbc.url=jdbc:mysql://localhost:3306/teams
-coin-api.teams.jdbc.user=root
-coin-api.teams.jdbc.password=c0n3xt
+coin-api.teams.jdbc.user=__OC__TEAMS_DB_USER__
+coin-api.teams.jdbc.password=__OC__TEAMS_DB_PASS__
 
 # global configuration of database properties, used for all data sources
 # in seconds
