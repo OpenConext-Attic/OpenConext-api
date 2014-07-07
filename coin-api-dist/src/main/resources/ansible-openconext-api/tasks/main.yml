@@ -3,6 +3,7 @@
     include: main/install.yml
 
   - name: Configure API
+    include: main/configure.yml
 
   - name: Activate API
-    notify: Restart Tomcat
+    service: name=tomcat6 state=restarted

@@ -13,15 +13,20 @@
   - name: Stop the application server
     service: name=tomcat6 state=stopped
 
-  - name: Setup Tomcat wars
-    file: path="/usr/share/tomcat6/wars" state=directory
+  - name: Install Tomcat wars directory
+    file: path={{ tomcat_wars_path }} owner=tomcat group=tomcat recurse=true state=directory
 
-  - name: Remove old wars
-    shell: rm -vf /usr/share/tomcat6/wars/coin-api-war-*.war
+  - name: Clean Tomcat old wars
+    shell: rm -vf {{ tomcat_wars_path }}/coin-api-war-*.war
 
-  - name: Remove
- cd ../work/Catalina
- rm -rf api.(dev/test/acc/prod).surfconext.nl/*
+  - name: Install Tomcat work directory
+    file: path={{ tomcat_work_path }} owner=tomcat group=tomcat recurse=true state=directory
 
- cd ../../webapps/
- rm -rf api.(dev/test/acc/prod).surfconext.nl/*
+  - name: Clean Tomcat work
+    shell: rm -rvf {{ tomcat_work_path }}/api.{{ openconext_domain }}/*
+
+  - name: Install Tomcat webapps directory
+    file: path={{ tomcat_webapps_path }} owner=tomcat group=tomcat recurse=true state=directory
+
+  - name: Clean Tomcat webapps
+    shell: rm -rvf {{ tomcat_webapps_path }}/api.{{ openconext_domain }}/*
