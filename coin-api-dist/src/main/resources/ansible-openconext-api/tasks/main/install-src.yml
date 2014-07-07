@@ -1,0 +1,15 @@
+---
+  - name: SRC - Install Git repo
+    git:
+      accept_hostkey: yes
+      repo: "{{ api_git_url }}"
+      dest: "{{ api_release_dir }}"
+      version: "{{ api_version }}"
+
+  - name: SRC - Running Maven install
+    command: mvn clean install -DskipTests
+    args:
+      chdir: "{{ api_release_dir }}"
+
+  - name: SRC - Copy build to build directory
+    copy: src="coin-api-dist/target/coin-api-dist-{{ version }}-bin.tar.gz" dest={{ api_build_path }}

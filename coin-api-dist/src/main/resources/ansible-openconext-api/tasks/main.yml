@@ -1,0 +1,8 @@
+---
+  - name: Install API
+    include: main/install.yml
+
+  - name: Configure API
+
+  - name: Activate API
+    notify: Restart Tomcat

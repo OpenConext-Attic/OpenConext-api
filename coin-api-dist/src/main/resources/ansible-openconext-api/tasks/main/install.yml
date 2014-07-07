@@ -1,0 +1,27 @@
+---
+  - name: Install API from Build (only when version starts with a number)
+    include: install-build.yml
+    when: api_version | match("^[0-9]")
+
+  - name: Install API from source (only when version does not start with a number)
+    include: install-src.yml
+    when: api_version | match("^[^0-9]")
+
+  - name: Extract build
+    unarchive: src={{ api_build_path }} dest={{ releases_dir }} copy=no
+
+  - name: Stop the application server
+    service: name=tomcat6 state=stopped
+
+  - name: Setup Tomcat wars
+    file: path="/usr/share/tomcat6/wars" state=directory
+
+  - name: Remove old wars
+    shell: rm -vf /usr/share/tomcat6/wars/coin-api-war-*.war
+
+  - name: Remove
+ cd ../work/Catalina
+ rm -rf api.(dev/test/acc/prod).surfconext.nl/*
+
+ cd ../../webapps/
+ rm -rf api.(dev/test/acc/prod).surfconext.nl/*
