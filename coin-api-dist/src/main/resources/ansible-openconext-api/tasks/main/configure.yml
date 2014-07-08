@@ -14,14 +14,14 @@
       src: coin-api.properties.j2
       dest: "{{ tomcat_classpath_path }}/coin-api.properties"
 
-  - name: Count the host we're trying to add
+  - name: Detect if we're already in the server.xml
     xml:
       file: "{{ tomcat_conf_path }}/server.xml"
       xpath: "/Server/Service[@name='Catalina']/Engine[@name='Standalone']/Host[@name='api.{{ openconext_domain }}']"
       count: true
     register: ansible_host
 
-  - name: Add Ansible Host
+  - name: If not then add a Host element to server.xml
     xml:
       file: "{{ tomcat_conf_path }}/server.xml"
       xpath: "/Server/Service[@name='Catalina']/Engine[@name='Standalone']"
