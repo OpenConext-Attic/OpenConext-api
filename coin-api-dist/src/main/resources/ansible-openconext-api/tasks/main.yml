@@ -6,4 +6,4 @@
     include: main/configure.yml
 
   - name: Activate API
-    service: name=tomcat6 state=restarted
+    include: main/activate.yml

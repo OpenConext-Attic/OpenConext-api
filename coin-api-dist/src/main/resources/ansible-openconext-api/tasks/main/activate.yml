@@ -1,0 +1,11 @@
+---
+  - name: Enable Apache proxy
+    template:
+      src: api.conf.j2
+      dest: "/etc/httpd/conf.d/api.conf"
+
+  - name: Restart Apache
+    service: name=httpd state=restarted
+
+  - name: Restart Tomcat
+    service: name=tomcat6 state=restarted
