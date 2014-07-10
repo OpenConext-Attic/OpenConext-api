@@ -7,7 +7,7 @@
       version: "{{ api_version }}"
 
   - name: SRC - Running Maven install
-    command: mvn clean install -DskipTests
+    command: mvn -q clean install -DskipTests
     args:
       chdir: "{{ api_release_dir }}"
 
