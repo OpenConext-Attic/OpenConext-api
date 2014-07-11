@@ -1,17 +1,17 @@
 ---
   - name: Set logging configuration
     template:
-      src: "api-logback.{{ api_logging_policy }}.xml"
+      src: "../../templates/api-logback.{{ api_logging_policy }}.xml"
       dest: "{{ tomcat_classpath_path }}/api-logback.xml"
 
   - name: Set caching configuration
     template:
-      src: api-ehcache.xml.j2
+      src: ../../templates/api-ehcache.xml.j2
       dest: "{{ tomcat_classpath_path }}/api-ehcache.xml"
 
   - name: Set configuration properties
     template:
-      src: coin-api.properties.j2
+      src: ../../templates/coin-api.properties.j2
       dest: "{{ tomcat_classpath_path }}/coin-api.properties"
 
   - name: Detect if we're already in the server.xml

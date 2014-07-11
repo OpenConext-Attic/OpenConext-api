@@ -23,10 +23,15 @@
     file: path={{ tomcat_work_path }} owner=tomcat group=tomcat recurse=true state=directory
 
   - name: Clean Tomcat work
-    shell: rm -rvf {{ tomcat_work_path }}/api.{{ openconext_domain }}/*
+    shell: rm -rvf {{ tomcat_work_path }}/*
 
   - name: Install Tomcat webapps directory
     file: path={{ tomcat_webapps_path }} owner=tomcat group=tomcat recurse=true state=directory
 
   - name: Clean Tomcat webapps
-    shell: rm -rvf {{ tomcat_webapps_path }}/api.{{ openconext_domain }}/*
+    shell: rm -rvf {{ tomcat_webapps_path }}/*
+
+  - name: Install WAR
+    copy:
+      src: "{{ releases_dir }}/coin-api-dist-{{ api_version_dir }}/tomcat/webapps/coin-api-war-{{ api_version_dir }}.war"
+      dest: "{{ tomcat_webapps_path }}/coin-api-war-{{ api_version_dir }}.war"
