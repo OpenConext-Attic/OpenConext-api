@@ -30,7 +30,7 @@
       - "{{ api_release_dir }}/coin-api-war/pom.xml"
 
   - name: SRC - Running Maven install
-    command: mvn -q clean install -DskipTests
+    command: mvn -q clean install
     args:
       chdir: "{{ api_release_dir }}"
 
