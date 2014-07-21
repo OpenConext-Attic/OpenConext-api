@@ -1,0 +1,82 @@
+####################################################################
+##
+## The following properties are the responsibility of the owners
+## of the machine. The developers do not know the values.
+##
+####################################################################
+
+janus.user={{ api_janus_user }}
+janus.secret={{ api_janus_secret }}
+janus.uri={{ api_janus_url }}
+
+coin-api.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.jdbc.url=jdbc:mysql://db.{{ openconext_domain }}:3306/api
+coin-api.jdbc.user={{ api_db_user }}
+coin-api.jdbc.password={{ api_db_password }}
+
+coin-api.ldap.url=ldap://ldap.{{ openconext_domain }}389
+coin-api.ldap.userDn={{ api_ldap_bind_dn }}
+coin-api.ldap.password={{ api_ldap_password }}
+
+coin-api.engineblock.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.engineblock.jdbc.url=jdbc:mysql://db.{{ openconext_domain }}:3306/{{ engine_db_name}}
+coin-api.engineblock.jdbc.user={{ engine_db_user }}
+coin-api.engineblock.jdbc.password={{ engine_db_password }}
+
+coin-api.teams.jdbc.driver=com.mysql.jdbc.Driver
+coin-api.teams.jdbc.url=jdbc:mysql://db.{{ openconext_domain }}:3306/{{ teams_db_name }}
+coin-api.teams.jdbc.user={{ teams_db_user }}
+coin-api.teams.jdbc.password={{ teams_db_password }}
+
+# Email address that recieves error notifications
+coin-errormail-to={{ openconext_error_mail }}
+
+# Callback URL of the OAuth client
+coin-api.oauth.callback.url=https://api.{{ openconext_domain }}/v1/test/oauth-callback.shtml
+
+####################################################################
+##
+## The following properties are the responsibility of the developers
+##
+####################################################################
+
+#Choose either mockClientDetailsService or janusClientDetailsService
+clientDetailsServiceClass=nl.surfnet.coin.api.service.JanusClientDetailsService
+
+#For future purposes we might mock them
+ldapClientClass=nl.surfnet.coin.ldap.LdapClientImpl
+engineblockClass=nl.surfnet.coin.eb.EngineBlockImpl
+groupServiceClass=nl.surfnet.coin.api.service.GroupServiceImpl
+
+#Is the mock API enabled?
+mock-api-enabled=false
+
+# SMTP server settings for notifications
+coin-mailserver=localhost
+coin-mailserver-port=25
+
+#The directory (in the war) where the db migration scrips reside
+coin-api.db.migrations.folder=db/migration/mysql
+
+#Cache manager
+cacheManagerClass=org.springframework.cache.ehcache.EhCacheCacheManager
+
+staticContentBasePath=https://static.{{ openconext_domain }}
+
+# Default locale for consent screen
+coin-api.locale-default=nl
+
+# SAML properties
+entityId=https://api.{{ openconext_domain }}/
+assertionConsumerURI=https://api.{{ openconext_domain }}/v1/assertionConsumer
+idpUrl=https://engine.{{ openconext_domain }}/authentication/idp/single-sign-on
+idpCertificate={{ engine_idp_cert_string }}
+idpEntityId=https://engine.{{ openconext_domain }}/authentication/idp/metadata
+spPrivateKey={{ api_sp_key_string }}
+spCertificate={{ api_sp_cert_string }}
+
+#which SAML attribute holds the UUID
+saml-uuid-attribute=urn:oid:1.3.6.1.4.1.1076.20.40.40.1
+
+# this is part of a regex pattern that should determine whether the group is internal
+api.internal.group.pattern=^urn:collab:group:\\w*\\.?surfteams.nl.*

@@ -1,0 +1,32 @@
+---
+  - name: Set logging configuration
+    template:
+      src: "../../templates/api-logback.{{ api_logging_policy }}.xml"
+      dest: "{{ tomcat_classpath_path }}/api-logback.xml"
+
+  - name: Set caching configuration
+    template:
+      src: ../../templates/api-ehcache.xml.j2
+      dest: "{{ tomcat_classpath_path }}/api-ehcache.xml"
+
+  - name: Set configuration properties
+    template:
+      src: ../../templates/coin-api.properties.j2
+      dest: "{{ tomcat_classpath_path }}/coin-api.properties"
+
+  - name: Detect if we're already in the server.xml
+    xml:
+      file: "{{ tomcat_conf_path }}/server.xml"
+      xpath: "/Server/Service[@name='Catalina']/Engine[@name='Standalone']/Host[@name='api.{{ openconext_domain }}']"
+      count: true
+    register: ansible_host
+
+  - name: If not then add a Host element to server.xml
+    xml:
+      file: "{{ tomcat_conf_path }}/server.xml"
+      xpath: "/Server/Service[@name='Catalina']/Engine[@name='Standalone']"
+      add_children:
+          - Host:
+              name: "api.{{ openconext_domain }}"
+              appBase: "webapps/api.{{ openconext_domain }}"
+    when: ansible_host.count == 0

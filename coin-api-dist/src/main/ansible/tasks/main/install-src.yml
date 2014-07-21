@@ -1,0 +1,40 @@
+---
+  - name: SRC - Remove repo
+    file:
+      path: "{{ api_release_dir }}"
+      state: absent
+
+  - name: SRC - Install Git repo
+    git:
+      accept_hostkey: yes
+      repo: "{{ api_git_url }}"
+      dest: "{{ api_release_dir }}"
+      version: "{{ api_version }}"
+
+  - name: Set the version in the parent project) (may not have been set properly for branches)
+    xml:
+      file: "{{ api_release_dir }}/pom.xml"
+      xpath: /*[name()='project']/*[name()='version']
+      value: "{{ api_version_dir }}"
+
+  - name: Set the version (in all parent projects) (may not have been set properly for branches)
+    xml:
+      file: "{{ item }}"
+      xpath: /*[name()='project']/*[name()='parent']/*[name()='version']
+      value: "{{ api_version_dir }}"
+    with_items:
+      - "{{ api_release_dir }}/coin-api-client/pom.xml"
+      - "{{ api_release_dir }}/coin-api-dist/pom.xml"
+      - "{{ api_release_dir }}/coin-api-external-groups/pom.xml"
+      - "{{ api_release_dir }}/coin-api-serviceregistry-client/pom.xml"
+      - "{{ api_release_dir }}/coin-api-war/pom.xml"
+
+  - name: SRC - Running Maven install
+    command: mvn -q clean install -DskipTests
+    args:
+      chdir: "{{ api_release_dir }}"
+
+  - name: SRC - Copy build to build directory
+    copy:
+      src: "{{ api_release_dir }}/coin-api-dist/target/coin-api-dist-{{ api_version_dir }}-bin.tar.gz"
+      dest: "{{ api_build_path }}"

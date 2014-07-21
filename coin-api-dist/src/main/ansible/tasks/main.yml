@@ -1,0 +1,11 @@
+---
+  - yum: name=python-lxml state=installed
+
+  - name: Install API
+    include: main/install.yml
+
+  - name: Configure API
+    include: main/configure.yml
+
+  - name: Activate API
+    include: main/activate.yml

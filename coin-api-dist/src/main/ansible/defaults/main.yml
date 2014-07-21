@@ -1,0 +1,35 @@
+---
+temp_dir: "/tmp"
+logging_dir: "/var/log/openconext"
+releases_dir: "/opt/openconext"
+builds_dir: "{{ releases_dir }}/builds"
+configs_dir: "/etc/openconext"
+
+# Tomcat vars
+tomcat_path: "/usr/share/tomcat6"
+tomcat_conf_path: "{{ tomcat_path }}/conf"
+tomcat_wars_path: "{{ tomcat_path }}/wars"
+tomcat_work_path: "{{ tomcat_path }}/work/Catalina/api.{{ openconext_domain }}"
+tomcat_webapps_path: "{{ tomcat_path }}/webapps/api.{{ openconext_domain }}"
+tomcat_classpath_path: "{{ tomcat_path }}/conf/classpath_properties"
+
+# API specific variables
+api_git_url: "https://github.com/OpenConext/OpenConext-api.git"
+api_version_dir: "{{ api_version | replace('/', '-') }}"
+api_release_dir: "{{ releases_dir }}/OpenConext-api-{{ api_version_dir }}"
+api_build_path: "{{ builds_dir }}/coin-api-dist-{{ api_version_dir }}-bin.tar.gz"
+api_download_url: "https://build.surfconext.nl/repository/public/releases/org/surfnet/coin/coin-api-dist/{{ api_version }}/coin-api-dist-{{ api_version }}-bin.tar.gz"
+api_dist_war_path: "{{ releases_dir }}/coin-api-dist-{{ api_version_dir }}/tomcat/webapps/coin-api-war-{{ api_version_dir }}.war"
+api_tomcat_war_path: "{{ tomcat_wars_path }}/coin-api-war-{{ api_version_dir }}.war"
+
+# Choice: "full" or "minimal"
+api_logging_policy: minimal
+api_db_name: api
+api_db_host: "db.{{ openconext_domain}}"
+api_db_port: 3306
+api_janus_url: https://serviceregistry.{{ openconext_domain }}/simplesaml/module.php/janus/services/rest/
+db_admin_user: root
+engine_db_name: engineblock
+engine_db_host: localhost
+engine_db_port: 3306
+teams_db_name: teams

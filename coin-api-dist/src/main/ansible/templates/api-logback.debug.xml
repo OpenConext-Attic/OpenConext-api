@@ -31,17 +31,34 @@
 
     <!-- global filter for this appender -->
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>warn</level>
+      <level>info</level>
     </filter>
 
     <!-- specific filters -->
-    <!--
-        <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-          <logger>org.springframework</logger>
-          <level>warn</level>
-        </filter>
-    -->
-
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>nl.surfnet.coin</logger>
+      <level>debug</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.springframework</logger>
+      <level>warn</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.hibernate</logger>
+      <level>warn</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.opensaml</logger>
+      <level>warn</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>org.apache</logger>
+      <level>warn</level>
+    </filter>
+    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
+      <logger>hsqldb.db</logger>
+      <level>warn</level>
+    </filter>
   </appender>
 
   <appender name="DUMPAPPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">

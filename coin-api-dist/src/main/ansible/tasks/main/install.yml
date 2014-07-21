@@ -1,0 +1,42 @@
+---
+  - name: Ensure the directories exists
+    file: path={{ item }} state=directory
+    with_items:
+    - "{{ releases_dir }}"
+    - "{{ builds_dir }}"
+    - "{{ configs_dir }}"
+
+  - name: Install API from Build (only when version starts with a number)
+    include: install-build.yml
+    when: api_version | match("^[0-9]")
+
+  - name: Install API from source (only when version does not start with a number)
+    include: install-src.yml
+    when: api_version | match("^[^0-9]")
+
+  - name: Extract build
+    unarchive: src={{ api_build_path }} dest={{ releases_dir }} copy=no
+
+  - name: Stop the application server
+    service: name=tomcat6 state=stopped
+
+  - name: Install Tomcat wars directory
+    file: path={{ tomcat_wars_path }} owner=tomcat group=tomcat recurse=true state=directory
+
+  - name: Clean Tomcat old wars
+    shell: rm -vf {{ tomcat_wars_path }}/coin-api-war-*.war
+
+  - name: Install Tomcat work directory
+    file: path={{ tomcat_work_path }} owner=tomcat group=tomcat recurse=true state=directory
+
+  - name: Clean Tomcat work
+    shell: rm -rvf {{ tomcat_work_path }}/*
+
+  - name: Install Tomcat webapps directory
+    file: path={{ tomcat_webapps_path }} owner=tomcat group=tomcat recurse=true state=directory
+
+  - name: Clean Tomcat webapps
+    shell: rm -rvf {{ tomcat_webapps_path }}/*
+
+  - name: Install WAR
+    command: cp {{ api_dist_war_path }} {{ api_tomcat_war_path }}
