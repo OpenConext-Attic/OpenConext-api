@@ -1,4 +1,11 @@
 ---
+  - name: Ensure the directories exists
+    file: path={{ item }} state=directory
+    with_items:
+    - "{{ releases_dir }}"
+    - "{{ builds_dir }}"
+    - "{{ configs_dir }}"
+
   - name: Install API from Build (only when version starts with a number)
     include: install-build.yml
     when: api_version | match("^[0-9]")
