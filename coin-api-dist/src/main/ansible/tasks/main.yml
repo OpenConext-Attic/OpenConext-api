@@ -1,4 +1,6 @@
 ---
+  - yum: name=python-lxml state=installed
+
   - name: Install API
     include: main/install.yml
 
