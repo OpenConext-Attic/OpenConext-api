@@ -27,7 +27,7 @@ janus.secret=__OC__API_JANUSAPI_PASS__
 
 coin-api.jdbc.driver=com.mysql.jdbc.Driver
 coin-api.jdbc.url=jdbc:mysql://localhost:3306/api
-coin-api.jdbc.user=__OC__API_DB_USER___
+coin-api.jdbc.user=__OC__API_DB_USER__
 coin-api.jdbc.password=__OC__API_DB_PASS__
 
 coin-api.ldap.url=ldap://localhost:389
