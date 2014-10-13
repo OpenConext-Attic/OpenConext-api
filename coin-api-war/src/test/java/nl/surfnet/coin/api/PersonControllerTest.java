@@ -27,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth.provider.ConsumerAuthentication;
 import org.springframework.security.oauth.provider.ConsumerCredentials;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -43,9 +44,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:coin-api-properties-context.xml", "classpath:coin-api-context.xml",
-    "classpath:coin-api-oauth1-context.xml", "classpath:coin-api-oauth2-context.xml",
-    "classpath:coin-shared-context.xml"})
+@ContextConfiguration(locations = {
+  "classpath:coin-api-properties-context.xml",
+  "classpath:coin-api-context.xml",
+  "classpath:coin-api-oauth1-context.xml",
+  "classpath:coin-api-oauth2-context.xml",
+  "classpath:coin-shared-context.xml"
+})
+@ActiveProfiles("openconext")
 public class PersonControllerTest {
 
   @Autowired
@@ -76,7 +82,7 @@ public class PersonControllerTest {
     assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
 
     Person person2Returned = ((PersonEntry) pc.getGroupMembers("foo", "@self", 1, 0, "")).getEntry();
-    assertEquals("urn:collab:person:test.surfguest.nl:bar", personReturned.getId());
+    assertEquals("urn:collab:person:test.surfguest.nl:bar", person2Returned.getId());
 
   }
 
@@ -96,7 +102,7 @@ public class PersonControllerTest {
     final JanusClientMetadata clientMetaData = new JanusClientMetadata(new EntityMetadata());
     consumerDetails.setClientMetaData(clientMetaData);
     ConsumerCredentials consumerCredentials = new ConsumerCredentials("consumerKey", "signature", "signatureMethod",
-        "signatureBaseString", "token");
+      "signatureBaseString", "token");
     return new ConsumerAuthentication(consumerDetails, consumerCredentials);
   }
 

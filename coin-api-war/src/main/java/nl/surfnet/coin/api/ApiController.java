@@ -34,6 +34,7 @@ import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
 import nl.surfnet.coin.api.client.domain.Person;
 import nl.surfnet.coin.api.client.domain.PersonEntry;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
+import nl.surfnet.coin.api.service.GroupProviderAcl;
 import nl.surfnet.coin.api.service.GroupService;
 import nl.surfnet.coin.api.service.PersonService;
 import nl.surfnet.coin.eb.EngineBlock;
@@ -94,6 +95,9 @@ public class ApiController extends AbstractApiController {
 
   @Autowired
   private ApiCallLogService logService;
+
+  @Autowired
+  private GroupProviderAcl groupProviderAcl;
 
   @RequestMapping(method = RequestMethod.GET, value = "/people/{userId:.+}")
   @ResponseBody

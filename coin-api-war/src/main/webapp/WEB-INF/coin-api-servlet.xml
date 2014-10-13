@@ -27,33 +27,33 @@
     http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
   <context:annotation-config/>
-    <context:component-scan base-package="nl.surfnet.coin.api"/>
-    <context:property-placeholder location="classpath:coin-api.properties"/>
+  <context:component-scan base-package="nl.surfnet.coin.api"/>
+  <context:property-placeholder location="classpath:coin-api.properties"/>
 
-	<bean id="messageAdapter"
-          class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <!-- Support JSON -->
-                <bean class="nl.surfnet.coin.util.CustomMappingJacksonHttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
-    <bean id="exceptionMessageAdapter"
-          class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
-        <property name="messageConverters">
-            <list>
-                <!-- Support JSON -->
-                <bean
-                        class="nl.surfnet.coin.util.CustomMappingJacksonHttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
+  <bean id="messageAdapter"
+        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    <property name="messageConverters">
+      <list>
+        <!-- Support JSON -->
+        <bean class="nl.surfnet.coin.util.CustomMappingJacksonHttpMessageConverter"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="exceptionMessageAdapter"
+        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+    <property name="messageConverters">
+      <list>
+        <!-- Support JSON -->
+        <bean
+          class="nl.surfnet.coin.util.CustomMappingJacksonHttpMessageConverter"/>
+      </list>
+    </property>
+  </bean>
 
   <!--Basic application beans. -->
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <property name="prefix" value="/WEB-INF/jsp/" />
-    <property name="suffix" value=".jsp" />
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
   </bean>
 
 </beans>
