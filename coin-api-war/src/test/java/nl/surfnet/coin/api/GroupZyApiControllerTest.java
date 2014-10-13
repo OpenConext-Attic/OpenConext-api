@@ -133,5 +133,9 @@ public class GroupZyApiControllerTest {
     controller.getGroupMembers(USER_ID, GROUP_ID, 1, 0, "foo");
   }
 
-
+  @Test
+  public void testUnauthorizedExceptionReturns401() throws Exception {
+    Group20Entry entry = controller.handleUnauthorizedException(new UnauthorizedException("foo"));
+    assertEquals(0, entry.getEntrySize());
+  }
 }

@@ -146,8 +146,8 @@ public class ApiController extends AbstractApiController {
     if (onBehalfOf == null) {
       onBehalfOf = userId;
     }
-    LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
-        groupId, onBehalfOf });
+    LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[]{userId,
+      groupId, onBehalfOf});
     ensureAccess(spEntityId, groupId, userId);
 
     List<GroupProvider> allGroupProviders = getAllAllowedGroupProviders(Service.People);
@@ -413,11 +413,6 @@ public class ApiController extends AbstractApiController {
     group20Entry.setEntry(allowedGroups);
   }
 
-  /**
-   * Handler for RuntimeExceptions. It makes API return a model containing the original exception's message.
-   * @param e the exception
-   * @return the response body
-   */
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   @ResponseBody
   @ExceptionHandler(RuntimeException.class)
@@ -426,11 +421,6 @@ public class ApiController extends AbstractApiController {
     return new Group20Entry(new ArrayList<Group20>());
   }
   
-  /**
-   * Handler for IllegalArgument Exception.
-   * @param e the exception
-   * @return the response body
-   */
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   @ResponseBody
   @ExceptionHandler(IllegalArgumentException.class)
@@ -438,6 +428,15 @@ public class ApiController extends AbstractApiController {
     LOG.info("Illegal Argument encountered in client request, we are responding with HTTP Bad Request");
     return new Group20Entry(new ArrayList<Group20>());
   }
+
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+  @ResponseBody
+  @ExceptionHandler(UnauthorizedException.class)
+  public Group20Entry handleUnauthorizedException(UnauthorizedException exception) {
+    LOG.info(exception.getMessage());
+    return new Group20Entry(new ArrayList<Group20>());
+  }
+
 
   /*
    * Set the metadata for the result
