@@ -26,13 +26,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import nl.surfnet.coin.api.GroupProviderConfiguration.Service;
-import nl.surfnet.coin.api.client.domain.AbstractEntry;
-import nl.surfnet.coin.api.client.domain.Group20;
-import nl.surfnet.coin.api.client.domain.Group20Entry;
-import nl.surfnet.coin.api.client.domain.GroupEntry;
-import nl.surfnet.coin.api.client.domain.GroupMembersEntry;
-import nl.surfnet.coin.api.client.domain.Person;
-import nl.surfnet.coin.api.client.domain.PersonEntry;
+import nl.surfnet.coin.api.client.domain.*;
 import nl.surfnet.coin.api.oauth.ClientMetaData;
 import nl.surfnet.coin.api.service.GroupProviderAcl;
 import nl.surfnet.coin.api.service.GroupService;
@@ -64,6 +58,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import static nl.surfnet.coin.api.service.GroupProviderAcl.GroupId.groupId;
+import static nl.surfnet.coin.api.service.GroupProviderAcl.ServiceProviderId.spId;
 
 /**
  * 
@@ -151,6 +148,8 @@ public class ApiController extends AbstractApiController {
     }
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, onBehalfOf });
+    ensureAccess(spEntityId, groupId, userId);
+
     List<GroupProvider> allGroupProviders = getAllAllowedGroupProviders(Service.People);
     // sensible default
     GroupMembersEntry groupMembers = new GroupMembersEntry(new ArrayList<Person>());
@@ -200,6 +199,12 @@ public class ApiController extends AbstractApiController {
     logApiCall(onBehalfOf);
     setResultOptions(groupMembers, count, startIndex, sortBy);
     return groupMembers;
+  }
+
+  private void ensureAccess(String spEntityId, String groupId, String userId) {
+    if(!groupProviderAcl.hasAccessTo(spId(spEntityId), groupId(groupId))) {
+      throw new UnauthorizedException(String.format("User %s for spEntityId %s has no access to groupId %s", userId, spEntityId, groupId));
+    }
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/groups/{userId:.+}")
@@ -350,6 +355,9 @@ public class ApiController extends AbstractApiController {
     if (onBehalfOf == null) {
       onBehalfOf = userId;
     }
+
+    ensureAccess(spEntityId, groupId, userId);
+
     List<GroupProvider> allGroupProviders = getAllAllowedGroupProviders(Service.Group);
     // sensible default
     Group20Entry group20Entry = new Group20Entry(new ArrayList<Group20>());
@@ -393,6 +401,16 @@ public class ApiController extends AbstractApiController {
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, 0, 0, null);
     return group20Entry;
+  }
+
+  private void filterGroups(String spEntityId, Group20Entry group20Entry) {
+    List<Group20> allowedGroups = new ArrayList<>();
+    for (Group20 group: group20Entry.getEntry()) {
+      if(groupProviderAcl.hasAccessTo(spId(spEntityId), groupId(group.getId()))) {
+        allowedGroups.add(group);
+      }
+    }
+    group20Entry.setEntry(allowedGroups);
   }
 
   /**
@@ -516,4 +534,7 @@ public class ApiController extends AbstractApiController {
     return null;
   }
 
+  public void setGroupProviderAcl(GroupProviderAcl groupProviderAcl) {
+    this.groupProviderAcl = groupProviderAcl;
+  }
 }

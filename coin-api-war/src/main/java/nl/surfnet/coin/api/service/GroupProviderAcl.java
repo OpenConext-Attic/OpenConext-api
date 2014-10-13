@@ -13,6 +13,23 @@ public interface GroupProviderAcl {
     public static GroupId groupId(String id) {
       return new GroupId(id);
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      GroupId groupId = (GroupId) o;
+
+      if (!id.equals(groupId.id)) return false;
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return id.hashCode();
+    }
   }
 
   public static class ServiceProviderId {
@@ -26,6 +43,22 @@ public interface GroupProviderAcl {
       return new ServiceProviderId(id);
     }
 
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      ServiceProviderId that = (ServiceProviderId) o;
+
+      if (!id.equals(that.id)) return false;
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return id.hashCode();
+    }
   }
 
 }
