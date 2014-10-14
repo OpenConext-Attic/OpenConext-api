@@ -57,48 +57,8 @@
     </filter>
   </appender>
 
-  <appender name="DUMPAPPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${CATALINA_BASE}/logs/api-fc.log</file>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <!-- daily rollover -->
-      <fileNamePattern>${CATALINA_BASE}/logs/api-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-      <maxHistory>60</maxHistory>
-    </rollingPolicy>
-    <encoder>
-      <pattern>%d{ISO8601} %5p [%t] %logger{40}:%L - %m%n</pattern>
-    </encoder>
-  </appender>
-
-  <appender name="MEMORYAPPENDER" class="nl.surfnet.coin.shared.log.diagnostics.MemoryAppender">
-
-    <!-- Even when dumping the memory events, filter them using these filters -->
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.springframework</logger>
-      <level>info</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.opensaml</logger>
-      <level>info</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.apache</logger>
-      <level>info</level>
-    </filter>
-  </appender>
-
-
-  <!-- This serves only as a lookup structure:
-  logger MEMORYLOGGER is by definition present,
-  and has the MEMORYAPPENDER and DUMPAPPENDER attached.
-  -->
-  <logger name="MEMORYLOGGER">
-    <appender-ref ref="MEMORYAPPENDER"/>
-    <appender-ref ref="DUMPAPPENDER"/>
-  </logger>
-
   <!-- filtering on info/warn level is done by the appenders -->
   <root level="debug">
     <appender-ref ref="file"/>
-    <appender-ref ref="MEMORYAPPENDER"/>
   </root>
 </configuration>

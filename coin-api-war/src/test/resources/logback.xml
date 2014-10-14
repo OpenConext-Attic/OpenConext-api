@@ -20,57 +20,16 @@
       <pattern>%d{HH:mm:ss.SSS} abc [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
 
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.springframework</logger>
-      <level>warn</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.hibernate</logger>
-      <level>warn</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.opensaml</logger>
-      <level>warn</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.apache</logger>
-      <level>warn</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>hsqldb.db</logger>
-      <level>warn</level>
-    </filter>
   </appender>
 
-  <appender name="DUMPAPPENDER" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [--MEMORY--] [%thread] %-5level %logger{36} - %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <appender name="MEMORYAPPENDER" class="nl.surfnet.coin.shared.log.diagnostics.MemoryAppender">
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.springframework</logger>
-      <level>info</level>
-    </filter>
-    <filter class="nl.surfnet.coin.shared.log.diagnostics.LoggerThresholdFilter">
-      <logger>org.opensaml</logger>
-      <level>info</level>
-    </filter>
-  </appender>
-
-
-  <!-- This serves only as a lookup structure:
-  logger MEMORYLOGGER is by definition present,
-  and has the MEMORYAPPENDER and DUMPAPPENDER attached.
-  -->
-  <logger name="MEMORYLOGGER">
-    <appender-ref ref="MEMORYAPPENDER" />
-    <appender-ref ref="DUMPAPPENDER" />
+  <logger name="nl.surfnet.coin" level="debug" additivity="false">
+    <appender-ref ref="console" />
+  </logger>
+  <logger name="com.googlecode.flyway" level="debug" additivity="false">
+    <appender-ref ref="console" />
   </logger>
 
-	<root level="debug">
+  <root level="error">
     <appender-ref ref="console" />
-    <appender-ref ref="MEMORYAPPENDER" />
   </root>
 </configuration>
