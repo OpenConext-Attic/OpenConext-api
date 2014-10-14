@@ -36,6 +36,11 @@
     <!-- default webdriver for selenium tests. To be overridden on a per profile
         base -->
     <selenium.webdriver>phantomJS</selenium.webdriver>
+    <!--
+    Used in jetty plugin. To enable the groupzy feature start jetty with
+    mvn jetty:run -Dspring.profiles.active=groupzy
+    -->
+    <spring.profiles.active>openconext</spring.profiles.active>
   </properties>
 
   <dependencies>
@@ -252,6 +257,11 @@
             <type>war</type>
             <version>${mujina-idp.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.1</version>
+          </dependency>
         </dependencies>
 
         <configuration>
@@ -281,6 +291,12 @@
           <stopKey>apistop</stopKey>
           <stopPort>9095</stopPort>
           <contextXml>${basedir}/src/test/resources/jetty-context.xml</contextXml>
+          <systemProperties>
+            <systemProperty>
+              <name>spring.profiles.active</name>
+              <value>${spring.profiles.active}</value>
+            </systemProperty>
+          </systemProperties>
         </configuration>
       </plugin>
       <plugin>

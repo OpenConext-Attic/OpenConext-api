@@ -108,6 +108,7 @@ public class ApiGrouperDaoImpl extends AbstractGrouperDaoImpl implements ApiGrou
       }
       Assert.isTrue(!StringUtils.isBlank(sortByColumn), "The only supported sortBy options are ("
           + VALID_SORTS_FOR_TEAM_QUERY.keySet() + "). Not allowed is '" + sortBy + "'");
+      //TODO THIS IS STILL SQL INJECTION. FIX IT!!!!
       sql = String.format(sql, sortByColumn);
     } else {
       sql = String.format(sql, "name");

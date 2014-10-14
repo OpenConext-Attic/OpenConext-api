@@ -119,6 +119,25 @@ public class GroupZyApiControllerTest {
     assertEquals(1, group.getEntrySize());
   }
 
+  @Test
+  public void testFilterGroupsItHasNoAccessTo() throws Exception {
+    when(groupService.getGroups20(USER_ID, USER_ID, null, null, "id")).thenReturn(group20Entry);
+    when(groupProviderAcl.hasAccessTo(spId(SP_ENTITY_ID), groupId(GROUP_ID))).thenReturn(false);
+    Group20Entry groups = controller.getGroups(USER_ID, 1, 0, "id");
+
+    assertEquals(0, groups.getEntrySize());
+  }
+
+  @Test
+  public void testReturnsAllGroupsItHasAccessTo() throws Exception {
+    when(groupService.getGroups20(USER_ID, USER_ID, null, null, "id")).thenReturn(group20Entry);
+    when(groupProviderAcl.hasAccessTo(spId(SP_ENTITY_ID), groupId(GROUP_ID))).thenReturn(true);
+
+    Group20Entry groups = controller.getGroups(USER_ID, 1, 0, "id");
+
+    assertEquals(1, groups.getEntrySize());
+  }
+
   @Test(expected = UnauthorizedException.class)
   public void testGetGroupFailsWhenNoAccessToGroup() throws Exception {
     when(groupProviderAcl.hasAccessTo(spId(SP_ENTITY_ID), groupId(GROUP_ID))).thenReturn(false);

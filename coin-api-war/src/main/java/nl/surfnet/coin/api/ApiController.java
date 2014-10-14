@@ -201,12 +201,6 @@ public class ApiController extends AbstractApiController {
     return groupMembers;
   }
 
-  private void ensureAccess(String spEntityId, String groupId, String userId) {
-    if(!groupProviderAcl.hasAccessTo(spId(spEntityId), groupId(groupId))) {
-      throw new UnauthorizedException(String.format("User %s for spEntityId %s has no access to groupId %s", userId, spEntityId, groupId));
-    }
-  }
-
   @RequestMapping(method = RequestMethod.GET, value = "/groups/{userId:.+}")
   @ResponseBody
   public Group20Entry getGroups(@PathVariable("userId")
@@ -263,7 +257,7 @@ public class ApiController extends AbstractApiController {
       group20Entry.getEntry().addAll(listOfAllExternalGroups);
       group20Entry = addLinkedSurfTeamGroupsForExternalGroups(userId, group20Entry, listOfAllExternalGroups, allGroupProviders);
     }
-
+    filterGroups(spEntityId, group20Entry);
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, count, startIndex, sortBy);
     return group20Entry;
@@ -403,7 +397,7 @@ public class ApiController extends AbstractApiController {
     return group20Entry;
   }
 
-  private void filterGroups(String spEntityId, Group20Entry group20Entry) {
+  protected void filterGroups(String spEntityId, Group20Entry group20Entry) {
     List<Group20> allowedGroups = new ArrayList<>();
     for (Group20 group: group20Entry.getEntry()) {
       if(groupProviderAcl.hasAccessTo(spId(spEntityId), groupId(group.getId()))) {
@@ -412,6 +406,14 @@ public class ApiController extends AbstractApiController {
     }
     group20Entry.setEntry(allowedGroups);
   }
+
+  protected void ensureAccess(String spEntityId, String groupId, String userId) {
+    if(!groupProviderAcl.hasAccessTo(spId(spEntityId), groupId(groupId))) {
+      throw new UnauthorizedException(String.format("User %s for spEntityId %s has no access to groupId %s", userId, spEntityId, groupId));
+    }
+  }
+
+
 
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   @ResponseBody

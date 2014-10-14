@@ -97,12 +97,15 @@ public class MockApiController extends ApiController {
     if (onBehalfOf == null) {
       onBehalfOf = userId;
     }
+    String spEntityId = getClientMetaData().getAppEntityId();
+    ensureAccess(spEntityId, groupId, userId);
     /*
      * As an external Mock provider we don't care which groupProviders we have.
      * We want to return either the json pre-configured groups or the injected
      * groups
      */
     Group20Entry group20Entry = groupService.getGroup20(userId, groupId, onBehalfOf);
+
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, 0, 0, null);
     return group20Entry;
@@ -139,8 +142,9 @@ public class MockApiController extends ApiController {
       userId = onBehalfOf;
     }
     LOG.info("Got getGroups-request, for userId '{}',  on behalf of '{}'", new Object[] { userId, onBehalfOf });
-
+    String spEntityId = getClientMetaData().getAppEntityId();
     Group20Entry group20Entry = groupService.getGroups20(userId, onBehalfOf, count, startIndex, sortBy);
+    filterGroups(spEntityId, group20Entry);
     logApiCall(onBehalfOf);
     setResultOptions(group20Entry, count, startIndex, sortBy);
     return group20Entry;
@@ -169,7 +173,7 @@ public class MockApiController extends ApiController {
     LOG.info("Got getGroupMembers-request, for userId '{}', groupId '{}', on behalf of '{}'", new Object[] { userId,
         groupId, onBehalfOf });
     String spEntityId = getClientMetaData().getAppEntityId();
-
+    ensureAccess(spEntityId, groupId, userId);
     GroupMembersEntry groupMembers = personService.getGroupMembers(groupId, onBehalfOf, spEntityId, count, startIndex,
         sortBy);
     logApiCall(onBehalfOf);
