@@ -54,3 +54,29 @@ This yields:
         "error":null
       }
     }
+
+Installation Instructions
+------------------------
+To run on tomcat platform:
+
+1. Download the WAR file from the maven repository: http://build.surfconext.nl/repository/public/
+2. Follow the installation instructions in coin-api-dist/src/main/docs/install.txt
+3. To enable the eduTeams (aka groupzy) feature do the following:
+4. Ensure the following properties coin-api.properties are set with the correct values:
+
+    ```
+    coin-api.group_provider_acl_db.migrations.folder=group_provider_acl_db/migration/mysql
+    coin-api.groupzy.jdbc.driver=com.mysql.jdbc.Driver
+    coin-api.groupzy.jdbc.url=jdbc:mysql://localhost/{DB_NAME}
+    coin-api.groupzy.jdbc.user={DB_USER}
+    coin-api.groupzy.jdbc.password={DB_PASSWORD}
+    ```
+    
+5. To enable the eduTeams feature (a.k.a. groupzy) add the following JNDI property in the file
+    ```/opt/tomcat/conf/Catalina/api.{BASE_URL}/teams.xml``` in the ```Context``` element.
+
+    ```
+    <Environment name="spring.profiles.active" value="groupzy" type="java.lang.String" override="false"/>
+    ```
+
+6. Reboot tomcat
