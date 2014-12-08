@@ -35,6 +35,7 @@ import nl.surfnet.coin.eb.EngineBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapOperations;
 import org.springframework.ldap.filter.AndFilter;
@@ -58,6 +59,9 @@ public class LdapClientImpl implements LdapClient {
 
   @Autowired
   private EngineBlock engineBlock;
+
+  @Autowired
+  private Environment environment;
 
   /**
    *
@@ -113,7 +117,7 @@ public class LdapClientImpl implements LdapClient {
     for (String identifier : identifiers) {
       Assert.hasText(identifier, "Identifier may not be null or empty when searching for a Person");
       String searchAttribute = "collabpersonid";
-      if (!identifier.startsWith(URN_IDENTIFIER)) {
+      if (!identifier.startsWith(URN_IDENTIFIER) && !environment.acceptsProfiles("groupzy")) {
         searchAttribute = "collabpersonuuid";
         identifier = engineBlock.getUserUUID(identifier);
       }
