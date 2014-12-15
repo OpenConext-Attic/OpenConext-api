@@ -78,7 +78,7 @@ To run on tomcat platform:
         coin-api.groupzy.jdbc.password={DB_PASSWORD}
 
 5. To enable the eduTeams feature (a.k.a. groupzy) add the following JNDI property in the file
-    ```/opt/tomcat/conf/Catalina/api.{BASE_URL}/teams.xml``` in the ```Context``` element.
+    ```/opt/tomcat/conf/Catalina/api.{BASE_URL}/api.xml``` in the ```Context``` element.
 
         <Environment name="spring.profiles.active" value="groupzy" type="java.lang.String" override="false"/>
 
