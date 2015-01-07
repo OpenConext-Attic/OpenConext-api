@@ -71,10 +71,6 @@
       <param-name>dispatchOptionsRequest</param-name>
       <param-value>true</param-value>
     </init-param>
-    <init-param>
-      <param-name>spring.profiles.default</param-name>
-      <param-value>openconext</param-value>
-    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
@@ -128,6 +124,13 @@
       classpath:coin-shared-context.xml,
       classpath:coin-api-oauth1-context.xml,
       classpath:coin-api-oauth2-context.xml
+    </param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>spring.profiles.default</param-name>
+    <param-value>
+      openconext
     </param-value>
   </context-param>
 
