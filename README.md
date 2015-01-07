@@ -55,7 +55,7 @@ This yields:
       }
     }
 
-Installation Instructions
+Installation Instructions for enabling the eduTeams (a.k.a. groupzy) feature
 ------------------------
 To run on tomcat platform:
 
