@@ -1,3 +1,12 @@
+# Deprecated
+
+This repository is deprecated. It is replaced by
+
+* https://github.com/OpenConext/OpenConext-authorization-server
+* https://github.com/OpenConext/OpenConext-authorization-admin
+* https://github.com/OpenConext/OpenConext-authorization-playground
+* https://github.com/OpenConext/OpenConext-voot
+
 OpenConext API
 ==============
 
@@ -8,7 +17,6 @@ Apart from the actual REST inteface, this module contains an OAuth 'form-based' 
   * OAuth2.0 authorization code grant and implicit grant
   * OAuth2.0 access token requests using either query parameters, entity body parameters or the authorization header
   * Step by step detail information about the OAuth requests and responses
-
 
 Using the OpenConext OpenSocial API
 ------------------------------
